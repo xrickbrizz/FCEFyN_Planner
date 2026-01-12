@@ -16,6 +16,7 @@
    Layout
    ========================================================= */
 header{
+  position: relative;
   padding:1rem 1.3rem;
   display:flex;
   justify-content:space-between;
@@ -25,6 +26,7 @@ header{
   gap:.8rem;
   border-bottom:1px solid rgba(var(--color-border-rgb),.75);
   backdrop-filter: blur(10px);
+  z-index: 100;
 }
 .header-left{ display:flex; flex-direction:column; gap:.15rem; }
 .header-title{ font-size:1.3rem; font-weight:800; letter-spacing:.2px; }
@@ -228,7 +230,6 @@ button{
   flex-direction:column;
   margin-left: 0.9rem;
   gap:.75rem;
-  z-index: -1;
 }
 .main-shell{ max-width:none; margin:0; padding:0; }
 @media(max-width:1024px){
