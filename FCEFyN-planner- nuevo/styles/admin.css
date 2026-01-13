@@ -464,6 +464,23 @@ rgb(43, 105, 96)
       opacity:.75;
     }
 
+    .career-checklist{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:.35rem .7rem;
+      margin-top:.35rem;
+    }
+    .career-check-item{
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      font-size:.85rem;
+      margin:0;
+    }
+    .material-file-meta{
+      margin-top:.35rem;
+    }
+
     @media(max-width:1100px){
       .users-grid{grid-template-columns:1fr;}
     }
