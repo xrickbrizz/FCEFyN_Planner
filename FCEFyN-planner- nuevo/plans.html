@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="styles/app.css">
 <script src="scripts/theme-toggle.js" defer></script>
 </head>
-<body class="plans-page">
 
+<body class="plans-page">
 <header>
   <h1 id="title">Planes de Estudio</h1>
   <div class="right">
@@ -20,7 +20,7 @@
     <select id="planSelect">
       <option value="">Elegí plan…</option>
     </select>
-    <button class="btn" id="btnReset" type="button">Reiniciar malla</button>
+    <button class="btn" id="btnReset" type="button">Reiniciar</button>
   </div>
 </header>
 
@@ -29,7 +29,7 @@
 <main class="grid-wrap" id="gridWrap" style="display:none;"></main>
 
 <footer>
-  <div>Diseño responsive • Vista PC: 3x4 • Mobile: columna única</div>
+  <div></div>
   <div>FCEFyN • UNC</div>
 </footer>
 
@@ -197,6 +197,58 @@ import { showConfirm } from "./ui/notifications.js";
     if(captionLeft) captionLeft.textContent = promo + " materias promocionadas";
     if(totalText) totalText.textContent = total + " materias totales";
   }
+function revalidateEstados() {
+  const estados = getEstados();
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+
+    materias.forEach(mat => {
+      const estadoActual = estados[mat.id];
+      if (!estadoActual) return;
+
+      let invalida = false;
+
+      // requisito por porcentaje
+      if (mat.requierePorcentaje) {
+        if (porcentajePromocionadas() < mat.requierePorcentaje) {
+          invalida = true;
+        }
+      }
+
+      // requisito por cantidad aprobadas
+      if (!invalida && mat.requiereAprobadas) {
+        const aprobadas = Object.values(estados)
+          .filter(e => e === "promocion" || e === "regular").length;
+        if (aprobadas < mat.requiereAprobadas) {
+          invalida = true;
+        }
+      }
+
+      // requisito por correlativas
+      if (
+        !invalida &&
+        Array.isArray(mat.requisitos) &&
+        mat.requisitos.length
+      ) {
+        const faltan = mat.requisitos.some(r => {
+          const est = estados[r];
+          return !(est === "promocion" || est === "regular");
+        });
+        if (faltan) invalida = true;
+      }
+
+      // 🔥 si quedó inválida → borrar estado
+      if (invalida) {
+        delete estados[mat.id];
+        changed = true;
+      }
+    });
+  }
+
+  setEstados(estados);
+}
 
   function updateUI(){
     const estados = getEstados();
@@ -257,6 +309,7 @@ import { showConfirm } from "./ui/notifications.js";
         if(estado === "ninguno") delete estados[id];
         else estados[id] = estado;
         setEstados(estados);
+        revalidateEstados();
         closeMenu();
         updateUI();
       });
