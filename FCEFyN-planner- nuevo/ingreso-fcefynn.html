@@ -15,7 +15,7 @@
       <img class="logo" src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
       <div class="brand-txt">
         <div class="brand-title">FCEFyN Planner</div>
-        <div class="brand-sub">Ingreso · Preparación · Materiales</div>
+        <div class="brand-sub">Ingreso · Guía académica</div>
       </div>
     </div>
 
@@ -23,93 +23,89 @@
       <a class="btn btn-outline" href="plans_index.html">Plan de estudios</a>
       <a class="btn btn-outline" href="app.html">Volver al Planner</a>
       <button class="btn theme-toggle" data-theme-toggle type="button">
-        <span class="ico">☀️</span><span class="label">Modo claro</span>
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M12 4.5V2M12 22v-2.5M4.5 12H2M22 12h-2.5M6.2 6.2 4.8 4.8M19.2 19.2l-1.4-1.4M6.2 17.8l-1.4 1.4M19.2 4.8l-1.4 1.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </span>
+        <span class="label">Modo claro</span>
       </button>
     </div>
   </header>
 
   <main class="shell ingreso-shell">
-    <section class="card ingreso-intro">
+    <section class="card ingreso-hero">
       <div class="eyebrow">Ingreso FCEFyN</div>
-      <h1>Tu guía honesta para empezar en la FCEFyN</h1>
-      <p>
-        El ingreso es la etapa inicial para familiarizarte con las materias base y el ritmo universitario.
-        Esta sección está pensada para acompañarte con información clara, sin presiones ni promesas:
-        vas a encontrar qué se evalúa, qué nivel se espera y material filtrado por carrera.
+      <h1>Ingreso FCEFyN</h1>
+      <p class="ingreso-subtitle">guía sin promesas ni marketing</p>
+      <p class="muted ingreso-hero-text">
+        Accedé a cada sección según lo que necesitás hoy: carreras, material, práctica y organización.
+        Todo con información clara y enfocada para acompañarte en el ingreso.
       </p>
     </section>
 
-    <section class="card ingreso-career">
-      <div class="section-head">
-        <h2>Elegí tu carrera</h2>
-        <p class="muted">Necesitamos tu carrera para mostrar materias evaluadas y materiales correctos.</p>
-      </div>
-      <select id="ingresoCareerSelect" class="ingreso-select">
-        <option value="">Seleccioná tu carrera</option>
-      </select>
-      <div class="helper-text" id="careerHint">Tu selección no se guarda; solo filtra esta página.</div>
-    </section>
+    <section class="ingreso-hub-grid">
+      <a class="card ingreso-hub-card" href="ingreso-carreras.html">
+        <div class="ingreso-hub-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M4 7.5 12 4l8 3.5-8 3.5L4 7.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M6 10.5v4.8c0 .7.4 1.4 1.1 1.7l4.4 2.1c.3.1.6.1.9 0l4.4-2.1c.7-.3 1.1-1 1.1-1.7v-4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Carreras y requisitos de ingreso</h2>
+          <p>Información específica del ingreso según tu carrera.</p>
+        </div>
+      </a>
 
-    <section class="card ingreso-eval">
-      <h2>Qué se evalúa en el ingreso</h2>
-      <p class="muted">Materias principales según la carrera elegida.</p>
-      <ul class="subject-list" id="ingresoSubjectsList"></ul>
-      <div class="empty-state" id="ingresoSubjectsEmpty">Seleccioná una carrera para ver las materias de ingreso.</div>
-    </section>
+      <a class="card ingreso-hub-card" href="ingreso-material.html">
+        <div class="ingreso-hub-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M6 4.5h9l3 3V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V6A1.5 1.5 0 0 1 6 4.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M15 4.5V8h3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7.5 11.5h9M7.5 14.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Material del cursillo</h2>
+          <p>Accedé al material oficial de estudio según tu carrera.</p>
+        </div>
+      </a>
 
-    <section class="card ingreso-level">
-      <h2>Nivel esperado</h2>
-      <p>
-        Se espera un dominio básico y sólido de conceptos de secundaria, especialmente en matemática y ciencias.
-        Lo más importante es la constancia: un avance parejo, con práctica diaria y preguntas a tiempo,
-        suele dar mejores resultados que confiar solo en el talento.
-      </p>
-    </section>
+      <a class="card ingreso-hub-card" href="ingreso-practica.html">
+        <div class="ingreso-hub-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M6 4.5h9l3 3V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V6A1.5 1.5 0 0 1 6 4.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M8 12.5l1.7 1.7L14 9.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7.5 16.5h7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Práctica y evaluaciones</h2>
+          <p>Ejercicios y evaluaciones para autoevaluarte antes de ingresar.</p>
+        </div>
+      </a>
 
-    <section class="card ingreso-errors">
-      <h2>Errores comunes</h2>
-      <ul class="bullet-list">
-        <li>Estudiar todo junto y dejar la práctica para el final.</li>
-        <li>No repasar lo básico antes de pasar a temas nuevos.</li>
-        <li>Subestimar la carga horaria y abandonar la rutina de estudio.</li>
-        <li>No pedir ayuda cuando algo no se entiende.</li>
-      </ul>
-    </section>
-
-    <section class="card ingreso-start">
-      <h2>Cómo empezar</h2>
-      <ol class="step-list">
-        <li>Elegí tu carrera arriba y revisá las materias evaluadas.</li>
-        <li>Descargá el material del cursillo correspondiente a tu plan.</li>
-        <li>Armá un horario simple de estudio semanal y respetalo.</li>
-        <li>Combiná teoría con ejercicios y buscá ejemplos resueltos.</li>
-      </ol>
-    </section>
-
-    <section class="card ingreso-material">
-      <div class="section-head">
-        <h2>Material del cursillo</h2>
-        <p class="muted">Archivos oficiales cargados por el equipo académico.</p>
-      </div>
-      <div class="material-grid" id="ingresoMaterialsList"></div>
-      <div class="empty-state" id="ingresoMaterialsEmpty">Seleccioná una carrera para ver el material disponible.</div>
-    </section>
-
-    <section class="card ingreso-cta">
-      <h2>Seguimos con tu planificación</h2>
-      <p>Cuando estés listo/a, podés volver al planner para organizar materias y horarios.</p>
-      <div class="cta-actions">
-        <a class="btn btn-primary" href="app.html">Organizar mi carrera</a>
-        <a class="btn btn-outline" href="plans_index.html">Ver plan de estudios</a>
-      </div>
+      <a class="card ingreso-hub-card" href="ingreso-organizacion.html">
+        <div class="ingreso-hub-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M7 4.5h10A2.5 2.5 0 0 1 19.5 7v10A2.5 2.5 0 0 1 17 19.5H7A2.5 2.5 0 0 1 4.5 17V7A2.5 2.5 0 0 1 7 4.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 9.5h8M8 13h8M8 16.5h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M16.5 4.5v-2M7.5 4.5v-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Cómo prepararte</h2>
+          <p>Consejos reales para organizar tu preparación y evitar errores comunes.</p>
+        </div>
+      </a>
     </section>
   </main>
 
   <footer class="ingreso-footer">
     <span>FCEFyN · UNC</span>
-    <span>Ingreso con información clara y materiales por carrera.</span>
+    <span>Ingreso con información clara y navegación por secciones.</span>
   </footer>
-
-  <script type="module" src="scripts/ingreso.js"></script>
 </body>
 </html>
