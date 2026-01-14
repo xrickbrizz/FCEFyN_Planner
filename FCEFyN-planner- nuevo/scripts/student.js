@@ -5,7 +5,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTime
 import { createQuickSidebar } from "../ui/sidebar.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName } from "./plans-data.js";
-
+//conecta con la db de firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
   authDomain: "fcefyn-planner.firebaseapp.com",
@@ -46,7 +46,7 @@ let careerPlans = [];
 let careerSubjects = [];
 let plannerCareer = { slug:"", name:"" };
 
-// ---- AGENDA
+// ---- AGENDA -------------------------------------------------------------------------- ///
 let agendaData = {};
 const dayKeys = ['lunes','martes','miercoles','jueves','viernes','sabado']; // sin domingo
 const dayLabels = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -56,32 +56,32 @@ const minutesStart = 8*60;
 const minutesEnd   = 23*60;
 const pxPerMinute  = 40/60;
 
-// ---- PLANIFICADOR
+// ---- PLANIFICADOR ------------------------------------------------------------------ ///
 let courseSections = [];
 let presets = [];
 let activePresetId = null;
 let activePresetName = "";
 let activeSelectedSectionIds = [];
 
-// ---- ACADEMICO
+// ---- ACADEMICO   -------------------------------------------------------------------- ///
 let academicoCache = {};
 let acadViewYear = null;
 let acadViewMonth = null;
 let acadEditing = { dateKey:null, index:-1 };
 let acadSelectedDateKey = null;
 
-// ---- STUDY VIEW
+// ---- STUDY VIEW ------------------------------------------------------------------------ ///
 let studyViewYear = null;
 let studyViewMonth = null;
 
-// ---- PROFESORES (NUEVO)
+// ---- PROFESORES (NUEVO) ------------------------------------------------------------------ ///
 let professorsCatalog = [];
 let professorFilters = { career:"", subject:"" };
 let professorReviewsCache = {};
 let selectedProfessorId = null;
 let userProfile = null;
 
-// ---- MENSAJES / AMISTADES (NUEVO)
+// ---- MENSAJES / AMISTADES (NUEVO) ------------------------------------------------------------- ///
 let friendRequests = { incoming:[], outgoing:[] };
 let friendsList = [];
 let activeChatId = null;
@@ -240,8 +240,8 @@ function initSidebar(){
   let isPinned = false;
   if (!mount) return;
 
+//--------------------- sidebarComportamiento ---------------------------------//
   const isMobile = () => window.matchMedia && window.matchMedia("(max-width: 1024px)").matches;
-
   function collapseSidebar(){
     if (!sidebarCtrl || isMobile()) return;
     sidebarCtrl.setCollapsed(true);
@@ -252,6 +252,7 @@ function initSidebar(){
     sidebarCtrl.setCollapsed(false);
     layout?.classList.remove("sidebar-collapsed");
   }
+  // layout."?" pregunta si existe layout, si existe realiza .classList.remove(" ") //
 
   sidebarCtrl = createQuickSidebar({
     mount,

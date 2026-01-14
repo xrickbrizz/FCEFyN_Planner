@@ -1,3 +1,28 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { createQuickSidebar } from "../ui/sidebar.js";
+import { showToast, showConfirm } from "../ui/notifications.js";
+import { getPlansIndex, getPlanWithSubjects, findPlanByName } from "./plans-data.js";
+//conecta con la db de firebase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///----------------------------------------------
 async function recalcProfessorStats(professorId) {
   const q = query(
     collection(db, "professorReviews"),
