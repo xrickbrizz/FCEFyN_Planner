@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ingreso FCEFyN — FCEFyN Planner</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/app.css">
+  <link rel="stylesheet" href="styles/ingreso.css">
+  <script src="scripts/theme-toggle.js" defer></script>
+</head>
+<body class="ingreso-page">
+  <header>
+    <div class="brand">
+      <img class="logo" src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
+      <div class="brand-txt">
+        <div class="brand-title">FCEFyN Planner</div>
+        <div class="brand-sub">Ingreso · Preparación · Materiales</div>
+      </div>
+    </div>
+
+    <div class="hdr-right">
+      <a class="btn btn-outline" href="plans_index.html">Plan de estudios</a>
+      <a class="btn btn-outline" href="app.html">Volver al Planner</a>
+      <button class="btn theme-toggle" data-theme-toggle type="button">
+        <span class="ico">☀️</span><span class="label">Modo claro</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="shell ingreso-shell">
+    <section class="card ingreso-intro">
+      <div class="eyebrow">Ingreso FCEFyN</div>
+      <h1>Tu guía honesta para empezar en la FCEFyN</h1>
+      <p>
+        El ingreso es la etapa inicial para familiarizarte con las materias base y el ritmo universitario.
+        Esta sección está pensada para acompañarte con información clara, sin presiones ni promesas:
+        vas a encontrar qué se evalúa, qué nivel se espera y material filtrado por carrera.
+      </p>
+    </section>
+
+    <section class="card ingreso-career">
+      <div class="section-head">
+        <h2>Elegí tu carrera</h2>
+        <p class="muted">Necesitamos tu carrera para mostrar materias evaluadas y materiales correctos.</p>
+      </div>
+      <select id="ingresoCareerSelect" class="ingreso-select">
+        <option value="">Seleccioná tu carrera</option>
+      </select>
+      <div class="helper-text" id="careerHint">Tu selección no se guarda; solo filtra esta página.</div>
+    </section>
+
+    <section class="card ingreso-eval">
+      <h2>Qué se evalúa en el ingreso</h2>
+      <p class="muted">Materias principales según la carrera elegida.</p>
+      <ul class="subject-list" id="ingresoSubjectsList"></ul>
+      <div class="empty-state" id="ingresoSubjectsEmpty">Seleccioná una carrera para ver las materias de ingreso.</div>
+    </section>
+
+    <section class="card ingreso-level">
+      <h2>Nivel esperado</h2>
+      <p>
+        Se espera un dominio básico y sólido de conceptos de secundaria, especialmente en matemática y ciencias.
+        Lo más importante es la constancia: un avance parejo, con práctica diaria y preguntas a tiempo,
+        suele dar mejores resultados que confiar solo en el talento.
+      </p>
+    </section>
+
+    <section class="card ingreso-errors">
+      <h2>Errores comunes</h2>
+      <ul class="bullet-list">
+        <li>Estudiar todo junto y dejar la práctica para el final.</li>
+        <li>No repasar lo básico antes de pasar a temas nuevos.</li>
+        <li>Subestimar la carga horaria y abandonar la rutina de estudio.</li>
+        <li>No pedir ayuda cuando algo no se entiende.</li>
+      </ul>
+    </section>
+
+    <section class="card ingreso-start">
+      <h2>Cómo empezar</h2>
+      <ol class="step-list">
+        <li>Elegí tu carrera arriba y revisá las materias evaluadas.</li>
+        <li>Descargá el material del cursillo correspondiente a tu plan.</li>
+        <li>Armá un horario simple de estudio semanal y respetalo.</li>
+        <li>Combiná teoría con ejercicios y buscá ejemplos resueltos.</li>
+      </ol>
+    </section>
+
+    <section class="card ingreso-material">
+      <div class="section-head">
+        <h2>Material del cursillo</h2>
+        <p class="muted">Archivos oficiales cargados por el equipo académico.</p>
+      </div>
+      <div class="material-grid" id="ingresoMaterialsList"></div>
+      <div class="empty-state" id="ingresoMaterialsEmpty">Seleccioná una carrera para ver el material disponible.</div>
+    </section>
+
+    <section class="card ingreso-cta">
+      <h2>Seguimos con tu planificación</h2>
+      <p>Cuando estés listo/a, podés volver al planner para organizar materias y horarios.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href="app.html">Organizar mi carrera</a>
+        <a class="btn btn-outline" href="plans_index.html">Ver plan de estudios</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ingreso-footer">
+    <span>FCEFyN · UNC</span>
+    <span>Ingreso con información clara y materiales por carrera.</span>
+  </footer>
+
+  <script type="module" src="scripts/ingreso.js"></script>
+</body>
+</html>

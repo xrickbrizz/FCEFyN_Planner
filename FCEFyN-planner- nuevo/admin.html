@@ -32,6 +32,10 @@
       <span>Profesores</span>
       <span class="nav-badge" id="badgeProfessors">0</span>
     </div>
+    <div class="nav-item" id="navIngresoMaterials" data-section="ingreso-materials">
+      <span>Material Ingreso</span>
+      <span class="nav-badge" id="badgeIngresoMaterials">0</span>
+    </div>
   </aside>
 
   <div class="main">
@@ -126,6 +130,30 @@
                 </tr>
               </thead>
               <tbody id="professorsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-ingreso-materials" class="section-wrap">
+        <div class="card">
+          <div class="card-header">
+            <h2>Material Ingreso</h2>
+            <button class="btn btn-blue" id="btnNewIngresoMaterial">+ Nuevo material</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th>Carreras</th>
+                  <th>Archivo</th>
+                  <th>Actualizado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="ingresoMaterialsTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -310,6 +338,54 @@
   </div>
 </div>
 
+<div class="modal-bg" id="ingresoMaterialModalBg">
+  <div class="modal">
+    <h3 id="ingresoMaterialModalTitle">Nuevo material de ingreso</h3>
+
+    <div class="modal-grid">
+      <div>
+        <label>Nombre</label>
+        <input id="ingresoMaterialName" placeholder="Ej: Guía de Matemática">
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select id="ingresoMaterialType">
+          <option value="guia">Guía</option>
+          <option value="practico">Práctico</option>
+          <option value="teoria">Teoría</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label>Descripción</label>
+        <textarea id="ingresoMaterialDescription" placeholder="Resumen breve del material."></textarea>
+      </div>
+    </div>
+
+    <div>
+      <label>Carreras asociadas</label>
+      <div class="career-checklist" id="ingresoMaterialCareers"></div>
+      <div class="muted" id="ingresoMaterialCareersHint">Seleccioná al menos una carrera.</div>
+    </div>
+
+    <div class="modal-grid" style="margin-top:.6rem;">
+      <div style="grid-column:1/-1;">
+        <label>Archivo PDF</label>
+        <input id="ingresoMaterialFile" type="file" accept="application/pdf">
+        <div class="muted material-file-meta" id="ingresoMaterialFileMeta">Todavía no hay un archivo seleccionado.</div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" id="btnCancelIngresoMaterial">Cancelar</button>
+      <div class="modal-footer-right">
+        <button class="btn btn-danger" type="button" id="btnDeleteIngresoMaterial" style="display:none;">Eliminar</button>
+        <button class="btn btn-blue" type="button" id="btnSaveIngresoMaterial">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -317,6 +393,13 @@ import {
   getFirestore, collection, doc, getDoc, getDocs,
   addDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 import { showToast, showConfirm, showPrompt } from "./ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, mapCareersToPlans, normalizeStr } from "./scripts/plans-data.js";
 
@@ -333,6 +416,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
+const storage = getStorage(app);
 
 let currentUser = null;
 
@@ -347,6 +431,11 @@ let professorCareers = [];
 let professorSubjects = [];
 let plansIndex = [];
 const planSubjectsCache = new Map(); // slug -> array materias
+
+/* ---------- NUEVO: materiales de ingreso ---------- */
+let ingresoMaterialsCache = [];
+let editingIngresoMaterialId = null;
+let editingIngresoMaterialData = null;
 
 /* ---------- helpers UI ---------- */
 const qs  = sel => document.querySelector(sel);
@@ -491,28 +580,34 @@ function setActiveNav(section){
   const navUsers = qs("#navUsers");
   const navSecs  = qs("#navSections");
   const navProf  = qs("#navProfessors"); // NUEVO
+  const navIngreso = qs("#navIngresoMaterials");
   const secUsers = qs("#section-users");
   const secSecs  = qs("#section-sections");
   const secProf  = qs("#section-professors"); // NUEVO
+  const secIngreso = qs("#section-ingreso-materials");
   const topTitle = qs("#topbarTitle");
 
   navUsers.classList.toggle("active", section === "users");
   navSecs.classList.toggle("active", section === "sections");
   navProf.classList.toggle("active", section === "professors");
+  navIngreso.classList.toggle("active", section === "ingreso-materials");
 
   secUsers.classList.toggle("active", section === "users");
   secSecs.classList.toggle("active", section === "sections");
   secProf.classList.toggle("active", section === "professors");
+  secIngreso.classList.toggle("active", section === "ingreso-materials");
 
   if(section === "users") topTitle.textContent = "Panel de administración — Usuarios";
   else if(section === "sections") topTitle.textContent = "Panel de administración — Horarios de materias";
-  else topTitle.textContent = "Panel de administración — Profesores";
+  else if(section === "professors") topTitle.textContent = "Panel de administración — Profesores";
+  else topTitle.textContent = "Panel de administración — Material de ingreso";
 }
 
 function wireSidebar(){
   qs("#navUsers").addEventListener("click", ()=> setActiveNav("users"));
   qs("#navSections").addEventListener("click", ()=> setActiveNav("sections"));
   qs("#navProfessors").addEventListener("click", ()=> setActiveNav("professors")); // NUEVO
+  qs("#navIngresoMaterials").addEventListener("click", ()=> setActiveNav("ingreso-materials"));
 }
 
 /* ---------- sesión / acceso ---------- */
@@ -537,7 +632,7 @@ onAuthStateChanged(auth, async (user) => {
   setActiveNav("users");
 
   // Cargamos también loadProfessors()
-  await Promise.all([loadUsers(), loadSections(), loadProfessors()]);
+  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials()]);
 });
 
 function attachGlobalHandlers(){
@@ -573,6 +668,14 @@ function attachGlobalHandlers(){
   qs("#profSubjectCareerSelect").addEventListener("change", ()=> updateSubjectSelectOptions().catch(console.error));
   qs("#btnSaveProfessor").addEventListener("click", saveProfessor);
   qs("#btnDeleteProfessor").addEventListener("click", deleteProfessor);
+
+  // NUEVO: Botones Sección Material Ingreso
+  qs("#btnNewIngresoMaterial").addEventListener("click", ()=> openIngresoMaterialModal(null).catch(console.error));
+  qs("#btnCancelIngresoMaterial").addEventListener("click", closeIngresoMaterialModal);
+  qs("#ingresoMaterialModalBg").addEventListener("click", (e)=>{ if (e.target === qs("#ingresoMaterialModalBg")) closeIngresoMaterialModal(); });
+  qs("#btnSaveIngresoMaterial").addEventListener("click", saveIngresoMaterial);
+  qs("#btnDeleteIngresoMaterial").addEventListener("click", deleteIngresoMaterial);
+  qs("#ingresoMaterialFile").addEventListener("change", updateIngresoFileMeta);
 
   // acciones de tabla de horarios
   qs("#sectionsTableBody").addEventListener("click", async (e)=>{
@@ -616,6 +719,29 @@ function attachGlobalHandlers(){
       await updateDoc(ref, { active: !active, updatedAt: serverTimestamp() });
       await loadProfessors();
       showToast({ message: !active ? "Profesor publicado para estudiantes." : "Profesor ocultado.", type: !active ? "success" : "warning" });
+    }
+  });
+
+  // NUEVO: acciones de tabla de material ingreso
+  qs("#ingresoMaterialsTableBody").addEventListener("click", async (e)=>{
+    const id = e.target.getAttribute("data-id");
+    if (!id) return;
+
+    if (e.target.classList.contains("btn-edit-ingreso")){
+      const ref = doc(db,"ingresoMaterials",id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      await openIngresoMaterialModal(id, snap.data());
+    } else if (e.target.classList.contains("btn-delete-ingreso")){
+      const ok = await showConfirm({
+        title:"Eliminar material",
+        message:"Se eliminará el material y su archivo asociado.",
+        confirmText:"Eliminar",
+        cancelText:"Cancelar",
+        danger:true
+      });
+      if (!ok) return;
+      await removeIngresoMaterial(id);
     }
   });
 }
@@ -940,6 +1066,242 @@ async function loadProfessors(){
   qs("#badgeProfessors").textContent = String(total);
   qs("#metricProfessorsTotal").textContent = String(total);
   qs("#metricProfessorsDetail").textContent = `Activos: ${activeCount} · Ocultos: ${hiddenCount}`;
+}
+
+function formatTimestamp(ts){
+  if (!ts) return "—";
+  if (typeof ts.toDate === "function"){
+    return ts.toDate().toLocaleString("es-AR");
+  }
+  if (typeof ts === "number"){
+    return new Date(ts).toLocaleString("es-AR");
+  }
+  return "—";
+}
+
+function getIngresoTypeLabel(value){
+  const key = normalizeStr(value);
+  if (key === "guia") return "Guía";
+  if (key === "practico") return "Práctico";
+  if (key === "teoria") return "Teoría";
+  if (key === "otro") return "Otro";
+  return value || "Otro";
+}
+
+async function loadIngresoMaterials(){
+  const tbody = qs("#ingresoMaterialsTableBody");
+  tbody.innerHTML = "";
+  ingresoMaterialsCache = [];
+  await ensurePlansIndex();
+
+  let snap;
+  try{
+    snap = await getDocs(collection(db,"ingresoMaterials"));
+  }catch(e){
+    showToast({ message:"No se pudieron cargar materiales de ingreso: " + (e.message || e), type:"error" });
+    qs("#badgeIngresoMaterials").textContent = "0";
+    return;
+  }
+
+  snap.forEach(d => ingresoMaterialsCache.push({ id: d.id, ...d.data() }));
+  ingresoMaterialsCache.sort((a, b) => (a.name || "").localeCompare(b.name || "", "es"));
+
+  ingresoMaterialsCache.forEach((data) => {
+    const careers = Array.isArray(data.careers) ? data.careers : [];
+    const careerLabels = careers.map(planNameFromSlug).join(", ") || "—";
+    const fileLabel = data.fileName || "PDF";
+    const fileLink = data.fileUrl
+      ? `<a class="btn btn-outline" href="${data.fileUrl}" target="_blank" rel="noopener">Ver</a>`
+      : "—";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.name || "—"}</td>
+      <td>${getIngresoTypeLabel(data.type)}</td>
+      <td>${careerLabels}</td>
+      <td>
+        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;">
+          <span>${fileLabel}</span>
+          ${fileLink}
+        </div>
+      </td>
+      <td>${formatTimestamp(data.updatedAt || data.createdAt)}</td>
+      <td>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-edit-ingreso" data-id="${data.id}">Editar</button>
+          <button class="btn btn-danger btn-delete-ingreso" data-id="${data.id}">Borrar</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  qs("#badgeIngresoMaterials").textContent = String(ingresoMaterialsCache.length);
+}
+
+function renderIngresoCareerOptions(selected=[]) {
+  const cont = qs("#ingresoMaterialCareers");
+  cont.innerHTML = "";
+  const selectedSet = new Set(selected);
+
+  plansIndex.forEach((plan) => {
+    const label = document.createElement("label");
+    label.className = "career-check-item";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.value = plan.slug;
+    input.checked = selectedSet.has(plan.slug);
+    const span = document.createElement("span");
+    span.textContent = plan.nombre || plan.slug;
+    label.appendChild(input);
+    label.appendChild(span);
+    cont.appendChild(label);
+  });
+}
+
+function getSelectedIngresoCareers(){
+  const inputs = Array.from(qs("#ingresoMaterialCareers").querySelectorAll("input[type=\"checkbox\"]"));
+  return inputs.filter(input => input.checked).map(input => input.value);
+}
+
+function updateIngresoFileMeta(){
+  const fileInput = qs("#ingresoMaterialFile");
+  const meta = qs("#ingresoMaterialFileMeta");
+  if (fileInput.files && fileInput.files.length){
+    meta.textContent = `Nuevo archivo: ${fileInput.files[0].name}`;
+    return;
+  }
+  if (editingIngresoMaterialData && editingIngresoMaterialData.fileName){
+    meta.textContent = `Archivo actual: ${editingIngresoMaterialData.fileName}`;
+    return;
+  }
+  meta.textContent = "Todavía no hay un archivo seleccionado.";
+}
+
+async function openIngresoMaterialModal(id, data){
+  editingIngresoMaterialId = id;
+  editingIngresoMaterialData = data || null;
+  await ensurePlansIndex();
+
+  qs("#ingresoMaterialModalTitle").textContent = id ? "Editar material de ingreso" : "Nuevo material de ingreso";
+  qs("#ingresoMaterialName").value = data?.name || "";
+  qs("#ingresoMaterialDescription").value = data?.description || "";
+  qs("#ingresoMaterialType").value = data?.type || "guia";
+  qs("#ingresoMaterialFile").value = "";
+  renderIngresoCareerOptions(Array.isArray(data?.careers) ? data.careers : []);
+  updateIngresoFileMeta();
+
+  qs("#btnDeleteIngresoMaterial").style.display = id ? "inline-flex" : "none";
+  qs("#ingresoMaterialModalBg").style.display = "flex";
+}
+
+function closeIngresoMaterialModal(){
+  editingIngresoMaterialId = null;
+  editingIngresoMaterialData = null;
+  qs("#ingresoMaterialModalBg").style.display = "none";
+}
+
+async function saveIngresoMaterial(){
+  const name = qs("#ingresoMaterialName").value.trim();
+  const description = qs("#ingresoMaterialDescription").value.trim();
+  const type = qs("#ingresoMaterialType").value;
+  const careers = getSelectedIngresoCareers();
+  const fileInput = qs("#ingresoMaterialFile");
+  const file = fileInput.files ? fileInput.files[0] : null;
+
+  if (!name){
+    showToast({ message:"Ingresá un nombre para el material.", type:"warning" });
+    return;
+  }
+  if (!careers.length){
+    showToast({ message:"Seleccioná al menos una carrera.", type:"warning" });
+    return;
+  }
+  if (!editingIngresoMaterialId && !file){
+    showToast({ message:"Subí un archivo PDF para crear el material.", type:"warning" });
+    return;
+  }
+
+  let fileUrl = editingIngresoMaterialData?.fileUrl || "";
+  let storagePath = editingIngresoMaterialData?.storagePath || "";
+  let fileName = editingIngresoMaterialData?.fileName || "";
+
+  if (file){
+    const safeName = (file.name || "material.pdf").replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `ingreso-materials/${Date.now()}_${safeName}`;
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    fileUrl = await getDownloadURL(storageRef);
+    fileName = file.name || safeName;
+
+    if (storagePath){
+      try{
+        await deleteObject(ref(storage, storagePath));
+      }catch(e){
+        showToast({ message:"No pude borrar el archivo anterior: " + (e.message || e), type:"warning" });
+      }
+    }
+    storagePath = path;
+  }
+
+  const payload = {
+    name,
+    description,
+    type,
+    careers,
+    fileUrl,
+    fileName,
+    storagePath,
+    updatedAt: serverTimestamp()
+  };
+
+  try{
+    if (editingIngresoMaterialId){
+      await updateDoc(doc(db,"ingresoMaterials",editingIngresoMaterialId), payload);
+      showToast({ message:"Material actualizado.", type:"success" });
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(collection(db,"ingresoMaterials"), payload);
+      showToast({ message:"Material creado.", type:"success" });
+    }
+    closeIngresoMaterialModal();
+    await loadIngresoMaterials();
+  }catch(e){
+    showToast({ message:"No se pudo guardar el material: " + (e.message || e), type:"error" });
+  }
+}
+
+async function removeIngresoMaterial(id){
+  let data = ingresoMaterialsCache.find(item => item.id === id);
+  if (!data){
+    const snap = await getDoc(doc(db,"ingresoMaterials",id));
+    if (snap.exists()) data = snap.data();
+  }
+
+  try{
+    await deleteDoc(doc(db,"ingresoMaterials",id));
+    if (data?.storagePath){
+      await deleteObject(ref(storage, data.storagePath));
+    }
+    await loadIngresoMaterials();
+    showToast({ message:"Material eliminado.", type:"success" });
+  }catch(e){
+    showToast({ message:"No se pudo eliminar el material: " + (e.message || e), type:"error" });
+  }
+}
+
+async function deleteIngresoMaterial(){
+  if (!editingIngresoMaterialId) return;
+  const ok = await showConfirm({
+    title:"Eliminar material",
+    message:"Se eliminará el material y su archivo asociado.",
+    confirmText:"Eliminar",
+    cancelText:"Cancelar",
+    danger:true
+  });
+  if (!ok) return;
+  await removeIngresoMaterial(editingIngresoMaterialId);
+  closeIngresoMaterialModal();
 }
 
 function setCareerSelectOptions(){
