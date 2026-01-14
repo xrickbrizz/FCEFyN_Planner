@@ -74,20 +74,6 @@ let acadSelectedDateKey = null;
 let studyViewYear = null;
 let studyViewMonth = null;
 
-// ---- MENSAJES / AMISTADES (NUEVO) ------------------------------------------------------------- ///
-let friendRequests = { incoming:[], outgoing:[] };
-let friendsList = [];
-let activeChatId = null;
-let activeChatPartner = null;
-let messagesUnsubscribe = null;
-let messagesCache = {};
-let statusUnsubscribe = null;
-let userStatusMap = new Map();
-let showLastSeenPref = true;
-let requestsLoading = true;
-let friendsLoading = true;
-let messengerInitialCollapsed = false;
-
 const navItems = [
   { id:"inicio", label:"Inicio", icon:"🏠" },
   { id:"estudio", label:"Estudio", icon:"📒" },
@@ -2830,8 +2816,29 @@ async function applySelectedPresetToAgenda(){
 
 
 
-/* ---------- MENSAJES / AMISTADES (NUEVO) ---------- */
+// ===================== startMensajeria =====================
+// ---- ESTADO ----
+let friendRequests = { incoming:[], outgoing:[] };
+let friendsList = [];
+let activeChatId = null;
+let activeChatPartner = null;
+let messagesUnsubscribe = null;
+let messagesCache = {};
+let statusUnsubscribe = null;
+let userStatusMap = new Map();
+let showLastSeenPref = true;
+let requestsLoading = true;
+let friendsLoading = true;
+let messengerInitialCollapsed = false;
+let allUsersCache = [];
+let usersSearchList = null;
+let usersSearchInput = null;
+let usersLoading = false;
+
+// ---- HELPERS ----
 function initMessengerDock(){
+  console.log("[Mensajeria] Init");
+  console.log("[Mensajeria] Current user:", currentUser?.uid);
   // La vista de mensajería se maneja con pestañas; solo aseguramos que no falle la inicialización.
 }
 
@@ -2849,6 +2856,25 @@ function toggleMessengerDock(){
 
 function composeChatId(uids){
   return (uids || []).slice().sort().join("__");
+}
+
+function normalizeText(value){
+  return (value || "").toString().trim().toLowerCase();
+}
+
+function buildExcludedUserSet(){
+  const excluded = new Set();
+  if (currentUser?.uid) excluded.add(currentUser.uid);
+  friendsList.forEach(friend => {
+    if (friend.otherUid) excluded.add(friend.otherUid);
+  });
+  friendRequests.incoming.forEach(req =>{
+    if (req.status === "pending" && req.fromUid) excluded.add(req.fromUid);
+  });
+  friendRequests.outgoing.forEach(req =>{
+    if (req.status === "pending" && req.toUid) excluded.add(req.toUid);
+  });
+  return excluded;
 }
 
 function setChatInputState(enabled, placeholder){
@@ -2877,6 +2903,77 @@ function userStatusLabel(uid){
   return "Desconectado";
 }
 
+function renderUsersSearchList(){
+  if (!usersSearchList || !usersSearchInput) return;
+  usersSearchList.innerHTML = "";
+
+  const queryText = normalizeText(usersSearchInput.value);
+  const excluded = buildExcludedUserSet();
+  const matches = allUsersCache.filter(user =>{
+    if (!user?.uid || excluded.has(user.uid)) return false;
+    const name = normalizeText(user.name || user.fullName || user.firstName);
+    const email = normalizeText(user.email);
+    if (!queryText) return true;
+    return name.includes(queryText) || email.includes(queryText);
+  });
+
+  if (!matches.length){
+    usersSearchList.innerHTML = "<div class='muted'>Sin resultados.</div>";
+    return;
+  }
+
+  matches.forEach(user =>{
+    const item = document.createElement("div");
+    item.className = "user-item";
+    const labelName = user.name || user.fullName || user.firstName || "Usuario";
+    item.textContent = `${labelName} · ${user.email || "-"}`;
+    item.addEventListener("click", () => {
+      usersSearchInput.value = user.email || "";
+      usersSearchList.innerHTML = "";
+    });
+    usersSearchList.appendChild(item);
+  });
+}
+
+function ensureUsersSearchUI(){
+  if (usersSearchList && usersSearchInput) return;
+  const form = document.querySelector(".friend-form");
+  if (!form) return;
+
+  usersSearchInput = document.getElementById("friendEmailInput");
+  usersSearchList = document.createElement("div");
+  usersSearchList.className = "users-list";
+  form.appendChild(usersSearchList);
+
+  if (usersSearchInput){
+    usersSearchInput.addEventListener("input", () => {
+      renderUsersSearchList();
+    });
+  }
+}
+
+async function loadUsersDirectory(){
+  if (!currentUser) return;
+  ensureUsersSearchUI();
+  usersLoading = true;
+  try{
+    const snap = await getDocs(collection(db, "users"));
+    const users = [];
+    snap.forEach(docSnap =>{
+      const data = docSnap.data() || {};
+      users.push({ uid: docSnap.id, ...data });
+    });
+    allUsersCache = users;
+    console.log("[Mensajeria] Users loaded:", users.length);
+  }catch(error){
+    console.error("[Mensajeria] Error al cargar usuarios:", error);
+  }finally{
+    usersLoading = false;
+    renderUsersSearchList();
+  }
+}
+
+// ---- AUTH / SESIÓN ----
 async function ensureLastSeenPref(){
   showLastSeenPref = userProfile?.showLastSeen !== false;
   if (!currentUser) return;
@@ -2916,6 +3013,7 @@ async function initPresence(){
   subscribeStatusFeed();
 }
 
+// ---- SOLICITUDES DE AMISTAD ----
 async function loadFriendRequests(){
   if (!currentUser) return;
   requestsLoading = true;
@@ -2938,9 +3036,102 @@ async function loadFriendRequests(){
   friendRequests = { incoming, outgoing };
   requestsLoading = false;
   renderFriendRequestsUI();
+  renderUsersSearchList();
   renderMessaging();
 }
 
+async function sendFriendRequest(){
+  const inp = document.getElementById("friendEmailInput");
+  if (!inp || !currentUser) return;
+  const email = (inp.value || "").trim().toLowerCase();
+  if (!email){
+    notifyWarn("Ingresá el correo del estudiante.");
+    return;
+  }
+  if (email === (currentUser.email || "").toLowerCase()){
+    notifyWarn("No podés enviarte una solicitud a vos mismo.");
+    return;
+  }
+  try{
+    const userSnap = await getDocs(query(collection(db,"users"), where("email","==", email)));
+    if (userSnap.empty){
+      notifyWarn("No se encontró un usuario con ese correo.");
+      return;
+    }
+    const targetId = userSnap.docs[0].id;
+    const existing = friendRequests.outgoing.some(r => (r.toUid === targetId) && (r.status === "pending"));
+    if (existing){
+      notifyWarn("Ya enviaste una solicitud pendiente a este usuario.");
+      return;
+    }
+    const alreadyFriend = friendsList.some(f => f.otherUid === targetId);
+    if (alreadyFriend){
+      notifyWarn("Ya son amigos y pueden chatear.");
+      return;
+    }
+    await addDoc(collection(db,"friendRequests"), {
+      fromUid: currentUser.uid,
+      toUid: targetId,
+      fromEmail: currentUser.email || "",
+      toEmail: email,
+      status: "pending",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    inp.value = "";
+    console.log("[Mensajeria] Friend request sent to:", targetId);
+    await loadFriendRequests();
+    notifySuccess("Solicitud enviada.");
+  }catch(e){
+    notifyError("No se pudo enviar la solicitud: " + (e.message || e));
+  }
+}
+
+async function acceptFriendRequest(id){
+  const req = friendRequests.incoming.find(r => r.id === id);
+  if (!req){
+    notifyWarn("Solicitud no encontrada.");
+    return;
+  }
+  try{
+    const chatId = composeChatId([req.fromUid, req.toUid]);
+    await updateDoc(doc(db,"friendRequests",id), { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    await setDoc(doc(db,"friends", chatId), { uids:[req.fromUid, req.toUid], chatId, createdAt: serverTimestamp() }, { merge:true });
+    await ensureChat([req.fromUid, req.toUid]);
+    await loadFriendRequests();
+    await loadFriends();
+    notifySuccess("Solicitud aceptada. Ya pueden chatear.");
+  }catch(e){
+    notifyError("No se pudo aceptar: " + (e.message || e));
+  }
+}
+
+async function rejectFriendRequest(id){
+  const req = friendRequests.incoming.find(r => r.id === id);
+  if (!req) return;
+  try{
+    await updateDoc(doc(db,"friendRequests",id), { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    await loadFriendRequests();
+    notifyWarn("Solicitud rechazada.");
+  }catch(e){
+    notifyError("No se pudo rechazar: " + (e.message || e));
+  }
+}
+
+function wireFriendRequestActions(){
+  const incomingBox = document.getElementById("incomingRequests");
+  if (!incomingBox) return;
+  incomingBox.addEventListener("click", (e)=>{
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    const action = btn.getAttribute("data-action");
+    if (action === "accept") acceptFriendRequest(id);
+    else if (action === "reject") rejectFriendRequest(id);
+  });
+}
+
+// ---- GESTIÓN DE AMISTADES ----
 async function loadFriends(){
   if (!currentUser) return;
   friendsLoading = true;
@@ -2966,6 +3157,7 @@ async function loadFriends(){
   friendsList = arr;
   friendsLoading = false;
   renderFriendsList();
+  renderUsersSearchList();
   renderMessaging();
 }
 
@@ -3054,6 +3246,61 @@ function renderFriendsList(){
   });
 }
 
+// ---- MENSAJES ----
+function subscribeMessages(chatId){
+  if (messagesUnsubscribe) messagesUnsubscribe();
+  const q = query(collection(db,"chats", chatId, "messages"), orderBy("createdAt","asc"), limit(100));
+  messagesUnsubscribe = onSnapshot(q, snap =>{
+    const arr = [];
+    snap.forEach(d => arr.push(d.data()));
+    messagesCache[chatId] = arr;
+    renderMessaging();
+  }, (err)=> console.error("messages snapshot error", err));
+}
+
+async function ensureChat(uids){
+  const chatId = composeChatId(uids);
+  const ref = doc(db,"chats", chatId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()){
+    await setDoc(ref, { uids, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  }
+  return chatId;
+}
+
+async function openChatWithFriend(friend){
+  activeChatPartner = friend;
+  activeChatId = friend.chatId || composeChatId(friend.uids);
+  await ensureChat(friend.uids);
+  subscribeMessages(activeChatId);
+  openMessengerDock();
+  renderMessaging();
+}
+
+async function sendMessage(){
+  const input = document.getElementById("messageInput");
+  if (!input || !activeChatId || !activeChatPartner) return;
+  const text = (input.value || "").trim();
+  if (!text){
+    notifyWarn("Escribí un mensaje.");
+    return;
+  }
+  input.value = "";
+  try{
+    const docRef = await addDoc(collection(db,"chats", activeChatId, "messages"), {
+      text,
+      senderUid: currentUser.uid,
+      uids: [currentUser.uid, activeChatPartner.otherUid],
+      createdAt: serverTimestamp()
+    });
+    await updateDoc(doc(db,"chats", activeChatId), { updatedAt: serverTimestamp() });
+    console.log("[Mensajeria] Message sent:", docRef.id);
+  }catch(e){
+    notifyError("No se pudo enviar: " + (e.message || e));
+  }
+}
+
+// ---- UI / LISTENERS ----
 function renderMessaging(){
   const header = document.getElementById("chatHeader");
   const list = document.getElementById("messagesList");
@@ -3103,176 +3350,11 @@ function renderMessaging(){
   list.scrollTop = list.scrollHeight;
 }
 
-function subscribeMessages(chatId){
-  if (messagesUnsubscribe) messagesUnsubscribe();
-  const q = query(collection(db,"chats", chatId, "messages"), orderBy("createdAt","asc"), limit(100));
-  messagesUnsubscribe = onSnapshot(q, snap =>{
-    const arr = [];
-    snap.forEach(d => arr.push(d.data()));
-    messagesCache[chatId] = arr;
-    renderMessaging();
-  }, (err)=> console.error("messages snapshot error", err));
-}
-
-async function ensureChat(uids){
-  const chatId = composeChatId(uids);
-  const ref = doc(db,"chats", chatId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()){
-    await setDoc(ref, { uids, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-  }
-  return chatId;
-}
-
-async function openChatWithFriend(friend){
-  activeChatPartner = friend;
-  activeChatId = friend.chatId || composeChatId(friend.uids);
-  await ensureChat(friend.uids);
-  subscribeMessages(activeChatId);
-  openMessengerDock();
-  renderMessaging();
-}
-
-async function sendMessage(){
-  const input = document.getElementById("messageInput");
-  if (!input || !activeChatId || !activeChatPartner) return;
-  const text = (input.value || "").trim();
-  if (!text){
-    notifyWarn("Escribí un mensaje.");
-    return;
-  }
-  input.value = "";
-  try{
-    await addDoc(collection(db,"chats", activeChatId, "messages"), {
-      text,
-      senderUid: currentUser.uid,
-      uids: [currentUser.uid, activeChatPartner.otherUid],
-      createdAt: serverTimestamp()
-    });
-    await updateDoc(doc(db,"chats", activeChatId), { updatedAt: serverTimestamp() });
-  }catch(e){
-    notifyError("No se pudo enviar: " + (e.message || e));
-  }
-}
-// intento de resolver 
-// Mostrar lista de usuarios disponibles para enviar solicitud
-const usersList = document.createElement("div");
-usersList.className = "users-list";
-document.querySelector(".friend-form").appendChild(usersList);
-
-async function loadPublicUsers() {
-  try {
-    const querySnapshot = await getDocs(collection(db, "publicUsers"));
-    usersList.innerHTML = ""; // limpia listado previo
-    querySnapshot.forEach((doc) => {
-      const u = doc.data();
-      const item = document.createElement("div");
-      item.className = "user-item";
-      item.textContent = `${u.name || u.firstName || "Sin nombre"} - ${u.career || ""}`;
-      item.addEventListener("click", () => {
-        document.getElementById("friendEmailInput").value = u.email;
-      });
-      usersList.appendChild(item);
-    });
-  } catch (error) {
-    console.error("Error al cargar usuarios:", error);
-  }
-}
-
-// cargá la lista cuando abras la sección
-loadPublicUsers();
-
-async function sendFriendRequest(){
-  const inp = document.getElementById("friendEmailInput");
-  if (!inp || !currentUser) return;
-  const email = (inp.value || "").trim().toLowerCase();
-  if (!email){
-    notifyWarn("Ingresá el correo del estudiante.");
-    return;
-  }
-  if (email === (currentUser.email || "").toLowerCase()){
-    notifyWarn("No podés enviarte una solicitud a vos mismo.");
-    return;
-  }
-  try{
-    const userSnap = await getDocs(query(collection(db,"users"), where("email","==", email)));
-    if (userSnap.empty){
-      notifyWarn("No se encontró un usuario con ese correo.");
-      return;
-    }
-    const targetId = userSnap.docs[0].id;
-    const existing = friendRequests.outgoing.some(r => (r.toUid === targetId) && (r.status === "pending"));
-    if (existing){
-      notifyWarn("Ya enviaste una solicitud pendiente a este usuario.");
-      return;
-    }
-    const alreadyFriend = friendsList.some(f => f.otherUid === targetId);
-    if (alreadyFriend){
-      notifyWarn("Ya son amigos y pueden chatear.");
-      return;
-    }
-    await addDoc(collection(db,"friendRequests"), {
-      fromUid: currentUser.uid,
-      toUid: targetId,
-      fromEmail: currentUser.email || "",
-      toEmail: email,
-      status: "pending",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-    inp.value = "";
-    await loadFriendRequests();
-    notifySuccess("Solicitud enviada.");
-  }catch(e){
-    notifyError("No se pudo enviar la solicitud: " + (e.message || e));
-  }
-}
-
-async function acceptFriendRequest(id){
-  const req = friendRequests.incoming.find(r => r.id === id);
-  if (!req){
-    notifyWarn("Solicitud no encontrada.");
-    return;
-  }
-  try{
-    const chatId = composeChatId([req.fromUid, req.toUid]);
-    await updateDoc(doc(db,"friendRequests",id), { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
-    await setDoc(doc(db,"friends", chatId), { uids:[req.fromUid, req.toUid], chatId, createdAt: serverTimestamp() }, { merge:true });
-    await ensureChat([req.fromUid, req.toUid]);
-    await loadFriendRequests();
-    await loadFriends();
-    notifySuccess("Solicitud aceptada. Ya pueden chatear.");
-  }catch(e){
-    notifyError("No se pudo aceptar: " + (e.message || e));
-  }
-}
-
-async function rejectFriendRequest(id){
-  const req = friendRequests.incoming.find(r => r.id === id);
-  if (!req) return;
-  try{
-    await updateDoc(doc(db,"friendRequests",id), { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
-    await loadFriendRequests();
-    notifyWarn("Solicitud rechazada.");
-  }catch(e){
-    notifyError("No se pudo rechazar: " + (e.message || e));
-  }
-}
-
-function wireFriendRequestActions(){
-  const incomingBox = document.getElementById("incomingRequests");
-  if (!incomingBox) return;
-  incomingBox.addEventListener("click", (e)=>{
-    const btn = e.target.closest("button[data-action]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-id");
-    const action = btn.getAttribute("data-action");
-    if (action === "accept") acceptFriendRequest(id);
-    else if (action === "reject") rejectFriendRequest(id);
-  });
-}
-
 function initMessagingUI(){
+  initMessengerDock();
+  ensureUsersSearchUI();
+  loadUsersDirectory();
+
   const btnSendReq = document.getElementById("btnSendFriendRequest");
   if (btnSendReq) btnSendReq.addEventListener("click", sendFriendRequest);
 
@@ -3309,3 +3391,4 @@ function initMessagingUI(){
   setChatInputState(false, "Seleccioná un amigo para chatear");
   renderMessaging();
 }
+// ===================== endMensajeria =======================
