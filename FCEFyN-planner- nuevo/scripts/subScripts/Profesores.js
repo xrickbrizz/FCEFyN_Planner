@@ -2,8 +2,8 @@ import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebase
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 //conecta con la db de firebase
-import { normalizeStr } from "./plans-data.js";
-import { showToast } from "../ui/notifications.js";
+import { normalizeStr } from "../plans-data.js";
+import { showToast } from "../../ui/notifications.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
