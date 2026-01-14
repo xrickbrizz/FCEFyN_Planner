@@ -1266,10 +1266,11 @@ button{
   box-shadow:0 16px 38px var(--shadow-color-deep);
 }
 .prof-rate-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:.6rem;
   margin-bottom:.65rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media(max-width:760px){
   .prof-rate-grid{ grid-template-columns:1fr; }

@@ -3676,6 +3676,33 @@ async function sendMessage(){
     notifyError("No se pudo enviar: " + (e.message || e));
   }
 }
+// intento de resolver 
+// Mostrar lista de usuarios disponibles para enviar solicitud
+const usersList = document.createElement("div");
+usersList.className = "users-list";
+document.querySelector(".friend-form").appendChild(usersList);
+
+async function loadPublicUsers() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "publicUsers"));
+    usersList.innerHTML = ""; // limpia listado previo
+    querySnapshot.forEach((doc) => {
+      const u = doc.data();
+      const item = document.createElement("div");
+      item.className = "user-item";
+      item.textContent = `${u.name || u.firstName || "Sin nombre"} - ${u.career || ""}`;
+      item.addEventListener("click", () => {
+        document.getElementById("friendEmailInput").value = u.email;
+      });
+      usersList.appendChild(item);
+    });
+  } catch (error) {
+    console.error("Error al cargar usuarios:", error);
+  }
+}
+
+// cargá la lista cuando abras la sección
+loadPublicUsers();
 
 async function sendFriendRequest(){
   const inp = document.getElementById("friendEmailInput");
