@@ -1,10 +1,18 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 //conecta con la db de firebase
 import { normalizeStr } from "./plans-data.js";
-import { notifyError,notifyWarn,notifySuccess,} from "../ui/notifications.js";
+import { showToast } from "../ui/notifications.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
+  authDomain: "fcefyn-planner.firebaseapp.com",
+  projectId: "fcefyn-planner",
+  storageBucket: "fcefyn-planner.firebasestorage.app",
+  messagingSenderId: "713668406730",
+  appId: "1:713668406730:web:f41c459641bfdce0cd7333"
+};
 
 // ---- PROFESORES (NUEVO) ------------------------------------------------------------------ ///
 let professorsCatalog = [];
@@ -12,11 +20,15 @@ let professorFilters = { career:"", subject:"" };
 let professorReviewsCache = {};
 let selectedProfessorId = null;
 let userProfile = null;
+let currentUser = null;
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 //-------------------utilidades --------------------------------------//
+const notifySuccess = (message) => showToast({ message, type:"success" });
+const notifyError = (message) => showToast({ message, type:"error" });
+const notifyWarn = (message) => showToast({ message, type:"warning" });
 
 
 // NUEVO: Helpers profesores
@@ -39,35 +51,9 @@ function currentUserDisplayName(){
   return "Estudiante";
 }
 
-function subjectColor(name){
-  const s = subjects.find(x => x.name === name);
-  return (s && s.color) ? s.color : defaultSubjectColor();
-}
-
-function ensureSubjectExistsWithColor(subjectName){
-  const exists = subjects.find(s => normalizeStr(s.name) === normalizeStr(subjectName));
-  if (exists) return;
-  let hash = 0;
-  for (let i=0;i<subjectName.length;i++){
-    hash = ((hash << 5) - hash) + subjectName.charCodeAt(i);
-    hash |= 0;
-  }
-  const hue = Math.abs(hash) % 360;
-  const color = hslToHex(hue, 80, 55);
-  subjects.push({ name: subjectName, color });
-}
-function hslToHex(h, s, l){
-  s /= 100; l /= 100;
-  const k = n => (n + h/30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-  const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
-  return "#" + toHex(f(0)) + toHex(f(8)) + toHex(f(4));
-}
-
-
 // ------------------------ PROFESORES (NUEVO) ------------------------
 async function loadProfessorsCatalog(){
+  console.log("[Professors] Loading catalog...");
   professorsCatalog = [];
   professorReviewsCache = {};
   try{
@@ -91,10 +77,12 @@ async function loadProfessorsCatalog(){
     notifyError("No se pudieron cargar profesores: " + (e.message || e));
     professorsCatalog = [];
   }
+  console.log("[Professors] Professors loaded:", professorsCatalog.length);
   renderProfessorsSection();
 }
 
 function initProfessorsUI(){
+  console.log("[Professors] Init UI");
   const selCareer = document.getElementById("profFilterCareer");
   const selSubject = document.getElementById("profFilterSubject");
   if (selCareer){
@@ -213,6 +201,7 @@ function renderProfessorsList(){
 
   if (!selectedProfessorId || !filtered.some(p => p.id === selectedProfessorId)){
     selectedProfessorId = filtered[0].id;
+    professorReviewsCache[selectedProfessorId] = { loading:true, items:[] };
     loadProfessorReviews(selectedProfessorId).then(()=>{
       renderProfessorDetail();
       fillRatingFormFromMyReview(selectedProfessorId);
@@ -260,6 +249,7 @@ function renderProfessorsList(){
       selectedProfessorId = p.id;
       renderProfessorsList();
       renderProfessorDetail();
+      professorReviewsCache[p.id] = { loading:true, items:[] };
       loadProfessorReviews(p.id).then(()=>{
         renderProfessorDetail();
         fillRatingFormFromMyReview(p.id);
@@ -403,6 +393,7 @@ function renderProfessorDetail(){
 
 async function loadProfessorReviews(profId){
   if (!profId) return;
+  console.log("[Professors] Loading reviews for:", profId);
   professorReviewsCache[profId] = { loading:true, items:[] };
   try{
     const snap = await getDocs(query(collection(db,"professorReviews"), where("professorId","==", profId)));
@@ -425,6 +416,7 @@ async function loadProfessorReviews(profId){
     });
     items.sort((a,b)=> (b.createdAt || 0) - (a.createdAt || 0));
     professorReviewsCache[profId] = { loading:false, items };
+    console.log("[Professors] Reviews loaded:", items.length);
   }catch(e){
     professorReviewsCache[profId] = { loading:false, items:[] };
     notifyError("No se pudieron cargar reseñas: " + (e.message || e));
@@ -491,6 +483,7 @@ async function submitProfessorRating(){
     createdAt: existing?.createdAt ? new Date(existing.createdAt) : serverTimestamp(),
     updatedAt: serverTimestamp()
   };
+  console.log("[Professors] Submit rating payload:", payload);
 
   try{
     const reviewRef = doc(db,"professorReviews",reviewId);
@@ -540,41 +533,28 @@ async function recalcProfessorStats(profId){
   });
 }
 
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-async function recalcProfessorStats(professorId) {
-  const q = query(
-    collection(db, "professorReviews"),
-    where("professorId", "==", professorId)
-  );
 
-  const snap = await getDocs(q);
-
-  let count = 0;
-  let sumTeaching = 0;
-  let sumTreatment = 0;
-  let sumExams = 0;
-  let sumGeneral = 0;
-
-  snap.forEach(doc => {
-    const r = doc.data();
-    count++;
-    sumTeaching += r.teaching;
-    sumTreatment += r.treatment;
-    sumExams += r.exams;
-    sumGeneral += r.general;
-  });
-
-  if (count === 0) return;
-
-  await updateDoc(doc(db, "professors", professorId), {
-    commentsCount: count,
-    ratingCount: count,
-    avgTeaching: sumTeaching / count,
-    avgTreatment: sumTreatment / count,
-    avgExams: sumExams / count,
-    avgGeneral: sumGeneral / count,
-    updatedAt: serverTimestamp()
-  });
+async function loadUserProfile(){
+  if (!currentUser) return;
+  try{
+    const snap = await getDoc(doc(db,"users",currentUser.uid));
+    userProfile = snap.exists() ? snap.data() : null;
+  }catch(_){
+    userProfile = null;
+  }
 }
+
+console.log("[Professors] Init");
+onAuthStateChanged(auth, async user =>{
+  console.log("[Professors] Auth user:", user?.uid);
+  currentUser = user;
+  if (!user){
+    professorsCatalog = [];
+    professorReviewsCache = {};
+    renderProfessorsSection();
+    return;
+  }
+  await loadUserProfile();
+  await loadProfessorsCatalog();
+  initProfessorsUI();
+});
