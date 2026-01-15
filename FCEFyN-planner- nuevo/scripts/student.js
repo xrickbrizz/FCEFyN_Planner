@@ -304,6 +304,8 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
   });
 
   // UI
+  resolveSubjectsUI();
+  bindSubjectsFormHandlers();
   renderSubjectsList();
   renderSubjectsOptions();
   await initSubjectsCareerUI();
@@ -760,22 +762,40 @@ function timeToMinutes(t){
 
 // ===== START MATERIAS =====
 // ------------------------ MATERIAS ------------------------
-const subjectsListEl = document.getElementById("subjectsList");
-const subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
-const subjectCareerSelect = document.getElementById("subjectCareer");
-const subjectNameSelect = document.getElementById("subjectNameSelect");
-const subjectColorInput = document.getElementById("subjectColor");
-const subjectColorPalette = document.getElementById("subjectColorPalette");
-const subjectColorCustomBtn = document.getElementById("subjectColorCustomBtn");
-const subjectColorCustomPreview = document.getElementById("subjectColorCustomPreview");
-const subjectColorText = document.getElementById("subjectColorText");
-const subjectColorHint = document.getElementById("subjectColorHint");
-const subjectFormTitle = document.getElementById("subjectFormTitle");
-const subjectPlanHint = document.getElementById("subjectPlanHint");
-const btnSubjectSave = document.getElementById("btnSubjectSave");
-const btnSubjectReset = document.getElementById("btnSubjectReset");
+let subjectsListEl = document.getElementById("subjectsList");
+let subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
+let subjectCareerSelect = document.getElementById("subjectCareer");
+let subjectNameSelect = document.getElementById("subjectNameSelect");
+let subjectColorInput = document.getElementById("subjectColor");
+let subjectColorPalette = document.getElementById("subjectColorPalette");
+let subjectColorCustomBtn = document.getElementById("subjectColorCustomBtn");
+let subjectColorCustomPreview = document.getElementById("subjectColorCustomPreview");
+let subjectColorText = document.getElementById("subjectColorText");
+let subjectColorHint = document.getElementById("subjectColorHint");
+let subjectFormTitle = document.getElementById("subjectFormTitle");
+let subjectPlanHint = document.getElementById("subjectPlanHint");
+let btnSubjectSave = document.getElementById("btnSubjectSave");
+let btnSubjectReset = document.getElementById("btnSubjectReset");
 const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
+let didBindSubjectsUI = false;
+
+function resolveSubjectsUI(){
+  subjectsListEl = document.getElementById("subjectsList");
+  subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
+  subjectCareerSelect = document.getElementById("subjectCareer");
+  subjectNameSelect = document.getElementById("subjectNameSelect");
+  subjectColorInput = document.getElementById("subjectColor");
+  subjectColorPalette = document.getElementById("subjectColorPalette");
+  subjectColorCustomBtn = document.getElementById("subjectColorCustomBtn");
+  subjectColorCustomPreview = document.getElementById("subjectColorCustomPreview");
+  subjectColorText = document.getElementById("subjectColorText");
+  subjectColorHint = document.getElementById("subjectColorHint");
+  subjectFormTitle = document.getElementById("subjectFormTitle");
+  subjectPlanHint = document.getElementById("subjectPlanHint");
+  btnSubjectSave = document.getElementById("btnSubjectSave");
+  btnSubjectReset = document.getElementById("btnSubjectReset");
+}
 
 function cssColorToHex(color){
   if (!subjectColorCtx) return "";
@@ -863,6 +883,100 @@ function initSubjectColorPalette(){
   }
 }
 
+function bindSubjectsFormHandlers(){
+  resolveSubjectsUI();
+  if (didBindSubjectsUI) return;
+  const hasUI = subjectCareerSelect || btnSubjectReset || btnSubjectSave || subjectColorPalette || subjectColorInput || subjectColorText;
+  if (!hasUI) return;
+  didBindSubjectsUI = true;
+
+  if (subjectCareerSelect){
+    subjectCareerSelect.addEventListener("change", async (e)=>{
+      const slug = e.target.value;
+      // console.log("[subjects] carrera seleccionada:", slug);
+      await setActiveCareer(slug, true);
+    });
+  }
+
+  if (btnSubjectReset){
+    btnSubjectReset.addEventListener("click", () => {
+      editingSubjectIndex = -1;
+      renderSubjectNameOptions();
+      updateSubjectColorUI(defaultSubjectColor());
+      if (subjectFormTitle) subjectFormTitle.textContent = "Nueva materia";
+    });
+  }
+
+  if (btnSubjectSave){
+    btnSubjectSave.addEventListener("click", async () => {
+      if (!currentUser) return;
+      const name = (subjectNameSelect?.value || "").trim();
+      const color = subjectColorInput?.value || defaultSubjectColor();
+      const { estudiosCache, academicoCache } = getCalendarioCaches();
+      if (!name){
+        notifyWarn("Seleccioná una materia.");
+        return;
+      }
+
+      if (editingSubjectIndex === -1){
+        if (subjects.some(s => s.name.toLowerCase() === name.toLowerCase())){
+          notifyWarn("Ya existe una materia con ese nombre.");
+          return;
+        }
+        subjects.push({ name, color });
+      } else {
+        if (subjects.some((s, i) => i !== editingSubjectIndex && s.name.toLowerCase() === name.toLowerCase())){
+          notifyWarn("Ya existe una materia con ese nombre.");
+          return;
+        }
+        const oldName = subjects[editingSubjectIndex].name;
+        subjects[editingSubjectIndex] = { name, color };
+
+        Object.keys(estudiosCache || {}).forEach(dateKey => {
+          const arr = estudiosCache[dateKey] || [];
+          arr.forEach(ev => { if (ev.materia === oldName) ev.materia = name; });
+          estudiosCache[dateKey] = arr;
+        });
+
+        Object.keys(agendaData || {}).forEach(dayKey => {
+          const arr = agendaData[dayKey] || [];
+          arr.forEach(item => { if (item.materia === oldName) item.materia = name; });
+          agendaData[dayKey] = arr;
+        });
+
+        Object.keys(academicoCache || {}).forEach(dateKey => {
+          const arr = academicoCache[dateKey] || [];
+          arr.forEach(item => { if (item.materia === oldName) item.materia = name; });
+          academicoCache[dateKey] = arr;
+        });
+      }
+
+      const ref = doc(db, "planner", currentUser.uid);
+      const snap = await getDoc(ref);
+      let data = snap.exists() ? snap.data() : {};
+      data.subjects = subjects;
+      if (plannerCareer && plannerCareer.slug) data.subjectCareer = plannerCareer;
+      data.estudios = estudiosCache;
+      data.agenda = agendaData;
+      data.academico = academicoCache;
+      await setDoc(ref, data);
+      setCalendarioCaches({ estudios: estudiosCache, academico: academicoCache });
+
+      editingSubjectIndex = -1;
+      renderSubjectNameOptions();
+      updateSubjectColorUI(defaultSubjectColor());
+      if (subjectFormTitle) subjectFormTitle.textContent = "Nueva materia";
+
+      renderSubjectsList();
+      renderSubjectNameOptions();
+      renderSubjectsOptions();
+      paintStudyEvents();
+      renderAgenda();
+      renderAcadCalendar();
+    });
+  }
+}
+
 function resolvedCareerFromProfile(){
   if (plannerCareer && plannerCareer.slug) return plannerCareer;
   if (userProfile && userProfile.careerSlug){
@@ -928,6 +1042,7 @@ async function setActiveCareer(slug, persist){
     careerSubjects = [];
     notifyWarn("No se pudieron cargar las materias de la carrera.");
   }
+  // console.log("[subjects] cargadas:", careerSubjects);
   renderSubjectNameOptions();
   updateSubjectPlanHint();
   if (persist && currentUser){
@@ -987,9 +1102,11 @@ function renderSubjectNameOptions(selectedName=""){
   } else {
     placeholder.selected = true;
   }
+  // console.log("[subjects] materias renderizadas:", subjectNameSelect.options.length);
 }
 
 async function initSubjectsCareerUI(){
+  resolveSubjectsUI();
   renderSubjectCareerOptions();
   const slug = subjectCareerSelect?.value || "";
   if (slug){
@@ -1000,15 +1117,9 @@ async function initSubjectsCareerUI(){
   }
 }
 
-if (subjectCareerSelect){
-  subjectCareerSelect.addEventListener("change", async (e)=>{
-    const slug = e.target.value;
-    await setActiveCareer(slug, true);
-  });
-}
-
 function renderSubjectsList(){
-  console.log("[Materias] materias cargadas:", subjects.length);
+  // console.log("[subjects] cargadas:", subjects);
+  if (!subjectsListEl || !subjectsEmptyMsg) return;
   subjectsListEl.innerHTML = "";
   if (!subjects.length){
     subjectsEmptyMsg.style.display = "block";
@@ -1057,82 +1168,8 @@ function startEditSubject(index){
   const s = subjects[index];
   renderSubjectNameOptions(s.name);
   updateSubjectColorUI(s.color || defaultSubjectColor());
-  subjectFormTitle.textContent = "Editar materia";
+  if (subjectFormTitle) subjectFormTitle.textContent = "Editar materia";
 }
-
-btnSubjectReset.onclick = () => {
-  editingSubjectIndex = -1;
-  renderSubjectNameOptions();
-  updateSubjectColorUI(defaultSubjectColor());
-  subjectFormTitle.textContent = "Nueva materia";
-};
-
-btnSubjectSave.onclick = async () => {
-  if (!currentUser) return;
-  const name = (subjectNameSelect?.value || "").trim();
-  const color = subjectColorInput.value || defaultSubjectColor();
-  const { estudiosCache, academicoCache } = getCalendarioCaches();
-  if (!name){
-    notifyWarn("Seleccioná una materia.");
-    return;
-  }
-
-  if (editingSubjectIndex === -1){
-    if (subjects.some(s => s.name.toLowerCase() === name.toLowerCase())){
-      notifyWarn("Ya existe una materia con ese nombre.");
-      return;
-    }
-    subjects.push({ name, color });
-  } else {
-    if (subjects.some((s, i) => i !== editingSubjectIndex && s.name.toLowerCase() === name.toLowerCase())){
-      notifyWarn("Ya existe una materia con ese nombre.");
-      return;
-    }
-    const oldName = subjects[editingSubjectIndex].name;
-    subjects[editingSubjectIndex] = { name, color };
-
-    Object.keys(estudiosCache || {}).forEach(dateKey => {
-      const arr = estudiosCache[dateKey] || [];
-      arr.forEach(ev => { if (ev.materia === oldName) ev.materia = name; });
-      estudiosCache[dateKey] = arr;
-    });
-
-    Object.keys(agendaData || {}).forEach(dayKey => {
-      const arr = agendaData[dayKey] || [];
-      arr.forEach(item => { if (item.materia === oldName) item.materia = name; });
-      agendaData[dayKey] = arr;
-    });
-
-    Object.keys(academicoCache || {}).forEach(dateKey => {
-      const arr = academicoCache[dateKey] || [];
-      arr.forEach(item => { if (item.materia === oldName) item.materia = name; });
-      academicoCache[dateKey] = arr;
-    });
-  }
-
-  const ref = doc(db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  let data = snap.exists() ? snap.data() : {};
-  data.subjects = subjects;
-  if (plannerCareer && plannerCareer.slug) data.subjectCareer = plannerCareer;
-  data.estudios = estudiosCache;
-  data.agenda = agendaData;
-  data.academico = academicoCache;
-  await setDoc(ref, data);
-  setCalendarioCaches({ estudios: estudiosCache, academico: academicoCache });
-
-  editingSubjectIndex = -1;
-  renderSubjectNameOptions();
-  updateSubjectColorUI(defaultSubjectColor());
-  subjectFormTitle.textContent = "Nueva materia";
-
-  renderSubjectsList();
-  renderSubjectNameOptions();
-  renderSubjectsOptions();
-  paintStudyEvents();
-  renderAgenda();
-  renderAcadCalendar();
-};
 
 async function deleteSubject(index){
   if (!currentUser) return;
