@@ -35,6 +35,12 @@ const themeColor = (varName, fallback) => {
   return (value || "").trim() || fallback;
 };
 const defaultSubjectColor = () => themeColor("--color-accent", "#E6D98C");
+const subjectColor = (materiaName) => {
+  if (!materiaName || !Array.isArray(subjects)) return defaultSubjectColor();
+  const target = normalizeStr(materiaName);
+  const found = subjects.find(s => normalizeStr(s?.name) === target);
+  return found?.color || defaultSubjectColor();
+};
 export const notifyWarn = (message) => showToast({ message, type:"warning" });
 let html2canvasLib = null;
 let jsPDFLib = null;
@@ -2811,4 +2817,3 @@ try {
 } catch (e) {
   console.warn("[subjects] color logic skipped:", e.message);
 }
-
