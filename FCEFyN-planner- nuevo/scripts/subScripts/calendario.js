@@ -1,3 +1,4 @@
+console.count("[calendario] initCalendario called");
 // startCalendario
 let CTX = null;
 

@@ -243,36 +243,51 @@ window.showTab = function(name){
 }; 
 
 // ------------------------ SESIÓN ------------------------
-onAuthStateChanged(auth, async user => {
-  if (!user) { window.location.href = "app.html"; return; }
+let didBoot = false;
+let unsubAuth = null;
+
+unsubAuth = onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "app.html";
+    return;
+  }
+
+  // 🔒 evita doble inicialización
+  if (didBoot) return;
+  didBoot = true;
+
+  // 🔕 nos desuscribimos para que no vuelva a disparar
+  if (unsubAuth) {
+    unsubAuth();
+    unsubAuth = null;
+  }
+
   currentUser = user;
+
+  // ===== TODO LO QUE YA TENÍAS ADENTRO =====
 
   const emailLabel = document.getElementById("userEmailLabel");
   if (emailLabel) emailLabel.textContent = user.email || "-";
-console.log("[student] calling initNav", { hasInitNav: typeof initNav, navItemsLen: navItems?.length });
-if (typeof initNav === "function") {
+
+  // NAV
   sidebarCtrl = initNav({
     items: navItems,
     showTab: window.showTab,
     activeSection
   });
-} else {
-  console.error("[student] initNav no es una función (import roto)");
-}
-console.log("[student] initNav finished", { sidebarCtrl: !!sidebarCtrl });
-console.log("[student] initNav finished");
 
+  // LOADS
   await loadPlannerData();
   await loadCourseSections();
-  await loadUserProfile(); // NUEVO
+  await loadUserProfile();
   await loadCareerPlans();
-  await loadProfessorsCatalog(); // NUEVO
-  await loadFriendRequests(); // NUEVO
-  await loadFriends(); // NUEVO
-  await initPresence(); // NUEVO
-  await ensureLastSeenPref(); // NUEVO
+  await loadProfessorsCatalog();
+  await loadFriendRequests();
+  await loadFriends();
+  await initPresence();
+  await ensureLastSeenPref();
 
-  console.log("[student] initCalendario start");
+  // CALENDARIO (una sola vez, seguro)
   initCalendario({
     db,
     doc,
@@ -287,23 +302,22 @@ console.log("[student] initNav finished");
     notifySuccess,
     showConfirm
   });
-  console.log("[student] initCalendario done");
 
+  // UI
   renderSubjectsList();
   renderSubjectsOptions();
   await initSubjectsCareerUI();
   initSubjectColorPalette();
   updateSubjectColorUI(subjectColorInput?.value || defaultSubjectColor());
+
   renderProfileSection();
   renderAgenda();
 
   initPlanificadorUI();
   initPresetToAgendaModalUI();
-  initProfessorsUI(); // NUEVO
-  initMessagingUI(); // NUEVO
+  initProfessorsUI();
+  initMessagingUI();
 
-  renderStudyCalendar();
-  renderAcadCalendar();
   showTab("inicio");
 });
 
@@ -319,6 +333,7 @@ window.logout = async function(){
 
 // ------------------------ CARGA INICIAL ------------------------
 async function loadPlannerData(){
+  console.log("ando");
   subjects = [];
   agendaData = {};
   presets = [];
