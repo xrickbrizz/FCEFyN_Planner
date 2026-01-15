@@ -19,8 +19,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 let currentUser = null;
 let sidebarCtrl = null;
+let userProfile = null;
 
 export const notify = (message, type="info") => showToast({ message, type });
 export const notifySuccess = (message) => showToast({ message, type:"success" });
@@ -600,9 +604,11 @@ function ensureAgendaStructure(){
   });
 }
 
+// ===== START AGENDA =====
 // ------------------------ AGENDA RENDER ------------------------
 function renderAgenda(){
   ensureAgendaStructure();
+  console.log("[Agenda] renderAgenda ejecutado");
   renderAgendaGridInto(agendaGrid, agendaData, true);
 }
 
@@ -695,6 +701,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
     grid.appendChild(col);
   });
 }
+// ===== END AGENDA =====
 
 async function ensureHtml2canvas(){
   if (html2canvasLib) return html2canvasLib;
@@ -829,6 +836,7 @@ function escapeHtml(s){
 
 
 
+// ===== START MATERIAS =====
 // ------------------------ MATERIAS ------------------------
 const subjectsListEl = document.getElementById("subjectsList");
 const subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
@@ -1078,6 +1086,7 @@ if (subjectCareerSelect){
 }
 
 function renderSubjectsList(){
+  console.log("[Materias] materias cargadas:", subjects.length);
   subjectsListEl.innerHTML = "";
   if (!subjects.length){
     subjectsEmptyMsg.style.display = "block";
@@ -1289,28 +1298,38 @@ function renderSubjectsOptions(){
   fill(selAgenda);
   fill(selAcad);
 }
+// ===== END MATERIAS =====
 
 // ------------------------ ESTUDIO CALENDARIO ------------------------
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
 
 function initStudyNav(){
-  document.getElementById("btnStudyPrev").addEventListener("click", ()=>{
-    studyViewMonth--;
-    if (studyViewMonth < 0){ studyViewMonth = 11; studyViewYear--; }
-    renderStudyCalendar();
-  });
-  document.getElementById("btnStudyNext").addEventListener("click", ()=>{
-    studyViewMonth++;
-    if (studyViewMonth > 11){ studyViewMonth = 0; studyViewYear++; }
-    renderStudyCalendar();
-  });
-  document.getElementById("btnStudyToday").addEventListener("click", ()=>{
-    const now = new Date();
-    studyViewYear = now.getFullYear();
-    studyViewMonth = now.getMonth();
-    renderStudyCalendar();
-  });
+  const prevBtn = document.getElementById("btnStudyPrev");
+  const nextBtn = document.getElementById("btnStudyNext");
+  const todayBtn = document.getElementById("btnStudyToday");
+  if (prevBtn){
+    prevBtn.addEventListener("click", ()=>{
+      studyViewMonth--;
+      if (studyViewMonth < 0){ studyViewMonth = 11; studyViewYear--; }
+      renderStudyCalendar();
+    });
+  }
+  if (nextBtn){
+    nextBtn.addEventListener("click", ()=>{
+      studyViewMonth++;
+      if (studyViewMonth > 11){ studyViewMonth = 0; studyViewYear++; }
+      renderStudyCalendar();
+    });
+  }
+  if (todayBtn){
+    todayBtn.addEventListener("click", ()=>{
+      const now = new Date();
+      studyViewYear = now.getFullYear();
+      studyViewMonth = now.getMonth();
+      renderStudyCalendar();
+    });
+  }
 }
 
 function renderStudyCalendar(){
@@ -1528,6 +1547,7 @@ document.getElementById("btnGuardar").onclick = async () => {
   paintStudyEvents();
 };
 
+// ===== START ACADEMICO =====
 // ------------------------ ACADEMICO (CALENDARIO + WIDGETS) ------------------------
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
@@ -1542,25 +1562,36 @@ const acadWidgetsBox = document.getElementById("acadWidgets");
 const acadNext7Box = document.getElementById("acadNext7");
 
 function initAcademicoNav(){
-  document.getElementById("btnAcadPrev").addEventListener("click", ()=>{
-    acadViewMonth--;
-    if (acadViewMonth < 0){ acadViewMonth = 11; acadViewYear--; }
-    renderAcadCalendar();
-  });
-  document.getElementById("btnAcadNext").addEventListener("click", ()=>{
-    acadViewMonth++;
-    if (acadViewMonth > 11){ acadViewMonth = 0; acadViewYear++; }
-    renderAcadCalendar();
-  });
-  document.getElementById("btnAcadToday").addEventListener("click", ()=>{
-    const now = new Date();
-    acadViewYear = now.getFullYear();
-    acadViewMonth = now.getMonth();
-    renderAcadCalendar();
-  });
-  btnAcadAddFromDetail.addEventListener("click", ()=>{
-    if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
-  });
+  const prevBtn = document.getElementById("btnAcadPrev");
+  const nextBtn = document.getElementById("btnAcadNext");
+  const todayBtn = document.getElementById("btnAcadToday");
+  if (prevBtn){
+    prevBtn.addEventListener("click", ()=>{
+      acadViewMonth--;
+      if (acadViewMonth < 0){ acadViewMonth = 11; acadViewYear--; }
+      renderAcadCalendar();
+    });
+  }
+  if (nextBtn){
+    nextBtn.addEventListener("click", ()=>{
+      acadViewMonth++;
+      if (acadViewMonth > 11){ acadViewMonth = 0; acadViewYear++; }
+      renderAcadCalendar();
+    });
+  }
+  if (todayBtn){
+    todayBtn.addEventListener("click", ()=>{
+      const now = new Date();
+      acadViewYear = now.getFullYear();
+      acadViewMonth = now.getMonth();
+      renderAcadCalendar();
+    });
+  }
+  if (btnAcadAddFromDetail){
+    btnAcadAddFromDetail.addEventListener("click", ()=>{
+      if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
+    });
+  }
   if (btnAcadAddGlobal){
     btnAcadAddGlobal.addEventListener("click", ()=>{
       const now = new Date();
@@ -1571,6 +1602,7 @@ function initAcademicoNav(){
 }
 
 function renderAcadCalendar(){
+  console.log("[Académico] calendario renderizado");
   if (acadViewYear === null || acadViewMonth === null){
     const now = new Date();
     acadViewYear = now.getFullYear();
@@ -1786,7 +1818,6 @@ function updateAcadWidgets(){
     });
   }
 }
-
 function openAcadModalForDate(dateKey, index){
   const parts = ymdFromDateKey(dateKey);
   if (!parts) return;
@@ -1929,6 +1960,9 @@ document.getElementById("btnAcadDelete").addEventListener("click", async ()=>{
   }
 });
 
+// ===== END ACADEMICO =====
+
+// ===== START AGENDA MODAL =====
 // ------------------------ AGENDA ------------------------
 const agendaGrid = document.getElementById("agendaGrid");
 const agendaModalBg = document.getElementById("agendaModalBg");
@@ -2077,7 +2111,9 @@ btnAgendaDelete.onclick = async () => {
   agendaModalBg.style.display = "none";
   renderAgenda();
 };
+// ===== END AGENDA MODAL =====
 
+// ===== START PLANIFICADOR =====
 // ------------------------ PLANIFICADOR ------------------------
 async function loadCourseSections(){
   courseSections = [];
@@ -2098,6 +2134,7 @@ async function loadCourseSections(){
         days: Array.isArray(data.days) ? data.days : [],
       });
     });
+    console.log("[Planificador] datos cargados:", courseSections.length);
   }catch(e){
     notifyError("Error al cargar horarios del admin: " + (e.message || e));
     courseSections = [];
@@ -2105,6 +2142,7 @@ async function loadCourseSections(){
 }
 
 function initPlanificadorUI(){
+  console.log("[Planificador] initPlanificadorUI ejecutado");
   const search = document.getElementById("sectionsSearch");
   const btnReload = document.getElementById("btnReloadSections");
   const btnSave = document.getElementById("btnPresetSave");
@@ -2135,6 +2173,7 @@ function initPlanificadorUI(){
 }
 
 function renderPlannerAll(){
+  console.log("[Planificador] renderPlannerAll ejecutado");
   document.getElementById("sectionsCountBadge").textContent = String(courseSections.length || 0);
   renderPresetsList();
   renderSectionsList();
@@ -2813,6 +2852,7 @@ async function applySelectedPresetToAgenda(){
   renderAgenda();
   notifySuccess("Agenda actualizada.");
 }
+// ===== END PLANIFICADOR =====
 
 
 
