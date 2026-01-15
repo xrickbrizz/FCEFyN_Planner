@@ -2,9 +2,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebas
 import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { createQuickSidebar } from "../ui/sidebar.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName } from "./plans-data.js";
+import { initNav, navItems} from "./subScripts/nav.js";
+
 //conecta con la db de firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
@@ -23,7 +24,6 @@ const db = getFirestore(app);
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 let currentUser = null;
-let sidebarCtrl = null;
 let userProfile = null;
 
 export const notify = (message, type="info") => showToast({ message, type });
@@ -78,19 +78,10 @@ let acadSelectedDateKey = null;
 let studyViewYear = null;
 let studyViewMonth = null;
 
-const navItems = [
-  { id:"inicio", label:"Inicio", icon:"🏠" },
-  { id:"estudio", label:"Estudio", icon:"📒" },
-  { id:"academico", label:"Académico", icon:"🎓" },
-  { id:"agenda", label:"Agenda", icon:"📅" },
-  { id:"materias", label:"Materias", icon:"📚" },
-  { id:"planificador", label:"Planificador", icon:"🧭" },
-  { id:"profesores", label:"Profesores", icon:"⭐" }, // NUEVO
-  { id:"mensajes", label:"Mensajes", icon:"💬" }, // NUEVO: contactos + chat
-  { id:"perfil", label:"Perfil", icon:"👤" },
-];
-let activeSection = "inicio";
-let lastNonMessagesSection = "inicio";
+const navState = {
+  activeSection: "inicio",
+  lastNonMessagesSection: "inicio"
+};
 const helpButton = document.getElementById("helpButton");
 const helpModalBg = document.getElementById("helpModalBg");
 const helpModalTitle = document.getElementById("helpModalTitle");
@@ -211,66 +202,13 @@ function closeHelpModal(){
   if (helpModalBg) helpModalBg.style.display = "none";
 }
 
-if (helpButton) helpButton.addEventListener("click", ()=> openHelpModal(activeSection));
+if (helpButton) helpButton.addEventListener("click", ()=> openHelpModal(navState.activeSection));
 if (btnHelpClose) btnHelpClose.addEventListener("click", closeHelpModal);
 if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === helpModalBg) closeHelpModal(); });
 
 // ------------------------ TABS ------------------------
-function initSidebar(){
-  const mount = document.getElementById("quickSidebarMount");
-  const toggleBtn = document.getElementById("sidebarToggle");
-  const layout = document.getElementById("pageLayout");
-  let isPinned = false;
-  if (!mount) return;
-
-//--------------------- sidebarComportamiento ---------------------------------//
-  const isMobile = () => window.matchMedia && window.matchMedia("(max-width: 1024px)").matches;
-  function collapseSidebar(){
-    if (!sidebarCtrl || isMobile()) return;
-    sidebarCtrl.setCollapsed(true);
-    layout?.classList.add("sidebar-collapsed");
-  }
-  function expandSidebar(){
-    if (!sidebarCtrl) return;
-    sidebarCtrl.setCollapsed(false);
-    layout?.classList.remove("sidebar-collapsed");
-  }
-  // layout."?" pregunta si existe layout, si existe realiza .classList.remove(" ") //
-
-  sidebarCtrl = createQuickSidebar({
-    mount,
-    items: navItems,
-    subtitle:"Navegación principal",
-    footer:"Elegí sección",
-    collapsed:true,
-    onSelect: (id)=>{
-      window.showTab(id);
-      if (!isPinned && !isMobile()) collapseSidebar();
-    }
-  });
-
-  if (layout && sidebarCtrl){
-    sidebarCtrl.setCollapsed(true);
-    layout.classList.add("sidebar-collapsed");
-  }
-
-  mount.addEventListener("mouseenter", ()=>{ if (!isMobile()) expandSidebar(); });
-  mount.addEventListener("mouseleave", ()=>{ if (!isMobile() && !isPinned) collapseSidebar(); });
-
-  if (toggleBtn && sidebarCtrl){
-    toggleBtn.addEventListener("click", ()=>{
-      if (isMobile()){
-        sidebarCtrl.toggle();
-        return;
-      }
-      isPinned = !isPinned;
-      toggleBtn.classList.toggle("active", isPinned);
-      if (isPinned) expandSidebar();
-      else collapseSidebar();
-    });
-  }
-  collapseSidebar();
-}
+let activeSection = "inicio";
+let lastNonMessagesSection = "inicio";
 
 window.showTab = function(name){
   if (name !== "mensajes") lastNonMessagesSection = name;
@@ -315,7 +253,6 @@ window.showTab = function(name){
     label.textContent = (nav.icon || "") + " " + (nav.label || "");
   }
 };
-initSidebar();
 
 // ------------------------ SESIÓN ------------------------
 onAuthStateChanged(auth, async user => {
@@ -324,6 +261,14 @@ onAuthStateChanged(auth, async user => {
 
   const emailLabel = document.getElementById("userEmailLabel");
   if (emailLabel) emailLabel.textContent = user.email || "-";
+
+  console.log("[student] calling initNav");
+  sidebarCtrl = initNav({
+    items: navItems,
+    showTab: window.showTab,
+    activeSection
+  });
+  console.log("[student] initNav finished");
 
   await loadPlannerData();
   await loadCourseSections();
@@ -2890,8 +2835,8 @@ function openMessengerDock(){
 }
 
 function toggleMessengerDock(){
-  if (activeSection === "mensajes"){
-    showTab(lastNonMessagesSection || "inicio");
+  if (navState.activeSection === "mensajes"){
+    showTab(navState.lastNonMessagesSection || "inicio");
   } else {
     showTab("mensajes");
   }
