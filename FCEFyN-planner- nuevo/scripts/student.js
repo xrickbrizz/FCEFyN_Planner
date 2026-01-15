@@ -2790,3 +2790,13 @@ function initMessagingUI(){
   renderMessaging();
   loadFriends();
 }
+
+//----------------------------------------------------------------------------
+try {
+  // lógica vieja de colores
+  initSubjectColorPalette();
+  console.log("no anda el canva de student.js 2798 ... o si? nose");
+} catch (e) {
+  console.warn("[subjects] color logic skipped:", e.message);
+}
+
