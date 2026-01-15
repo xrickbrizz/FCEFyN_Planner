@@ -248,11 +248,12 @@ window.showTab = function(name){
 
   if (sidebarCtrl) sidebarCtrl.setActive(name);
   const label = document.getElementById("currentSectionLabel");
-  const nav = navItems.find(n => n.id === name);
+  const nav = (Array.isArray(navItems) ? navItems : []).find(n => n.id === name) || null;
+
   if (label && nav){
     label.textContent = (nav.icon || "") + " " + (nav.label || "");
   }
-};
+}; 
 
 // ------------------------ SESIÓN ------------------------
 onAuthStateChanged(auth, async user => {
@@ -261,14 +262,18 @@ onAuthStateChanged(auth, async user => {
 
   const emailLabel = document.getElementById("userEmailLabel");
   if (emailLabel) emailLabel.textContent = user.email || "-";
-
-  console.log("[student] calling initNav");
+console.log("[student] calling initNav", { hasInitNav: typeof initNav, navItemsLen: navItems?.length });
+if (typeof initNav === "function") {
   sidebarCtrl = initNav({
     items: navItems,
     showTab: window.showTab,
     activeSection
   });
-  console.log("[student] initNav finished");
+} else {
+  console.error("[student] initNav no es una función (import roto)");
+}
+console.log("[student] initNav finished", { sidebarCtrl: !!sidebarCtrl });
+console.log("[student] initNav finished");
 
   await loadPlannerData();
   await loadCourseSections();
@@ -3434,4 +3439,3 @@ function initMessagingUI(){
   renderMessaging();
   loadFriends();
 }
-// ===== END MENSAJERIA =====
