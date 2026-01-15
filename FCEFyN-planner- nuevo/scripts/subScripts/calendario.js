@@ -286,7 +286,10 @@ function openModalStudy(day, month, year){
   if (inpHoras) inpHoras.value = "";
   if (inpMins) inpMins.value = "";
   if (inpTema) inpTema.value = "";
-  if (inpMateria && inpMateria.options.length) inpMateria.selectedIndex = 0;
+  if (inpMateria){
+  fillMateriaSelect(inpMateria);
+  inpMateria.selectedIndex = 0;
+}
 
   if (modalBg) modalBg.style.display = "flex";
 }
@@ -896,3 +899,27 @@ editingIndex = -1;
   }
 }
 // endCalendario
+
+function fillMateriaSelect(selectEl){
+  if (!selectEl) return;
+
+  const subjects = getSubjects();
+  selectEl.innerHTML = "";
+
+  if (!subjects.length){
+    const opt = document.createElement("option");
+    opt.textContent = "Creá materias primero";
+    opt.disabled = true;
+    opt.selected = true;
+    selectEl.appendChild(opt);
+    return;
+  }
+
+  subjects.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.name;
+    opt.textContent = s.name;
+    selectEl.appendChild(opt);
+  });
+}
+console.log("[calendario] materias disponibles:", getSubjects());
