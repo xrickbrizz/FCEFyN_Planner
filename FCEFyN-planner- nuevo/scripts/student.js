@@ -5,6 +5,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTime
 import { showToast, showConfirm } from "../ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName } from "./plans-data.js";
 import { initNav, navItems} from "./subScripts/nav.js";
+import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./subScripts/calendario.js";
 
 //conecta con la db de firebase
 const firebaseConfig = {
@@ -38,10 +39,6 @@ export const notifyWarn = (message) => showToast({ message, type:"warning" });
 let html2canvasLib = null;
 let jsPDFLib = null;
 
-// ---- ESTUDIO
-let selectedDate = null;
-let estudiosCache = {};
-let editingIndex = -1;
 
 // ---- MATERIAS
 let subjects = [];
@@ -67,17 +64,7 @@ let activePresetId = null;
 let activePresetName = "";
 let activeSelectedSectionIds = [];
 
-// ---- ACADEMICO   -------------------------------------------------------------------- ///
-let academicoCache = {};
-let acadViewYear = null;
-let acadViewMonth = null;
-let acadEditing = { dateKey:null, index:-1 };
-let acadSelectedDateKey = null;
-
-// ---- STUDY VIEW ------------------------------------------------------------------------ ///
-let studyViewYear = null;
-let studyViewMonth = null;
-
+let sidebarCtrl = null;
 const navState = {
   activeSection: "inicio",
   lastNonMessagesSection: "inicio"
@@ -211,7 +198,7 @@ let activeSection = "inicio";
 let lastNonMessagesSection = "inicio";
 
 window.showTab = function(name){
-  if (name !== "mensajes") lastNonMessagesSection = name;
+  if (name !== "mensajes") navState.lastNonMessagesSection = name;
   activeSection = name;
   const tabInicio           = document.getElementById("tab-inicio");
   const tabEstudio          = document.getElementById("tab-estudio");
@@ -285,8 +272,22 @@ console.log("[student] initNav finished");
   await initPresence(); // NUEVO
   await ensureLastSeenPref(); // NUEVO
 
-  initStudyNav();
-  initAcademicoNav();
+  console.log("[student] initCalendario start");
+  initCalendario({
+    db,
+    doc,
+    getDoc,
+    setDoc,
+    currentUser,
+    getCurrentUser: () => currentUser,
+    getSubjects: () => subjects,
+    renderSubjectsOptions,
+    notifyError,
+    notifyWarn,
+    notifySuccess,
+    showConfirm
+  });
+  console.log("[student] initCalendario done");
 
   renderSubjectsList();
   renderSubjectsOptions();
@@ -298,18 +299,8 @@ console.log("[student] initNav finished");
 
   initPlanificadorUI();
   initPresetToAgendaModalUI();
-  initAcademicoModalUI();
   initProfessorsUI(); // NUEVO
   initMessagingUI(); // NUEVO
-
-  const now = new Date();
-  studyViewYear = now.getFullYear();
-  studyViewMonth = now.getMonth();
-  acadViewYear = now.getFullYear();
-  acadViewMonth = now.getMonth();
-
-  // auto-select today in Académico
-  acadSelectedDateKey = dateKeyFromYMD(now.getFullYear(), now.getMonth()+1, now.getDate());
 
   renderStudyCalendar();
   renderAcadCalendar();
@@ -328,14 +319,13 @@ window.logout = async function(){
 
 // ------------------------ CARGA INICIAL ------------------------
 async function loadPlannerData(){
-  estudiosCache = {};
   subjects = [];
   agendaData = {};
   presets = [];
   activePresetId = null;
   activePresetName = "";
   activeSelectedSectionIds = [];
-  academicoCache = {};
+  setCalendarioCaches({ estudios: {}, academico: {} });
 
   if (!currentUser) return;
 
@@ -343,9 +333,11 @@ async function loadPlannerData(){
   const snap = await getDoc(ref);
   let removedSunday = false;
 
+  let estudiosData = {};
+  let academicoData = {};
   if (snap.exists()){
     const data = snap.data();
-    if (data.estudios && typeof data.estudios === "object") estudiosCache = data.estudios;
+    if (data.estudios && typeof data.estudios === "object") estudiosData = data.estudios;
     if (Array.isArray(data.subjects)) subjects = data.subjects;
     if (data.subjectCareer && typeof data.subjectCareer === "object") plannerCareer = data.subjectCareer;
     if (data.agenda && typeof data.agenda === "object") agendaData = data.agenda;
@@ -357,7 +349,7 @@ async function loadPlannerData(){
     if (Array.isArray(data.schedulePresets)) presets = data.schedulePresets;
     if (data.activePresetId) activePresetId = data.activePresetId;
 
-    if (data.academico && typeof data.academico === "object") academicoCache = data.academico;
+    if (data.academico && typeof data.academico === "object") academicoData = data.academico;
   } else {
     await setDoc(ref, {
       estudios:{},
@@ -368,15 +360,16 @@ async function loadPlannerData(){
       activePresetId:"",
       academico:{}
     });
-    estudiosCache = {};
     subjects = [];
     agendaData = {};
     presets = [];
     activePresetId = null;
-    academicoCache = {};
+    estudiosData = {};
+    academicoData = {};
   }
 
   ensureAgendaStructure();
+  setCalendarioCaches({ estudios: estudiosData, academico: academicoData });
   if (removedSunday){
     await setDoc(ref, { agenda: agendaData }, { merge:true });
   }
@@ -740,48 +733,12 @@ function loadRemoteScript(url){
 
 // ------------------------ HELPERS ------------------------
 function pad2(n){ return String(n).padStart(2,"0"); }
-function dateKeyFromYMD(y,m,d){ return y + "-" + pad2(m) + "-" + pad2(d); }
-function ymdFromDateKey(k){
-  const p = (k||"").split("-");
-  if (p.length !== 3) return null;
-  return { y:parseInt(p[0],10), m:parseInt(p[1],10), d:parseInt(p[2],10) };
-}
 function normalizeStr(s){ return (s || "").toString().toLowerCase(); }
 function timeToMinutes(t){
   const parts = (t || "").split(":").map(Number);
   if (parts.length !== 2) return NaN;
   const h = parts[0], m = parts[1];
   return h*60 + m;
-}
-function dtLocalToParts(dtLocal){
-  if (!dtLocal) return null;
-  const [dpart, tpart] = dtLocal.split("T");
-  if (!dpart || !tpart) return null;
-  const [y,m,d] = dpart.split("-").map(Number);
-  const [hh,mm] = tpart.split(":").map(Number);
-  if ([y,m,d,hh,mm].some(x => isNaN(x))) return null;
-  return { y, m, d, hh, mm };
-}
-function partsToDtLocal(p){
-  if (!p) return "";
-  return p.y + "-" + pad2(p.m) + "-" + pad2(p.d) + "T" + pad2(p.hh) + ":" + pad2(p.mm);
-}
-function fmtShortDateTimeFromParts(p){
-  if (!p) return "—";
-  return p.y + "-" + pad2(p.m) + "-" + pad2(p.d) + " " + pad2(p.hh) + ":" + pad2(p.mm);
-}
-function dateFromLocal(dtLocal){
-  const p = dtLocalToParts(dtLocal);
-  if (!p) return null;
-  return new Date(p.y, p.m-1, p.d, p.hh, p.mm, 0, 0);
-}
-function escapeHtml(s){
-  return (s || "").toString()
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
 }
 
 
@@ -1099,6 +1056,7 @@ btnSubjectSave.onclick = async () => {
   if (!currentUser) return;
   const name = (subjectNameSelect?.value || "").trim();
   const color = subjectColorInput.value || defaultSubjectColor();
+  const { estudiosCache, academicoCache } = getCalendarioCaches();
   if (!name){
     notifyWarn("Seleccioná una materia.");
     return;
@@ -1146,6 +1104,7 @@ btnSubjectSave.onclick = async () => {
   data.agenda = agendaData;
   data.academico = academicoCache;
   await setDoc(ref, data);
+  setCalendarioCaches({ estudios: estudiosCache, academico: academicoCache });
 
   editingSubjectIndex = -1;
   renderSubjectNameOptions();
@@ -1164,6 +1123,7 @@ async function deleteSubject(index){
   if (!currentUser) return;
   const s = subjects[index];
   if (!s) return;
+  const { estudiosCache, academicoCache } = getCalendarioCaches();
 
   const ok = await showConfirm({
     title:"Eliminar materia",
@@ -1205,6 +1165,7 @@ async function deleteSubject(index){
   data.agenda = agendaData;
   data.academico = academicoCache;
   await setDoc(ref, data);
+  setCalendarioCaches({ estudios: estudiosCache, academico: academicoCache });
 
   editingSubjectIndex = -1;
   renderSubjectNameOptions();
@@ -1249,668 +1210,6 @@ function renderSubjectsOptions(){
   fill(selAcad);
 }
 // ===== END MATERIAS =====
-
-// ------------------------ ESTUDIO CALENDARIO ------------------------
-const monthTitle = document.getElementById("monthTitle");
-const gridStudy = document.getElementById("calendarGrid");
-
-function initStudyNav(){
-  const prevBtn = document.getElementById("btnStudyPrev");
-  const nextBtn = document.getElementById("btnStudyNext");
-  const todayBtn = document.getElementById("btnStudyToday");
-  if (prevBtn){
-    prevBtn.addEventListener("click", ()=>{
-      studyViewMonth--;
-      if (studyViewMonth < 0){ studyViewMonth = 11; studyViewYear--; }
-      renderStudyCalendar();
-    });
-  }
-  if (nextBtn){
-    nextBtn.addEventListener("click", ()=>{
-      studyViewMonth++;
-      if (studyViewMonth > 11){ studyViewMonth = 0; studyViewYear++; }
-      renderStudyCalendar();
-    });
-  }
-  if (todayBtn){
-    todayBtn.addEventListener("click", ()=>{
-      const now = new Date();
-      studyViewYear = now.getFullYear();
-      studyViewMonth = now.getMonth();
-      renderStudyCalendar();
-    });
-  }
-}
-
-function renderStudyCalendar(){
-  if (studyViewYear === null || studyViewMonth === null){
-    const now = new Date();
-    studyViewYear = now.getFullYear();
-    studyViewMonth = now.getMonth();
-  }
-
-  const firstDay = new Date(studyViewYear, studyViewMonth, 1);
-  const jsDow = firstDay.getDay();
-  const offset = (jsDow + 6) % 7;
-
-  const totalDays = new Date(studyViewYear, studyViewMonth + 1, 0).getDate();
-  const labelDate = new Date(studyViewYear, studyViewMonth, 1);
-  monthTitle.textContent = labelDate.toLocaleDateString("es-ES", { month:"long", year:"numeric" });
-
-  gridStudy.innerHTML = "";
-
-  for (let i=0;i<offset;i++){
-    const empty = document.createElement("div");
-    empty.className = "day day-muted";
-    gridStudy.appendChild(empty);
-  }
-
-  const now = new Date();
-  const ty = now.getFullYear(), tm = now.getMonth(), td = now.getDate();
-
-  for (let d=1; d<=totalDays; d++){
-    const box = document.createElement("div");
-    box.className = "day";
-
-    if (studyViewYear === ty && studyViewMonth === tm && d === td){
-      box.classList.add("is-today");
-    }
-
-    const head = document.createElement("div");
-    head.className = "day-number";
-    const left = document.createElement("span");
-    left.textContent = String(d);
-    const dot = document.createElement("span");
-    dot.className = "today-dot";
-    head.appendChild(left);
-    head.appendChild(dot);
-
-    box.appendChild(head);
-
-    box.onclick = () => openModalStudy(d, studyViewMonth+1, studyViewYear);
-    gridStudy.appendChild(box);
-  }
-
-  paintStudyEvents();
-}
-
-function paintStudyEvents(){
-  const boxes = gridStudy.querySelectorAll(".day");
-  boxes.forEach(b => {
-    Array.from(b.querySelectorAll(".event")).forEach(e => e.remove());
-  });
-
-  if (!estudiosCache) return;
-
-  Object.keys(estudiosCache).forEach(dateKey => {
-    const parts = ymdFromDateKey(dateKey);
-    if (!parts) return;
-    if (parts.y !== studyViewYear) return;
-    if ((parts.m - 1) !== studyViewMonth) return;
-
-    const events = estudiosCache[dateKey] || [];
-    const d = parts.d;
-
-    boxes.forEach(box => {
-      const nEl = box.querySelector(".day-number span");
-      const n = nEl ? parseInt(nEl.textContent, 10) : NaN;
-      if (n === d){
-        events.forEach(ev => {
-          const e = document.createElement("div");
-          e.className = "event";
-          const horas = (ev.horas || 0) + "h " + (ev.mins || 0) + "m";
-          e.textContent = (ev.materia || "Materia") + " — " + horas + (ev.tema ? (" · " + ev.tema) : "");
-          box.appendChild(e);
-        });
-      }
-    });
-  });
-}
-
-function openModalStudy(day, month, year){
-  selectedDate = dateKeyFromYMD(year, month, day);
-  editingIndex = -1;
-
-  const modalBg = document.getElementById("modalBg");
-  const inpHoras = document.getElementById("inpHoras");
-  const inpMins  = document.getElementById("inpMins");
-  const inpTema  = document.getElementById("inpTema");
-  const inpMateria = document.getElementById("inpMateria");
-
-  const events = estudiosCache[selectedDate] || [];
-  renderEventsList(events);
-
-  inpHoras.value = "";
-  inpMins.value = "";
-  inpTema.value = "";
-  if (inpMateria && inpMateria.options.length) inpMateria.selectedIndex = 0;
-
-  modalBg.style.display = "flex";
-}
-
-function renderEventsList(events){
-  const list = document.getElementById("eventsList");
-  list.innerHTML = "";
-  if (!events.length){
-    list.style.display = "none";
-    return;
-  }
-  list.style.display = "block";
-
-  events.forEach((ev, idx)=>{
-    const row = document.createElement("div");
-    row.className = "event-row";
-    const horas = (ev.horas || 0) + "h " + (ev.mins || 0) + "m";
-    row.innerHTML = `
-      <div class="event-row-main">${escapeHtml(ev.materia || "Materia")}</div>
-      <div class="event-row-meta">${escapeHtml(horas)} · ${escapeHtml(ev.tema || "-")}</div>
-      <div class="event-row-actions">
-        <button class="btn-outline btn-small" data-idx="${idx}" data-act="edit">Editar</button>
-        <button class="btn-danger btn-small" data-idx="${idx}" data-act="del">Borrar</button>
-      </div>
-    `;
-    list.appendChild(row);
-  });
-
-  list.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", async (e)=>{
-      const idx = parseInt(e.target.dataset.idx, 10);
-      const act = e.target.dataset.act;
-      if (isNaN(idx)) return;
-      if (act === "edit") startEditEvent(idx);
-      if (act === "del") await deleteEvent(idx);
-    });
-  });
-}
-
-function startEditEvent(index){
-  editingIndex = index;
-  const events = estudiosCache[selectedDate] || [];
-  const ev = events[index];
-  if (!ev) return;
-  document.getElementById("inpHoras").value = ev.horas || "";
-  document.getElementById("inpMins").value  = ev.mins || "";
-  document.getElementById("inpTema").value  = ev.tema || "";
-  const sel = document.getElementById("inpMateria");
-  if (sel){
-    const opt = Array.from(sel.options).find(o => o.value === ev.materia);
-    if (opt) sel.value = opt.value;
-  }
-}
-
-async function deleteEvent(index){
-  if (!currentUser || !selectedDate) return;
-  const ref = doc(db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-
-  const data = snap.data() || {};
-  if (!data.estudios || !data.estudios[selectedDate]) return;
-
-  data.estudios[selectedDate].splice(index, 1);
-  if (data.estudios[selectedDate].length === 0) delete data.estudios[selectedDate];
-
-  await setDoc(ref, data);
-  estudiosCache = data.estudios || {};
-  const events = estudiosCache[selectedDate] || [];
-  renderEventsList(events);
-  paintStudyEvents();
-}
-
-document.getElementById("btnCancelar").onclick = () => {
-  document.getElementById("modalBg").style.display = "none";
-  selectedDate = null;
-  editingIndex = -1;
-};
-
-document.getElementById("btnGuardar").onclick = async () => {
-  if (!currentUser || !selectedDate) return;
-
-  const horas = document.getElementById("inpHoras").value;
-  const mins  = document.getElementById("inpMins").value;
-  const tema  = document.getElementById("inpTema").value;
-  const materiaSel = document.getElementById("inpMateria");
-
-  if (!subjects.length || !materiaSel || !materiaSel.value){
-    notifyWarn("Primero creá al menos una materia en la pestaña 'Materias'.");
-    return;
-  }
-  const materia = materiaSel.value;
-
-  const ref = doc(db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-
-  let data = snap.exists() ? snap.data() : {};
-  if (!data.estudios) data.estudios = {};
-  if (!data.estudios[selectedDate]) data.estudios[selectedDate] = [];
-
-  const item = { horas, mins, tema, materia };
-  if (editingIndex === -1){
-    data.estudios[selectedDate].push(item);
-  } else {
-    data.estudios[selectedDate][editingIndex] = item;
-  }
-
-  await setDoc(ref, data);
-  estudiosCache = data.estudios || {};
-  document.getElementById("modalBg").style.display = "none";
-  paintStudyEvents();
-};
-
-// ===== START ACADEMICO =====
-// ------------------------ ACADEMICO (CALENDARIO + WIDGETS) ------------------------
-const acadGrid = document.getElementById("acadGrid");
-const acadMonthTitle = document.getElementById("acadMonthTitle");
-const acadDetailBox = document.getElementById("acadDetailBox");
-const acadDetailTitle = document.getElementById("acadDetailTitle");
-const acadDetailSub = document.getElementById("acadDetailSub");
-const acadDetailCount = document.getElementById("acadDetailCount");
-const acadDetailList = document.getElementById("acadDetailList");
-const btnAcadAddFromDetail = document.getElementById("btnAcadAddFromDetail");
-const btnAcadAddGlobal = document.getElementById("btnAcadAddGlobal");
-const acadWidgetsBox = document.getElementById("acadWidgets");
-const acadNext7Box = document.getElementById("acadNext7");
-
-function initAcademicoNav(){
-  const prevBtn = document.getElementById("btnAcadPrev");
-  const nextBtn = document.getElementById("btnAcadNext");
-  const todayBtn = document.getElementById("btnAcadToday");
-  if (prevBtn){
-    prevBtn.addEventListener("click", ()=>{
-      acadViewMonth--;
-      if (acadViewMonth < 0){ acadViewMonth = 11; acadViewYear--; }
-      renderAcadCalendar();
-    });
-  }
-  if (nextBtn){
-    nextBtn.addEventListener("click", ()=>{
-      acadViewMonth++;
-      if (acadViewMonth > 11){ acadViewMonth = 0; acadViewYear++; }
-      renderAcadCalendar();
-    });
-  }
-  if (todayBtn){
-    todayBtn.addEventListener("click", ()=>{
-      const now = new Date();
-      acadViewYear = now.getFullYear();
-      acadViewMonth = now.getMonth();
-      renderAcadCalendar();
-    });
-  }
-  if (btnAcadAddFromDetail){
-    btnAcadAddFromDetail.addEventListener("click", ()=>{
-      if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
-    });
-  }
-  if (btnAcadAddGlobal){
-    btnAcadAddGlobal.addEventListener("click", ()=>{
-      const now = new Date();
-      const fallbackKey = dateKeyFromYMD(now.getFullYear(), now.getMonth()+1, now.getDate());
-      openAcadModalForDate(acadSelectedDateKey || fallbackKey, -1);
-    });
-  }
-}
-
-function renderAcadCalendar(){
-  console.log("[Académico] calendario renderizado");
-  if (acadViewYear === null || acadViewMonth === null){
-    const now = new Date();
-    acadViewYear = now.getFullYear();
-    acadViewMonth = now.getMonth();
-  }
-
-  const firstDay = new Date(acadViewYear, acadViewMonth, 1);
-  const jsDow = firstDay.getDay();
-  const offset = (jsDow + 6) % 7;
-  const totalDays = new Date(acadViewYear, acadViewMonth + 1, 0).getDate();
-
-  const now = new Date();
-  const todayKey = dateKeyFromYMD(now.getFullYear(), now.getMonth()+1, now.getDate());
-  const selectedKey = acadSelectedDateKey || todayKey;
-  acadSelectedDateKey = selectedKey;
-
-  acadMonthTitle.textContent = firstDay.toLocaleString("es-ES", { month:"long", year:"numeric" });
-
-  acadGrid.innerHTML = "";
-
-  // fill offset blanks
-  for (let i=0;i<offset;i++){
-    const empty = document.createElement("div");
-    empty.className = "day day-muted";
-    acadGrid.appendChild(empty);
-  }
-
-  for (let d=1; d<=totalDays; d++){
-    const dateKey = dateKeyFromYMD(acadViewYear, acadViewMonth+1, d);
-    const card = document.createElement("div");
-    card.className = "day";
-    card.dataset.dateKey = dateKey;
-    if (dateKey === todayKey) card.classList.add("is-today");
-    if (dateKey === acadSelectedDateKey) card.classList.add("is-selected");
-
-    const head = document.createElement("div");
-    head.className = "day-number";
-    head.innerHTML = `<span>${d}</span><span class="today-dot"></span>`;
-    card.appendChild(head);
-
-    const items = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey] : [];
-    items.sort((a,b)=> (a.cuando || a.when || "").localeCompare(b.cuando || b.when || ""));
-
-    const list = document.createElement("div");
-    list.className = "acad-day-list";
-
-    items.forEach((item, idx)=>{
-      const row = document.createElement("div");
-      row.className = "acad-day-item";
-      row.addEventListener("click", ()=> openAcadModalForDate(dateKey, idx));
-
-      const left = document.createElement("div");
-      left.className = "acad-item-left";
-      left.innerHTML = `<div class="badge-soft">${escapeHtml(item.tipo || "Item")}</div>`;
-
-      const mid = document.createElement("div");
-      mid.className = "acad-item-mid";
-      mid.innerHTML = `
-        <div class="acad-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
-        <div class="acad-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")}</div>
-      `;
-
-      const right = document.createElement("div");
-      right.className = "acad-item-right";
-      const parts = dtLocalToParts(item.cuando || item.when || "");
-      right.textContent = parts ? fmtShortDateTimeFromParts(parts) : "—";
-
-      row.appendChild(left);
-      row.appendChild(mid);
-      row.appendChild(right);
-
-      list.appendChild(row);
-    });
-
-    if (!items.length){
-      const empty = document.createElement("div");
-      empty.className = "small-muted";
-      empty.textContent = "—";
-      list.appendChild(empty);
-    }
-
-    card.appendChild(list);
-
-    card.addEventListener("click", ()=>{
-      acadSelectedDateKey = dateKey;
-      highlightAcadSelection(dateKey);
-      openAcadDetail(dateKey);
-    });
-
-    acadGrid.appendChild(card);
-  }
-
-  highlightAcadSelection(acadSelectedDateKey);
-  openAcadDetail(acadSelectedDateKey || todayKey);
-}
-
-function highlightAcadSelection(dateKey){
-  if (!acadGrid) return;
-  acadGrid.querySelectorAll(".day").forEach(card =>{
-    if (!card.dataset.dateKey) return;
-    card.classList.toggle("is-selected", card.dataset.dateKey === dateKey);
-  });
-}
-
-function openAcadDetail(dateKey){
-  const parts = ymdFromDateKey(dateKey);
-  if (!parts){
-    acadDetailBox.style.display = "none";
-    return;
-  }
-
-  acadSelectedDateKey = dateKey;
-  highlightAcadSelection(dateKey);
-
-  acadDetailTitle.textContent = "Detalle del " + parts.d + "/" + parts.m;
-  acadDetailSub.textContent = "Año " + parts.y;
-  const items = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey].slice() : [];
-  items.sort((a,b)=> (a.cuando || a.when || "").localeCompare(b.cuando || b.when || ""));
-
-  acadDetailCount.textContent = String(items.length);
-  acadDetailList.innerHTML = "";
-  acadDetailBox.style.display = "block";
-
-  items.forEach((item, idx)=>{
-    const row = document.createElement("div");
-    row.className = "acad-detail-row";
-
-    const left = document.createElement("div");
-    left.className = "acad-detail-text";
-    left.innerHTML = `
-      <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
-      <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")}</div>
-      <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
-    `;
-
-    const right = document.createElement("div");
-    right.className = "acad-detail-actions";
-    const btnEdit = document.createElement("button");
-    btnEdit.className = "btn-outline btn-small";
-    btnEdit.textContent = "Editar";
-    btnEdit.addEventListener("click", ()=> openAcadModalForDate(dateKey, idx));
-
-    right.appendChild(btnEdit);
-
-    row.appendChild(left);
-    row.appendChild(right);
-
-    acadDetailList.appendChild(row);
-  });
-
-  if (!items.length){
-    const empty = document.createElement("div");
-    empty.className = "acad-detail-empty";
-    empty.textContent = "No hay items para esta fecha. Usá “Añadir” para crear uno.";
-    acadDetailList.appendChild(empty);
-  }
-
-  updateAcadWidgets();
-}
-
-function updateAcadWidgets(){
-  if (!acadWidgetsBox || !acadNext7Box) return;
-  const items = [];
-  Object.keys(academicoCache || {}).forEach(dateKey =>{
-    const arr = Array.isArray(academicoCache[dateKey]) ? academicoCache[dateKey] : [];
-    arr.forEach(item =>{
-      const d = dateFromLocal(item.cuando || item.when || "");
-      if (d && !isNaN(d)) items.push({ ...item, _date:d, _dateKey:dateKey });
-    });
-  });
-
-  const now = new Date();
-  const limit30 = new Date(now); limit30.setDate(limit30.getDate() + 30);
-  const back30 = new Date(now); back30.setDate(back30.getDate() - 30);
-  const limit7 = new Date(now); limit7.setDate(limit7.getDate() + 7);
-
-  const fmtLabel = (it)=>{
-    const parts = dtLocalToParts(it?.cuando || it?.when || "");
-    return parts ? fmtShortDateTimeFromParts(parts) : "—";
-  };
-
-  const pending = items
-    .filter(it => (it.estado || "pending") !== "done" && it._date >= now)
-    .sort((a,b)=> a._date - b._date);
-  const next = pending[0];
-
-  const pending30 = items.filter(it =>
-    (it.estado || "pending") !== "done" && it._date >= now && it._date <= limit30
-  ).length;
-  const done30 = items.filter(it =>
-    (it.estado || "pending") === "done" && it._date >= back30 && it._date <= limit30
-  ).length;
-
-  acadWidgetsBox.innerHTML =
-    "• Próximo vencimiento: <strong>" + (next ? (fmtLabel(next) + " · " + escapeHtml(next.titulo || next.tipo || "")) : "—") + "</strong><br/>" +
-    "• Pendientes (30 días): <strong>" + pending30 + "</strong><br/>" +
-    "• Hechos (30 días): <strong>" + done30 + "</strong>";
-
-  const next7 = items
-    .filter(it => it._date >= now && it._date <= limit7)
-    .sort((a,b)=> a._date - b._date)
-    .slice(0, 10);
-
-  acadNext7Box.innerHTML = "";
-  if (!next7.length){
-    acadNext7Box.textContent = "—";
-  } else {
-    next7.forEach(it =>{
-      const row = document.createElement("div");
-      row.className = "acad-next-row";
-      row.textContent = fmtLabel(it) + " · " + (it.tipo || "Item") + " · " + (it.titulo || it.materia || "");
-      acadNext7Box.appendChild(row);
-    });
-  }
-}
-function openAcadModalForDate(dateKey, index){
-  const parts = ymdFromDateKey(dateKey);
-  if (!parts) return;
-
-  acadEditing = { dateKey, index };
-  acadSelectedDateKey = dateKey;
-  highlightAcadSelection(dateKey);
-  const modalBg = document.getElementById("acadModalBg");
-  const titleEl = document.getElementById("acadModalTitle");
-  const typeSel = document.getElementById("acadType");
-  const subjSel = document.getElementById("acadSubject");
-  const titleInp = document.getElementById("acadTitle");
-  const whenInp = document.getElementById("acadWhen");
-  const notesTxt = document.getElementById("acadNotes");
-  const statusSel = document.getElementById("acadStatus");
-  const btnDelete = document.getElementById("btnAcadDelete");
-
-  renderSubjectsOptions();
-
-  if (index >= 0){
-    const items = academicoCache[dateKey] || [];
-    const item = items[index];
-    if (item){
-      typeSel.value = item.tipo || "Parcial";
-      const opt = Array.from(subjSel.options).find(o => o.value === item.materia);
-      if (opt) subjSel.value = opt.value;
-      titleInp.value = item.titulo || "";
-      whenInp.value = item.cuando || item.when || "";
-      notesTxt.value = item.notas || item.notes || "";
-      statusSel.value = item.estado || "pending";
-    }
-    titleEl.textContent = "Editar académico";
-    btnDelete.style.display = "inline-block";
-  } else {
-    titleEl.textContent = "Añadir académico";
-    btnDelete.style.display = "none";
-    titleInp.value = "";
-    whenInp.value = partsToDtLocal({ y:parts.y, m:parts.m, d:parts.d, hh:12, mm:0 });
-    notesTxt.value = "";
-    statusSel.value = "pending";
-    typeSel.value = "Parcial";
-    if (subjSel && subjSel.options.length) subjSel.selectedIndex = 0;
-  }
-
-  modalBg.style.display = "flex";
-}
-
-document.getElementById("btnAcadCancel").addEventListener("click", ()=> document.getElementById("acadModalBg").style.display = "none");
-document.getElementById("acadModalBg").addEventListener("click", (e)=>{ if (e.target.id === "acadModalBg") e.target.style.display = "none"; });
-
-document.getElementById("btnAcadSave").addEventListener("click", async ()=>{
-  if (!currentUser) return;
-  const typeSel = document.getElementById("acadType");
-  const subjSel = document.getElementById("acadSubject");
-  const titleInp = document.getElementById("acadTitle");
-  const whenInp = document.getElementById("acadWhen");
-  const notesTxt = document.getElementById("acadNotes");
-  const statusSel = document.getElementById("acadStatus");
-
-  if (!subjSel || !subjSel.value){
-    notifyWarn("Elegí materia.");
-    return;
-  }
-  if (!titleInp.value.trim()){
-    notifyWarn("Poné un título.");
-    return;
-  }
-  if (!whenInp.value){
-    notifyWarn("Indicá fecha y hora.");
-    return;
-  }
-
-  const item = {
-    tipo: typeSel.value,
-    materia: subjSel.value,
-    titulo: titleInp.value.trim(),
-    cuando: whenInp.value,
-    notas: notesTxt.value,
-    estado: statusSel.value
-  };
-
-  const { dateKey, index } = acadEditing;
-  if (!dateKey) return;
-
-  try{
-    const ref = doc(db, "planner", currentUser.uid);
-    const snap = await getDoc(ref);
-    let data = snap.exists() ? snap.data() : {};
-    if (!data.academico) data.academico = {};
-    if (!Array.isArray(data.academico[dateKey])) data.academico[dateKey] = [];
-
-    if (index >= 0) data.academico[dateKey][index] = item;
-    else data.academico[dateKey].push(item);
-
-    await setDoc(ref, data);
-    academicoCache = data.academico || {};
-    acadSelectedDateKey = dateKey;
-    renderAcadCalendar();
-    openAcadDetail(dateKey);
-    document.getElementById("acadModalBg").style.display = "none";
-    notifySuccess("Académico guardado.");
-  }catch(e){
-    notifyError("No se pudo guardar en Académico: " + (e.message || e));
-  }
-});
-
-document.getElementById("btnAcadDelete").addEventListener("click", async ()=>{
-  if (!currentUser) return;
-  const { dateKey, index } = acadEditing;
-  if (!dateKey || index < 0) return;
-
-  const ok = await showConfirm({
-    title:"Eliminar académico",
-    message:"¿Seguro que querés eliminar este item?",
-    confirmText:"Eliminar",
-    cancelText:"Cancelar",
-    danger:true
-  });
-  if (!ok) return;
-
-  try{
-    const ref = doc(db, "planner", currentUser.uid);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) return;
-    const data = snap.data() || {};
-    if (!Array.isArray(data.academico?.[dateKey])) return;
-
-    data.academico[dateKey].splice(index,1);
-    if (!data.academico[dateKey].length) delete data.academico[dateKey];
-
-    await setDoc(ref, data);
-    academicoCache = data.academico || {};
-    acadSelectedDateKey = dateKey;
-    renderAcadCalendar();
-    openAcadDetail(dateKey);
-    document.getElementById("acadModalBg").style.display = "none";
-    notifySuccess("Item eliminado.");
-  }catch(e){
-    notifyError("No se pudo eliminar: " + (e.message || e));
-  }
-});
-
-// ===== END ACADEMICO =====
 
 // ===== START AGENDA MODAL =====
 // ------------------------ AGENDA ------------------------
