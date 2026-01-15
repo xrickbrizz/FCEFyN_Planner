@@ -3,7 +3,7 @@ import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "ht
 import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
-import { getPlansIndex, getPlanWithSubjects, findPlanByName } from "./plans-data.js";
+import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "./plans-data.js";
 import { initNav, navItems} from "./subScripts/nav.js";
 import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./subScripts/calendario.js";
 
@@ -416,8 +416,13 @@ async function loadUserProfile(){
 async function loadCareerPlans(){
   try{
     careerPlans = await getPlansIndex();
-  }catch(_){
+    if (!careerPlans.length){
+      console.warn("[plans] index loaded without plans");
+    }
+  }catch(error){
     careerPlans = [];
+    console.error("[plans] ERROR", error);
+    notifyError("No se pudo cargar el listado de carreras. Revisá la conexión o la ruta del plan.");
   }
 }
 
@@ -750,7 +755,6 @@ function loadRemoteScript(url){
 
 // ------------------------ HELPERS ------------------------
 function pad2(n){ return String(n).padStart(2,"0"); }
-function normalizeStr(s){ return (s || "").toString().toLowerCase(); }
 function timeToMinutes(t){
   const parts = (t || "").split(":").map(Number);
   if (parts.length !== 2) return NaN;
@@ -893,7 +897,7 @@ function bindSubjectsFormHandlers(){
   if (subjectCareerSelect){
     subjectCareerSelect.addEventListener("change", async (e)=>{
       const slug = e.target.value;
-      // console.log("[subjects] carrera seleccionada:", slug);
+      console.log("[plans] selected career", slug);
       await setActiveCareer(slug, true);
     });
   }
@@ -914,7 +918,11 @@ function bindSubjectsFormHandlers(){
       const color = subjectColorInput?.value || defaultSubjectColor();
       const { estudiosCache, academicoCache } = getCalendarioCaches();
       if (!name){
-        notifyWarn("Seleccioná una materia.");
+        if (!plannerCareer?.slug){
+          notifyWarn("Primero elegí una carrera para cargar materias.");
+        } else {
+          notifyWarn("Seleccioná una materia.");
+        }
         return;
       }
 
@@ -959,7 +967,7 @@ function bindSubjectsFormHandlers(){
       data.estudios = estudiosCache;
       data.agenda = agendaData;
       data.academico = academicoCache;
-      await setDoc(ref, data);
+      await setDoc(ref, data, { merge:true });
       setCalendarioCaches({ estudios: estudiosCache, academico: academicoCache });
 
       editingSubjectIndex = -1;
@@ -973,6 +981,8 @@ function bindSubjectsFormHandlers(){
       paintStudyEvents();
       renderAgenda();
       renderAcadCalendar();
+      console.log("[subjects] saved", name, "total", subjects.length);
+      notifySuccess("Materia guardada.");
     });
   }
 }
@@ -1038,8 +1048,10 @@ async function setActiveCareer(slug, persist){
   try{
     const data = await getPlanWithSubjects(slug);
     careerSubjects = Array.isArray(data.subjects) ? data.subjects : [];
+    console.log("[plans] subjects loaded", careerSubjects.length);
   }catch(_){
     careerSubjects = [];
+    console.error("[plans] ERROR", _);
     notifyWarn("No se pudieron cargar las materias de la carrera.");
   }
   // console.log("[subjects] cargadas:", careerSubjects);
@@ -1056,7 +1068,7 @@ function renderSubjectNameOptions(selectedName=""){
 
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = plannerCareer?.slug ? "Seleccioná una materia" : "Seleccioná una carrera primero";
+  placeholder.textContent = plannerCareer?.slug ? "Seleccioná una materia" : "Primero elegí una carrera para cargar materias";
   placeholder.disabled = true;
   subjectNameSelect.appendChild(placeholder);
 
