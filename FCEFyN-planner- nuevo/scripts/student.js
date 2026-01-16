@@ -2839,38 +2839,17 @@ async function ensureChat(uids){
   const users = Array.from(new Set((uids || []).filter(Boolean)));
   const chatId = composeChatId(users);
   const ref = doc(db,"chats", chatId);
-  let payload = null;
+  const payload = {
+    users,
+    uids: users,
+    lastMessage: "",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  };
   try{
-    const snap = await getDoc(ref);
-    if (!snap.exists()){
-      payload = {
-        users,
-        uids: users,
-        lastMessage: "",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      };
-      await setDoc(ref, payload);
-    } else {
-      const data = snap.data() || {};
-      const existingUsers = Array.isArray(data.users) ? data.users : [];
-      const existingUids = Array.isArray(data.uids) ? data.uids : [];
-      const missingUsers = users.some(uid => !existingUsers.includes(uid));
-      const missingUids = users.some(uid => !existingUids.includes(uid));
-      const needsCreatedAt = !data.createdAt;
-      if (missingUsers || missingUids || needsCreatedAt){
-        payload = {
-          ...(missingUsers ? { users } : {}),
-          ...(missingUids ? { uids: users } : {}),
-          ...(needsCreatedAt ? { createdAt: serverTimestamp() } : {})
-        };
-        await setDoc(ref, payload, { merge:true });
-      }
-    }
-    return chatId;
-  }catch(e){
-    console.error("[Mensajeria] ensureChat failed. payload:", payload ? { ...payload, users, uids: users } : { users, uids: users }, e);
-    throw e;
+    await setDoc(ref, payload, { merge:true });
+  }catch(err){
+    console.error("[Mensajeria] ensureChat error:", err, Object.keys(payload));
   }
 }
 
