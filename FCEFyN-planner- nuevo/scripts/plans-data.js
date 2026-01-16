@@ -1,4 +1,13 @@
-const INDEX_URL = "./plans/plans_index.json";
+const INDEX_URL = new URL("plans/plans_index.json", document.baseURI).toString();
+
+const resolveUrl = (value, base) => {
+  if (!value) return "";
+  try{
+    return new URL(value, base).toString();
+  }catch(_){
+    return value;
+  }
+};
 
 const normalizeStr = (s) => (s || "")
   .toString()
@@ -21,7 +30,9 @@ async function fetchJson(url){
 export async function getPlansIndex(){
   if (cachedIndex) return cachedIndex;
   try{
+    console.log("INDEX_URL", INDEX_URL);
     const data = await fetchJson(INDEX_URL);
+    console.log("Index JSON", data);
     const arr = Array.isArray(data.plans) ? data.plans
              : Array.isArray(data.carreras) ? data.carreras
              : Array.isArray(data) ? data
@@ -29,7 +40,7 @@ export async function getPlansIndex(){
     cachedIndex = arr.map(p => ({
       slug: p.slug || p.id || "",
       nombre: p.nombre || p.name || p.slug || p.id || "Carrera",
-      json: p.json || p.path || ""
+      json: resolveUrl(p.json || p.path || "", document.baseURI)
     })).filter(p => p.slug && p.json);
     console.log("[plans] index loaded", cachedIndex.length);
     return cachedIndex;
@@ -53,9 +64,11 @@ export async function getPlanWithSubjects(slug){
 
   try{
     const raw = await fetchJson(plan.json);
+    console.log("Plan JSON", raw);
     const subjects = Array.isArray(raw.materias) ? raw.materias
                    : Array.isArray(raw.subjects) ? raw.subjects
                    : [];
+    console.log("Subjects count", subjects.length);
     const payload = { subjects, raw };
     cachedSubjects.set(slug, payload);
     return { plan, ...payload };
