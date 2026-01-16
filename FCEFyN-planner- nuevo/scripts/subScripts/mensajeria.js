@@ -161,7 +161,7 @@ async function loadUsersDirectory(){
   ensureUsersSearchUI();
   usersLoading = true;
   try{
-    const snap = await getDocs(collection(db, "users"));
+    const snap = await getDocs(collection(db, "publicUsers"));
     const users = [];
     snap.forEach(docSnap =>{
       const data = docSnap.data() || {};
@@ -257,7 +257,8 @@ async function sendFriendRequest(){
     return;
   }
   try{
-    const userSnap = await getDocs(query(collection(db,"users"), where("email","==", email)));
+    const emailLower = email.trim().toLowerCase();
+    const userSnap = await getDocs(query(collection(db,"publicUsers"), where("emailLower","==", emailLower)));
     if (userSnap.empty){
       notifyWarn("No se encontró un usuario con ese correo.");
       return;
@@ -347,7 +348,7 @@ async function loadFriends(){
     const otherUid = Array.isArray(data.uids) ? data.uids.find(u => u !== currentUser.uid) : "";
     let otherProfile = null;
     if (otherUid){
-      const psnap = await getDoc(doc(db,"users", otherUid));
+      const psnap = await getDoc(doc(db,"publicUsers", otherUid));
       otherProfile = psnap.exists() ? psnap.data() : null;
     }
     arr.push({

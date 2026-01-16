@@ -6,6 +6,7 @@ import { showToast, showConfirm } from "../ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "./plans-data.js";
 import { initNav, navItems} from "./subScripts/nav.js";
 import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./subScripts/calendario.js";
+import { ensurePublicUserProfile } from "./subScripts/publicUserDirectory.js";
 
 //conecta con la db de firebase
 const firebaseConfig = {
@@ -286,6 +287,7 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
   await loadPlannerData();
   await loadCourseSections();
   await loadUserProfile();
+  await ensurePublicUserProfile(db, currentUser, userProfile);
   await loadCareerPlans();
   await loadFriendRequests();
   await loadFriends();
@@ -410,7 +412,7 @@ async function loadPlannerData(){
 async function loadUserProfile(){
   if (!currentUser) return;
   try{
-    const snap = await getDoc(doc(db,"PublicUsers",otherUid));
+    const snap = await getDoc(doc(db,"users",currentUser.uid));
     userProfile = snap.exists() ? snap.data() : null;
   }catch(_){
     userProfile = null;
@@ -2272,7 +2274,7 @@ async function getUserProfile(uid){
     return cached;
   }
   try{
-    const snap = await getDoc(doc(db, "users", uid));
+    const snap = await getDoc(doc(db, "publicUsers", uid));
     if (snap.exists()){
       const profile = { uid, ...snap.data() };
       userProfileCache.set(uid, profile);
@@ -2436,7 +2438,8 @@ async function sendFriendRequest(){
     return;
   }
   try{
-    const userSnap = await getDocs(query(collection(db,"publicUsers"), where("email","==", emailLower)));
+    const emailLower = email.trim().toLowerCase();
+    const userSnap = await getDocs(query(collection(db,"publicUsers"), where("emailLower","==", emailLower)));
     if (userSnap.empty){
       notifyWarn("No se encontró un usuario con ese correo.");
       return;

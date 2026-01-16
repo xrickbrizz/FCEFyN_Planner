@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 import { showToast } from "../ui/notifications.js";
+import { ensurePublicUserProfile } from "./subScripts/publicUserDirectory.js";
 
 // ⚠️ Config Firebase (queda acá, UNA sola vez)
 const firebaseConfig = {
@@ -52,7 +53,7 @@ export function initSession() {
   const ctx = createCtx();
 
   return new Promise((resolve, reject) => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (!user) {
         // Redirigir si no hay sesión
         window.location.href = "app.html";
@@ -60,6 +61,7 @@ export function initSession() {
       }
 
       ctx.currentUser = user;
+      await ensurePublicUserProfile(db, user);
       resolve(ctx);
     }, (err) => {
       console.error("[sesionDB] onAuthStateChanged error", err);

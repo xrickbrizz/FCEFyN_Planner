@@ -1,5 +1,6 @@
 import { onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { ensurePublicUserProfile } from "./publicUserDirectory.js";
 
 function normalizeStr(value){
   return (value || "").toString().toLowerCase();
@@ -225,6 +226,7 @@ export async function initPerfil(ctx){
       if (userEmailLabel) userEmailLabel.textContent = user.email || "-";
 
       await loadUserProfile();
+      await ensurePublicUserProfile(db, currentUser, userProfile);
       initProfileUI();
       renderProfileSection();
 

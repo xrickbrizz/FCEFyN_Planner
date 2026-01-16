@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, s
 //conecta con la db de firebase
 import { normalizeStr } from "../plans-data.js";
 import { showToast } from "../../ui/notifications.js";
+import { ensurePublicUserProfile } from "./publicUserDirectory.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
@@ -555,6 +556,7 @@ onAuthStateChanged(auth, async user =>{
     return;
   }
   await loadUserProfile();
+  await ensurePublicUserProfile(db, currentUser, userProfile);
   await loadProfessorsCatalog();
   initProfessorsUI();
 });
