@@ -424,24 +424,11 @@ async function loadCareerPlans(){
     careerPlans = await getPlansIndex();
     if (!careerPlans.length){
       console.warn("[plans] index loaded without plans");
-      setSubjectsUiAvailability({
-        careerDisabled: true,
-        subjectDisabled: true,
-        message: "No se pudieron cargar planes/materias. Revisá la conexión o la ruta de planes."
-      });
-      notifyError("No se pudieron cargar planes/materias.");
-      return;
     }
-    setSubjectsUiAvailability({ careerDisabled: false, subjectDisabled: false });
   }catch(error){
     careerPlans = [];
     console.error("[plans] ERROR", error);
     notifyError("No se pudo cargar el listado de carreras. Revisá la conexión o la ruta del plan.");
-    setSubjectsUiAvailability({
-      careerDisabled: true,
-      subjectDisabled: true,
-      message: "No se pudieron cargar planes/materias. Revisá la conexión o la ruta de planes."
-    });
   }
 }
 
@@ -820,13 +807,6 @@ function resolveSubjectsUI(){
   btnSubjectReset = document.getElementById("btnSubjectReset");
 }
 
-function setSubjectsUiAvailability({ careerDisabled = false, subjectDisabled = false, message = "" } = {}){
-  if (subjectCareerSelect) subjectCareerSelect.disabled = careerDisabled;
-  if (subjectNameSelect) subjectNameSelect.disabled = subjectDisabled;
-  if (btnSubjectSave) btnSubjectSave.disabled = subjectDisabled;
-  if (message && subjectPlanHint) subjectPlanHint.textContent = message;
-}
-
 function cssColorToHex(color){
   if (!subjectColorCtx) return "";
   subjectColorCtx.fillStyle = "#000";
@@ -1039,21 +1019,9 @@ function renderSubjectCareerOptions(){
   subjectCareerSelect.innerHTML = "";
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = careerPlans.length
-    ? "Seleccioná una carrera"
-    : "No se pudieron cargar carreras";
+  placeholder.textContent = "Seleccioná una carrera";
   placeholder.disabled = true;
   subjectCareerSelect.appendChild(placeholder);
-
-  if (!careerPlans.length){
-    placeholder.selected = true;
-    setSubjectsUiAvailability({
-      careerDisabled: true,
-      subjectDisabled: true,
-      message: "No se pudieron cargar planes/materias. Revisá la conexión o la ruta de planes."
-    });
-    return;
-  }
 
   const sorted = Array.from(careerPlans || []).sort((a,b)=> normalizeStr(a.nombre) < normalizeStr(b.nombre) ? -1 : 1);
   sorted.forEach(plan => {
@@ -1079,7 +1047,6 @@ async function setActiveCareer(slug, persist){
     careerSubjects = [];
     renderSubjectNameOptions();
     updateSubjectPlanHint();
-    setSubjectsUiAvailability({ subjectDisabled: true });
     return;
   }
   const plan = (careerPlans || []).find(p => p.slug === slug);
@@ -1088,7 +1055,6 @@ async function setActiveCareer(slug, persist){
     const data = await getPlanWithSubjects(slug);
     careerSubjects = Array.isArray(data.subjects) ? data.subjects : [];
     console.log("[plans] subjects loaded", careerSubjects.length);
-    setSubjectsUiAvailability({ careerDisabled: false, subjectDisabled: false });
   }catch(_){
     careerSubjects = [];
     console.error("[plans] ERROR", _);
@@ -1097,13 +1063,6 @@ async function setActiveCareer(slug, persist){
   // console.log("[subjects] cargadas:", careerSubjects);
   renderSubjectNameOptions();
   updateSubjectPlanHint();
-  if (!careerSubjects.length){
-    setSubjectsUiAvailability({
-      careerDisabled: false,
-      subjectDisabled: true,
-      message: "No se pudieron cargar las materias de la carrera."
-    });
-  }
   if (persist && currentUser){
     await setDoc(doc(db, "planner", currentUser.uid), { subjectCareer: plannerCareer }, { merge:true });
   }
@@ -1173,15 +1132,6 @@ async function initSubjectsCareerUI(){
   } else {
     renderSubjectNameOptions();
     updateSubjectPlanHint();
-    if (!careerPlans.length){
-      setSubjectsUiAvailability({
-        careerDisabled: true,
-        subjectDisabled: true,
-        message: "No se pudieron cargar planes/materias. Revisá la conexión o la ruta de planes."
-      });
-    } else {
-      setSubjectsUiAvailability({ careerDisabled: false, subjectDisabled: true });
-    }
   }
 }
 
