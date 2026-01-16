@@ -287,7 +287,6 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
   await loadCourseSections();
   await loadUserProfile();
   await loadCareerPlans();
-  await loadProfessorsCatalog();
   await loadFriendRequests();
   await loadFriends();
   await initPresence();
@@ -323,7 +322,6 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
 
   initPlanificadorUI();
   initPresetToAgendaModalUI();
-  initProfessorsUI();
   initMessagingUI();
 
   showTab("inicio");
