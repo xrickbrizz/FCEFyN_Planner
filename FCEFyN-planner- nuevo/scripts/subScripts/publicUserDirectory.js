@@ -5,11 +5,15 @@ export async function ensurePublicUserProfile(db, currentUser, userProfile = nul
   if (!db || !currentUser) return;
   const email = (currentUser.email || "").trim();
   const emailLower = email.toLowerCase();
+  const firstName = userProfile?.firstName || "";
+  const lastName = userProfile?.lastName || "";
+  const combinedName = `${firstName} ${lastName}`.trim();
   const name = userProfile?.name
     || userProfile?.fullName
-    || userProfile?.firstName
+    || combinedName
     || currentUser.displayName
     || "";
+  const photoURL = userProfile?.photoURL || currentUser.photoURL || "";
   const ref = doc(db, "publicUsers", currentUser.uid);
 
   try{
@@ -19,6 +23,7 @@ export async function ensurePublicUserProfile(db, currentUser, userProfile = nul
       email,
       emailLower,
       name,
+      photoURL,
       updatedAt: serverTimestamp()
     };
 

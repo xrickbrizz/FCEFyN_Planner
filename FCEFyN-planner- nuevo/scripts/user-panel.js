@@ -30,10 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
           this.isOpen = false;
         }
       };
+      this.handleAvatarUpdate = (event) => {
+        const url = event?.detail?.url;
+        this.avatarUrl = url || fallbackAvatar;
+      };
       document.addEventListener("click", this.handleOutsideClick);
+      window.addEventListener("user-panel-avatar", this.handleAvatarUpdate);
     },
     beforeUnmount() {
       document.removeEventListener("click", this.handleOutsideClick);
+      window.removeEventListener("user-panel-avatar", this.handleAvatarUpdate);
     },
     methods: {
       open() {

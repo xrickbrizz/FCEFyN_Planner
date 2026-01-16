@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebas
 import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "./plans-data.js";
 import { initNav, navItems} from "./subScripts/nav.js";
@@ -21,6 +22,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
@@ -45,6 +47,26 @@ const subjectColor = (materiaName) => {
 export const notifyWarn = (message) => showToast({ message, type:"warning" });
 let html2canvasLib = null;
 let jsPDFLib = null;
+const avatarFallback = (() => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#e6d98c"/>
+        <stop offset="100%" stop-color="#9dd3ff"/>
+      </linearGradient>
+    </defs>
+    <rect width="64" height="64" rx="32" fill="url(#g)"/>
+    <circle cx="32" cy="26" r="12" fill="rgba(255,255,255,0.9)"/>
+    <path d="M14 54c3-10 14-16 18-16s15 6 18 16" fill="rgba(255,255,255,0.9)"/>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+})();
+const resolveAvatarUrl = (url) => url || avatarFallback;
+const updateUserPanelAvatar = (url) => {
+  const finalUrl = resolveAvatarUrl(url);
+  window.userPanelAvatar = finalUrl;
+  window.dispatchEvent(new CustomEvent("user-panel-avatar", { detail: { url: finalUrl } }));
+};
 
 
 // ---- MATERIAS
@@ -443,6 +465,13 @@ const profileStatusEl = document.getElementById("profileStatus");
 const passwordStatusEl = document.getElementById("passwordStatus");
 const btnProfileSave = document.getElementById("btnProfileSave");
 const btnPasswordReset = document.getElementById("btnPasswordReset");
+const profileAvatarImg = document.getElementById("profileAvatarImg");
+const profileAvatarInput = document.getElementById("inpAvatar");
+const btnUploadAvatar = document.getElementById("btnUploadAvatar");
+const btnRemoveAvatar = document.getElementById("btnRemoveAvatar");
+const profileAvatarStatusEl = document.getElementById("profileAvatarStatus");
+let pendingProfilePhotoFile = null;
+let pendingProfilePhotoPreviewUrl = null;
 
 function renderCareerOptions(selectEl, selectedSlug){
   if (!selectEl) return;
@@ -486,10 +515,75 @@ function renderProfileSection(){
   }
   setProfileStatus(profileStatusEl, "");
   setProfileStatus(passwordStatusEl, "");
+  setProfileAvatarStatus("");
+  renderProfileAvatar();
+}
+
+function setProfileAvatarStatus(message){
+  if (profileAvatarStatusEl) profileAvatarStatusEl.textContent = message || "";
+}
+
+function renderProfileAvatar(previewUrl = ""){
+  const photoURL = previewUrl || userProfile?.photoURL || currentUser?.photoURL || "";
+  if (profileAvatarImg) profileAvatarImg.src = resolveAvatarUrl(photoURL);
+  updateUserPanelAvatar(photoURL);
 }
 
 function setProfileStatus(target, message){
   if (target) target.textContent = message || "";
+}
+
+async function uploadProfilePhoto(file){
+  if (!currentUser || !file) return;
+  const safeName = (file.name || "avatar").replace(/\s+/g, "_");
+  const path = `profilePhotos/${currentUser.uid}/${Date.now()}_${safeName}`;
+  const fileRef = storageRef(storage, path);
+  setProfileAvatarStatus("Subiendo foto...");
+  try{
+    await uploadBytes(fileRef, file);
+    const photoURL = await getDownloadURL(fileRef);
+    const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
+    await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
+    await setDoc(doc(db, "publicUsers", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge:true });
+    userProfile = { ...(userProfile || {}), photoURL, photoPath: path };
+    pendingProfilePhotoFile = null;
+    setProfileAvatarStatus("Foto actualizada.");
+    renderProfileAvatar();
+    notifySuccess("Foto de perfil actualizada.");
+  }catch(e){
+    console.error("[Perfil] Error al subir foto", e);
+    notifyError("No se pudo subir la foto.");
+    setProfileAvatarStatus("No se pudo subir la foto.");
+    renderProfileAvatar();
+  }
+}
+
+async function removeProfilePhoto(){
+  if (!currentUser) return;
+  const photoPath = userProfile?.photoPath || "";
+  setProfileAvatarStatus("Quitando foto...");
+  try{
+    if (photoPath){
+      try{
+        await deleteObject(storageRef(storage, photoPath));
+      }catch(error){
+        console.warn("[Perfil] No se pudo borrar la foto anterior en storage", error);
+      }
+    }
+    const payload = { photoURL: "", photoPath: "", updatedAt: serverTimestamp() };
+    await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
+    await setDoc(doc(db, "publicUsers", currentUser.uid), { photoURL: "", updatedAt: serverTimestamp() }, { merge:true });
+    userProfile = { ...(userProfile || {}), photoURL: "", photoPath: "" };
+    pendingProfilePhotoFile = null;
+    setProfileAvatarStatus("Foto quitada.");
+    renderProfileAvatar();
+    notifySuccess("Foto eliminada.");
+  }catch(e){
+    console.error("[Perfil] Error al quitar foto", e);
+    notifyError("No se pudo quitar la foto.");
+    setProfileAvatarStatus("No se pudo quitar la foto.");
+    renderProfileAvatar();
+  }
 }
 
 if (btnProfileSave){
@@ -535,6 +629,7 @@ if (btnProfileSave){
         dni: documento,
         legajo: documento
       };
+      await ensurePublicUserProfile(db, currentUser, userProfile);
       notifySuccess("Perfil actualizado.");
       setProfileStatus(profileStatusEl, "Cambios guardados correctamente.");
     }catch(e){
@@ -561,6 +656,77 @@ if (btnPasswordReset){
     }catch(e){
       notifyError("No se pudo enviar el correo.");
       setProfileStatus(passwordStatusEl, "No se pudo enviar el correo. Intentá más tarde.");
+    }
+  });
+}
+
+if (profileAvatarInput){
+  profileAvatarInput.addEventListener("change", () => {
+    const file = profileAvatarInput.files?.[0];
+    if (!file){
+      pendingProfilePhotoFile = null;
+      if (pendingProfilePhotoPreviewUrl){
+        URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+        pendingProfilePhotoPreviewUrl = null;
+      }
+      renderProfileAvatar();
+      return;
+    }
+    if (!file.type.startsWith("image/")){
+      notifyWarn("Seleccioná un archivo de imagen.");
+      profileAvatarInput.value = "";
+      pendingProfilePhotoFile = null;
+      if (pendingProfilePhotoPreviewUrl){
+        URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+        pendingProfilePhotoPreviewUrl = null;
+      }
+      renderProfileAvatar();
+      return;
+    }
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize){
+      notifyWarn("La imagen supera los 2MB. Elegí una más liviana.");
+      profileAvatarInput.value = "";
+      pendingProfilePhotoFile = null;
+      if (pendingProfilePhotoPreviewUrl){
+        URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+        pendingProfilePhotoPreviewUrl = null;
+      }
+      renderProfileAvatar();
+      return;
+    }
+    if (pendingProfilePhotoPreviewUrl){
+      URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+    }
+    pendingProfilePhotoFile = file;
+    pendingProfilePhotoPreviewUrl = URL.createObjectURL(file);
+    renderProfileAvatar(pendingProfilePhotoPreviewUrl);
+    setProfileAvatarStatus("Foto lista para guardar.");
+  });
+}
+
+if (btnUploadAvatar){
+  btnUploadAvatar.addEventListener("click", async ()=>{
+    if (!pendingProfilePhotoFile){
+      notifyWarn("Seleccioná una imagen primero.");
+      return;
+    }
+    await uploadProfilePhoto(pendingProfilePhotoFile);
+    if (profileAvatarInput) profileAvatarInput.value = "";
+    if (pendingProfilePhotoPreviewUrl){
+      URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+      pendingProfilePhotoPreviewUrl = null;
+    }
+  });
+}
+
+if (btnRemoveAvatar){
+  btnRemoveAvatar.addEventListener("click", async ()=>{
+    await removeProfilePhoto();
+    if (profileAvatarInput) profileAvatarInput.value = "";
+    if (pendingProfilePhotoPreviewUrl){
+      URL.revokeObjectURL(pendingProfilePhotoPreviewUrl);
+      pendingProfilePhotoPreviewUrl = null;
     }
   });
 }
@@ -2479,16 +2645,31 @@ async function acceptFriendRequest(id){
     notifyWarn("Solicitud no encontrada.");
     return;
   }
+  let step = "update-request";
+  let accepted = false;
   try{
     const chatId = composeChatId([req.fromUid, req.toUid]);
+    console.log("[Mensajeria] acceptFriendRequest step: update friendRequests");
     await updateDoc(doc(db,"friendRequests",id), { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    accepted = true;
+    step = "create-friends";
+    console.log("[Mensajeria] acceptFriendRequest step: create friends doc");
     await setDoc(doc(db,"friends", chatId), { uids:[req.fromUid, req.toUid], chatId, createdAt: serverTimestamp() }, { merge:true });
+    step = "ensure-chat";
+    console.log("[Mensajeria] acceptFriendRequest step: ensure chat");
     await ensureChat([req.fromUid, req.toUid]);
+    step = "reload";
+    console.log("[Mensajeria] acceptFriendRequest step: reload UI");
     await loadFriendRequests();
     await loadFriends();
     notifySuccess("Solicitud aceptada. Ya pueden chatear.");
   }catch(e){
-    notifyError("No se pudo aceptar: " + (e.message || e));
+    console.error("[Mensajeria] acceptFriendRequest failed at step:", step, e);
+    if (accepted){
+      notifyError("Aceptación registrada, pero falló recargar datos.");
+    } else {
+      notifyError("No se pudo aceptar: " + (e.message || e));
+    }
   }
 }
 
@@ -2592,12 +2773,16 @@ function renderFriendsList(){
     const name = profile.name || profile.fullName || profile.email || "Estudiante";
     const status = userStatusLabel(f.otherUid);
     const online = userStatusMap.get(f.otherUid)?.online;
+    const avatarUrl = resolveAvatarUrl(profile.photoURL);
     const div = document.createElement("div");
     div.className = "friend-row";
     div.innerHTML = `
-      <div>
-        <div class="friend-name">${name}</div>
-        <div class="friend-meta">${status}</div>
+      <div class="friend-main">
+        <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}">
+        <div>
+          <div class="friend-name">${name}</div>
+          <div class="friend-meta">${status}</div>
+        </div>
       </div>
       <button class="btn-outline btn-small" data-chat="${f.chatId}">Chat</button>
     `;

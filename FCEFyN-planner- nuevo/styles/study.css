@@ -954,6 +954,53 @@ button{
       background:var(--color-surface-3);
       border:1px solid var(--line-strong);
     }
+    .profile-avatar{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-bottom:1rem;
+    }
+    .profile-avatar img{
+      width:88px;
+      height:88px;
+      border-radius:50%;
+      object-fit:cover;
+      border:2px solid rgba(var(--color-border-rgb),.6);
+      background:var(--color-surface-3);
+    }
+    .profile-avatar-actions{
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+      flex:1;
+      min-width:220px;
+    }
+    .profile-avatar-input{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.45rem .75rem;
+      border-radius:var(--radius-sm);
+      border:1px dashed rgba(var(--color-border-rgb),.6);
+      background:var(--color-surface-3);
+      color:var(--color-muted-2);
+      font-size:.85rem;
+      cursor:pointer;
+      width:fit-content;
+    }
+    .profile-avatar-input input{
+      display:none;
+    }
+    .profile-avatar-buttons{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
+    .profile-avatar-status{
+      font-size:.82rem;
+      color:var(--color-muted-2);
+    }
     .profile-grid{
       display:grid;
       grid-template-columns:repeat(2, minmax(0,1fr));
@@ -1458,6 +1505,19 @@ button{
   border-radius:12px;
   background:var(--glass-faint);
   transition:border-color .12s ease, box-shadow .12s ease;
+}
+.friend-main{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+}
+.friend-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid rgba(var(--color-border-rgb),.45);
+  background:var(--color-surface-3);
 }
 .friend-row.friend-online{
   border-color:rgba(var(--color-ok-rgb),.5);
