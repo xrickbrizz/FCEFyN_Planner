@@ -2839,18 +2839,39 @@ async function ensureChat(uids){
   const users = Array.from(new Set((uids || []).filter(Boolean)));
   const chatId = composeChatId(users);
   const ref = doc(db,"chats", chatId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()){
-    await setDoc(ref, { users, lastMessage: "", updatedAt: serverTimestamp() });
-  } else {
-    const data = snap.data() || {};
-    const existingUsers = Array.isArray(data.users) ? data.users : [];
-    const missing = users.some(uid => !existingUsers.includes(uid));
-    if (missing){
-      await setDoc(ref, { users }, { merge:true });
+  let payload = null;
+  try{
+    const snap = await getDoc(ref);
+    if (!snap.exists()){
+      payload = {
+        users,
+        uids: users,
+        lastMessage: "",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+      await setDoc(ref, payload);
+    } else {
+      const data = snap.data() || {};
+      const existingUsers = Array.isArray(data.users) ? data.users : [];
+      const existingUids = Array.isArray(data.uids) ? data.uids : [];
+      const missingUsers = users.some(uid => !existingUsers.includes(uid));
+      const missingUids = users.some(uid => !existingUids.includes(uid));
+      const needsCreatedAt = !data.createdAt;
+      if (missingUsers || missingUids || needsCreatedAt){
+        payload = {
+          ...(missingUsers ? { users } : {}),
+          ...(missingUids ? { uids: users } : {}),
+          ...(needsCreatedAt ? { createdAt: serverTimestamp() } : {})
+        };
+        await setDoc(ref, payload, { merge:true });
+      }
     }
+    return chatId;
+  }catch(e){
+    console.error("[Mensajeria] ensureChat failed. payload:", payload ? { ...payload, users, uids: users } : { users, uids: users }, e);
+    throw e;
   }
-  return chatId;
 }
 
 async function openChatWithFriend(friend){
@@ -2882,6 +2903,7 @@ async function sendMessage(){
     const docRef = await addDoc(collection(db,"chats", activeChatId, "messages"), {
       text,
       senderId: currentUser.uid,
+      senderUid: currentUser.uid,
       createdAt: serverTimestamp()
     });
     await updateDoc(doc(db,"chats", activeChatId), {
