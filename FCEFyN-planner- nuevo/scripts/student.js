@@ -410,7 +410,7 @@ async function loadPlannerData(){
 async function loadUserProfile(){
   if (!currentUser) return;
   try{
-    const snap = await getDoc(doc(db,"users",currentUser.uid));
+    const snap = await getDoc(doc(db,"PublicUsers",otherUid));
     userProfile = snap.exists() ? snap.data() : null;
   }catch(_){
     userProfile = null;
@@ -2338,7 +2338,7 @@ async function loadUsersDirectory(){
   ensureUsersSearchUI();
   usersLoading = true;
   try{
-    const snap = await getDocs(collection(db, "users"));
+    const snap = await getDocs(collection(db, "publicUsers"));
     const users = [];
     snap.forEach(docSnap =>{
       const data = docSnap.data() || {};
@@ -2436,7 +2436,7 @@ async function sendFriendRequest(){
     return;
   }
   try{
-    const userSnap = await getDocs(query(collection(db,"users"), where("email","==", email)));
+    const userSnap = await getDocs(query(collection(db,"publicUsers"), where("email","==", emailLower)));
     if (userSnap.empty){
       notifyWarn("No se encontró un usuario con ese correo.");
       return;
