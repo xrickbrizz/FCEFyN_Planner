@@ -2436,20 +2436,33 @@ async function getUserProfile(uid){
   if (userProfileCache.has(uid)) return userProfileCache.get(uid);
   const cached = allUsersCache.find(user => user.uid === uid);
   if (cached){
-    userProfileCache.set(uid, cached);
-    return cached;
+    const profile = {
+      uid,
+      name: cached.name || cached.fullName || "Usuario",
+      email: cached.email || "-"
+    };
+    userProfileCache.set(uid, profile);
+    return profile;
   }
   try{
     const snap = await getDoc(doc(db, "publicUsers", uid));
     if (snap.exists()){
-      const profile = { uid, ...snap.data() };
+      const data = snap.data() || {};
+      const profile = {
+        uid,
+        ...data,
+        name: data.name || data.fullName || "Usuario",
+        email: data.email || "-"
+      };
       userProfileCache.set(uid, profile);
       return profile;
     }
   }catch(error){
     console.error("[Mensajeria] Error al cargar perfil:", error);
   }
-  return null;
+  const fallback = { uid, name: "Usuario", email: "-" };
+  userProfileCache.set(uid, fallback);
+  return fallback;
 }
 
 function renderUsersSearchList(){
@@ -2658,11 +2671,9 @@ async function acceptFriendRequest(id){
     step = "ensure-chat";
     console.log("[Mensajeria] acceptFriendRequest step: ensure chat");
     await ensureChat([req.fromUid, req.toUid]);
-    step = "reload";
-    console.log("[Mensajeria] acceptFriendRequest step: reload UI");
-    await loadFriendRequests();
-    await loadFriends();
-    notifySuccess("Solicitud aceptada. Ya pueden chatear.");
+    notifySuccess("Solicitud aceptada. Recargando...");
+    await safeReloadAfterAccept();
+    notifySuccess("Listo. Ya pueden chatear.");
   }catch(e){
     console.error("[Mensajeria] acceptFriendRequest failed at step:", step, e);
     if (accepted){
@@ -2701,6 +2712,24 @@ function wireFriendRequestActions(){
 // ---- GESTIÓN DE AMISTADES ----
 async function loadFriends(){
   await subscribeChatsList();
+}
+
+async function safeReloadAfterAccept(){
+  const steps = [
+    ["loadFriendRequests", () => loadFriendRequests()],
+    ["subscribeChatsList", () => subscribeChatsList()],
+    ["loadFriends/renderFriends", () => loadFriends()],
+    ["renderMessaging", () => renderMessaging()]
+  ];
+
+  for (const [name, fn] of steps){
+    try{
+      await fn();
+    }catch(e){
+      console.error("[Mensajeria] reload step failed:", name, e);
+      notifyWarn("Aviso: falló recarga parcial (" + name + ").");
+    }
+  }
 }
 
 function renderFriendRequestsUI(){
