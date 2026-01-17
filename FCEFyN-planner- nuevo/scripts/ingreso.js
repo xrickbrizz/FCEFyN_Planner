@@ -1,24 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
-  getFirestore,
+  db,
   collection,
   getDocs,
   query,
   where
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+} from "./core/firebase.js";
 import { getPlansIndex, getPlanWithSubjects, normalizeStr } from "./plans-data.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
-  authDomain: "fcefyn-planner.firebaseapp.com",
-  projectId: "fcefyn-planner",
-  storageBucket: "fcefyn-planner.firebasestorage.app",
-  messagingSenderId: "713668406730",
-  appId: "1:713668406730:web:f41c459641bfdce0cd7333"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 const careerSelect = document.getElementById("ingresoCareerSelect");
 const subjectsList = document.getElementById("ingresoSubjectsList");
@@ -120,46 +107,33 @@ async function loadCareers(){
   });
 }
 
-async function updateIngresoContent(slug){
-  if (!slug){
-    renderSubjects([]);
-    renderMaterials([]);
-    subjectsEmpty.textContent = "Seleccioná una carrera para ver las materias de ingreso.";
-    materialsEmpty.textContent = "Seleccioná una carrera para ver el material disponible.";
-    return;
-  }
+async function loadMaterials(planSlug){
+  materialsList.innerHTML = "";
+  materialsEmpty.style.display = "none";
 
-  const { subjects } = await getPlanWithSubjects(slug);
-  const ingresoSubjects = (subjects || [])
-    .filter((subject) => Number(subject.semestre) === 1)
-    .map((subject) => subject.nombre || subject.id)
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b, "es"));
-
-  renderSubjects(ingresoSubjects);
-
-  let materials = [];
-  try{
-    const q = query(collection(db, "ingresoMaterials"), where("careers", "array-contains", slug));
-    const snap = await getDocs(q);
-    snap.forEach((docSnap) => {
-      materials.push({ id: docSnap.id, ...docSnap.data() });
-    });
-  }catch(e){
-    materialsEmpty.style.display = "block";
-    materialsEmpty.textContent = "No se pudieron cargar los materiales en este momento.";
-    return;
-  }
-
-  materials.sort((a, b) => (a.name || "").localeCompare(b.name || "", "es"));
-  if (!materials.length){
-    materialsEmpty.textContent = "Todavía no hay material cargado para esta carrera.";
-  }
+  const snap = await getDocs(query(collection(db, "studyMaterials"), where("careerSlug", "==", planSlug)));
+  const materials = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
   renderMaterials(materials);
 }
 
-careerSelect.addEventListener("change", (event) => {
-  updateIngresoContent(event.target.value).catch(() => undefined);
-});
+async function onCareerChange(){
+  const slug = careerSelect.value;
+  if (!slug){
+    subjectsList.innerHTML = "";
+    subjectsEmpty.style.display = "block";
+    materialsList.innerHTML = "";
+    materialsEmpty.style.display = "block";
+    return;
+  }
 
-loadCareers().catch(() => undefined);
+  const planData = await getPlanWithSubjects(slug);
+  const subjects = (planData?.subjects || []).map((s) => s.nombre || s.name || s.id).filter(Boolean);
+  renderSubjects(subjects);
+  await loadMaterials(slug);
+}
+
+if (careerSelect){
+  careerSelect.addEventListener("change", onCareerChange);
+}
+
+loadCareers();
