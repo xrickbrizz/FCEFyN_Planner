@@ -293,4 +293,13 @@ const Horarios = {
   dayLabels
 };
 
+export {
+  dayKeys,
+  dayLabels,
+  timeToMinutes,
+  renderAgendaGridInto,
+  ensureAgendaStructure,
+  renderAgenda
+};
+
 export default Horarios;
