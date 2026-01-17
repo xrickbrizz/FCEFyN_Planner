@@ -535,11 +535,18 @@ function setProfileStatus(target, message){
 
 async function uploadProfilePhoto(file){
   if (!currentUser || !file) return;
-  const safeName = (file.name || "avatar").replace(/\s+/g, "_");
-  const path = `profilePhotos/${currentUser.uid}/${Date.now()}_${safeName}`;
+  const path = `fotoperfil/${currentUser.uid}/avatar.jpg`;
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
   try{
+    const previousPath = userProfile?.photoPath || "";
+    if (previousPath && previousPath !== path){
+      try{
+        await deleteObject(storageRef(storage, previousPath));
+      }catch(error){
+        console.warn("[Perfil] No se pudo borrar la foto anterior en storage", error);
+      }
+    }
     await uploadBytes(fileRef, file);
     const photoURL = await getDownloadURL(fileRef);
     const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
@@ -2589,12 +2596,12 @@ async function loadFriendRequests(){
   const outgoing = [];
   snapIn.forEach(d =>{
     const data = d.data() || {};
-    if (data.status === "rejected") return;
+    if (data.status !== "pending") return;
     incoming.push({ id:d.id, ...data });
   });
   snapOut.forEach(d =>{
     const data = d.data() || {};
-    if (data.status === "rejected") return;
+    if (data.status !== "pending") return;
     outgoing.push({ id:d.id, ...data });
   });
   friendRequests = { incoming, outgoing };
@@ -2903,8 +2910,7 @@ async function subscribeChatsList(){
   const chatsQuery = query(
     collection(db, "chats"),
     // Seguridad: los usuarios solo leen chats donde su UID está incluido.
-    where("users", "array-contains", currentUser.uid),
-    orderBy("updatedAt", "desc")
+    where("users", "array-contains", currentUser.uid)
   );
   chatsUnsubscribe = onSnapshot(chatsQuery, async (snap) =>{
     console.log("[Mensajeria] Snapshot recibido", snap.docs.length);
@@ -2923,7 +2929,11 @@ async function subscribeChatsList(){
         updatedAt: data.updatedAt
       };
     }));
-    friendsList = rows;
+    friendsList = rows.sort((a, b) =>{
+      const aTime = a.updatedAt?.toMillis?.() || a.updatedAt?.seconds || 0;
+      const bTime = b.updatedAt?.toMillis?.() || b.updatedAt?.seconds || 0;
+      return bTime - aTime;
+    });
     friendsLoading = false;
     renderFriendsList();
     renderUsersSearchList();
