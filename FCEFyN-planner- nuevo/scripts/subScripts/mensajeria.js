@@ -219,29 +219,60 @@ async function initPresence(){
 
 // ---- SOLICITUDES DE AMISTAD ----
 async function loadFriendRequests(){
-  if (!currentUser) return;
+  if (!currentUser?.uid) return;
   requestsLoading = true;
   renderFriendRequestsUI();
-  const incomingQ = query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid));
-  const outgoingQ = query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid));
-  const [snapIn, snapOut] = await Promise.all([getDocs(incomingQ), getDocs(outgoingQ)]);
-  const incoming = [];
-  const outgoing = [];
-  snapIn.forEach(d =>{
-    const data = d.data() || {};
-    if (data.status === "rejected") return;
-    incoming.push({ id:d.id, ...data });
-  });
-  snapOut.forEach(d =>{
-    const data = d.data() || {};
-    if (data.status === "rejected") return;
-    outgoing.push({ id:d.id, ...data });
-  });
-  friendRequests = { incoming, outgoing };
-  requestsLoading = false;
-  renderFriendRequestsUI();
-  renderUsersSearchList();
-  renderMessaging();
+  try{
+    const incomingQueries = [
+      query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid)),
+      query(collection(db,"friendRequests"), where("receiverUid","==", currentUser.uid))
+    ];
+    const outgoingQueries = [
+      query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid)),
+      query(collection(db,"friendRequests"), where("senderUid","==", currentUser.uid))
+    ];
+    const [incomingSnaps, outgoingSnaps] = await Promise.all([
+      Promise.all(incomingQueries.map((q)=> getDocs(q))),
+      Promise.all(outgoingQueries.map((q)=> getDocs(q)))
+    ]);
+    const normalizeRequest = (docSnap) => {
+      const data = docSnap.data() || {};
+      return {
+        id: docSnap.id,
+        ...data,
+        fromUid: data.fromUid || data.senderUid || "",
+        toUid: data.toUid || data.receiverUid || ""
+      };
+    };
+    const incomingMap = new Map();
+    const outgoingMap = new Map();
+    incomingSnaps.forEach(snap =>{
+      snap.forEach(d =>{
+        const data = d.data() || {};
+        if (data.status === "rejected") return;
+        incomingMap.set(d.id, normalizeRequest(d));
+      });
+    });
+    outgoingSnaps.forEach(snap =>{
+      snap.forEach(d =>{
+        const data = d.data() || {};
+        if (data.status === "rejected") return;
+        outgoingMap.set(d.id, normalizeRequest(d));
+      });
+    });
+    friendRequests = {
+      incoming: Array.from(incomingMap.values()),
+      outgoing: Array.from(outgoingMap.values())
+    };
+  }catch(e){
+    console.error("[Mensajeria] loadFriendRequests failed", { code: e?.code, message: e?.message });
+    friendRequests = { incoming: [], outgoing: [] };
+  }finally{
+    requestsLoading = false;
+    renderFriendRequestsUI();
+    renderUsersSearchList();
+    renderMessaging();
+  }
 }
 
 async function sendFriendRequest(){

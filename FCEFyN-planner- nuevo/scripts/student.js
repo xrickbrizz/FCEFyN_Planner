@@ -283,6 +283,7 @@ window.showTab = function(name){
 // ------------------------ SESIÓN ------------------------
 let didBoot = false;
 let unsubAuth = null;
+let userProfileUnsub = null;
 
 function isBlockedByClientError(error){
   const message = (error?.message || "").toString();
@@ -330,6 +331,7 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
   await loadPlannerData();
   await loadCourseSections();
   await loadUserProfile();
+  subscribeUserProfile();
   await ensurePublicUserProfile(db, currentUser, userProfile);
   await loadCareerPlans();
   try{
@@ -478,6 +480,20 @@ async function loadUserProfile(){
   }
 }
 
+function subscribeUserProfile(){
+  if (!currentUser?.uid) return;
+  if (userProfileUnsub) userProfileUnsub();
+  userProfileUnsub = onSnapshot(doc(db,"users", currentUser.uid), (snap) =>{
+    userProfile = snap.exists() ? snap.data() : null;
+    if (!pendingProfilePhotoPreviewUrl){
+      const photoURL = userProfile?.photoURL || currentUser?.photoURL || "";
+      applyAvatarEverywhere(photoURL);
+    }
+  }, (e)=>{
+    console.error("[Perfil] user profile snapshot error", { code: e?.code, message: e?.message });
+  });
+}
+
 async function loadCareerPlans(){
   try{
     careerPlans = await getPlansIndex();
@@ -503,6 +519,8 @@ const passwordStatusEl = document.getElementById("passwordStatus");
 const btnProfileSave = document.getElementById("btnProfileSave");
 const btnPasswordReset = document.getElementById("btnPasswordReset");
 const profileAvatarImg = document.getElementById("profileAvatarImg");
+const headerAvatarImg = document.getElementById("headerAvatarImg");
+const sidebarAvatarImg = document.getElementById("sidebarAvatarImg");
 const profileAvatarInput = document.getElementById("inpAvatar");
 const btnUploadAvatar = document.getElementById("btnUploadAvatar");
 const btnRemoveAvatar = document.getElementById("btnRemoveAvatar");
@@ -560,10 +578,21 @@ function setProfileAvatarStatus(message){
   if (profileAvatarStatusEl) profileAvatarStatusEl.textContent = message || "";
 }
 
+function applyAvatarEverywhere(photoURL){
+  const finalUrl = resolveAvatarUrl(photoURL);
+  if (profileAvatarImg) profileAvatarImg.src = finalUrl;
+  if (headerAvatarImg) headerAvatarImg.src = finalUrl;
+  if (sidebarAvatarImg) sidebarAvatarImg.src = finalUrl;
+  updateUserPanelAvatar(photoURL);
+}
+
 function renderProfileAvatar(previewUrl = ""){
   const photoURL = previewUrl || userProfile?.photoURL || currentUser?.photoURL || "";
-  if (profileAvatarImg) profileAvatarImg.src = resolveAvatarUrl(photoURL);
-  updateUserPanelAvatar(photoURL);
+  if (previewUrl){
+    if (profileAvatarImg) profileAvatarImg.src = resolveAvatarUrl(photoURL);
+    return;
+  }
+  applyAvatarEverywhere(photoURL);
 }
 
 function setProfileStatus(target, message){
@@ -603,7 +632,7 @@ async function uploadProfilePhoto(file){
     await ensurePublicUserProfile(db, currentUser, userProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto actualizada.");
-    renderProfileAvatar();
+    applyAvatarEverywhere(photoURL);
     notifySuccess("Foto de perfil actualizada.");
   }catch(e){
     console.error("[Perfil] Error al subir foto", e?.code, e?.message, e);
@@ -632,7 +661,7 @@ async function removeProfilePhoto(){
     await ensurePublicUserProfile(db, currentUser, userProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto quitada.");
-    renderProfileAvatar();
+    applyAvatarEverywhere("");
     notifySuccess("Foto eliminada.");
   }catch(e){
     console.error("[Perfil] Error al quitar foto", e);
@@ -2655,48 +2684,60 @@ async function initPresence(){
 
 // ---- SOLICITUDES DE AMISTAD ----
 async function loadFriendRequests(){
-  if (!currentUser) return;
+  if (!currentUser?.uid) return;
   requestsLoading = true;
   renderFriendRequestsUI();
-  const incomingQueries = [
-    query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid)),
-    query(collection(db,"friendRequests"), where("receiverUid","==", currentUser.uid)),
-    query(collection(db,"friendRequests"), where("recipientUid","==", currentUser.uid))
-  ];
-  const outgoingQueries = [
-    query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid)),
-    query(collection(db,"friendRequests"), where("senderUid","==", currentUser.uid)),
-    query(collection(db,"friendRequests"), where("senderId","==", currentUser.uid))
-  ];
-  const [incomingSnaps, outgoingSnaps] = await Promise.all([
-    Promise.all(incomingQueries.map(q => getDocs(q))),
-    Promise.all(outgoingQueries.map(q => getDocs(q)))
-  ]);
-  const buildList = (snaps, label) => {
-    const map = new Map();
-    snaps.forEach(snap =>{
+  try{
+    const incomingQueries = [
+      query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid)),
+      query(collection(db,"friendRequests"), where("receiverUid","==", currentUser.uid))
+    ];
+    const outgoingQueries = [
+      query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid)),
+      query(collection(db,"friendRequests"), where("senderUid","==", currentUser.uid))
+    ];
+    const [incomingSnaps, outgoingSnaps] = await Promise.all([
+      Promise.all(incomingQueries.map((q)=> getDocs(q))),
+      Promise.all(outgoingQueries.map((q)=> getDocs(q)))
+    ]);
+    const normalizeRequest = (docSnap) => {
+      const data = docSnap.data() || {};
+      return {
+        id: docSnap.id,
+        ...data,
+        fromUid: data.fromUid || data.senderUid || "",
+        toUid: data.toUid || data.receiverUid || ""
+      };
+    };
+    const incomingMap = new Map();
+    const outgoingMap = new Map();
+    incomingSnaps.forEach(snap =>{
       snap.forEach(d =>{
-        if (!map.has(d.id)){
-          map.set(d.id, { id:d.id, ...d.data() });
-        }
+        const data = d.data() || {};
+        if (data.status !== "pending") return;
+        incomingMap.set(d.id, normalizeRequest(d));
       });
     });
-    const list = [];
-    map.forEach(req =>{
-      if (req.status !== "pending") return;
-      const endpoints = ensureRequestEndpoints(req, `loadFriendRequests/${label}`);
-      if (!endpoints) return;
-      list.push(req);
+    outgoingSnaps.forEach(snap =>{
+      snap.forEach(d =>{
+        const data = d.data() || {};
+        if (data.status !== "pending") return;
+        outgoingMap.set(d.id, normalizeRequest(d));
+      });
     });
-    return list;
-  };
-  const incoming = buildList(incomingSnaps, "incoming");
-  const outgoing = buildList(outgoingSnaps, "outgoing");
-  friendRequests = { incoming, outgoing };
-  requestsLoading = false;
-  renderFriendRequestsUI();
-  renderUsersSearchList();
-  renderMessaging();
+    friendRequests = {
+      incoming: Array.from(incomingMap.values()),
+      outgoing: Array.from(outgoingMap.values())
+    };
+  }catch(e){
+    console.error("[Mensajeria] loadFriendRequests failed", { code: e?.code, message: e?.message });
+    friendRequests = { incoming: [], outgoing: [] };
+  }finally{
+    requestsLoading = false;
+    renderFriendRequestsUI();
+    renderUsersSearchList();
+    renderMessaging();
+  }
 }
 
 async function sendFriendRequest(){
