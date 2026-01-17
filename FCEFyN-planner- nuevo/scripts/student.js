@@ -345,7 +345,8 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
     renderFriendRequestsUI();
     renderUsersSearchList();
   }
-  await loadFriends();
+  await loadFriendsList();
+  await loadChatsFallback({ silent:true, onlyIfEmpty:true }); // recomendado
   try{
     await initPresence();
   }catch(error){
@@ -3094,12 +3095,10 @@ async function ensureChat(uids){
         lastMessage: ""
       }, { merge:true });
     } else {
-      await setDoc(ref, {
-        users,
-        uids: users,
-        updatedAt: serverTimestamp()
-      }, { merge:true });
-    }
+  await setDoc(ref, {
+    updatedAt: serverTimestamp()
+  }, { merge:true });
+}
   }catch(err){
     console.error("[Mensajeria] ensureChat error:", err, users);
   }
