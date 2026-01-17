@@ -2480,7 +2480,7 @@ function getReqFrom(req){
 }
 
 function getReqTo(req){
-  return req?.toUid || req?.receiverUid || req?.recipientUid || "";
+  return req?.receiverUid || req?.toUid || req?.recipientUid || "";
 }
 
 function ensureRequestEndpoints(req, context){
@@ -2707,7 +2707,7 @@ async function loadFriendRequests(){
         id: docSnap.id,
         ...data,
         fromUid: data.fromUid || data.senderUid || "",
-        toUid: data.toUid || data.receiverUid || ""
+        toUid: data.receiverUid || data.toUid || ""
       };
     };
     const incomingMap = new Map();
@@ -2870,17 +2870,35 @@ function wireFriendRequestActions(){
 
 // ---- GESTIÓN DE AMISTADES ----
 async function loadFriendsList(){
-  if (!currentUser) return;
+  if (!currentUser?.uid) return;
   friendsLoading = true;
   renderFriendsList();
+
   try{
-    const snap = await getDocs(collection(db, "friends", currentUser.uid, "items"));
-    const entries = [];
-    snap.forEach(docSnap =>{
-      const data = docSnap.data() || {};
-      entries.push({ id: docSnap.id, ...data });
-    });
-    friendsList = entries.length ? await hydrateFriendsFromEntries(entries) : [];
+    const q = query(
+      collection(db, "friends"),
+      where("uids", "array-contains", currentUser.uid)
+    );
+
+    const snap = await getDocs(q);
+
+    const rows = await Promise.all(snap.docs.map(async (d)=>{
+      const data = d.data() || {};
+      const uids = Array.isArray(data.uids) ? data.uids : [];
+      const otherUid = uids.find(u => u !== currentUser.uid) || "";
+      const otherProfile = await getUserProfile(otherUid);
+
+      return {
+        chatId: data.chatId || d.id,
+        users: uids,
+        otherUid,
+        otherProfile,
+        lastMessage: "",
+        updatedAt: data.updatedAt || data.createdAt
+      };
+    }));
+
+    friendsList = sortFriendsRows(rows);
   }catch(error){
     console.error("[Mensajeria] Error al cargar amigos:", error);
     friendsList = [];
@@ -3084,25 +3102,32 @@ async function ensureChat(uids){
   const users = Array.from(new Set((uids || []).filter(Boolean)));
   const chatId = composeChatId(users);
   const ref = doc(db,"chats", chatId);
+
   try{
     const snap = await getDoc(ref);
+
+    // Si NO existe, lo creamos con todo (permitido por rules)
     if (!snap.exists()){
       await setDoc(ref, {
         users,
         uids: users,
+        lastMessage: "",
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        lastMessage: ""
-      }, { merge:true });
-    } else {
-  await setDoc(ref, {
-    updatedAt: serverTimestamp()
-  }, { merge:true });
-}
+        updatedAt: serverTimestamp()
+      });
+      return;
+    }
+
+    // Si YA existe, NO toques createdAt/users/uids (rules lo bloquea)
+    await updateDoc(ref, {
+      updatedAt: serverTimestamp()
+    });
+
   }catch(err){
-    console.error("[Mensajeria] ensureChat error:", err, users);
+    console.error("[Mensajeria] ensureChat error:", err);
   }
 }
+
 
 async function openChatWithFriend(friend){
   const users = Array.isArray(friend.users) ? friend.users : friend.uids || [];
