@@ -1,6 +1,7 @@
 import { doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp } from "../core/firebase.js";
 import { dayKeys, dayLabels, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
+
 let CTX = null;
 
 async function loadCourseSections(){
