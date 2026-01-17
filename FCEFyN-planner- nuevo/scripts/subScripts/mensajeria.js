@@ -274,6 +274,7 @@ async function sendFriendRequest(){
       notifyWarn("Ya son amigos y pueden chatear.");
       return;
     }
+    console.log("[Mensajeria] sendFriendRequest", { targetId, fromUid: currentUser.uid });
     await addDoc(collection(db,"friendRequests"), {
       fromUid: currentUser.uid,
       toUid: targetId,
@@ -289,18 +290,28 @@ async function sendFriendRequest(){
     notifySuccess("Solicitud enviada.");
   }catch(e){
     notifyError("No se pudo enviar la solicitud: " + (e.message || e));
+    console.error("[Mensajeria] sendFriendRequest error", e?.code, e?.message, e);
   }
 }
 
 async function acceptFriendRequest(id){
+  if (!currentUser?.uid){
+    notifyError("Sesión inválida.");
+    return;
+  }
   const req = friendRequests.incoming.find(r => r.id === id);
   if (!req){
     notifyWarn("Solicitud no encontrada.");
     return;
   }
+  if (!req.fromUid || !req.toUid){
+    notifyError("Solicitud incompleta.");
+    return;
+  }
   try{
     const chatId = composeChatId([req.fromUid, req.toUid]);
-    await updateDoc(doc(db,"friendRequests",id), { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    const updatePayload = { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid };
+    await updateDoc(doc(db,"friendRequests",id), updatePayload);
     await setDoc(doc(db,"friends", chatId), { uids:[req.fromUid, req.toUid], chatId, createdAt: serverTimestamp() }, { merge:true });
     await ensureChat([req.fromUid, req.toUid]);
     await loadFriendRequests();
@@ -312,10 +323,15 @@ async function acceptFriendRequest(id){
 }
 
 async function rejectFriendRequest(id){
+  if (!currentUser?.uid){
+    notifyError("Sesión inválida.");
+    return;
+  }
   const req = friendRequests.incoming.find(r => r.id === id);
   if (!req) return;
   try{
-    await updateDoc(doc(db,"friendRequests",id), { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    const updatePayload = { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid };
+    await updateDoc(doc(db,"friendRequests",id), updatePayload);
     await loadFriendRequests();
     notifyWarn("Solicitud rechazada.");
   }catch(e){
@@ -561,7 +577,12 @@ function initMessagingUI(){
   loadUsersDirectory();
 
   const btnSendReq = document.getElementById("btnSendFriendRequest");
-  if (btnSendReq) btnSendReq.addEventListener("click", sendFriendRequest);
+  console.log("[Mensajeria] initMessagingUI ok", { btnSendReq: !!btnSendReq });
+  if (!btnSendReq){
+    console.warn("[Mensajeria] btnSendFriendRequest no encontrado (id esperado: btnSendFriendRequest).");
+  } else {
+    btnSendReq.addEventListener("click", sendFriendRequest);
+  }
 
   const btnSendMsg = document.getElementById("btnSendMessage");
   if (btnSendMsg) btnSendMsg.addEventListener("click", sendMessage);

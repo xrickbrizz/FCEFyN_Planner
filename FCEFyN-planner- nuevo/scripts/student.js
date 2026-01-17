@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit
+import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp,updateDoc,addDoc,onSnapshot,orderBy,limit,enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
@@ -23,6 +23,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err?.code === "failed-precondition") {
+    console.warn("[Firestore] Persistence failed: múltiples pestañas.");
+  } else if (err?.code === "unimplemented") {
+    console.warn("[Firestore] Persistence no soportada en este navegador.");
+  } else {
+    console.warn("[Firestore] Persistence error:", err);
+  }
+});
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
@@ -275,6 +284,18 @@ window.showTab = function(name){
 let didBoot = false;
 let unsubAuth = null;
 
+function isBlockedByClientError(error){
+  const message = (error?.message || "").toString();
+  const code = (error?.code || "").toString();
+  return message.includes("ERR_BLOCKED_BY_CLIENT")
+    || message.toLowerCase().includes("blocked by client")
+    || code.toLowerCase().includes("blocked_by_client");
+}
+
+function notifyBlockedByClient(){
+  notifyError("Tenés un bloqueador (uBlock/Brave) bloqueando Firestore. Desactivá para este sitio.");
+}
+
 unsubAuth = onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "app.html";
@@ -311,9 +332,25 @@ unsubAuth = onAuthStateChanged(auth, async (user) => {
   await loadUserProfile();
   await ensurePublicUserProfile(db, currentUser, userProfile);
   await loadCareerPlans();
-  await loadFriendRequests();
+  try{
+    await loadFriendRequests();
+  }catch(error){
+    console.error("[Mensajeria] loadFriendRequests error", error?.code, error?.message, error);
+    if (isBlockedByClientError(error)) notifyBlockedByClient();
+    notifyError("No se pudieron cargar las solicitudes de amistad.");
+    friendRequests = { incoming: [], outgoing: [] };
+    requestsLoading = false;
+    renderFriendRequestsUI();
+    renderUsersSearchList();
+  }
   await loadFriends();
-  await initPresence();
+  try{
+    await initPresence();
+  }catch(error){
+    console.error("[Mensajeria] initPresence error", error?.code, error?.message, error);
+    if (isBlockedByClientError(error)) notifyBlockedByClient();
+    notifyError("No se pudo inicializar la presencia. La mensajería sigue disponible.");
+  }
   await ensureLastSeenPref();
 
   // CALENDARIO (una sola vez, seguro)
@@ -535,6 +572,16 @@ function setProfileStatus(target, message){
 
 async function uploadProfilePhoto(file){
   if (!currentUser || !file) return;
+  if (!file.type?.startsWith("image/")){
+    notifyWarn("Seleccioná una imagen válida (JPG/PNG).");
+    setProfileAvatarStatus("Formato de imagen inválido.");
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024){
+    notifyWarn("La imagen debe pesar menos de 2MB.");
+    setProfileAvatarStatus("La imagen supera 2MB.");
+    return;
+  }
   const path = `fotoperfil/${currentUser.uid}/avatar.jpg`;
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
@@ -547,18 +594,19 @@ async function uploadProfilePhoto(file){
         console.warn("[Perfil] No se pudo borrar la foto anterior en storage", error);
       }
     }
-    await uploadBytes(fileRef, file);
+    await uploadBytes(fileRef, file, { contentType: file.type || "image/jpeg" });
     const photoURL = await getDownloadURL(fileRef);
     const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
     await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
-    await setDoc(doc(db, "publicUsers", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge:true });
+    await setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true });
     userProfile = { ...(userProfile || {}), photoURL, photoPath: path };
+    await ensurePublicUserProfile(db, currentUser, userProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto actualizada.");
     renderProfileAvatar();
     notifySuccess("Foto de perfil actualizada.");
   }catch(e){
-    console.error("[Perfil] Error al subir foto", e);
+    console.error("[Perfil] Error al subir foto", e?.code, e?.message, e);
     notifyError("No se pudo subir la foto.");
     setProfileAvatarStatus("No se pudo subir la foto.");
     renderProfileAvatar();
@@ -579,8 +627,9 @@ async function removeProfilePhoto(){
     }
     const payload = { photoURL: "", photoPath: "", updatedAt: serverTimestamp() };
     await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
-    await setDoc(doc(db, "publicUsers", currentUser.uid), { photoURL: "", updatedAt: serverTimestamp() }, { merge:true });
+    await setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true });
     userProfile = { ...(userProfile || {}), photoURL: "", photoPath: "" };
+    await ensurePublicUserProfile(db, currentUser, userProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto quitada.");
     renderProfileAvatar();
@@ -2356,7 +2405,6 @@ let friendsList = [];
 let activeChatId = null;
 let activeChatPartner = null;
 let messagesUnsubscribe = null;
-let chatsUnsubscribe = null;
 let messagesCache = {};
 let statusUnsubscribe = null;
 let userStatusMap = new Map();
@@ -2397,6 +2445,25 @@ function normalizeText(value){
   return (value || "").toString().trim().toLowerCase();
 }
 
+function getReqFrom(req){
+  return req?.fromUid || req?.senderUid || req?.senderId || "";
+}
+
+function getReqTo(req){
+  return req?.toUid || req?.receiverUid || req?.recipientUid || "";
+}
+
+function ensureRequestEndpoints(req, context){
+  const from = getReqFrom(req);
+  const to = getReqTo(req);
+  if (!from || !to){
+    notifyError("Solicitud inválida: faltan datos del remitente o destinatario.");
+    console.error(`[Mensajeria] ${context} missing from/to`, req);
+    return null;
+  }
+  return { from, to };
+}
+
 function buildExcludedUserSet(){
   const excluded = new Set();
   if (currentUser?.uid) excluded.add(currentUser.uid);
@@ -2404,10 +2471,12 @@ function buildExcludedUserSet(){
     if (friend.otherUid) excluded.add(friend.otherUid);
   });
   friendRequests.incoming.forEach(req =>{
-    if (req.status === "pending" && req.fromUid) excluded.add(req.fromUid);
+    const endpoints = ensureRequestEndpoints(req, "buildExcludedUserSet/incoming");
+    if (req.status === "pending" && endpoints?.from) excluded.add(endpoints.from);
   });
   friendRequests.outgoing.forEach(req =>{
-    if (req.status === "pending" && req.toUid) excluded.add(req.toUid);
+    const endpoints = ensureRequestEndpoints(req, "buildExcludedUserSet/outgoing");
+    if (req.status === "pending" && endpoints?.to) excluded.add(endpoints.to);
   });
   return excluded;
 }
@@ -2589,21 +2658,40 @@ async function loadFriendRequests(){
   if (!currentUser) return;
   requestsLoading = true;
   renderFriendRequestsUI();
-  const incomingQ = query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid));
-  const outgoingQ = query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid));
-  const [snapIn, snapOut] = await Promise.all([getDocs(incomingQ), getDocs(outgoingQ)]);
-  const incoming = [];
-  const outgoing = [];
-  snapIn.forEach(d =>{
-    const data = d.data() || {};
-    if (data.status !== "pending") return;
-    incoming.push({ id:d.id, ...data });
-  });
-  snapOut.forEach(d =>{
-    const data = d.data() || {};
-    if (data.status !== "pending") return;
-    outgoing.push({ id:d.id, ...data });
-  });
+  const incomingQueries = [
+    query(collection(db,"friendRequests"), where("toUid","==", currentUser.uid)),
+    query(collection(db,"friendRequests"), where("receiverUid","==", currentUser.uid)),
+    query(collection(db,"friendRequests"), where("recipientUid","==", currentUser.uid))
+  ];
+  const outgoingQueries = [
+    query(collection(db,"friendRequests"), where("fromUid","==", currentUser.uid)),
+    query(collection(db,"friendRequests"), where("senderUid","==", currentUser.uid)),
+    query(collection(db,"friendRequests"), where("senderId","==", currentUser.uid))
+  ];
+  const [incomingSnaps, outgoingSnaps] = await Promise.all([
+    Promise.all(incomingQueries.map(q => getDocs(q))),
+    Promise.all(outgoingQueries.map(q => getDocs(q)))
+  ]);
+  const buildList = (snaps, label) => {
+    const map = new Map();
+    snaps.forEach(snap =>{
+      snap.forEach(d =>{
+        if (!map.has(d.id)){
+          map.set(d.id, { id:d.id, ...d.data() });
+        }
+      });
+    });
+    const list = [];
+    map.forEach(req =>{
+      if (req.status !== "pending") return;
+      const endpoints = ensureRequestEndpoints(req, `loadFriendRequests/${label}`);
+      if (!endpoints) return;
+      list.push(req);
+    });
+    return list;
+  };
+  const incoming = buildList(incomingSnaps, "incoming");
+  const outgoing = buildList(outgoingSnaps, "outgoing");
   friendRequests = { incoming, outgoing };
   requestsLoading = false;
   renderFriendRequestsUI();
@@ -2631,7 +2719,7 @@ async function sendFriendRequest(){
       return;
     }
     const targetId = userSnap.docs[0].id;
-    const existing = friendRequests.outgoing.some(r => (r.toUid === targetId) && (r.status === "pending"));
+    const existing = friendRequests.outgoing.some(r => (getReqTo(r) === targetId) && (r.status === "pending"));
     if (existing){
       notifyWarn("Ya enviaste una solicitud pendiente a este usuario.");
       return;
@@ -2641,9 +2729,12 @@ async function sendFriendRequest(){
       notifyWarn("Ya son amigos y pueden chatear.");
       return;
     }
+    console.log("[Mensajeria] sendFriendRequest", { targetId, fromUid: currentUser.uid });
     await addDoc(collection(db,"friendRequests"), {
       fromUid: currentUser.uid,
       toUid: targetId,
+      senderUid: currentUser.uid,
+      receiverUid: targetId,
       fromEmail: currentUser.email || "",
       toEmail: email,
       status: "pending",
@@ -2656,28 +2747,36 @@ async function sendFriendRequest(){
     notifySuccess("Solicitud enviada.");
   }catch(e){
     notifyError("No se pudo enviar la solicitud: " + (e.message || e));
+    console.error("[Mensajeria] sendFriendRequest error", e?.code, e?.message, e);
   }
 }
 
 async function acceptFriendRequest(id){
+  if (!currentUser?.uid){
+    notifyError("Sesión inválida.");
+    return;
+  }
   const req = friendRequests.incoming.find(r => r.id === id);
   if (!req){
     notifyWarn("Solicitud no encontrada.");
     return;
   }
+  const endpoints = ensureRequestEndpoints(req, "acceptFriendRequest");
+  if (!endpoints) return;
   let step = "update-request";
   let accepted = false;
   try{
-    const chatId = composeChatId([req.fromUid, req.toUid]);
+    const chatId = composeChatId([endpoints.from, endpoints.to]);
     console.log("[Mensajeria] acceptFriendRequest step: update friendRequests");
-    await updateDoc(doc(db,"friendRequests",id), { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    const updatePayload = { status:"accepted", updatedAt: serverTimestamp(), decisionBy: currentUser.uid };
+    await updateDoc(doc(db,"friendRequests",id), updatePayload);
     accepted = true;
     step = "create-friends";
     console.log("[Mensajeria] acceptFriendRequest step: create friends doc");
-    await setDoc(doc(db,"friends", chatId), { uids:[req.fromUid, req.toUid], chatId, createdAt: serverTimestamp() }, { merge:true });
+    await setDoc(doc(db,"friends", chatId), { uids:[endpoints.from, endpoints.to], chatId, createdAt: serverTimestamp() }, { merge:true });
     step = "ensure-chat";
     console.log("[Mensajeria] acceptFriendRequest step: ensure chat");
-    await ensureChat([req.fromUid, req.toUid]);
+    await ensureChat([endpoints.from, endpoints.to]);
     notifySuccess("Solicitud aceptada. Recargando...");
     await safeReloadAfterAccept();
     notifySuccess("Listo. Ya pueden chatear.");
@@ -2692,10 +2791,17 @@ async function acceptFriendRequest(id){
 }
 
 async function rejectFriendRequest(id){
+  if (!currentUser?.uid){
+    notifyError("Sesión inválida.");
+    return;
+  }
   const req = friendRequests.incoming.find(r => r.id === id);
   if (!req) return;
+  const endpoints = ensureRequestEndpoints(req, "rejectFriendRequest");
+  if (!endpoints) return;
   try{
-    await updateDoc(doc(db,"friendRequests",id), { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid });
+    const updatePayload = { status:"rejected", updatedAt: serverTimestamp(), decisionBy: currentUser.uid };
+    await updateDoc(doc(db,"friendRequests",id), updatePayload);
     await loadFriendRequests();
     notifyWarn("Solicitud rechazada.");
   }catch(e){
@@ -2711,21 +2817,107 @@ function wireFriendRequestActions(){
     if (!btn) return;
     const id = btn.getAttribute("data-id");
     const action = btn.getAttribute("data-action");
-    if (action === "accept") acceptFriendRequest(id);
+    if (action === "accept") {
+      const fromUid = btn.getAttribute("data-from");
+      const toUid = btn.getAttribute("data-to");
+      acceptFriendRequest(id, fromUid, toUid);
+    }
     else if (action === "reject") rejectFriendRequest(id);
   });
 }
 
 // ---- GESTIÓN DE AMISTADES ----
-async function loadFriends(){
-  await subscribeChatsList();
+async function loadFriendsList(){
+  if (!currentUser) return;
+  friendsLoading = true;
+  renderFriendsList();
+  try{
+    const snap = await getDocs(collection(db, "friends", currentUser.uid, "items"));
+    const entries = [];
+    snap.forEach(docSnap =>{
+      const data = docSnap.data() || {};
+      entries.push({ id: docSnap.id, ...data });
+    });
+    friendsList = entries.length ? await hydrateFriendsFromEntries(entries) : [];
+  }catch(error){
+    console.error("[Mensajeria] Error al cargar amigos:", error);
+    friendsList = [];
+  }finally{
+    friendsLoading = false;
+    renderFriendsList();
+    renderUsersSearchList();
+    renderMessaging();
+  }
+}
+
+async function loadChatsFallback(options = {}){
+  if (!currentUser) return;
+  const { silent = false, onlyIfEmpty = false } = options;
+  if (onlyIfEmpty && friendsList.length){
+    return;
+  }
+  if (!silent){
+    friendsLoading = true;
+    renderFriendsList();
+  }
+  try{
+    const chatsQuery = query(
+      collection(db, "chats"),
+      where("users", "array-contains", currentUser.uid)
+    );
+    const snap = await getDocs(chatsQuery);
+    const rows = await Promise.all(snap.docs.map(async docSnap =>{
+      const data = docSnap.data() || {};
+      const users = Array.isArray(data.users) ? data.users : data.uids || [];
+      const otherUid = users.find(uid => uid !== currentUser.uid) || "";
+      const otherProfile = await getUserProfile(otherUid);
+      return {
+        chatId: docSnap.id,
+        users,
+        otherUid,
+        otherProfile,
+        lastMessage: data.lastMessage || "",
+        updatedAt: data.updatedAt || data.createdAt
+      };
+    }));
+    if (rows.length){
+      friendsList = sortFriendsRows(rows);
+      await Promise.all(rows.map(row => Promise.all([
+        ensureFriendMirror(currentUser.uid, row.otherUid, row.chatId, {
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }),
+        ensureFriendMirror(row.otherUid, currentUser.uid, row.chatId, {
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        })
+      ])));
+    }
+  }catch(error){
+    if (error?.code === "failed-precondition"){
+      notifyWarn("Aviso: faltan índices en chats. Se omitió el orden automático.");
+    }
+    console.error("[Mensajeria] Error al cargar chats:", error);
+  }finally{
+    friendsLoading = false;
+    renderFriendsList();
+    renderUsersSearchList();
+    renderMessaging();
+  }
+}
+
+async function loadInitialMessagingState(uid){
+  if (!uid) return;
+  await loadFriendRequests();
+  await loadFriendsList();
+  await loadChatsFallback({ silent: true, onlyIfEmpty: true });
 }
 
 async function safeReloadAfterAccept(){
   const steps = [
     ["loadFriendRequests", () => loadFriendRequests()],
-    ["subscribeChatsList", () => subscribeChatsList()],
-    ["loadFriends/renderFriends", () => loadFriends()],
+    ["loadFriendsList", () => loadFriendsList()],
+    ["loadChatsFallback", () => loadChatsFallback({ silent: true, onlyIfEmpty: true })],
     ["renderMessaging", () => renderMessaging()]
   ];
 
@@ -2757,6 +2949,8 @@ function renderFriendRequestsUI(){
     incomingBox.innerHTML = "<div class='muted'>Sin solicitudes pendientes.</div>";
   } else {
     friendRequests.incoming.forEach(req =>{
+      const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/incoming");
+      if (!endpoints) return;
       const div = document.createElement("div");
       div.className = "request-card";
       div.innerHTML = `
@@ -2765,7 +2959,7 @@ function renderFriendRequestsUI(){
           <div class="req-meta">Estado: ${req.status || "pendiente"}</div>
         </div>
         <div class="req-actions">
-          <button class="btn-blue btn-small" data-action="accept" data-id="${req.id}">Aceptar</button>
+          <button class="btn-blue btn-small" data-action="accept" data-id="${req.id}" data-from="${req.fromUid}" data-to="${req.toUid}">Aceptar</button>
           <button class="btn-danger btn-small" data-action="reject" data-id="${req.id}">Rechazar</button>
         </div>
       `;
@@ -2777,6 +2971,8 @@ function renderFriendRequestsUI(){
     outgoingBox.innerHTML = "<div class='muted'>No enviaste solicitudes.</div>";
   } else {
     friendRequests.outgoing.forEach(req =>{
+      const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/outgoing");
+      if (!endpoints) return;
       const div = document.createElement("div");
       div.className = "request-card ghost";
       div.innerHTML = `
@@ -2846,25 +3042,34 @@ async function ensureChat(uids){
   const users = Array.from(new Set((uids || []).filter(Boolean)));
   const chatId = composeChatId(users);
   const ref = doc(db,"chats", chatId);
-  const payload = {
-    users,
-    uids: users,
-    lastMessage: "",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  };
   try{
-    await setDoc(ref, payload, { merge:true });
+    const snap = await getDoc(ref);
+    if (!snap.exists()){
+      await setDoc(ref, {
+        users,
+        uids: users,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        lastMessage: ""
+      }, { merge:true });
+    } else {
+      await setDoc(ref, {
+        users,
+        uids: users,
+        updatedAt: serverTimestamp()
+      }, { merge:true });
+    }
   }catch(err){
-    console.error("[Mensajeria] ensureChat error:", err, Object.keys(payload));
+    console.error("[Mensajeria] ensureChat error:", err, users);
   }
 }
 
 async function openChatWithFriend(friend){
-  activeChatPartner = friend;
   const users = Array.isArray(friend.users) ? friend.users : friend.uids || [];
-  activeChatId = friend.chatId || composeChatId(users);
-  await ensureChat(users);
+  const normalizedUsers = users.length ? users : [currentUser?.uid, friend.otherUid].filter(Boolean);
+  activeChatPartner = { ...friend, users: normalizedUsers };
+  activeChatId = friend.chatId || composeChatId(normalizedUsers);
+  await ensureChat(normalizedUsers);
   subscribeMessages(activeChatId);
   openMessengerDock();
   renderMessaging();
@@ -2896,49 +3101,20 @@ async function sendMessage(){
       lastMessage: text,
       updatedAt: serverTimestamp()
     });
+    if (activeChatPartner.otherUid){
+      await Promise.all([
+        ensureFriendMirror(currentUser.uid, activeChatPartner.otherUid, activeChatId, {
+          updatedAt: serverTimestamp()
+        }),
+        ensureFriendMirror(activeChatPartner.otherUid, currentUser.uid, activeChatId, {
+          updatedAt: serverTimestamp()
+        })
+      ]);
+    }
     console.log("[Mensajeria] Mensaje enviado:", text);
   }catch(e){
     notifyError("No se pudo enviar: " + (e.message || e));
   }
-}
-
-async function subscribeChatsList(){
-  if (!currentUser) return;
-  if (chatsUnsubscribe) chatsUnsubscribe();
-  friendsLoading = true;
-  renderFriendsList();
-  const chatsQuery = query(
-    collection(db, "chats"),
-    // Seguridad: los usuarios solo leen chats donde su UID está incluido.
-    where("users", "array-contains", currentUser.uid)
-  );
-  chatsUnsubscribe = onSnapshot(chatsQuery, async (snap) =>{
-    console.log("[Mensajeria] Snapshot recibido", snap.docs.length);
-    const rows = await Promise.all(snap.docs.map(async docSnap =>{
-      const data = docSnap.data() || {};
-      const users = Array.isArray(data.users) ? data.users : [];
-      const otherUid = users.find(uid => uid !== currentUser.uid) || "";
-      const otherProfile = await getUserProfile(otherUid);
-      return {
-        id: docSnap.id,
-        chatId: docSnap.id,
-        users,
-        otherUid,
-        otherProfile,
-        lastMessage: data.lastMessage || "",
-        updatedAt: data.updatedAt
-      };
-    }));
-    friendsList = rows.sort((a, b) =>{
-      const aTime = a.updatedAt?.toMillis?.() || a.updatedAt?.seconds || 0;
-      const bTime = b.updatedAt?.toMillis?.() || b.updatedAt?.seconds || 0;
-      return bTime - aTime;
-    });
-    friendsLoading = false;
-    renderFriendsList();
-    renderUsersSearchList();
-    renderMessaging();
-  }, (err)=> console.error("[Mensajeria] chats snapshot error", err));
 }
 
 // ---- UI / LISTENERS ----
@@ -2998,7 +3174,12 @@ function initMessagingUI(){
   loadUsersDirectory();
 
   const btnSendReq = document.getElementById("btnSendFriendRequest");
-  if (btnSendReq) btnSendReq.addEventListener("click", sendFriendRequest);
+  console.log("[Mensajeria] initMessagingUI ok", { btnSendReq: !!btnSendReq });
+  if (!btnSendReq){
+    console.warn("[Mensajeria] btnSendFriendRequest no encontrado (id esperado: btnSendFriendRequest).");
+  } else {
+    btnSendReq.addEventListener("click", sendFriendRequest);
+  }
 
   const btnSendMsg = document.getElementById("btnSendMessage");
   if (btnSendMsg) btnSendMsg.addEventListener("click", sendMessage);
@@ -3032,7 +3213,6 @@ function initMessagingUI(){
   wireFriendRequestActions();
   setChatInputState(false, "Seleccioná un amigo para chatear");
   renderMessaging();
-  loadFriends();
 }
 
 //----------------------------------------------------------------------------
