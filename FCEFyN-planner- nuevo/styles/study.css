@@ -43,8 +43,8 @@ header{
   z-index: 1000;
 }
 .user-avatar{
-  width:44px;
-  height:44px;
+  width: 50px;
+  height:50px;
   padding:0;
   border-radius:999px;
   border:1px solid rgba(var(--color-border-rgb),.85);
@@ -150,7 +150,7 @@ button{
   letter-spacing:.05rem;
 }
 .btn-blue{
-  background:linear-gradient(120deg,var(--accent),var(--accent-2));
+  /*background:linear-gradient(120deg,var(--accent),var(--accent-2)); */
   color:var(--color-primary-strong);
   box-shadow:0 10px 24px rgba(var(--color-accent-rgb),.25);
 }
@@ -471,7 +471,7 @@ button{
     }
     .modal-help{
       max-width:720px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(var(--color-primary-rgb),0.6));
+      background:linear-gradient(180deg, rgba(255,255,255,20), rgba(var(--color-primary-rgb),20));
       border:1px solid rgba(var(--color-accent-rgb),.38);
       box-shadow:0 22px 60px var(--shadow-color-deep);
     }
@@ -523,6 +523,8 @@ button{
       color:var(--text-soft);
       line-height:1.35;
       margin-bottom:.55rem;
+    }
+    .acad-widgets{
     }
     .acad-day-list{
       display:flex;
@@ -962,8 +964,8 @@ button{
       margin-bottom:1rem;
     }
     .profile-avatar img{
-      width:88px;
-      height:88px;
+      width:290px;
+      height: 290px;
       border-radius:50%;
       object-fit:cover;
       border:2px solid rgba(var(--color-border-rgb),.6);
