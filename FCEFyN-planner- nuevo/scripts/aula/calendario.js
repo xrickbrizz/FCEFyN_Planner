@@ -105,6 +105,18 @@ export function getCalendarioCaches(){
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function dateKeyFromYMD(y,m,d){ return y + "-" + pad2(m) + "-" + pad2(d); }
+function getDayKey(value){
+  if (!value) return null;
+  if (value instanceof Date){
+    return dateKeyFromYMD(value.getFullYear(), value.getMonth()+1, value.getDate());
+  }
+  if (typeof value !== "string") return null;
+  const normalized = ymdFromDateKey(value);
+  if (normalized) return dateKeyFromYMD(normalized.y, normalized.m, normalized.d);
+  const legacy = parseLegacyDateKey(value);
+  if (legacy) return dateKeyFromYMD(legacy.y, legacy.m, legacy.d);
+  return null;
+}
 function ymdFromDateKey(k){
   if (!k || typeof k !== "string") return null;
   const parts = k.split("-");
@@ -114,6 +126,24 @@ function ymdFromDateKey(k){
   const d = parseInt(parts[2], 10);
   if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
   return { y, m, d };
+}
+function parseLegacyDateKey(value){
+  if (!value || typeof value !== "string") return null;
+  const parts = value.split("/");
+  if (parts.length !== 3) return null;
+  const d = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10);
+  const y = parseInt(parts[2], 10);
+  if ([d,m,y].some(isNaN)) return null;
+  return { y, m, d };
+}
+function getLegacyDateKeys(normalizedKey){
+  const parts = ymdFromDateKey(normalizedKey);
+  if (!parts) return [];
+  return [
+    `${pad2(parts.d)}/${pad2(parts.m)}/${parts.y}`,
+    `${parts.d}/${parts.m}/${parts.y}`
+  ];
 }
 function dtLocalToParts(dtLocal){
   if (!dtLocal) return null;
@@ -170,16 +200,37 @@ function getAcadItemMinutes(item){
   if (!parts) return null;
   return parts.hh * 60 + parts.mm;
 }
-function getAcadItems(dateKey){
-  const raw = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey] : [];
+function resolveAcadStorageKey(dayKey, source = academicoCache){
+  const normalized = getDayKey(dayKey);
+  if (!normalized) return null;
+  if (Array.isArray(source?.[normalized])) return normalized;
+  const legacyKeys = getLegacyDateKeys(normalized);
+  for (const legacyKey of legacyKeys){
+    if (Array.isArray(source?.[legacyKey])) return legacyKey;
+  }
+  return normalized;
+}
+function getRecordsForDay(dayKey){
+  const storageKey = resolveAcadStorageKey(dayKey);
+  if (!storageKey) return [];
+  return Array.isArray(academicoCache?.[storageKey]) ? academicoCache[storageKey] : [];
+}
+function getAcadItemsWithKey(dateKey){
+  const storageKey = resolveAcadStorageKey(dateKey);
+  const raw = storageKey && Array.isArray(academicoCache?.[storageKey]) ? academicoCache[storageKey] : [];
   const items = raw.map((item, index)=> ({ item, index }));
   items.sort((a,b)=> (getAcadItemMinutes(a.item) ?? 0) - (getAcadItemMinutes(b.item) ?? 0));
-  return items;
+  return { items, storageKey };
 }
 function getAcadTimeLabel(item){
   const minutes = getAcadItemMinutes(item);
   if (minutes === null) return "—";
   return minutesToTime(minutes);
+}
+function getAcadDurationLabel(item){
+  const minutes = getAcadItemMinutes(item);
+  if (minutes === null) return "—";
+  return `${minutes} min`;
 }
 function dateFromKeyAndMinutes(dateKey, minutes){
   const parts = ymdFromDateKey(dateKey);
@@ -187,6 +238,11 @@ function dateFromKeyAndMinutes(dateKey, minutes){
   const hh = Math.floor(minutes / 60);
   const mm = minutes % 60;
   return new Date(parts.y, parts.m - 1, parts.d, hh, mm);
+}
+function formatAcadLongDate(parts){
+  if (!parts) return "—";
+  const date = new Date(parts.y, parts.m - 1, parts.d);
+  return date.toLocaleDateString("es-ES", { weekday:"long", day:"numeric", month:"long" });
 }
 
 function initStudyNav(){
@@ -593,7 +649,7 @@ export function renderAcadCalendar(){
     head.innerHTML = `<span>${d}</span><span class="today-dot"></span>`;
     card.appendChild(head);
 
-    const items = getAcadItems(dateKey);
+    const { items } = getAcadItemsWithKey(dateKey);
 
     const list = document.createElement("div");
     list.className = "acad-day-list";
@@ -652,7 +708,7 @@ export function renderAcadCalendar(){
   }
 
   highlightAcadSelection(acadSelectedDateKey);
-  renderAcadInfoPanel(acadSelectedDateKey || todayKey);
+  renderRightPanel(acadSelectedDateKey || todayKey);
 }
 
 function highlightAcadSelection(dateKey){
@@ -663,9 +719,10 @@ function highlightAcadSelection(dateKey){
   });
 }
 
-function renderAcadInfoPanel(dateKey, { isHover = false } = {}){
+function renderRightPanel(dateKey, { isHover = false } = {}){
   if (!acadDetailBox || !acadDetailTitle || !acadDetailSub || !acadDetailList || !acadDetailCount || !acadInfoEmpty) return;
-  const parts = ymdFromDateKey(dateKey);
+  const normalizedKey = getDayKey(dateKey);
+  const parts = ymdFromDateKey(normalizedKey);
   if (!parts){
     acadDetailBox.style.display = "none";
     acadInfoEmpty.style.display = "flex";
@@ -673,11 +730,11 @@ function renderAcadInfoPanel(dateKey, { isHover = false } = {}){
   }
 
   if (!isHover){
-    acadSelectedDateKey = dateKey;
-    highlightAcadSelection(dateKey);
+    acadSelectedDateKey = normalizedKey;
+    highlightAcadSelection(normalizedKey);
   }
 
-  const items = getAcadItems(dateKey);
+  const { items } = getAcadItemsWithKey(normalizedKey);
   const hasItems = items.length > 0;
 
   if (!hasItems){
@@ -689,8 +746,8 @@ function renderAcadInfoPanel(dateKey, { isHover = false } = {}){
   }
 
   acadInfoEmpty.style.display = "none";
-  acadDetailTitle.textContent = "Detalle del " + parts.d + "/" + parts.m;
-  acadDetailSub.textContent = "Año " + parts.y;
+  acadDetailTitle.textContent = "Registros del día";
+  acadDetailSub.textContent = formatAcadLongDate(parts);
   acadDetailCount.textContent = String(items.length);
   acadDetailList.innerHTML = "";
   acadDetailBox.style.display = "block";
@@ -701,9 +758,10 @@ function renderAcadInfoPanel(dateKey, { isHover = false } = {}){
 
     const left = document.createElement("div");
     left.className = "acad-detail-text";
+    const durationLabel = getAcadDurationLabel(item);
     left.innerHTML = `
-      <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
-      <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
+      <strong>${escapeHtml(item.materia || "Materia")}</strong>
+      <div class="acad-detail-meta">Duración: ${escapeHtml(durationLabel)} · Tema: ${escapeHtml(item.titulo || "(sin título)")}</div>
       <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
     `;
 
@@ -720,32 +778,31 @@ function handleAcadDayClick(dateKey){
     return;
   }
   acadLastClick = { dateKey, time: now };
-  renderAcadInfoPanel(dateKey);
+  renderRightPanel(dateKey);
   openAcadDayModal(dateKey);
 }
 
 function handleAcadDayHover(dateKey){
-  const items = getAcadItems(dateKey);
-  if (items.length) return;
   acadHoverDateKey = dateKey;
-  renderAcadInfoPanel(dateKey, { isHover: true });
+  renderRightPanel(dateKey, { isHover: true });
 }
 
 function handleAcadDayHoverEnd(dateKey){
   if (acadHoverDateKey !== dateKey) return;
   acadHoverDateKey = null;
-  renderAcadInfoPanel(acadSelectedDateKey);
+  renderRightPanel(acadSelectedDateKey);
 }
 
 function openAcadDayModal(dateKey, focusIndex = -1){
   if (!acadDayModalBg || !acadDayModalTitle || !acadDayModalSubtitle || !acadDayModalList) return;
-  const parts = ymdFromDateKey(dateKey);
+  const normalizedKey = getDayKey(dateKey);
+  const parts = ymdFromDateKey(normalizedKey);
   if (!parts) return;
 
-  acadSelectedDateKey = dateKey;
-  highlightAcadSelection(dateKey);
+  acadSelectedDateKey = normalizedKey;
+  highlightAcadSelection(normalizedKey);
 
-  const items = getAcadItems(dateKey);
+  const { items, storageKey } = getAcadItemsWithKey(normalizedKey);
   acadDayModalTitle.textContent = "Detalle del " + parts.d + "/" + parts.m;
   acadDayModalSubtitle.textContent = "Año " + parts.y;
   acadDayModalList.innerHTML = "";
@@ -785,7 +842,7 @@ function openAcadDayModal(dateKey, focusIndex = -1){
       const btnEdit = document.createElement("button");
       btnEdit.className = "btn-outline btn-small";
       btnEdit.textContent = "Editar";
-      btnEdit.addEventListener("click", ()=> openAcadModalForDate(dateKey, index));
+      btnEdit.addEventListener("click", ()=> openAcadModalForDate(dateKey, index, storageKey));
 
       const btnDelete = document.createElement("button");
       btnDelete.className = "btn-danger btn-small";
@@ -831,6 +888,7 @@ async function deleteAcadItem(dateKey, index){
   const user = getCurrentUser();
   if (!user) return;
   if (index < 0) return;
+  const normalizedKey = getDayKey(dateKey);
 
   const ok = await CTX?.showConfirm?.({
     title:"Eliminar académico",
@@ -848,16 +906,17 @@ async function deleteAcadItem(dateKey, index){
     const snap = await getDoc(ref);
     if (!snap.exists()) return;
     const data = snap.data() || {};
-    if (!Array.isArray(data.academico?.[dateKey])) return;
+    const storageKey = resolveAcadStorageKey(normalizedKey, data.academico);
+    if (!storageKey || !Array.isArray(data.academico?.[storageKey])) return;
 
-    data.academico[dateKey].splice(index,1);
-    if (!data.academico[dateKey].length) delete data.academico[dateKey];
+    data.academico[storageKey].splice(index,1);
+    if (!data.academico[storageKey].length) delete data.academico[storageKey];
 
     await setDoc(ref, data);
     academicoCache = data.academico || {};
     renderAcadCalendar();
-    renderAcadInfoPanel(dateKey);
-    openAcadDayModal(dateKey);
+    renderRightPanel(normalizedKey);
+    openAcadDayModal(normalizedKey);
     CTX?.notifySuccess?.("Item eliminado.");
     console.log("[calendario] delete academico", { dateKey, index });
   }catch(e){
@@ -865,15 +924,21 @@ async function deleteAcadItem(dateKey, index){
   }
 }
 
-function openAcadModalForDate(dateKey, index){
-  const parts = ymdFromDateKey(dateKey);
+function openAcadModalForDate(dateKey, index, legacyKey = null){
+  const normalizedKey = getDayKey(dateKey);
+  const parts = ymdFromDateKey(normalizedKey);
   if (!parts) return;
 
-  console.log("[calendario] openAcadModal", { dateKey, index });
+  const resolvedLegacyKey = legacyKey || resolveAcadStorageKey(normalizedKey);
+  console.log("[calendario] openAcadModal", { dateKey: normalizedKey, index });
 
-  acadEditing = { dateKey, index };
-  acadSelectedDateKey = dateKey;
-  highlightAcadSelection(dateKey);
+  acadEditing = {
+    dateKey: normalizedKey,
+    index,
+    legacyKey: resolvedLegacyKey && resolvedLegacyKey !== normalizedKey ? resolvedLegacyKey : null
+  };
+  acadSelectedDateKey = normalizedKey;
+  highlightAcadSelection(normalizedKey);
   const modalBg = document.getElementById("acadModalBg");
   const titleEl = document.getElementById("acadModalTitle");
   const typeSel = document.getElementById("acadType");
@@ -889,7 +954,7 @@ function openAcadModalForDate(dateKey, index){
   }
 
   if (index >= 0){
-    const items = academicoCache[dateKey] || [];
+    const items = resolvedLegacyKey ? (academicoCache[resolvedLegacyKey] || []) : [];
     const item = items[index];
     if (item){
       if (typeSel) typeSel.value = item.tipo || "Parcial";
@@ -977,8 +1042,9 @@ editingIndex = -1;
         estado: statusSel?.value
       };
 
-      const { dateKey, index } = acadEditing;
-      if (!dateKey) return;
+      const { dateKey, index, legacyKey } = acadEditing;
+      const normalizedKey = getDayKey(dateKey);
+      if (!normalizedKey) return;
 
       const shouldRefreshDayModal = acadDayModalBg && acadDayModalBg.style.display === "flex";
       try{
@@ -988,20 +1054,24 @@ editingIndex = -1;
         const snap = await getDoc(ref);
         let data = snap.exists() ? snap.data() : {};
         if (!data.academico) data.academico = {};
-        if (!Array.isArray(data.academico[dateKey])) data.academico[dateKey] = [];
+        if (legacyKey && Array.isArray(data.academico[legacyKey]) && !Array.isArray(data.academico[normalizedKey])){
+          data.academico[normalizedKey] = data.academico[legacyKey];
+          delete data.academico[legacyKey];
+        }
+        if (!Array.isArray(data.academico[normalizedKey])) data.academico[normalizedKey] = [];
 
-        if (index >= 0) data.academico[dateKey][index] = item;
-        else data.academico[dateKey].push(item);
+        if (index >= 0) data.academico[normalizedKey][index] = item;
+        else data.academico[normalizedKey].push(item);
 
         await setDoc(ref, data);
         academicoCache = data.academico || {};
-        acadSelectedDateKey = dateKey;
+        acadSelectedDateKey = normalizedKey;
         renderAcadCalendar();
-        renderAcadInfoPanel(dateKey);
-        if (shouldRefreshDayModal) openAcadDayModal(dateKey);
+        renderRightPanel(normalizedKey);
+        if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Académico guardado.");
-        console.log("[calendario] save academico", { dateKey, index });
+        console.log("[calendario] save academico", { dateKey: normalizedKey, index });
       }catch(e){
         CTX?.notifyError?.("No se pudo guardar en Académico: " + (e.message || e));
       }
@@ -1015,7 +1085,8 @@ editingIndex = -1;
       const user = getCurrentUser();
       if (!user) return;
       const { dateKey, index } = acadEditing;
-      if (!dateKey || index < 0) return;
+      const normalizedKey = getDayKey(dateKey);
+      if (!normalizedKey || index < 0) return;
 
       const ok = await CTX?.showConfirm?.({
         title:"Eliminar académico",
@@ -1034,20 +1105,21 @@ editingIndex = -1;
         const snap = await getDoc(ref);
         if (!snap.exists()) return;
         const data = snap.data() || {};
-        if (!Array.isArray(data.academico?.[dateKey])) return;
+        const storageKey = resolveAcadStorageKey(normalizedKey, data.academico);
+        if (!storageKey || !Array.isArray(data.academico?.[storageKey])) return;
 
-        data.academico[dateKey].splice(index,1);
-        if (!data.academico[dateKey].length) delete data.academico[dateKey];
+        data.academico[storageKey].splice(index,1);
+        if (!data.academico[storageKey].length) delete data.academico[storageKey];
 
         await setDoc(ref, data);
         academicoCache = data.academico || {};
-        acadSelectedDateKey = dateKey;
+        acadSelectedDateKey = normalizedKey;
         renderAcadCalendar();
-        renderAcadInfoPanel(dateKey);
-        if (shouldRefreshDayModal) openAcadDayModal(dateKey);
+        renderRightPanel(normalizedKey);
+        if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Item eliminado.");
-        console.log("[calendario] delete academico", { dateKey, index });
+        console.log("[calendario] delete academico", { dateKey: normalizedKey, index });
       }catch(e){
         CTX?.notifyError?.("No se pudo eliminar: " + (e.message || e));
       }
