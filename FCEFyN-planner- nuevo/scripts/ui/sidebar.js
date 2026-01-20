@@ -61,14 +61,7 @@ export function createQuickSidebar(options){
 
     label.appendChild(ico);
     label.appendChild(txt);
-
-    const pill = document.createElement("span");
-    pill.className = "qs-pill";
-    pill.textContent = it.badge || "";
-
     row.appendChild(label);
-    row.appendChild(pill);
-
     row.addEventListener("click", ()=>{
       if (typeof onSelect === "function") onSelect(it.id);
       setActive(it.id);

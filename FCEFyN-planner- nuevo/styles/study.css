@@ -213,7 +213,7 @@ button{
 .help-btn:hover{ filter:brightness(1.05); }
 
 .page-layout{
-  --sidebar-expanded:240px;
+  --sidebar-expanded:190px;
   --sidebar-collapsed:96px;
   display:grid;
   grid-template-columns:var(--sidebar-expanded) minmax(0,1fr);
@@ -363,7 +363,9 @@ button{
     }
     .cal-nav-btn:hover{ border-color:var(--color-accent-2); filter:brightness(1.05); }
 
-    .grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+    .grid{ display:grid; 
+      grid-template-columns:repeat(7,1fr); gap:8px;
+    }
     .dow{
       font-size:.78rem;
       color:var(--color-muted);

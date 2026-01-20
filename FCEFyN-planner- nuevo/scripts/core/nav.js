@@ -1,4 +1,4 @@
-import { createQuickSidebar } from "../../ui/sidebar.js";
+import { createQuickSidebar } from "../ui/sidebar.js";
 
 export const navItems = [
   { id:"inicio", label:"Inicio", icon:"🏠" },
