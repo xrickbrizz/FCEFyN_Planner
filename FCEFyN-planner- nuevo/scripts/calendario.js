@@ -549,7 +549,10 @@ export function renderAcadCalendar(){
     items.forEach((item, idx)=>{
       const row = document.createElement("div");
       row.className = "acad-day-item";
-      row.addEventListener("click", ()=> openAcadModalForDate(dateKey, idx));
+      row.addEventListener("click", (e)=> {
+        e.stopPropagation();
+        openAcadModalForDate(dateKey, idx);
+      });
 
       const left = document.createElement("div");
       left.className = "acad-item-left";
@@ -585,9 +588,11 @@ export function renderAcadCalendar(){
 
     card.addEventListener("click", ()=>{
       console.log("[calendario] click academico day", { dateKey });
+      // Reusa la misma lógica de apertura del modal del calendario principal.
       acadSelectedDateKey = dateKey;
       highlightAcadSelection(dateKey);
       openAcadDetail(dateKey);
+      openAcadModalForDate(dateKey, -1);
     });
 
     acadGrid.appendChild(card);
@@ -655,7 +660,7 @@ function openAcadDetail(dateKey){
   if (!items.length){
     const empty = document.createElement("div");
     empty.className = "acad-detail-empty";
-    empty.textContent = "No hay items para esta fecha. Usá “Añadir” para crear uno.";
+    empty.textContent = "No hay items para esta fecha. Tocá el día para crear uno.";
     acadDetailList.appendChild(empty);
   }
 

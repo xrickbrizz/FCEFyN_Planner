@@ -630,6 +630,10 @@ button{
       font-size:.9rem;
       padding:.35rem 0;
     }
+    .acad-add-fallback{
+      opacity:.35;
+      filter:saturate(.75);
+    }
     .day.is-selected{
       border-color:rgba(var(--color-accent-rgb),.6);
       box-shadow:0 0 0 1px rgba(var(--color-accent-rgb),.2), 0 10px 28px rgba(var(--color-accent-rgb),.25);
