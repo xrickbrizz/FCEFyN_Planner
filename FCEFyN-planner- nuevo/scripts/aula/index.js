@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc } from "../core/firebase.js";
-import { setCalendarioCaches } from "../calendario.js";
+import { setCalendarioCaches } from "./calendario.js";
 import Materias from "./materias.js";
 import Horarios from "./horarios.js";
 import Planner from "./planner.js";

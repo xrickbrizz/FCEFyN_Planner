@@ -1,8 +1,8 @@
 import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser } from "./core/session.js";
 import { showToast, showConfirm } from "../ui/notifications.js";
-import { initNav, navItems } from "./nav.js";
-import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./calendario.js";
+import { initNav, navItems } from "./core/nav.js";
+import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
 
