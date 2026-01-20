@@ -15,6 +15,9 @@ let acadViewYear = null;
 let acadViewMonth = null;
 let acadEditing = { dateKey: null, index: -1 };
 let acadSelectedDateKey = null;
+let acadLastClick = { dateKey: null, time: 0 };
+let acadHoverDateKey = null;
+const acadDoubleClickWindow = 550;
 
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
@@ -26,10 +29,16 @@ const acadDetailTitle = document.getElementById("acadDetailTitle");
 const acadDetailSub = document.getElementById("acadDetailSub");
 const acadDetailCount = document.getElementById("acadDetailCount");
 const acadDetailList = document.getElementById("acadDetailList");
-const btnAcadAddFromDetail = document.getElementById("btnAcadAddFromDetail");
-const btnAcadAddGlobal = document.getElementById("btnAcadAddGlobal");
-const acadWidgetsBox = document.getElementById("acadWidgets");
-const acadNext7Box = document.getElementById("acadNext7");
+const acadInfoEmpty = document.getElementById("acadInfoEmpty");
+const acadEmptyTitle = document.getElementById("acadEmptyTitle");
+const acadEmptySub = document.getElementById("acadEmptySub");
+const acadDayModalBg = document.getElementById("acadDayModalBg");
+const acadDayModalTitle = document.getElementById("acadDayModalTitle");
+const acadDayModalSubtitle = document.getElementById("acadDayModalSubtitle");
+const acadDayModalList = document.getElementById("acadDayModalList");
+const acadRecordDetail = document.getElementById("acadRecordDetail");
+const btnAcadDayAdd = document.getElementById("btnAcadDayAdd");
+const btnAcadDayClose = document.getElementById("btnAcadDayClose");
 
 const getSubjects = () => {
   if (!CTX) return [];
@@ -57,6 +66,8 @@ export function initCalendario(ctx){
   warnMissing("acadMonthTitle", acadMonthTitle);
   warnMissing("acadDetailBox", acadDetailBox);
   warnMissing("acadDetailList", acadDetailList);
+  warnMissing("acadInfoEmpty", acadInfoEmpty);
+  warnMissing("acadDayModalBg", acadDayModalBg);
 
   initStudyNav();
   initAcademicoNav();
@@ -133,6 +144,49 @@ function escapeHtml(s){
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+function timeToMinutes(timeStr){
+  if (!timeStr || typeof timeStr !== "string") return null;
+  const [hh, mm] = timeStr.split(":").map(n => parseInt(n, 10));
+  if ([hh, mm].some(n => Number.isNaN(n))) return null;
+  if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null;
+  return hh * 60 + mm;
+}
+function minutesToTime(total){
+  if (typeof total !== "number" || Number.isNaN(total)) return "";
+  const clamped = Math.min(Math.max(total, 0), 23 * 60 + 59);
+  const hh = Math.floor(clamped / 60);
+  const mm = clamped % 60;
+  return pad2(hh) + ":" + pad2(mm);
+}
+function getAcadItemMinutes(item){
+  if (!item) return null;
+  if (typeof item.minutos === "number") return item.minutos;
+  if (typeof item.minutos === "string"){
+    const parsed = parseInt(item.minutos, 10);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+  const parts = dtLocalToParts(item.cuando || item.when || "");
+  if (!parts) return null;
+  return parts.hh * 60 + parts.mm;
+}
+function getAcadItems(dateKey){
+  const raw = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey] : [];
+  const items = raw.map((item, index)=> ({ item, index }));
+  items.sort((a,b)=> (getAcadItemMinutes(a.item) ?? 0) - (getAcadItemMinutes(b.item) ?? 0));
+  return items;
+}
+function getAcadTimeLabel(item){
+  const minutes = getAcadItemMinutes(item);
+  if (minutes === null) return "—";
+  return minutesToTime(minutes);
+}
+function dateFromKeyAndMinutes(dateKey, minutes){
+  const parts = ymdFromDateKey(dateKey);
+  if (!parts || minutes === null) return null;
+  const hh = Math.floor(minutes / 60);
+  const mm = minutes % 60;
+  return new Date(parts.y, parts.m - 1, parts.d, hh, mm);
 }
 
 function initStudyNav(){
@@ -472,21 +526,20 @@ function initAcademicoNav(){
   } else {
     warnMissing("btnAcadToday", todayBtn);
   }
-  if (btnAcadAddFromDetail){
-    btnAcadAddFromDetail.addEventListener("click", ()=>{
+  if (btnAcadDayAdd){
+    btnAcadDayAdd.addEventListener("click", ()=>{
       if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
     });
   } else {
-    warnMissing("btnAcadAddFromDetail", btnAcadAddFromDetail);
+    warnMissing("btnAcadDayAdd", btnAcadDayAdd);
   }
-  if (btnAcadAddGlobal){
-    btnAcadAddGlobal.addEventListener("click", ()=>{
-      const now = new Date();
-      const fallbackKey = dateKeyFromYMD(now.getFullYear(), now.getMonth()+1, now.getDate());
-      openAcadModalForDate(acadSelectedDateKey || fallbackKey, -1);
-    });
+  if (btnAcadDayClose && acadDayModalBg){
+    btnAcadDayClose.addEventListener("click", ()=>{ acadDayModalBg.style.display = "none"; });
   } else {
-    warnMissing("btnAcadAddGlobal", btnAcadAddGlobal);
+    warnMissing("btnAcadDayClose", btnAcadDayClose);
+  }
+  if (acadDayModalBg){
+    acadDayModalBg.addEventListener("click", (e)=>{ if (e.target.id === "acadDayModalBg") e.target.style.display = "none"; });
   }
 }
 
@@ -540,18 +593,17 @@ export function renderAcadCalendar(){
     head.innerHTML = `<span>${d}</span><span class="today-dot"></span>`;
     card.appendChild(head);
 
-    const items = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey] : [];
-    items.sort((a,b)=> (a.cuando || a.when || "").localeCompare(b.cuando || b.when || ""));
+    const items = getAcadItems(dateKey);
 
     const list = document.createElement("div");
     list.className = "acad-day-list";
 
-    items.forEach((item, idx)=>{
+    items.forEach(({ item, index })=>{
       const row = document.createElement("div");
       row.className = "acad-day-item";
       row.addEventListener("click", (e)=> {
         e.stopPropagation();
-        openAcadModalForDate(dateKey, idx);
+        openAcadDayModal(dateKey, index);
       });
 
       const left = document.createElement("div");
@@ -567,8 +619,7 @@ export function renderAcadCalendar(){
 
       const right = document.createElement("div");
       right.className = "acad-item-right";
-      const parts = dtLocalToParts(item.cuando || item.when || "");
-      right.textContent = parts ? fmtShortDateTimeFromParts(parts) : "—";
+      right.textContent = getAcadTimeLabel(item);
 
       row.appendChild(left);
       row.appendChild(mid);
@@ -588,18 +639,20 @@ export function renderAcadCalendar(){
 
     card.addEventListener("click", ()=>{
       console.log("[calendario] click academico day", { dateKey });
-      // Reusa la misma lógica de apertura del modal del calendario principal.
-      acadSelectedDateKey = dateKey;
-      highlightAcadSelection(dateKey);
-      openAcadDetail(dateKey);
-      openAcadModalForDate(dateKey, -1);
+      handleAcadDayClick(dateKey);
+    });
+    card.addEventListener("mouseenter", ()=>{
+      handleAcadDayHover(dateKey);
+    });
+    card.addEventListener("mouseleave", ()=>{
+      handleAcadDayHoverEnd(dateKey);
     });
 
     acadGrid.appendChild(card);
   }
 
   highlightAcadSelection(acadSelectedDateKey);
-  openAcadDetail(acadSelectedDateKey || todayKey);
+  renderAcadInfoPanel(acadSelectedDateKey || todayKey);
 }
 
 function highlightAcadSelection(dateKey){
@@ -610,27 +663,39 @@ function highlightAcadSelection(dateKey){
   });
 }
 
-function openAcadDetail(dateKey){
-  if (!acadDetailBox || !acadDetailTitle || !acadDetailSub || !acadDetailList || !acadDetailCount) return;
+function renderAcadInfoPanel(dateKey, { isHover = false } = {}){
+  if (!acadDetailBox || !acadDetailTitle || !acadDetailSub || !acadDetailList || !acadDetailCount || !acadInfoEmpty) return;
   const parts = ymdFromDateKey(dateKey);
   if (!parts){
     acadDetailBox.style.display = "none";
+    acadInfoEmpty.style.display = "flex";
     return;
   }
 
-  acadSelectedDateKey = dateKey;
-  highlightAcadSelection(dateKey);
+  if (!isHover){
+    acadSelectedDateKey = dateKey;
+    highlightAcadSelection(dateKey);
+  }
 
+  const items = getAcadItems(dateKey);
+  const hasItems = items.length > 0;
+
+  if (!hasItems){
+    acadDetailBox.style.display = "none";
+    acadInfoEmpty.style.display = "flex";
+    if (acadEmptyTitle) acadEmptyTitle.textContent = "No hay registros";
+    if (acadEmptySub) acadEmptySub.textContent = "Día " + parts.d + "/" + parts.m + "/" + parts.y;
+    return;
+  }
+
+  acadInfoEmpty.style.display = "none";
   acadDetailTitle.textContent = "Detalle del " + parts.d + "/" + parts.m;
   acadDetailSub.textContent = "Año " + parts.y;
-  const items = Array.isArray(academicoCache?.[dateKey]) ? academicoCache[dateKey].slice() : [];
-  items.sort((a,b)=> (a.cuando || a.when || "").localeCompare(b.cuando || b.when || ""));
-
   acadDetailCount.textContent = String(items.length);
   acadDetailList.innerHTML = "";
   acadDetailBox.style.display = "block";
 
-  items.forEach((item, idx)=>{
+  items.forEach(({ item })=>{
     const row = document.createElement("div");
     row.className = "acad-detail-row";
 
@@ -638,88 +703,165 @@ function openAcadDetail(dateKey){
     left.className = "acad-detail-text";
     left.innerHTML = `
       <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
-      <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")}</div>
+      <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
       <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
     `;
 
-    const right = document.createElement("div");
-    right.className = "acad-detail-actions";
-    const btnEdit = document.createElement("button");
-    btnEdit.className = "btn-outline btn-small";
-    btnEdit.textContent = "Editar";
-    btnEdit.addEventListener("click", ()=> openAcadModalForDate(dateKey, idx));
-
-    right.appendChild(btnEdit);
-
     row.appendChild(left);
-    row.appendChild(right);
-
     acadDetailList.appendChild(row);
   });
+}
+
+function handleAcadDayClick(dateKey){
+  const now = Date.now();
+  if (acadLastClick.dateKey === dateKey && (now - acadLastClick.time) <= acadDoubleClickWindow){
+    acadLastClick = { dateKey: null, time: 0 };
+    openAcadModalForDate(dateKey, -1);
+    return;
+  }
+  acadLastClick = { dateKey, time: now };
+  renderAcadInfoPanel(dateKey);
+  openAcadDayModal(dateKey);
+}
+
+function handleAcadDayHover(dateKey){
+  const items = getAcadItems(dateKey);
+  if (items.length) return;
+  acadHoverDateKey = dateKey;
+  renderAcadInfoPanel(dateKey, { isHover: true });
+}
+
+function handleAcadDayHoverEnd(dateKey){
+  if (acadHoverDateKey !== dateKey) return;
+  acadHoverDateKey = null;
+  renderAcadInfoPanel(acadSelectedDateKey);
+}
+
+function openAcadDayModal(dateKey, focusIndex = -1){
+  if (!acadDayModalBg || !acadDayModalTitle || !acadDayModalSubtitle || !acadDayModalList) return;
+  const parts = ymdFromDateKey(dateKey);
+  if (!parts) return;
+
+  acadSelectedDateKey = dateKey;
+  highlightAcadSelection(dateKey);
+
+  const items = getAcadItems(dateKey);
+  acadDayModalTitle.textContent = "Detalle del " + parts.d + "/" + parts.m;
+  acadDayModalSubtitle.textContent = "Año " + parts.y;
+  acadDayModalList.innerHTML = "";
+  if (acadRecordDetail){
+    acadRecordDetail.style.display = "none";
+    acadRecordDetail.innerHTML = "";
+  }
 
   if (!items.length){
     const empty = document.createElement("div");
     empty.className = "acad-detail-empty";
-    empty.textContent = "No hay items para esta fecha. Tocá el día para crear uno.";
-    acadDetailList.appendChild(empty);
+    empty.textContent = "No hay registros para este día.";
+    acadDayModalList.appendChild(empty);
+  } else {
+    items.forEach(({ item, index })=>{
+      const row = document.createElement("div");
+      row.className = "acad-detail-row";
+
+      const left = document.createElement("div");
+      left.className = "acad-detail-text";
+      left.innerHTML = `
+        <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
+        <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
+        <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
+      `;
+
+      const right = document.createElement("div");
+      right.className = "acad-detail-actions";
+
+      const btnView = document.createElement("button");
+      btnView.className = "btn-outline btn-small";
+      btnView.textContent = "Ver detalles";
+      btnView.addEventListener("click", ()=>{
+        renderAcadRecordDetail(item, dateKey);
+      });
+
+      const btnEdit = document.createElement("button");
+      btnEdit.className = "btn-outline btn-small";
+      btnEdit.textContent = "Editar";
+      btnEdit.addEventListener("click", ()=> openAcadModalForDate(dateKey, index));
+
+      const btnDelete = document.createElement("button");
+      btnDelete.className = "btn-danger btn-small";
+      btnDelete.textContent = "Borrar";
+      btnDelete.addEventListener("click", async ()=>{
+        await deleteAcadItem(dateKey, index);
+      });
+
+      right.appendChild(btnView);
+      right.appendChild(btnEdit);
+      right.appendChild(btnDelete);
+
+      row.appendChild(left);
+      row.appendChild(right);
+      acadDayModalList.appendChild(row);
+
+      if (focusIndex === index){
+        renderAcadRecordDetail(item, dateKey);
+      }
+    });
   }
 
-  updateAcadWidgets();
+  acadDayModalBg.style.display = "flex";
 }
 
-function updateAcadWidgets(){
-  if (!acadWidgetsBox || !acadNext7Box) return;
-  const items = [];
-  Object.keys(academicoCache || {}).forEach(dateKey =>{
-    const arr = Array.isArray(academicoCache[dateKey]) ? academicoCache[dateKey] : [];
-    arr.forEach(item =>{
-      const d = dateFromLocal(item.cuando || item.when || "");
-      if (d && !isNaN(d)) items.push({ ...item, _date:d, _dateKey:dateKey });
-    });
+function renderAcadRecordDetail(item, dateKey){
+  if (!acadRecordDetail) return;
+  const minutes = getAcadItemMinutes(item);
+  const parts = ymdFromDateKey(dateKey);
+  const timeLabel = minutes !== null ? minutesToTime(minutes) : "—";
+  const dateLabel = parts ? parts.d + "/" + parts.m + "/" + parts.y : "—";
+  acadRecordDetail.style.display = "block";
+  acadRecordDetail.innerHTML = `
+    <strong>${escapeHtml(item.titulo || "(sin título)")}</strong><br/>
+    <span>${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")}</span><br/>
+    <span>Estado: ${escapeHtml(item.estado || "—")}</span><br/>
+    <span>Fecha: ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}</span>
+    ${item.notas || item.notes ? `<div style="margin-top:.45rem;">${escapeHtml(item.notas || item.notes || "")}</div>` : ""}
+  `;
+}
+
+async function deleteAcadItem(dateKey, index){
+  const user = getCurrentUser();
+  if (!user) return;
+  if (index < 0) return;
+
+  const ok = await CTX?.showConfirm?.({
+    title:"Eliminar académico",
+    message:"¿Seguro que querés eliminar este item?",
+    confirmText:"Eliminar",
+    cancelText:"Cancelar",
+    danger:true
   });
+  if (!ok) return;
 
-  const now = new Date();
-  const limit30 = new Date(now); limit30.setDate(limit30.getDate() + 30);
-  const back30 = new Date(now); back30.setDate(back30.getDate() - 30);
-  const limit7 = new Date(now); limit7.setDate(limit7.getDate() + 7);
+  try{
+    const { db, doc, getDoc, setDoc } = CTX || {};
+    if (!db || !doc || !getDoc || !setDoc) return;
+    const ref = doc(db, "planner", user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+    const data = snap.data() || {};
+    if (!Array.isArray(data.academico?.[dateKey])) return;
 
-  const fmtLabel = (it)=>{
-    const parts = dtLocalToParts(it?.cuando || it?.when || "");
-    return parts ? fmtShortDateTimeFromParts(parts) : "—";
-  };
+    data.academico[dateKey].splice(index,1);
+    if (!data.academico[dateKey].length) delete data.academico[dateKey];
 
-  const pending = items
-    .filter(it => (it.estado || "pending") !== "done" && it._date >= now)
-    .sort((a,b)=> a._date - b._date);
-  const next = pending[0];
-
-  const pending30 = items.filter(it =>
-    (it.estado || "pending") !== "done" && it._date >= now && it._date <= limit30
-  ).length;
-  const done30 = items.filter(it =>
-    (it.estado || "pending") === "done" && it._date >= back30 && it._date <= limit30
-  ).length;
-
-  acadWidgetsBox.innerHTML =
-    "• Próximo vencimiento: <strong>" + (next ? (fmtLabel(next) + " · " + escapeHtml(next.titulo || next.tipo || "")) : "—") + "</strong><br/>" +
-    "• Pendientes (30 días): <strong>" + pending30 + "</strong><br/>" +
-    "• Hechos (30 días): <strong>" + done30 + "</strong>";
-
-  const next7 = items
-    .filter(it => it._date >= now && it._date <= limit7)
-    .sort((a,b)=> a._date - b._date)
-    .slice(0, 10);
-
-  acadNext7Box.innerHTML = "";
-  if (!next7.length){
-    acadNext7Box.textContent = "—";
-  } else {
-    next7.forEach(it =>{
-      const row = document.createElement("div");
-      row.className = "acad-next-row";
-      row.textContent = fmtLabel(it) + " · " + (it.tipo || "Item") + " · " + (it.titulo || it.materia || "");
-      acadNext7Box.appendChild(row);
-    });
+    await setDoc(ref, data);
+    academicoCache = data.academico || {};
+    renderAcadCalendar();
+    renderAcadInfoPanel(dateKey);
+    openAcadDayModal(dateKey);
+    CTX?.notifySuccess?.("Item eliminado.");
+    console.log("[calendario] delete academico", { dateKey, index });
+  }catch(e){
+    CTX?.notifyError?.("No se pudo eliminar: " + (e.message || e));
   }
 }
 
@@ -756,7 +898,8 @@ function openAcadModalForDate(dateKey, index){
         if (opt) subjSel.value = opt.value;
       }
       if (titleInp) titleInp.value = item.titulo || "";
-      if (whenInp) whenInp.value = item.cuando || item.when || "";
+      const minutes = getAcadItemMinutes(item);
+      if (whenInp) whenInp.value = minutes !== null ? minutesToTime(minutes) : "12:00";
       if (notesTxt) notesTxt.value = item.notas || item.notes || "";
       if (statusSel) statusSel.value = item.estado || "pending";
     }
@@ -766,7 +909,7 @@ function openAcadModalForDate(dateKey, index){
     if (titleEl) titleEl.textContent = "Añadir académico";
     if (btnDelete) btnDelete.style.display = "none";
     if (titleInp) titleInp.value = "";
-    if (whenInp) whenInp.value = partsToDtLocal({ y:parts.y, m:parts.m, d:parts.d, hh:12, mm:0 });
+    if (whenInp) whenInp.value = "12:00";
     if (notesTxt) notesTxt.value = "";
     if (statusSel) statusSel.value = "pending";
     if (typeSel) typeSel.value = "Parcial";
@@ -815,7 +958,13 @@ editingIndex = -1;
         return;
       }
       if (!whenInp?.value){
-        CTX?.notifyWarn?.("Indicá fecha y hora.");
+        CTX?.notifyWarn?.("Indicá la hora.");
+        return;
+      }
+
+      const minutos = timeToMinutes(whenInp.value);
+      if (minutos === null){
+        CTX?.notifyWarn?.("Indicá una hora válida (HH:MM).");
         return;
       }
 
@@ -823,7 +972,7 @@ editingIndex = -1;
         tipo: typeSel?.value,
         materia: subjSel.value,
         titulo: titleInp.value.trim(),
-        cuando: whenInp.value,
+        minutos,
         notas: notesTxt?.value,
         estado: statusSel?.value
       };
@@ -831,6 +980,7 @@ editingIndex = -1;
       const { dateKey, index } = acadEditing;
       if (!dateKey) return;
 
+      const shouldRefreshDayModal = acadDayModalBg && acadDayModalBg.style.display === "flex";
       try{
         const { db, doc, getDoc, setDoc } = CTX || {};
         if (!db || !doc || !getDoc || !setDoc) return;
@@ -847,7 +997,8 @@ editingIndex = -1;
         academicoCache = data.academico || {};
         acadSelectedDateKey = dateKey;
         renderAcadCalendar();
-        openAcadDetail(dateKey);
+        renderAcadInfoPanel(dateKey);
+        if (shouldRefreshDayModal) openAcadDayModal(dateKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Académico guardado.");
         console.log("[calendario] save academico", { dateKey, index });
@@ -875,6 +1026,7 @@ editingIndex = -1;
       });
       if (!ok) return;
 
+      const shouldRefreshDayModal = acadDayModalBg && acadDayModalBg.style.display === "flex";
       try{
         const { db, doc, getDoc, setDoc } = CTX || {};
         if (!db || !doc || !getDoc || !setDoc) return;
@@ -891,7 +1043,8 @@ editingIndex = -1;
         academicoCache = data.academico || {};
         acadSelectedDateKey = dateKey;
         renderAcadCalendar();
-        openAcadDetail(dateKey);
+        renderAcadInfoPanel(dateKey);
+        if (shouldRefreshDayModal) openAcadDayModal(dateKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Item eliminado.");
         console.log("[calendario] delete academico", { dateKey, index });

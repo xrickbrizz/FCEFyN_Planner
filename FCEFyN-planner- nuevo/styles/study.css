@@ -513,6 +513,7 @@ button{
     @media(max-width:980px){ .acad-layout{ grid-template-columns:1fr; } }
     .acad-shell,
     .acad-detail,
+    .acad-widgets,
     .planner-box{
       background:var(--surface-card);
       border-radius:var(--radius-md);
@@ -528,11 +529,19 @@ button{
     }
     .acad-widgets{
     }
+    .acad-shell .day{
+      height:140px;
+      display:flex;
+      flex-direction:column;
+    }
     .acad-day-list{
       display:flex;
       flex-direction:column;
       gap:.4rem;
       margin-top:.4rem;
+      flex:1;
+      overflow:auto;
+      padding-right:.15rem;
     }
     .acad-day-item{
       display:grid;
@@ -622,6 +631,38 @@ button{
       justify-content:flex-end;
       flex:0 0 auto;
     }
+    .acad-info-panel{
+      display:flex;
+      flex-direction:column;
+      gap:.8rem;
+      min-height:100%;
+    }
+    .acad-info-empty{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:1.5rem 1rem;
+      border-radius:var(--radius-lg);
+      background:#eaf6e8;
+      border:1px solid rgba(41, 108, 72, 0.2);
+      min-height:260px;
+      gap:.6rem;
+    }
+    .acad-empty-logo img{
+      width:96px;
+      height:auto;
+      filter:drop-shadow(0 6px 12px rgba(0,0,0,.08));
+    }
+    .acad-empty-title{
+      font-weight:800;
+      color:#2a5d3b;
+    }
+    .acad-empty-sub{
+      color:#3c6e4f;
+      font-size:.9rem;
+    }
     .acad-next-row{
       font-size:.88rem;
       color:var(--color-text);
@@ -632,9 +673,28 @@ button{
       font-size:.9rem;
       padding:.35rem 0;
     }
-    .acad-add-fallback{
-      opacity:.35;
-      filter:saturate(.75);
+    .acad-day-modal-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:.75rem;
+      margin-bottom:.75rem;
+      flex-wrap:wrap;
+    }
+    .acad-day-modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:.8rem;
+    }
+    .acad-record-detail{
+      margin-top:.75rem;
+      padding:.75rem;
+      border-radius:var(--radius-md);
+      background:var(--color-surface-3);
+      border:1px solid var(--line-strong);
+      color:var(--color-text);
+      font-size:.9rem;
+      line-height:1.35;
     }
     .day.is-selected{
       border-color:rgba(var(--color-accent-rgb),.6);

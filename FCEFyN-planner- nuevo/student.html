@@ -114,14 +114,11 @@
               <button class="cal-nav-btn" id="btnAcadNext">▶</button>
               <h2 id="acadMonthTitle" style="margin:0;"></h2>
             </div>
-            <div class="cal-right">
-              <button class="btn-blue btn-small acad-add-fallback" id="btnAcadAddGlobal">Añadir</button>
-            </div>
           </div>
 
           <div class="acad-help">
             Parciales, TPs, Tareas, Informes y Recordatorios (se guardan en tu planner de Firebase).
-            <br/>Tip: tocá un día para ver el detalle a la derecha y acceder a acciones rápidas.
+            <br/>Tip: tocá un día para ver el detalle y tocá de nuevo para agregar un registro.
           </div>
 
           <div class="grid" id="acadDow">
@@ -130,28 +127,27 @@
           <div class="grid" id="acadGrid" style="margin-top:8px;"></div>
         </div>
         <div class="acad-widgets">
-          <div class="widgets-title">Widgets Académico</div>
-          <div class="widgets-list" id="acadWidgets">
-            • Próximo vencimiento: <strong>—</strong><br/>
-            • Pendientes (30 días): <strong>—</strong><br/>
-            • Hechos (30 días): <strong>—</strong>
-          </div>
-          <hr class="widgets-hr" />
-          <div class="widgets-title">Próximos 7 días</div>
-          <div class="widgets-list" id="acadNext7">—</div>
-
-          <div class="acad-detail" id="acadDetailBox" style="display:none;">
-            <div class="acad-detail-top">
-              <div>
-                <div class="acad-detail-title" id="acadDetailTitle">Detalle del día</div>
-                <div class="acad-detail-sub" id="acadDetailSub">—</div>
+          <div class="acad-info-panel" id="acadInfoPanel">
+            <div class="acad-info-empty" id="acadInfoEmpty">
+              <div class="acad-empty-logo">
+                <img src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
               </div>
-              <div style="display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end;">
-                <span class="badge-soft" id="acadDetailCount">0</span>
-                <button class="btn-blue btn-small acad-add-fallback" id="btnAcadAddFromDetail">Añadir</button>
-              </div>
+              <div class="acad-empty-title" id="acadEmptyTitle">Seleccioná un día</div>
+              <div class="acad-empty-sub" id="acadEmptySub">No hay registros para este día.</div>
             </div>
-            <div class="acad-detail-list" id="acadDetailList"></div>
+
+            <div class="acad-detail" id="acadDetailBox" style="display:none;">
+              <div class="acad-detail-top">
+                <div>
+                  <div class="acad-detail-title" id="acadDetailTitle">Detalle del día</div>
+                  <div class="acad-detail-sub" id="acadDetailSub">—</div>
+                </div>
+                <div style="display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end;">
+                  <span class="badge-soft" id="acadDetailCount">0</span>
+                </div>
+              </div>
+              <div class="acad-detail-list" id="acadDetailList"></div>
+            </div>
           </div>
         </div>  
       </div>
@@ -606,8 +602,8 @@
       <label>Título</label>
       <input id="acadTitle" placeholder="Ej: 1er Parcial" />
 
-      <label>Fecha y hora</label>
-      <input id="acadWhen" type="datetime-local" />
+      <label>Hora</label>
+      <input id="acadWhen" type="time" />
 
       <label>Notas (opcional)</label>
       <textarea id="acadNotes" placeholder="Detalles, requisitos, link, etc."></textarea>
@@ -622,6 +618,23 @@
         <button class="btn-gray btn-small" id="btnAcadCancel">Cancelar</button>
         <button class="btn-danger btn-small" id="btnAcadDelete" style="display:none;">Eliminar</button>
         <button class="btn-blue btn-small" id="btnAcadSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="acadDayModalBg">
+    <div class="modal">
+      <div class="acad-day-modal-top">
+        <div>
+          <h3 class="modal-title" id="acadDayModalTitle">Detalle del día</h3>
+          <div class="small-muted" id="acadDayModalSubtitle">—</div>
+        </div>
+        <button class="btn-blue btn-small" id="btnAcadDayAdd">Agregar registro</button>
+      </div>
+      <div class="acad-detail-list" id="acadDayModalList"></div>
+      <div class="acad-record-detail" id="acadRecordDetail" style="display:none;"></div>
+      <div class="acad-day-modal-actions">
+        <button class="btn-gray btn-small" id="btnAcadDayClose">Cerrar</button>
       </div>
     </div>
   </div>
