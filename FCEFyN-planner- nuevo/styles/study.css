@@ -364,8 +364,11 @@ button{
     .cal-nav-btn:hover{ border-color:var(--color-accent-2); filter:brightness(1.05); }
 
     .grid{ display:grid; 
-      grid-template-columns:repeat(7,1fr); gap:8px;
+      grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px;
+      width:100%;
+      min-width:0;
     }
+    .grid > *{ min-width:0; }
     .dow{
       font-size:.78rem;
       color:var(--color-muted);
@@ -383,6 +386,9 @@ button{
       font-size:.9rem;
       position:relative;
       border:1px solid rgba(var(--color-border-rgb),.9);
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
     }
     .day:hover{ border-color:rgba(var(--color-accent-rgb),.8); }
     .day-number{
@@ -392,7 +398,9 @@ button{
       color:var(--text-soft);
       font-weight:800;
       gap:.45rem;
+      min-width:0;
     }
+    .day-number span{ min-width:0; }
     .today-dot{
       width:8px; height:8px; border-radius:50%;
       background:var(--color-accent-2);
@@ -414,6 +422,12 @@ button{
       font-size:.82rem;
       margin-top:6px;
       box-shadow:0 8px 18px var(--shadow-color-soft);
+      display:block;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      min-width:0;
     }
 
     /* ESTADÍSTICAS */
@@ -533,6 +547,9 @@ button{
       height:140px;
       display:flex;
       flex-direction:column;
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
     }
     .acad-day-list{
       display:flex;
@@ -540,8 +557,11 @@ button{
       gap:.4rem;
       margin-top:.4rem;
       flex:1;
-      overflow:auto;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding-right:.15rem;
+      max-width:100%;
+      min-width:0;
     }
     .acad-day-item{
       display:grid;
@@ -554,16 +574,35 @@ button{
       border:1px solid var(--line-strong);
       box-shadow:0 8px 22px var(--shadow-color-soft);
       cursor:pointer;
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
     }
     .acad-day-item:hover{ border-color:rgba(var(--color-accent-rgb),.5); }
-    .acad-item-left{ display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
+    .acad-item-left{
+      display:flex;
+      align-items:center;
+      gap:.35rem;
+      flex-wrap:wrap;
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
+    }
     .acad-item-title{
       font-weight:700;
       font-size:.95rem;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     .acad-item-meta{
       color:var(--text-soft);
       font-size:.82rem;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     .acad-item-right{
       font-size:.85rem;
