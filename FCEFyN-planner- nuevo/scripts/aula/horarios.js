@@ -6,7 +6,8 @@ const dayKeys = ['lunes','martes','miercoles','jueves','viernes','sabado'];
 const dayLabels = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
 const minutesStart = 8*60;
 const minutesEnd   = 23*60;
-const pxPerMinute  = 40/60;
+const HOUR_ROW_HEIGHT = 40;
+const PX_PER_MIN = HOUR_ROW_HEIGHT / 60;
 
 const agendaGrid = document.getElementById("agendaGrid");
 const agendaModalBg = document.getElementById("agendaModalBg");
@@ -24,6 +25,20 @@ function timeToMinutes(t){
   if (parts.length !== 2) return NaN;
   const h = parts[0], m = parts[1];
   return h*60 + m;
+}
+function clampMinutes(value, min, max){
+  return Math.max(min, Math.min(max, value));
+}
+function computeBlockStyle(startHHMM, endHHMM){
+  let startM = timeToMinutes(startHHMM);
+  let endM = timeToMinutes(endHHMM);
+  if (isNaN(startM) || isNaN(endM)) return null;
+  startM = clampMinutes(startM, minutesStart, minutesEnd);
+  endM = clampMinutes(endM, minutesStart, minutesEnd);
+  const duration = Math.max(1, endM - startM);
+  const top = (startM - minutesStart) * PX_PER_MIN;
+  const height = duration * PX_PER_MIN;
+  return { top, height };
 }
 
 function ensureAgendaStructure(){
@@ -47,6 +62,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
   if (!grid) return;
   grid.innerHTML = "";
   grid.style.gridTemplateColumns = `70px repeat(${dayKeys.length},1fr)`;
+  grid.style.setProperty("--agenda-hour-height", `${HOUR_ROW_HEIGHT}px`);
 
   const hourCol = document.createElement("div");
   hourCol.className = "agenda-hour-col";
@@ -75,12 +91,12 @@ function renderAgendaGridInto(grid, data, allowEdit){
 
     const inner = document.createElement("div");
     inner.className = "agenda-day-inner";
-    inner.style.height = ((minutesEnd - minutesStart) * pxPerMinute) + "px";
+    inner.style.height = ((minutesEnd - minutesStart) * PX_PER_MIN) + "px";
 
     for (let m = minutesStart; m <= minutesEnd; m += 60){
       const line = document.createElement("div");
       line.className = "agenda-line";
-      line.style.top = ((m - minutesStart) * pxPerMinute) + "px";
+      line.style.top = ((m - minutesStart) * PX_PER_MIN) + "px";
       inner.appendChild(line);
     }
 
@@ -88,16 +104,15 @@ function renderAgendaGridInto(grid, data, allowEdit){
     entries.sort((a,b)=> timeToMinutes(a.inicio) - timeToMinutes(b.inicio));
 
     entries.forEach((item, index)=>{
-      const startM = timeToMinutes(item.inicio);
-      const endM = timeToMinutes(item.fin);
-      if (isNaN(startM) || isNaN(endM) || endM <= startM) return;
+      const style = computeBlockStyle(item.inicio, item.fin);
+      if (!style) return;
 
       const block = document.createElement("div");
       block.className = "class-block";
       const color = CTX.subjectColor?.(item.materia);
       if (color) block.style.backgroundColor = color;
-      block.style.top = ((startM - minutesStart) * pxPerMinute) + "px";
-      block.style.height = ((endM - startM) * pxPerMinute) + "px";
+      block.style.top = `${style.top}px`;
+      block.style.height = `${style.height}px`;
 
       const title = document.createElement("strong");
       title.textContent = item.materia || "Materia";
