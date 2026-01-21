@@ -193,7 +193,15 @@
               <div class="small-muted">Completá los datos y guardá los cambios.</div>
             </div>
           </div>
-          <div class="subject-form-field">
+          <div class="notice" id="subjectCareerNotice" style="display:none;">
+            <div>
+              <strong>Necesitás elegir tu carrera en Perfil</strong> para habilitar materias automáticamente.
+            </div>
+            <div class="notice-actions">
+              <button class="btn-outline btn-small" id="subjectCareerNoticeBtn" type="button">Ir a Perfil</button>
+            </div>
+          </div>
+          <div class="subject-form-field" id="subjectCareerField">
             <label>Carrera</label>
             <select id="subjectCareer"></select>
           </div>
@@ -236,6 +244,20 @@
             Al borrar una materia podés elegir si se eliminan también sus clases y registros de estudio.
           </p>
         </div>
+      </div>
+    </div>
+
+    <div id="tab-planestudios" class="tab-card" style="display:none;">
+      <div class="planestudios-shell">
+        <div class="notice" id="planCareerNotice" style="display:none;">
+          <div>
+            <strong>Necesitás elegir tu carrera en Perfil</strong> para ver el plan de estudios.
+          </div>
+          <div class="notice-actions">
+            <button class="btn-outline btn-small" id="planCareerNoticeBtn" type="button">Ir a Perfil</button>
+          </div>
+        </div>
+        <iframe id="planFrame" class="planestudios-frame" title="Plan de estudios"></iframe>
       </div>
     </div>
 

@@ -255,13 +255,15 @@ function bindProfileHandlers(){
       const notifyWarn = CTX?.notifyWarn;
       const notifySuccess = CTX?.notifySuccess;
       const notifyError = CTX?.notifyError;
+      const showConfirm = CTX?.showConfirm;
       if (!currentUser || !db) return;
       const firstName = profileFirstNameInput?.value.trim() || "";
       const lastName = profileLastNameInput?.value.trim() || "";
       const name = `${firstName} ${lastName}`.trim();
       const careerSlug = profileCareerSelect?.value || "";
+      const previousCareerSlug = CTX?.AppState?.userProfile?.careerSlug || "";
       const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
-      const careerName = plan?.nombre || CTX?.AppState?.userProfile?.career || "";
+      const careerName = plan?.nombre || CTX?.AppState?.userProfile?.career || careerSlug;
       const yearRaw = profileYearInInput?.value.trim() || "";
       const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
       const documento = profileDocumentInput?.value.trim() || "";
@@ -270,6 +272,21 @@ function bindProfileHandlers(){
         notifyWarn?.("El año de ingreso debe ser un número válido.");
         setProfileStatus(profileStatusEl, "Revisá el año de ingreso.");
         return;
+      }
+      if (!careerSlug){
+        notifyWarn?.("Seleccioná una carrera antes de guardar.");
+        setProfileStatus(profileStatusEl, "La carrera es obligatoria.");
+        return;
+      }
+      if (previousCareerSlug && careerSlug !== previousCareerSlug){
+        const ok = await showConfirm?.({
+          title:"Cambiar carrera",
+          message:"Cambiar la carrera afecta Materias y Plan de estudios. ¿Continuar?",
+          confirmText:"Continuar",
+          cancelText:"Cancelar",
+          danger:true
+        });
+        if (!ok) return;
       }
 
       try{

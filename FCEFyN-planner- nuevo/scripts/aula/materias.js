@@ -5,6 +5,9 @@ let CTX = null;
 
 let subjectsListEl = document.getElementById("subjectsList");
 let subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
+let subjectCareerField = document.getElementById("subjectCareerField");
+let subjectCareerNotice = document.getElementById("subjectCareerNotice");
+let subjectCareerNoticeBtn = document.getElementById("subjectCareerNoticeBtn");
 let subjectCareerSelect = document.getElementById("subjectCareer");
 let subjectNameSelect = document.getElementById("subjectNameSelect");
 let subjectColorInput = document.getElementById("subjectColor");
@@ -36,6 +39,9 @@ const subjectColor = (materiaName) => {
 function resolveSubjectsUI(){
   subjectsListEl = document.getElementById("subjectsList");
   subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
+  subjectCareerField = document.getElementById("subjectCareerField");
+  subjectCareerNotice = document.getElementById("subjectCareerNotice");
+  subjectCareerNoticeBtn = document.getElementById("subjectCareerNoticeBtn");
   subjectCareerSelect = document.getElementById("subjectCareer");
   subjectNameSelect = document.getElementById("subjectNameSelect");
   subjectColorInput = document.getElementById("subjectColor");
@@ -151,6 +157,10 @@ function bindSubjectsFormHandlers(){
     });
   }
 
+  if (subjectCareerNoticeBtn){
+    subjectCareerNoticeBtn.addEventListener("click", ()=> CTX?.showTab?.("perfil"));
+  }
+
   if (btnSubjectReset){
     btnSubjectReset.addEventListener("click", () => {
       CTX.aulaState.editingSubjectIndex = -1;
@@ -237,17 +247,18 @@ function bindSubjectsFormHandlers(){
   }
 }
 
-function resolvedCareerFromProfile(){
-  if (CTX.aulaState.plannerCareer && CTX.aulaState.plannerCareer.slug) return CTX.aulaState.plannerCareer;
+function getProfileCareerInfo(){
   const userProfile = CTX?.AppState?.userProfile || null;
-  if (userProfile && userProfile.careerSlug){
-    return { slug: userProfile.careerSlug, name: userProfile.career || userProfile.careerSlug };
+  if (userProfile?.careerSlug){
+    return { slug: userProfile.careerSlug, name: userProfile.career || userProfile.careerSlug, hasProfileCareer: true };
   }
-  if (userProfile && userProfile.career){
-    const plan = findPlanByName(userProfile.career);
-    if (plan) return { slug: plan.slug, name: plan.nombre };
-  }
-  return { slug:"", name:"" };
+  return { slug:"", name: userProfile?.career || "", hasProfileCareer: false };
+}
+
+function updateCareerUIState(hasProfileCareer){
+  if (subjectCareerField) subjectCareerField.style.display = hasProfileCareer ? "none" : "block";
+  if (subjectCareerSelect) subjectCareerSelect.disabled = !!hasProfileCareer;
+  if (subjectCareerNotice) subjectCareerNotice.style.display = hasProfileCareer ? "none" : "flex";
 }
 
 function updateSubjectPlanHint(){
@@ -276,11 +287,18 @@ function renderSubjectCareerOptions(){
     subjectCareerSelect.appendChild(opt);
   });
 
-  const resolved = resolvedCareerFromProfile();
-  const target = resolved.slug || "";
+  const profileInfo = getProfileCareerInfo();
+  let target = CTX.aulaState.plannerCareer?.slug || "";
+  if (!target && !profileInfo.hasProfileCareer && profileInfo.name){
+    const plan = findPlanByName(profileInfo.name);
+    if (plan) target = plan.slug;
+  }
   if (target){
     subjectCareerSelect.value = target;
-    if (!CTX.aulaState.plannerCareer.slug) CTX.aulaState.plannerCareer = { slug: target, name: resolved.name };
+    if (!CTX.aulaState.plannerCareer.slug){
+      const plan = (CTX.aulaState.careerPlans || []).find(p => p.slug === target);
+      CTX.aulaState.plannerCareer = { slug: target, name: plan?.nombre || target };
+    }
   } else {
     placeholder.selected = true;
   }
@@ -369,10 +387,30 @@ function renderSubjectNameOptions(selectedName=""){
 async function initSubjectsCareerUI(){
   resolveSubjectsUI();
   renderSubjectCareerOptions();
-  const slug = subjectCareerSelect?.value || "";
-  if (slug){
-    await setActiveCareer(slug, false);
+  await syncSubjectsCareer();
+}
+
+async function syncSubjectsCareer(){
+  resolveSubjectsUI();
+  const profileInfo = getProfileCareerInfo();
+  const profileSlug = profileInfo.slug || "";
+  updateCareerUIState(!!profileSlug);
+
+  if (profileSlug){
+    if (!CTX.aulaState.plannerCareer || CTX.aulaState.plannerCareer.slug !== profileSlug){
+      CTX.aulaState.plannerCareer = { slug: profileSlug, name: profileInfo.name || profileSlug };
+    }
+    if (subjectCareerSelect) subjectCareerSelect.value = profileSlug;
+    await setActiveCareer(profileSlug, false);
+    return;
+  }
+
+  const fallbackSlug = subjectCareerSelect?.value || CTX.aulaState.plannerCareer?.slug || "";
+  if (fallbackSlug){
+    await setActiveCareer(fallbackSlug, false);
   } else {
+    CTX.aulaState.plannerCareer = { slug:"", name:"" };
+    CTX.aulaState.careerSubjects = [];
     renderSubjectNameOptions();
     updateSubjectPlanHint();
   }
@@ -543,6 +581,7 @@ const Materias = {
     CTX.subjectColor = subjectColor;
     CTX.defaultSubjectColor = defaultSubjectColor;
     CTX.renderSubjectsOptions = renderSubjectsOptions;
+    CTX.syncSubjectsCareer = syncSubjectsCareer;
     CTX.getCareerPlans = () => CTX.aulaState.careerPlans || [];
     CTX.findPlanByName = findPlanByName;
     CTX.normalizeStr = normalizeStr;
@@ -558,7 +597,8 @@ const Materias = {
   defaultSubjectColor,
   themeColor,
   renderSubjectNameOptions,
-  setActiveCareer
+  setActiveCareer,
+  syncSubjectsCareer
 };
 
 export default Materias;

@@ -35,6 +35,7 @@ const helpModalBg = document.getElementById("helpModalBg");
 const helpModalTitle = document.getElementById("helpModalTitle");
 const helpModalBody = document.getElementById("helpModalBody");
 const btnHelpClose = document.getElementById("btnHelpClose");
+const planCareerNoticeBtn = document.getElementById("planCareerNoticeBtn");
 
 const helpContent = {
   inicio: {
@@ -75,9 +76,18 @@ const helpContent = {
   materias: {
     title: "Cómo usar Materias",
     bullets: [
-      "Elegí una carrera y seleccioná las materias desde la lista oficial.",
+      "Usá la carrera configurada en tu Perfil para cargar materias automáticamente.",
       "Al editar una materia, se actualiza en todos los registros asociados automáticamente.",
       "Si eliminás una materia, elegí si querés limpiar también sus clases y registros."
+    ]
+  },
+  planestudios: {
+    title: "Cómo usar Plan de estudios",
+    bullets: [
+      "El plan se carga automáticamente según tu carrera del Perfil.",
+      "Podés marcar estados por materia (promoción, regular, libre, en curso).",
+      "Los cambios se guardan en tu navegador para que sigas el progreso.",
+      "Si cambiás tu carrera, el plan se actualiza al volver a esta sección."
     ]
   },
   planificador: {
@@ -153,8 +163,33 @@ function closeHelpModal(){
 if (helpButton) helpButton.addEventListener("click", ()=> openHelpModal(navState.activeSection));
 if (btnHelpClose) btnHelpClose.addEventListener("click", closeHelpModal);
 if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === helpModalBg) closeHelpModal(); });
+if (planCareerNoticeBtn) planCareerNoticeBtn.addEventListener("click", ()=> window.showTab?.("perfil"));
 
 let sidebarCtrl = null;
+
+function openPlanEstudiosTab(){
+  const frame = document.getElementById("planFrame");
+  const notice = document.getElementById("planCareerNotice");
+  const profile = AppState.userProfile || null;
+  const careerSlug = profile?.careerSlug || "";
+  if (!careerSlug){
+    if (notice) notice.style.display = "flex";
+    if (frame){
+      frame.removeAttribute("src");
+      frame.dataset.slug = "";
+      frame.style.display = "none";
+    }
+    return;
+  }
+  if (notice) notice.style.display = "none";
+  if (frame){
+    frame.style.display = "block";
+    if (frame.dataset.slug !== careerSlug){
+      frame.dataset.slug = careerSlug;
+      frame.src = `plans.html?embed=1&slug=${encodeURIComponent(careerSlug)}&lock=1`;
+    }
+  }
+}
 
 window.showTab = function(name){
   if (name !== "mensajes") navState.lastNonMessagesSection = name;
@@ -164,6 +199,7 @@ window.showTab = function(name){
   const tabAcademico        = document.getElementById("tab-academico");
   const tabAgenda           = document.getElementById("tab-agenda");
   const tabMaterias         = document.getElementById("tab-materias");
+  const tabPlanEstudios     = document.getElementById("tab-planestudios");
   const tabPlanificador     = document.getElementById("tab-planificador");
   const tabProfesores       = document.getElementById("tab-profesores");
   const tabMensajes         = document.getElementById("tab-mensajes");
@@ -175,12 +211,15 @@ window.showTab = function(name){
   toggleTab(tabAcademico, name === "academico");
   toggleTab(tabAgenda, name === "agenda");
   toggleTab(tabMaterias, name === "materias");
+  toggleTab(tabPlanEstudios, name === "planestudios");
   toggleTab(tabPlanificador, name === "planificador");
   toggleTab(tabProfesores, name === "profesores");
   toggleTab(tabMensajes, name === "mensajes");
   toggleTab(tabPerfil, name === "perfil");
 
   if (name === "agenda") Aula.open("agenda");
+  if (name === "materias") appCtx?.syncSubjectsCareer?.();
+  if (name === "planestudios") openPlanEstudiosTab();
   if (name === "planificador") Aula.open("planificador");
   if (name === "estudio") renderStudyCalendar();
   if (name === "academico") renderAcadCalendar();
@@ -258,6 +297,7 @@ onSessionReady(async (user) => {
 
   await Aula.init(ctx);
   await Social.init(ctx);
+  appCtx?.syncSubjectsCareer?.();
 
   initCalendario({
     db,

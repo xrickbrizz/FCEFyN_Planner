@@ -40,6 +40,7 @@ import { showConfirm } from "./ui/notifications.js";
 (function(){
   const INDEX_URL = "./plans/plans_index.json";
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
+  const THEME_KEY = "fcefyn-theme";
 
   const title = document.getElementById("title");
   const msg = document.getElementById("msg");
@@ -49,6 +50,16 @@ import { showConfirm } from "./ui/notifications.js";
   const btnBack = document.getElementById("btnBack");
   const btnReset = document.getElementById("btnReset");
   const planSelect = document.getElementById("planSelect");
+  const params = new URLSearchParams(window.location.search);
+  const embedMode = params.get("embed") === "1";
+  const lockMode = params.get("lock") === "1";
+  const initialSlug = (params.get("slug") || "").trim();
+
+  if (embedMode) document.body.classList.add("plans-embed");
+  if (lockMode && planSelect) {
+    planSelect.disabled = true;
+    planSelect.title = "Carrera bloqueada";
+  }
 
   const labels = [
     "Ingreso","1º Semestre","2º Semestre","3º Semestre",
@@ -70,6 +81,15 @@ import { showConfirm } from "./ui/notifications.js";
   function hideMsg(){
     msg.style.display = "none";
     msg.textContent = "";
+  }
+
+  function applyThemeFromStorage(){
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved !== "dark" && saved !== "light") return;
+    const useDark = saved === "dark";
+    document.body.classList.toggle("dark-mode", useDark);
+    document.body.classList.toggle("light-mode", !useDark);
+    document.body.dataset.theme = useDark ? "dark" : "light";
   }
 
   function getBackUrl(){
@@ -440,10 +460,24 @@ function revalidateEstados() {
   });
 
   window.addEventListener("storage", (e)=>{ if(e.key === storageKey) updateUI(); });
+  window.addEventListener("storage", (e)=>{ if(e.key === THEME_KEY) applyThemeFromStorage(); });
 
   (async function init(){
     try{
       await loadIndex();
+
+      if (embedMode){
+        btnBack.style.display = "none";
+        btnReset.style.display = "none";
+        planSelect.style.display = "none";
+      } else if (lockMode){
+        planSelect.style.pointerEvents = "none";
+      }
+
+      if (initialSlug){
+        await loadPlanBySlug(initialSlug);
+        return;
+      }
 
       // 1) si venís desde plans_index.html o app.html sin query string, uso sessionStorage
       const saved = sessionStorage.getItem("selectedPlanSlug") || "";
@@ -461,6 +495,8 @@ function revalidateEstados() {
       showMsg("Error al cargar el índice: " + (e && e.message ? e.message : e));
     }
   })();
+
+  applyThemeFromStorage();
 })();
 </script>
 </body>

@@ -276,6 +276,27 @@ button{
       border:1px solid rgba(var(--color-border-rgb),.3);
       backdrop-filter: blur(8px);
     }
+    .notice{
+      margin-top:.5rem;
+      padding:.7rem .85rem;
+      border-radius:var(--radius-lg);
+      border:1px dashed rgba(var(--color-border-rgb),.85);
+      background:var(--glass-faint);
+      color:var(--color-text);
+      font-size:.86rem;
+      line-height:1.35;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.6rem;
+      flex-wrap:wrap;
+    }
+    .notice strong{ color:var(--color-primary-strong); }
+    .notice-actions{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
     .welcome-card{
       display:grid;
       grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);
@@ -323,6 +344,20 @@ button{
       line-height:1.45;
       color:var(--color-primary-strong);
       font-weight:600;
+    }
+
+    .planestudios-shell{
+      display:flex;
+      flex-direction:column;
+      gap:.85rem;
+    }
+    .planestudios-frame{
+      width:100%;
+      min-height:70vh;
+      border:1px solid rgba(var(--color-border-rgb),.5);
+      border-radius:var(--radius-lg);
+      background:var(--surface-card);
+      box-shadow:0 12px 26px var(--shadow-color-soft);
     }
 
     .tab-estudio-layout{
