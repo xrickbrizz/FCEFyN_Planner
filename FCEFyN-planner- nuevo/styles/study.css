@@ -189,7 +189,7 @@ button{
   grid-template-columns:auto 1fr auto;
   align-items:center;
   gap:.75rem;
-  position:sticky;
+  position:static;
   top:0;
   z-index:12;
   padding:.35rem .5rem;
@@ -522,7 +522,7 @@ button{
 
     /* TAB ACADEMICO */
     .acad-layout{
-      display:grid;
+      display:flex;
       grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);
       gap:1rem;
     }
@@ -537,6 +537,9 @@ button{
       padding:.95rem;
       box-shadow:0 12px 30px var(--shadow-color-soft);
     }
+    .acad-widgets{
+      padding: 0;
+    }
     .acad-help{
       font-size:.9rem;
       color:var(--text-soft);
@@ -544,6 +547,7 @@ button{
       margin-bottom:.55rem;
     }
     .acad-widgets{
+      width: 30rem;
     }
     .acad-shell .day{
       height:140px;
@@ -683,7 +687,6 @@ button{
     }
     .acad-info-panel{
       display:flex;
-      flex-direction:column;
       gap:.8rem;
       min-height:100%;
     }
@@ -698,6 +701,7 @@ button{
       background:#eaf6e8;
       border:1px solid rgba(41, 108, 72, 0.2);
       min-height:260px;
+      min-width: 100%;
       gap:.6rem;
     }
     .acad-empty-logo img{
