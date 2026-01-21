@@ -317,8 +317,9 @@ async function ensureJsPDF(){
 }
 
 async function downloadAgenda(format){
-  const captureEl = document.getElementById("tab-agenda");
-  if (!captureEl || captureEl.style.display === "none"){
+  const tabAgenda = document.getElementById("tab-agenda");
+  const captureEl = tabAgenda?.querySelector(".agenda-shell");
+  if (!tabAgenda || !captureEl || tabAgenda.style.display === "none"){
     notifyWarn("Abrí la pestaña Agenda para descargar tu horario.");
     return;
   }
@@ -327,8 +328,9 @@ async function downloadAgenda(format){
     captureEl.scrollTop = 0;
     await new Promise(res => requestAnimationFrame(()=> requestAnimationFrame(res)));
     const html2canvas = await ensureHtml2canvas();
+    const bgColor = getComputedStyle(captureEl).backgroundColor;
     const canvas = await html2canvas(captureEl, {
-      backgroundColor: themeColor("--color-primary-strong", "#0F1A18"),
+      backgroundColor: bgColor || themeColor("--color-primary-strong", "#0F1A18"),
       scale:2,
       useCORS:true
     });
@@ -344,19 +346,9 @@ async function downloadAgenda(format){
 
     const jsPDF = await ensureJsPDF();
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({ orientation:"landscape", unit:"pt", format:"a4" });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 30;
-    let renderWidth = pageWidth - margin * 2;
-    let renderHeight = canvas.height * (renderWidth / canvas.width);
-    if (renderHeight > pageHeight - margin * 2){
-      renderHeight = pageHeight - margin * 2;
-      renderWidth = canvas.width * (renderHeight / canvas.height);
-    }
-    const posX = (pageWidth - renderWidth) / 2;
-    const posY = (pageHeight - renderHeight) / 2;
-    pdf.addImage(imgData, "PNG", posX, posY, renderWidth, renderHeight);
+    const orientation = canvas.width >= canvas.height ? "landscape" : "portrait";
+    const pdf = new jsPDF({ orientation, unit:"pt", format:[canvas.width, canvas.height] });
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
     pdf.save("horario.pdf");
     notifySuccess("Horario descargado en PDF.");
   }catch(e){

@@ -526,8 +526,15 @@
       <label>Materia</label>
       <select id="agendaSubject"></select>
 
+      <label>Sede / Modalidad</label>
+      <select id="agendaLocation" required>
+        <option value="Ciudad Universitaria">Ciudad Universitaria</option>
+        <option value="Centro">Centro</option>
+        <option value="Virtual Sincrónica">Virtual Sincrónica</option>
+      </select>
+
       <label>Aula (opcional)</label>
-      <input id="agendaRoom" placeholder="Aula / Laboratorio" />
+      <input id="agendaRoom" placeholder="Ej: 100, 218, Lab 2" />
 
       <div style="display:flex;gap:.5rem;">
         <div style="flex:1;">

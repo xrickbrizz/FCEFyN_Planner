@@ -95,15 +95,20 @@ function renderAgendaGridInto(grid, data, allowEdit){
       const block = document.createElement("div");
       block.className = "class-block";
       const color = CTX.subjectColor?.(item.materia);
-      block.style.background = `linear-gradient(135deg, ${color}, ${CTX.themeColor?.("--color-accent-2", "#CBBF74")})`;
+      if (color) block.style.backgroundColor = color;
       block.style.top = ((startM - minutesStart) * pxPerMinute) + "px";
-      block.style.height = Math.max((endM - startM) * pxPerMinute, 18) + "px";
+      block.style.height = ((endM - startM) * pxPerMinute) + "px";
 
       const title = document.createElement("strong");
       title.textContent = item.materia || "Materia";
       const meta = document.createElement("small");
-      const aulaLabel = item.aula ? (" · " + item.aula) : "";
-      meta.textContent = (item.inicio || "—") + " – " + (item.fin || "—") + aulaLabel;
+      const locationParts = [];
+      if (item.sede) locationParts.push(item.sede);
+      if (item.aula){
+        locationParts.push(item.sede ? `Aula ${item.aula}` : item.aula);
+      }
+      const locationLabel = locationParts.length ? (" · " + locationParts.join(" · ")) : "";
+      meta.textContent = (item.inicio || "—") + " – " + (item.fin || "—") + locationLabel;
 
       block.appendChild(title);
       block.appendChild(meta);
@@ -141,6 +146,7 @@ function openAgendaModal(dayKey, index){
 
   const daySel = document.getElementById("agendaDay");
   const subjSel = document.getElementById("agendaSubject");
+  const locationSel = document.getElementById("agendaLocation");
   const roomInput = document.getElementById("agendaRoom");
   const startInput = document.getElementById("agendaStart");
   const endInput = document.getElementById("agendaEnd");
@@ -158,6 +164,7 @@ function openAgendaModal(dayKey, index){
   if (!dayKey) dayKey = "lunes";
   daySel.value = dayKey;
 
+  locationSel.value = "Ciudad Universitaria";
   roomInput.value = "";
   startInput.value = "";
   endInput.value = "";
@@ -166,6 +173,7 @@ function openAgendaModal(dayKey, index){
     const arr = CTX.aulaState.agendaData[dayKey] || [];
     const item = arr[index];
     if (item){
+      locationSel.value = item.sede || locationSel.value;
       roomInput.value = item.aula || "";
       startInput.value = item.inicio || "";
       endInput.value = item.fin || "";
@@ -181,6 +189,14 @@ function openAgendaModal(dayKey, index){
     btnAgendaDelete.style.display = "none";
   }
 
+  const updateRoomState = () => {
+    const isVirtual = locationSel.value === "Virtual Sincrónica";
+    roomInput.disabled = isVirtual;
+    if (isVirtual) roomInput.value = "";
+  };
+
+  updateRoomState();
+  locationSel.onchange = updateRoomState;
   agendaModalBg.style.display = "flex";
 }
 
@@ -207,11 +223,12 @@ function bindAgendaModal(){
       }
 
       const materia = subjSel.value;
+      const sede = document.getElementById("agendaLocation").value;
       const aula = document.getElementById("agendaRoom").value.trim();
       const inicio = document.getElementById("agendaStart").value;
       const fin    = document.getElementById("agendaEnd").value;
 
-      if (!day || !inicio || !fin){
+      if (!day || !inicio || !fin || !sede){
         CTX?.notifyWarn?.("Completá día, hora de inicio y fin.");
         return;
       }
@@ -229,7 +246,7 @@ function bindAgendaModal(){
 
       ensureAgendaStructure();
       const arr = CTX.aulaState.agendaData[day] || [];
-      const item = { materia, aula, inicio, fin };
+      const item = { materia, sede, aula, inicio, fin };
 
       if (CTX.aulaState.agendaEditIndex === null || CTX.aulaState.agendaEditIndex < 0){
         arr.push(item);
