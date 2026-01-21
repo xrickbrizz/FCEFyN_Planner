@@ -1301,7 +1301,6 @@ button{
 
 /* ===== PROFESORES ===== */
 .prof-layout{
-  display:grid;
   grid-template-columns: minmax(0,1.2fr) minmax(0,0.8fr);
   gap:1rem;
 }

@@ -166,8 +166,25 @@ function renderProfessorsFilters(){
       selSubject.appendChild(opt);
     });
   }
-}
 
+const filtersSection = document.getElementById("filtersSection");
+const detailSection  = document.getElementById("professorDetailSection");
+
+}
+function showProfessorDetailSection() {
+  filtersSection.hidden = true;
+  detailSection.hidden = false;
+  // opcional: scroll al inicio del detalle
+  detailSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+document.getElementById("btnBackToFilters").addEventListener("click", () => {
+  showFiltersSection();
+});
+function showFiltersSection() {
+  detailSection.hidden = true;
+  filtersSection.hidden = false;
+  filtersSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 function renderProfessorsList(){
   const list = document.getElementById("professorsList");
   const normalizeStr = CTX?.normalizeStr;
@@ -246,6 +263,7 @@ function renderProfessorsList(){
 
     card.addEventListener("click", ()=>{
       selectedProfessorId = p.id;
+      showProfessorDetailSection();
       renderProfessorsList();
       renderProfessorDetail();
       professorReviewsCache[p.id] = { loading:true, items:[] };

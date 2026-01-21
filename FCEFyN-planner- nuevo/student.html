@@ -301,9 +301,9 @@
   </div>
     <!------------------------- PROFESORES ------------------------------->
     <div id="tab-profesores" class="tab-card" style="display:none;">
-      <div class="prof-layout">
+      <div class="prof-layout" id="filtersSection">
         <div class="prof-list-panel">
-          <div class="prof-header">
+          <div class="prof-header" >
             <div>
               <strong>Profesores</strong>
               <div class="small-muted">Ordenados por mejor promedio general.</div>
@@ -321,11 +321,13 @@
           </div>
           <div id="professorsList" class="prof-list"></div>
         </div>
-        <div class="prof-detail-panel">
-          <div id="profDetailBox" class="prof-detail-card">
+      </div>
+      <div class="profDetail" id="professorDetailSection" >
+        <button id="btnBackToFilters" type="button">← Volver</button>
+                      <div id="profDetailBox" class="prof-detail-card" >
             <div class="small-muted">Seleccioná un profesor para ver detalles y valorar.</div>
+          
           </div>
-
           <div class="prof-rate-card">
             <h3 class="prof-rate-title">Tu valoración</h3>
             <div class="prof-rate-grid">
@@ -356,7 +358,6 @@
               Podés valorar sin comentar. Las reseñas se guardan por profesor y se actualizan si volvés a enviar.
             </div>
           </div>
-        </div>
       </div>
     </div>
     <!----------------------------- Mensajeria  ------------------------------------------>
