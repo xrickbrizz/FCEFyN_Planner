@@ -796,16 +796,14 @@ button{
       font-size:.8rem;
       min-width:660px;
       position:relative;
-      --agenda-hour-height:40px;
     }
     .agenda-hour-spacer{
       height:34px;
       border-bottom:1px solid var(--line-strong);
-      box-sizing:border-box;
     }
     .agenda-hour-col{ display:flex; flex-direction:column; }
     .agenda-hour{
-      height:var(--agenda-hour-height);
+      height:40px;
       border-bottom:1px dashed var(--line-strong);
       padding-right:.3rem;
       text-align:right;
@@ -814,7 +812,6 @@ button{
       align-items:flex-end;
       justify-content:flex-end;
       padding-bottom:6px;
-      box-sizing:border-box;
     }
     .agenda-day-col{ border-left:1px solid var(--line-strong); position:relative; }
     .agenda-day-header{
