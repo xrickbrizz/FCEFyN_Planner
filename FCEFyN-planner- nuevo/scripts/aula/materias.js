@@ -322,10 +322,14 @@ function renderSubjectNameOptions(selectedName=""){
   placeholder.disabled = true;
   subjectNameSelect.appendChild(placeholder);
 
-  const planSubjects = Array.isArray(CTX.aulaState.careerSubjects) ? CTX.aulaState.careerSubjects.map(s => ({
+const planSubjects = Array.isArray(CTX.aulaState.careerSubjects) ? CTX.aulaState.careerSubjects.map(s => {
+  const rawSem = Number(s.semestre ?? s.semester ?? 0);
+  const semester = Number.isFinite(rawSem) ? Math.max(0, rawSem - 1) : 0;
+  return {
     name: s.nombre || s.name || s.id || "Materia",
-    semester: s.semestre || s.semester || 0
-  })) : [];
+    semester
+  };
+}) : [];
 
   if (CTX.aulaState.plannerCareer?.slug && planSubjects.length){
     const group = document.createElement("optgroup");

@@ -30,6 +30,87 @@ const navState = {
   lastNonMessagesSection: "inicio"
 };
 
+initSession({
+  onMissingUser: () => {
+    window.location.href = "app.html";
+  }
+});
+
+onSessionReady(async (user) => {
+  AppState.currentUser = user;
+
+  const emailLabel = document.getElementById("userEmailLabel");
+  if (emailLabel) emailLabel.textContent = user.email || "-";
+
+  sidebarCtrl = initNav({
+    items: navItems,
+    showTab: window.showTab,
+    activeSection: navState.activeSection
+  });
+
+  const ctx = {
+    db,
+    auth,
+    doc,
+    getDoc,
+    setDoc,
+    onSnapshot,
+    showConfirm,
+    notify,
+    notifySuccess,
+    notifyError,
+    notifyWarn,
+    getUid,
+    getCurrentUser,
+    onSessionReady,
+    AppState,
+    setCalendarioCaches,
+    getCalendarioCaches,
+    paintStudyEvents,
+    renderAcadCalendar,
+    renderAgenda: () => Aula.open("agenda"),
+    downloadAgenda,
+    isBlockedByClientError,
+    notifyBlockedByClient,
+    navState,
+    showTab: window.showTab
+  };
+  appCtx = ctx;
+
+  await Aula.init(ctx);
+  await Social.init(ctx);
+
+  initCalendario({
+    db,
+    doc,
+    getDoc,
+    setDoc,
+    currentUser: user,
+    getCurrentUser,
+    getSubjects: () => ctx.aulaState?.subjects || [],
+    renderSubjectsOptions: ctx.renderSubjectsOptions,
+    notifyError,
+    notifyWarn,
+    notifySuccess,
+    showConfirm
+  });
+
+  Aula.open("agenda");
+  Social.open("perfil");
+
+  window.showTab("inicio");
+});
+
+window.logout = async function(){
+  try{
+    await appCtx?.socialModules?.Messaging?.updatePresence?.(false);
+    await signOut(auth);
+    window.location.href = "app.html";
+  }catch(e){
+    notifyError("Error al cerrar sesión: " + e.message);
+  }
+};
+
 const helpButton = document.getElementById("helpButton");
 const helpModalBg = document.getElementById("helpModalBg");
 const helpModalTitle = document.getElementById("helpModalTitle");
@@ -209,86 +290,7 @@ function notifyBlockedByClient(){
   notifyError("Tenés un bloqueador (uBlock/Brave) bloqueando Firestore. Desactivá para este sitio.");
 }
 
-initSession({
-  onMissingUser: () => {
-    window.location.href = "app.html";
-  }
-});
 
-onSessionReady(async (user) => {
-  AppState.currentUser = user;
-
-  const emailLabel = document.getElementById("userEmailLabel");
-  if (emailLabel) emailLabel.textContent = user.email || "-";
-
-  sidebarCtrl = initNav({
-    items: navItems,
-    showTab: window.showTab,
-    activeSection: navState.activeSection
-  });
-
-  const ctx = {
-    db,
-    auth,
-    doc,
-    getDoc,
-    setDoc,
-    onSnapshot,
-    showConfirm,
-    notify,
-    notifySuccess,
-    notifyError,
-    notifyWarn,
-    getUid,
-    getCurrentUser,
-    onSessionReady,
-    AppState,
-    setCalendarioCaches,
-    getCalendarioCaches,
-    paintStudyEvents,
-    renderAcadCalendar,
-    renderAgenda: () => Aula.open("agenda"),
-    downloadAgenda,
-    isBlockedByClientError,
-    notifyBlockedByClient,
-    navState,
-    showTab: window.showTab
-  };
-  appCtx = ctx;
-
-  await Aula.init(ctx);
-  await Social.init(ctx);
-
-  initCalendario({
-    db,
-    doc,
-    getDoc,
-    setDoc,
-    currentUser: user,
-    getCurrentUser,
-    getSubjects: () => ctx.aulaState?.subjects || [],
-    renderSubjectsOptions: ctx.renderSubjectsOptions,
-    notifyError,
-    notifyWarn,
-    notifySuccess,
-    showConfirm
-  });
-
-  Aula.open("agenda");
-  Social.open("perfil");
-
-  window.showTab("inicio");
-});
-
-window.logout = async function(){
-  try{
-    await appCtx?.socialModules?.Messaging?.updatePresence?.(false);
-    await signOut(auth);
-    window.location.href = "app.html";
-  }catch(e){
-    notifyError("Error al cerrar sesión: " + e.message);
-  }
-};
 
 async function ensureHtml2canvas(){
   if (html2canvasLib) return html2canvasLib;
