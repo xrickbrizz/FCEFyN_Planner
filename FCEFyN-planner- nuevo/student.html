@@ -193,6 +193,10 @@
               <div class="small-muted">Completá los datos y guardá los cambios.</div>
             </div>
           </div>
+          <div class="notice" id="subjectCareerNotice" style="display:none;">
+            Necesitás elegir tu carrera en Perfil para habilitar materias automáticamente.
+            <button class="link" type="button" id="subjectCareerGoProfile">Ir a Perfil</button>
+          </div>
           <div class="subject-form-field">
             <label>Carrera</label>
             <select id="subjectCareer"></select>
@@ -237,6 +241,19 @@
           </p>
         </div>
       </div>
+    </div>
+
+    <div id="tab-planestudios" class="tab-card" style="display:none;">
+      <div class="planner-toolbar" style="margin-bottom:.8rem;">
+        <div class="planner-toolbar-left">
+          <strong>Plan de estudios</strong>
+        </div>
+      </div>
+      <div class="notice" id="planTabNotice" style="display:none;">
+        Necesitás elegir tu carrera en Perfil para ver el plan de estudios automáticamente.
+        <button class="link" type="button" id="planGoProfile">Ir a Perfil</button>
+      </div>
+      <iframe id="planFrame" class="plan-frame" title="Plan de estudios"></iframe>
     </div>
 
     <div id="tab-planificador" class="tab-card" style="display:none;">

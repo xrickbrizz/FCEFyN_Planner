@@ -21,6 +21,17 @@ const notifySuccess = (message) => CTX?.notifySuccess?.(message);
 const notifyError = (message) => CTX?.notifyError?.(message);
 const notifyWarn = (message) => CTX?.notifyWarn?.(message);
 
+function resolveProfileCareerName(){
+  const profile = CTX?.AppState?.userProfile || null;
+  if (!profile) return "";
+  if (profile.career) return profile.career;
+  if (profile.careerSlug){
+    const plan = (CTX?.getCareerPlans?.() || []).find(p => p.slug === profile.careerSlug);
+    return plan?.nombre || "";
+  }
+  return "";
+}
+
 function renderStars(value){
   const val = Math.round(value || 0);
   let html = "";
@@ -115,6 +126,11 @@ function renderProfessorsFilters(){
   const selCareer = document.getElementById("profFilterCareer");
   const selSubject = document.getElementById("profFilterSubject");
   const normalizeStr = CTX?.normalizeStr;
+  const preferredCareer = resolveProfileCareerName();
+
+  if (!professorFilters.career && preferredCareer){
+    professorFilters.career = preferredCareer;
+  }
 
   const careers = new Set();
   const subjectsSet = new Set();

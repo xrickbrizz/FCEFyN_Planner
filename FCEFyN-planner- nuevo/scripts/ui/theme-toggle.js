@@ -17,12 +17,12 @@
     });
   }
 
-  function applyTheme(mode){
+  function applyTheme(mode, { persist = true } = {}){
     const useDark = mode === "dark";
     body.classList.toggle("dark-mode", useDark);
     body.classList.toggle("light-mode", !useDark);
     body.dataset.theme = useDark ? "dark" : "light";
-    localStorage.setItem(STORAGE_KEY, useDark ? "dark" : "light");
+    if (persist) localStorage.setItem(STORAGE_KEY, useDark ? "dark" : "light");
     updateToggleButtons(useDark);
   }
 
@@ -46,6 +46,11 @@
     media?.addEventListener("change", e =>{
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) applyTheme(e.matches ? "dark" : "light");
+    });
+    window.addEventListener("storage", (e) => {
+      if (e.key !== STORAGE_KEY) return;
+      const next = e.newValue === "dark" || e.newValue === "light" ? e.newValue : getPreferredTheme();
+      applyTheme(next, { persist:false });
     });
   }
 

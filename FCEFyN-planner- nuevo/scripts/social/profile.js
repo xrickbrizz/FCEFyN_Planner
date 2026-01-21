@@ -134,6 +134,7 @@ function subscribeUserProfile(){
       const photoURL = CTX.AppState.userProfile?.photoURL || currentUser?.photoURL || "";
       applyAvatarEverywhere(photoURL);
     }
+    CTX?.onProfileUpdated?.(CTX.AppState.userProfile || null);
   }, (e)=>{
     console.error("[Perfil] user profile snapshot error", { code: e?.code, message: e?.message });
   });
@@ -255,16 +256,36 @@ function bindProfileHandlers(){
       const notifyWarn = CTX?.notifyWarn;
       const notifySuccess = CTX?.notifySuccess;
       const notifyError = CTX?.notifyError;
+      const showConfirm = CTX?.showConfirm;
       if (!currentUser || !db) return;
       const firstName = profileFirstNameInput?.value.trim() || "";
       const lastName = profileLastNameInput?.value.trim() || "";
       const name = `${firstName} ${lastName}`.trim();
       const careerSlug = profileCareerSelect?.value || "";
       const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
-      const careerName = plan?.nombre || CTX?.AppState?.userProfile?.career || "";
+      const careerName = plan?.nombre || (careerSlug ? (CTX?.AppState?.userProfile?.career || careerSlug) : "");
       const yearRaw = profileYearInInput?.value.trim() || "";
       const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
       const documento = profileDocumentInput?.value.trim() || "";
+
+      if (!careerSlug){
+        notifyWarn?.("Seleccioná una carrera antes de guardar.");
+        setProfileStatus(profileStatusEl, "Debés elegir una carrera para guardar.");
+        return;
+      }
+
+      const previousCareerSlug = CTX?.AppState?.userProfile?.careerSlug || "";
+      const previousCareer = CTX?.AppState?.userProfile?.career || "";
+      if ((previousCareerSlug || previousCareer) && careerSlug !== previousCareerSlug){
+        const ok = await showConfirm?.({
+          title:"Cambiar carrera",
+          message:"Cambiar la carrera afecta Materias y Plan de estudios. ¿Continuar?",
+          confirmText:"Cambiar",
+          cancelText:"Cancelar",
+          danger:true
+        });
+        if (!ok) return;
+      }
 
       if (yearRaw && (!Number.isFinite(yearIn) || yearIn < 1900 || yearIn > 2100)){
         notifyWarn?.("El año de ingreso debe ser un número válido.");

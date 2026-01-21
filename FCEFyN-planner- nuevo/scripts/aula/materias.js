@@ -15,6 +15,7 @@ let subjectColorText = document.getElementById("subjectColorText");
 let subjectColorHint = document.getElementById("subjectColorHint");
 let subjectFormTitle = document.getElementById("subjectFormTitle");
 let subjectPlanHint = document.getElementById("subjectPlanHint");
+let subjectCareerNotice = document.getElementById("subjectCareerNotice");
 let btnSubjectSave = document.getElementById("btnSubjectSave");
 let btnSubjectReset = document.getElementById("btnSubjectReset");
 const subjectColorCanvas = document.createElement("canvas");
@@ -46,6 +47,7 @@ function resolveSubjectsUI(){
   subjectColorHint = document.getElementById("subjectColorHint");
   subjectFormTitle = document.getElementById("subjectFormTitle");
   subjectPlanHint = document.getElementById("subjectPlanHint");
+  subjectCareerNotice = document.getElementById("subjectCareerNotice");
   btnSubjectSave = document.getElementById("btnSubjectSave");
   btnSubjectReset = document.getElementById("btnSubjectReset");
 }
@@ -237,21 +239,28 @@ function bindSubjectsFormHandlers(){
   }
 }
 
-function resolvedCareerFromProfile(){
-  if (CTX.aulaState.plannerCareer && CTX.aulaState.plannerCareer.slug) return CTX.aulaState.plannerCareer;
+function getProfileCareer(){
   const userProfile = CTX?.AppState?.userProfile || null;
   if (userProfile && userProfile.careerSlug){
     return { slug: userProfile.careerSlug, name: userProfile.career || userProfile.careerSlug };
   }
-  if (userProfile && userProfile.career){
-    const plan = findPlanByName(userProfile.career);
-    if (plan) return { slug: plan.slug, name: plan.nombre };
-  }
+  return null;
+}
+
+function resolvedCareerFromProfile(){
+  const profileCareer = getProfileCareer();
+  if (profileCareer) return profileCareer;
+  if (CTX.aulaState.plannerCareer && CTX.aulaState.plannerCareer.slug) return CTX.aulaState.plannerCareer;
   return { slug:"", name:"" };
 }
 
 function updateSubjectPlanHint(){
   if (!subjectPlanHint) return;
+  const profileCareer = getProfileCareer();
+  if (profileCareer?.slug){
+    subjectPlanHint.textContent = "Materias disponibles para tu carrera en Perfil.";
+    return;
+  }
   if (!CTX.aulaState.plannerCareer || !CTX.aulaState.plannerCareer.slug){
     subjectPlanHint.textContent = "Seleccioná una carrera para ver sus materias.";
     return;
@@ -370,16 +379,50 @@ const planSubjects = Array.isArray(CTX.aulaState.careerSubjects) ? CTX.aulaState
   }
 }
 
-async function initSubjectsCareerUI(){
+function updateCareerFallbackUI(hasProfileCareer){
+  if (subjectCareerNotice) subjectCareerNotice.style.display = hasProfileCareer ? "none" : "block";
+  if (subjectCareerSelect){
+    const field = subjectCareerSelect.closest(".subject-form-field");
+    if (field) field.style.display = hasProfileCareer ? "none" : "flex";
+    subjectCareerSelect.disabled = hasProfileCareer;
+  }
+}
+
+async function syncCareerFromProfile({ forceReload = false } = {}){
   resolveSubjectsUI();
+  const profileCareer = getProfileCareer();
+  const hasProfileCareer = !!profileCareer?.slug;
+  updateCareerFallbackUI(hasProfileCareer);
+
+  if (hasProfileCareer){
+    const shouldReload = CTX.aulaState.plannerCareer?.slug !== profileCareer.slug
+      || forceReload
+      || !Array.isArray(CTX.aulaState.careerSubjects)
+      || !CTX.aulaState.careerSubjects.length;
+    CTX.aulaState.plannerCareer = { slug: profileCareer.slug, name: profileCareer.name };
+    if (subjectCareerSelect) subjectCareerSelect.value = profileCareer.slug;
+    if (shouldReload){
+      await setActiveCareer(profileCareer.slug, false);
+    } else {
+      renderSubjectNameOptions();
+      updateSubjectPlanHint();
+    }
+    return;
+  }
+
   renderSubjectCareerOptions();
-  const slug = subjectCareerSelect?.value || "";
+  const slug = subjectCareerSelect?.value || CTX.aulaState.plannerCareer?.slug || "";
   if (slug){
     await setActiveCareer(slug, false);
   } else {
     renderSubjectNameOptions();
     updateSubjectPlanHint();
   }
+}
+
+async function initSubjectsCareerUI(){
+  resolveSubjectsUI();
+  await syncCareerFromProfile();
 }
 
 function renderSubjectsList(){
@@ -550,6 +593,7 @@ const Materias = {
     CTX.getCareerPlans = () => CTX.aulaState.careerPlans || [];
     CTX.findPlanByName = findPlanByName;
     CTX.normalizeStr = normalizeStr;
+    CTX.syncSubjectsCareerFromProfile = syncCareerFromProfile;
     bindSubjectsFormHandlers();
   },
   renderSubjectsList,
@@ -562,7 +606,8 @@ const Materias = {
   defaultSubjectColor,
   themeColor,
   renderSubjectNameOptions,
-  setActiveCareer
+  setActiveCareer,
+  syncCareerFromProfile
 };
 
 export default Materias;

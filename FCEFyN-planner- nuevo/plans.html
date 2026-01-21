@@ -40,6 +40,12 @@ import { showConfirm } from "./scripts/ui/notifications.js";
 (function(){
   const INDEX_URL = "./plans/plans_index.json";
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
+  const params = new URLSearchParams(window.location.search);
+  const embed = params.get("embed") === "1";
+  const lock = params.get("lock") === "1";
+  const slugParam = params.get("slug") || "";
+
+  if (embed) document.body.classList.add("plans-embed");
 
   const title = document.getElementById("title");
   const msg = document.getElementById("msg");
@@ -49,6 +55,8 @@ import { showConfirm } from "./scripts/ui/notifications.js";
   const btnBack = document.getElementById("btnBack");
   const btnReset = document.getElementById("btnReset");
   const planSelect = document.getElementById("planSelect");
+
+  if (lock && planSelect) planSelect.disabled = true;
 
   const labels = [
     "Ingreso","1º Semestre","2º Semestre","3º Semestre",
@@ -445,14 +453,20 @@ function revalidateEstados() {
     try{
       await loadIndex();
 
-      // 1) si venís desde plans_index.html o app.html sin query string, uso sessionStorage
+      // 1) query string directo (modo embebido o link directo)
+      if (slugParam){
+        await loadPlanBySlug(slugParam);
+        return;
+      }
+
+      // 2) si venís desde plans_index.html o app.html sin query string, uso sessionStorage
       const saved = sessionStorage.getItem("selectedPlanSlug") || "";
       if(saved){
         await loadPlanBySlug(saved);
         return;
       }
 
-      // 2) si no hay nada seleccionado, muestro mensaje
+      // 3) si no hay nada seleccionado, muestro mensaje
       gridWrap.style.display = "none";
       title.textContent = "Planes de Estudio";
       showMsg("Elegí una carrera para abrir su plan.");

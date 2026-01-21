@@ -937,6 +937,14 @@ button{
       gap:.35rem;
       margin-bottom:.7rem;
     }
+    .plan-frame{
+      width:100%;
+      min-height:70vh;
+      border-radius:var(--radius-md);
+      border:1px solid rgba(var(--color-border-rgb),.85);
+      background:var(--surface-card);
+      box-shadow:0 14px 32px var(--shadow-color-soft);
+    }
     .subject-form-field label{
       font-size:.82rem;
       color:var(--color-muted-2);

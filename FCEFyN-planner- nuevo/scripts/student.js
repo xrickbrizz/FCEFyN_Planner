@@ -76,6 +76,10 @@ onSessionReady(async (user) => {
     showTab: window.showTab
   };
   appCtx = ctx;
+  ctx.onProfileUpdated = () => {
+    appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
+    updatePlanTab();
+  };
 
   await Aula.init(ctx);
   await Social.init(ctx);
@@ -98,6 +102,7 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
 
+  bindProfileShortcuts();
   window.showTab("inicio");
 });
 
@@ -156,9 +161,17 @@ const helpContent = {
   materias: {
     title: "Cómo usar Materias",
     bullets: [
-      "Elegí una carrera y seleccioná las materias desde la lista oficial.",
+      "Las materias se cargan según la carrera de tu Perfil.",
       "Al editar una materia, se actualiza en todos los registros asociados automáticamente.",
       "Si eliminás una materia, elegí si querés limpiar también sus clases y registros."
+    ]
+  },
+  planestudios: {
+    title: "Cómo usar Plan de estudios",
+    bullets: [
+      "El plan se carga automáticamente según tu carrera en Perfil.",
+      "Podés marcar materias como promocionadas, regulares o libres para ver tu avance.",
+      "Si cambiás la carrera en Perfil, el plan se actualizará al volver a esta pestaña."
     ]
   },
   planificador: {
@@ -198,6 +211,41 @@ const helpContent = {
     ]
   }
 };
+
+function getProfileCareerSlug(){
+  return AppState?.userProfile?.careerSlug || "";
+}
+
+function updatePlanTab(){
+  const frame = document.getElementById("planFrame");
+  const notice = document.getElementById("planTabNotice");
+  if (!frame) return;
+  const slug = getProfileCareerSlug();
+  if (!slug){
+    if (notice) notice.style.display = "block";
+    frame.style.display = "none";
+    frame.removeAttribute("src");
+    return;
+  }
+
+  if (notice) notice.style.display = "none";
+  frame.style.display = "block";
+  const targetUrl = new URL(`plans.html?embed=1&slug=${encodeURIComponent(slug)}&lock=1`, window.location.href);
+  if (frame.src !== targetUrl.href){
+    frame.src = targetUrl.href;
+  }
+}
+
+function bindProfileShortcuts(){
+  const subjectCareerGoProfile = document.getElementById("subjectCareerGoProfile");
+  if (subjectCareerGoProfile){
+    subjectCareerGoProfile.addEventListener("click", () => window.showTab?.("perfil"));
+  }
+  const planGoProfile = document.getElementById("planGoProfile");
+  if (planGoProfile){
+    planGoProfile.addEventListener("click", () => window.showTab?.("perfil"));
+  }
+}
 
 function renderHelpContent(sectionId){
   const data = helpContent[sectionId] || helpContent.inicio || helpContent.estudio;
@@ -245,6 +293,7 @@ window.showTab = function(name){
   const tabAcademico        = document.getElementById("tab-academico");
   const tabAgenda           = document.getElementById("tab-agenda");
   const tabMaterias         = document.getElementById("tab-materias");
+  const tabPlanEstudios     = document.getElementById("tab-planestudios");
   const tabPlanificador     = document.getElementById("tab-planificador");
   const tabProfesores       = document.getElementById("tab-profesores");
   const tabMensajes         = document.getElementById("tab-mensajes");
@@ -256,6 +305,7 @@ window.showTab = function(name){
   toggleTab(tabAcademico, name === "academico");
   toggleTab(tabAgenda, name === "agenda");
   toggleTab(tabMaterias, name === "materias");
+  toggleTab(tabPlanEstudios, name === "planestudios");
   toggleTab(tabPlanificador, name === "planificador");
   toggleTab(tabProfesores, name === "profesores");
   toggleTab(tabMensajes, name === "mensajes");
@@ -265,6 +315,8 @@ window.showTab = function(name){
   if (name === "planificador") Aula.open("planificador");
   if (name === "estudio") renderStudyCalendar();
   if (name === "academico") renderAcadCalendar();
+  if (name === "materias") appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
+  if (name === "planestudios") updatePlanTab();
   if (name === "profesores") Social.open("profesores");
   if (name === "mensajes") Social.open("mensajes");
   if (name === "perfil") Social.open("perfil");
