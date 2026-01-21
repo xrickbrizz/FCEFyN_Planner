@@ -11,6 +11,8 @@
   --line-strong: rgba(var(--color-border-rgb),0.85);
   --line-soft: rgba(var(--color-border-rgb),0.55);
   --shadow: var(--shadow-strong);
+  --agenda-header-h: 34px;
+  --agenda-hour-h: 40px;
 }
 /* =========================================================
    Layout
@@ -798,31 +800,38 @@ button{
       position:relative;
     }
     .agenda-hour-spacer{
-      height:34px;
-      border-bottom:1px solid var(--line-strong);
+      height: var(--agenda-header-h);
+      border-bottom: 1px solid var(--line-strong);
     }
     .agenda-hour-col{ display:flex; flex-direction:column; }
     .agenda-hour{
-      height:40px;
-      border-bottom:1px dashed var(--line-strong);
-      padding-right:.3rem;
-      text-align:right;
-      color:var(--text-soft);
-      display:flex;
-      align-items:flex-end;
-      justify-content:flex-end;
-      padding-bottom:6px;
+      height: var(--agenda-hour-h);
+      border-bottom: 1px dashed var(--line-strong);
+      padding-right: .3rem;
+      text-align: right;
+      color: var(--text-soft);
+      display: flex;
+
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding-top: 6px;
+      padding-bottom: 0;
     }
     .agenda-day-col{ border-left:1px solid var(--line-strong); position:relative; }
     .agenda-day-header{
-      position:sticky;
-      top:0;
-      background:var(--surface-plain);
-      text-align:center;
-      padding:.25rem 0;
-      font-weight:800;
-      border-bottom:1px solid var(--line-strong);
-      z-index:3;
+      position: sticky;
+      top: 0;
+      background: var(--surface-plain);
+      text-align: center;
+      font-weight: 800;
+      border-bottom: 1px solid var(--line-strong);
+      z-index: 3;
+
+      height: var(--agenda-header-h);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .agenda-day-inner{ position:relative; }
     .agenda-line{

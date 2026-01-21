@@ -6,7 +6,7 @@ const dayKeys = ['lunes','martes','miercoles','jueves','viernes','sabado'];
 const dayLabels = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
 const minutesStart = 8*60;
 const minutesEnd   = 23*60;
-const pxPerMinute  = 40/60;
+let pxPerMinute  = 40/60;
 
 const agendaGrid = document.getElementById("agendaGrid");
 const agendaModalBg = document.getElementById("agendaModalBg");
@@ -24,6 +24,13 @@ function timeToMinutes(t){
   if (parts.length !== 2) return NaN;
   const h = parts[0], m = parts[1];
   return h*60 + m;
+}
+
+function computePxPerMinute(){
+  const root = getComputedStyle(document.documentElement);
+  const hourH = parseFloat(root.getPropertyValue("--agenda-hour-h"));
+  if (!isNaN(hourH) && hourH > 0) return hourH / 60;
+  return 40/60; // fallback
 }
 
 function ensureAgendaStructure(){
@@ -63,6 +70,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
     hourCol.appendChild(hour);
   }
   grid.appendChild(hourCol);
+  pxPerMinute = computePxPerMinute();
 
   dayKeys.forEach((k, idx)=>{
     const col = document.createElement("div");
