@@ -42,22 +42,6 @@ function currentUserDisplayName(){
   return "Estudiante";
 }
 
-function resolveDefaultCareerFilter(){
-  const userProfile = CTX?.AppState?.userProfile || null;
-  if (!userProfile) return "";
-  if (userProfile.careerSlug){
-    const plan = (CTX?.getCareerPlans?.() || []).find(p => p.slug === userProfile.careerSlug);
-    return plan?.nombre || userProfile.career || "";
-  }
-  return userProfile.career || "";
-}
-
-function applyDefaultCareerFilter(){
-  if (professorFilters.career) return;
-  const defaultCareer = resolveDefaultCareerFilter();
-  if (defaultCareer) professorFilters.career = defaultCareer;
-}
-
 async function loadProfessorsCatalog(){
   console.log("[Professors] Loading catalog...");
   professorsCatalog = [];
@@ -560,7 +544,6 @@ const Professors = {
       return;
     }
     await ensurePublicUserProfile(CTX.db, currentUser, CTX?.AppState?.userProfile || null);
-    applyDefaultCareerFilter();
     await loadProfessorsCatalog();
     initProfessorsUI();
   },

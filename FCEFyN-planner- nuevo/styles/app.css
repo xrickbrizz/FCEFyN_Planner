@@ -579,23 +579,6 @@ body.plans-page{
   gap:14px;
   padding:14px;
 }
-body.plans-page.plans-embed{
-  padding:0;
-  gap:0;
-}
-body.plans-page.plans-embed header,
-body.plans-page.plans-embed footer{
-  display:none;
-}
-body.plans-page.plans-embed .msg{
-  max-width:100%;
-  border-radius:0;
-}
-body.plans-page.plans-embed .grid-wrap{
-  max-width:100%;
-  width:100%;
-  padding:14px;
-}
 body.plans-page header{
   width:100%;
   max-width:1600px;

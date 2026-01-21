@@ -6,7 +6,6 @@ export const navItems = [
   { id:"academico", label:"Académico", icon:"🎓" },
   { id:"agenda", label:"Agenda", icon:"🗓️" },
   { id:"materias", label:"Materias", icon:"📚" },
-  { id:"planestudios", label:"Plan de estudios", icon:"📘" },
   { id:"planificador", label:"Planificador", icon:"🧩" },
   { id:"profesores", label:"Profesores", icon:"⭐" },
   { id:"mensajes", label:"Mensajes", icon:"💬" },
