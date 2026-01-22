@@ -12,7 +12,7 @@ export const navItems = [
   { id:"mensajes", label:"Mensajes", icon:"💬" },
   { id:"perfil", label:"Perfil", icon:"👤" },
 ];
-
+//xd
 console.log("[nav] loaded");
 
 export function initNav(ctx = {}) {
