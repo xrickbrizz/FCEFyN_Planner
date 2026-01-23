@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/study.css">
+  <link rel="stylesheet" href="styles/ui/student-saas.css">
   <script src="scripts/ui/theme-toggle.js" defer></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" defer></script>
   <script src="scripts/ui/user-panel.js" defer></script>
@@ -33,7 +34,15 @@
     <div class="page-content">
       <div class="content-header">
         <button class="quick-toggle-btn" id="sidebarToggle" type="button" aria-label="Abrir accesos rápidos">☰</button>
-        <div class="section-label" id="currentSectionLabel">📒 Estudio</div>
+        <div class="section-label" id="currentSectionLabel">
+          <span class="section-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6.5c2.4-.6 4.8-.6 7.2.2v13c-2.4-.8-4.8-.8-7.2-.2z"/>
+              <path d="M20 6.5c-2.4-.6-4.8-.6-7.2.2v13c2.4-.8 4.8-.8 7.2-.2z"/>
+            </svg>
+          </span>
+          <span>Estudio</span>
+        </div>
         <button class="help-btn" id="helpButton" type="button" aria-label="Ayuda contextual">?</button>
       </div>
       <div class="main-shell">
@@ -77,14 +86,31 @@
       <div class="tab-estudio-layout">
         <div class="calendar-container">
           <div class="calendar-header">
-            <div class="cal-left">
-              <button class="cal-nav-btn" id="btnStudyPrev">◀</button>
-              <button class="cal-nav-btn" id="btnStudyToday">Hoy</button>
-              <button class="cal-nav-btn" id="btnStudyNext">▶</button>
-              <h2 id="monthTitle" style="margin:0;"></h2>
+            <div class="cal-header-left">
+              <h2 id="monthTitle"></h2>
+              <div class="cal-view">Vista: Mes</div>
             </div>
-            <div class="cal-right small-muted" id="studyHint">Click en un día para registrar estudio</div>
+            <div class="cal-header-right">
+              <div class="cal-controls">
+                <button class="cal-nav-btn" id="btnStudyPrev" title="Mes anterior" aria-label="Mes anterior">
+                  <span>←</span>
+                  <span class="cal-nav-text">Mes anterior</span>
+                </button>
+                <button class="cal-nav-btn cal-today-btn" id="btnStudyToday" title="Volver a la fecha actual">
+                  Ir a hoy · <span id="studyTodayDate">—</span>
+                </button>
+                <button class="cal-nav-btn" id="btnStudyNext" title="Mes siguiente" aria-label="Mes siguiente">
+                  <span class="cal-nav-text">Mes siguiente</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
           </div>
+          <div class="cal-alert" id="studyMonthAlert">
+            <span>No estás en el mes actual.</span>
+            <button type="button" class="cal-alert-action" id="studyBackToday">Volver a hoy</button>
+          </div>
+          <div class="cal-hint" id="studyHint">Click en un día para registrar estudio</div>
 
           <div class="grid" id="studyDow">
             <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow">Sáb</div><div class="dow">Dom</div>
@@ -104,13 +130,30 @@
     <div id="tab-academico" class="tab-card" style="display:none;">
       <div class="acad-layout">
         <div class="acad-shell">
-          <div class="calendar-header" style="margin-bottom:.25rem;">
-            <div class="cal-left">
-              <button class="cal-nav-btn" id="btnAcadPrev">◀</button>
-              <button class="cal-nav-btn" id="btnAcadToday">Hoy</button>
-              <button class="cal-nav-btn" id="btnAcadNext">▶</button>
-              <h2 id="acadMonthTitle" style="margin:0;"></h2>
+          <div class="calendar-header">
+            <div class="cal-header-left">
+              <h2 id="acadMonthTitle"></h2>
+              <div class="cal-view">Vista: Mes</div>
             </div>
+            <div class="cal-header-right">
+              <div class="cal-controls">
+                <button class="cal-nav-btn" id="btnAcadPrev" title="Mes anterior" aria-label="Mes anterior">
+                  <span>←</span>
+                  <span class="cal-nav-text">Mes anterior</span>
+                </button>
+                <button class="cal-nav-btn cal-today-btn" id="btnAcadToday" title="Volver a la fecha actual">
+                  Ir a hoy · <span id="acadTodayDate">—</span>
+                </button>
+                <button class="cal-nav-btn" id="btnAcadNext" title="Mes siguiente" aria-label="Mes siguiente">
+                  <span class="cal-nav-text">Mes siguiente</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="cal-alert" id="acadMonthAlert">
+            <span>No estás en el mes actual.</span>
+            <button type="button" class="cal-alert-action" id="acadBackToday">Volver a hoy</button>
           </div>
 
           <div class="acad-help">
@@ -144,6 +187,13 @@
                 </div>
               </div>
               <div class="acad-detail-list" id="acadDetailList"></div>
+            </div>
+            <div class="acad-quick-actions">
+              <button class="acad-add-card" id="acadQuickAdd" type="button">
+                <span class="acad-add-plus">+</span>
+                Agregar actividad
+              </button>
+              <button class="acad-cta" id="acadQuickAddCta" type="button">Crear actividad</button>
             </div>
           </div>
         </div>  

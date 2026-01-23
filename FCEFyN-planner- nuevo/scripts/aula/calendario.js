@@ -21,9 +21,15 @@ const acadDoubleClickWindow = 550;
 
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
+const studyTodayDate = document.getElementById("studyTodayDate");
+const studyMonthAlert = document.getElementById("studyMonthAlert");
+const studyBackToday = document.getElementById("studyBackToday");
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
+const acadTodayDate = document.getElementById("acadTodayDate");
+const acadMonthAlert = document.getElementById("acadMonthAlert");
+const acadBackToday = document.getElementById("acadBackToday");
 const acadDetailBox = document.getElementById("acadDetailBox");
 const acadDetailTitle = document.getElementById("acadDetailTitle");
 const acadDetailSub = document.getElementById("acadDetailSub");
@@ -32,6 +38,8 @@ const acadDetailList = document.getElementById("acadDetailList");
 const acadInfoEmpty = document.getElementById("acadInfoEmpty");
 const acadEmptyTitle = document.getElementById("acadEmptyTitle");
 const acadEmptySub = document.getElementById("acadEmptySub");
+const acadQuickAdd = document.getElementById("acadQuickAdd");
+const acadQuickAddCta = document.getElementById("acadQuickAddCta");
 const acadDayModalBg = document.getElementById("acadDayModalBg");
 const acadDayModalTitle = document.getElementById("acadDayModalTitle");
 const acadDayModalSubtitle = document.getElementById("acadDayModalSubtitle");
@@ -277,6 +285,9 @@ function initStudyNav(){
   } else {
     warnMissing("btnStudyToday", todayBtn);
   }
+  if (studyBackToday && todayBtn){
+    studyBackToday.addEventListener("click", ()=> todayBtn.click());
+  }
 }
 
 export function renderStudyCalendar(){
@@ -314,6 +325,12 @@ export function renderStudyCalendar(){
 
   const now = new Date();
   const ty = now.getFullYear(), tm = now.getMonth(), td = now.getDate();
+  if (studyTodayDate){
+    studyTodayDate.textContent = now.toLocaleDateString("es-ES");
+  }
+  if (studyMonthAlert){
+    studyMonthAlert.classList.toggle("is-visible", !(studyViewYear === ty && studyViewMonth === tm));
+  }
 
   for (let d=1; d<=totalDays; d++){
     const box = document.createElement("div");
@@ -371,6 +388,7 @@ export function paintStudyEvents(){
           e.className = "event";
           const horas = (ev.horas || 0) + "h " + (ev.mins || 0) + "m";
           e.textContent = (ev.materia || "Materia") + " — " + horas + (ev.tema ? (" · " + ev.tema) : "");
+          e.title = e.textContent;
           box.appendChild(e);
         });
       }
@@ -582,6 +600,16 @@ function initAcademicoNav(){
   } else {
     warnMissing("btnAcadToday", todayBtn);
   }
+  if (acadBackToday && todayBtn){
+    acadBackToday.addEventListener("click", ()=> todayBtn.click());
+  }
+  const handleQuickAdd = () => {
+    const now = new Date();
+    const fallbackKey = dateKeyFromYMD(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    openAcadModalForDate(acadSelectedDateKey || fallbackKey, -1);
+  };
+  if (acadQuickAdd) acadQuickAdd.addEventListener("click", handleQuickAdd);
+  if (acadQuickAddCta) acadQuickAddCta.addEventListener("click", handleQuickAdd);
   if (btnAcadDayAdd){
     btnAcadDayAdd.addEventListener("click", ()=>{
       if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
@@ -627,6 +655,12 @@ export function renderAcadCalendar(){
   acadSelectedDateKey = selectedKey;
 
   acadMonthTitle.textContent = firstDay.toLocaleString("es-ES", { month:"long", year:"numeric" });
+  if (acadTodayDate){
+    acadTodayDate.textContent = now.toLocaleDateString("es-ES");
+  }
+  if (acadMonthAlert){
+    acadMonthAlert.classList.toggle("is-visible", !(acadViewYear === now.getFullYear() && acadViewMonth === now.getMonth()));
+  }
 
   acadGrid.innerHTML = "";
 
@@ -765,7 +799,17 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
       <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
     `;
 
+    const icon = document.createElement("span");
+    icon.className = "acad-detail-icon";
+    icon.innerHTML = `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 6v6l4 2"/>
+        <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+      </svg>
+    `;
+
     row.appendChild(left);
+    row.appendChild(icon);
     acadDetailList.appendChild(row);
   });
 }
