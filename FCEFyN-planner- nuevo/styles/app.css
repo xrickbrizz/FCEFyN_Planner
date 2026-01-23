@@ -26,6 +26,13 @@ header{
   box-shadow:0 10px 30px var(--shadow-soft);
   backdrop-filter: blur(10px);
 }
+body.dark-mode header,
+body[data-theme="dark"] header{
+  background:rgba(11,12,16,0.88);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  box-shadow:none;
+  backdrop-filter: blur(14px);
+}
 body.light-mode header,
 body[data-theme="light"] header{
   background:#FFFFFF;
@@ -84,6 +91,13 @@ footer{
   white-space:nowrap;
   box-shadow:0 10px 30px var(--shadow-soft);
 }
+body.dark-mode .pill,
+body[data-theme="dark"] .pill{
+  background:rgba(255,255,255,0.04);
+  border-color:rgba(255,255,255,0.08);
+  color:var(--text-soft);
+  box-shadow:none;
+}
 body.light-mode .pill,
 body[data-theme="light"] .pill{
   background:#F1F5F9;
@@ -119,6 +133,18 @@ body[data-theme="light"] .pill{
   background:linear-gradient(120deg,var(--color-accent),var(--color-accent-2));
   box-shadow:0 10px 28px rgba(var(--color-primary-rgb),.22);
 }
+body.dark-mode .btn-primary,
+body[data-theme="dark"] .btn-primary{
+  background:#F5F7FA;
+  color:#0B0B0F;
+  border:1px solid rgba(255,255,255,0.7);
+  border-radius:var(--radius-pill);
+  box-shadow:none;
+}
+body.dark-mode .btn-primary:active,
+body[data-theme="dark"] .btn-primary:active{
+  transform:scale(0.98);
+}
 body.light-mode .btn-primary,
 body[data-theme="light"] .btn-primary{
   background:#4FD1C5;
@@ -141,6 +167,17 @@ body[data-theme="light"] .btn-primary:hover{
   background:var(--glass-faint);
   border:1px solid rgba(var(--color-border-rgb),.8);
   color:var(--color-text);
+}
+body.dark-mode .btn-outline,
+body[data-theme="dark"] .btn-outline{
+  background:transparent;
+  border-color:rgba(255,255,255,0.14);
+  box-shadow:none;
+}
+body.dark-mode .btn-ghost,
+body[data-theme="dark"] .btn-ghost{
+  background:rgba(255,255,255,0.04);
+  border-color:rgba(255,255,255,0.1);
 }
 body.light-mode .btn-outline,
 body[data-theme="light"] .btn-outline{
@@ -173,6 +210,13 @@ body[data-theme="light"] .btn-ghost{
   position:relative;
   backdrop-filter: blur(6px);
 }
+body.dark-mode .card,
+body[data-theme="dark"] .card{
+  background:var(--color-surface-2);
+  border-color:rgba(255,255,255,0.08);
+  box-shadow:none;
+  backdrop-filter: blur(8px);
+}
 body.light-mode .card,
 body[data-theme="light"] .card{
   background:#FFFFFF;
@@ -187,6 +231,10 @@ body[data-theme="light"] .card{
               radial-gradient(700px 350px at 85% 20%, rgba(var(--color-primary-rgb),.16), transparent 55%);
   pointer-events:none;
   opacity:.55;
+}
+body.dark-mode .card::before,
+body[data-theme="dark"] .card::before{
+  opacity:.18;
 }
 body.light-mode .card::before,
 body[data-theme="light"] .card::before{
@@ -217,6 +265,11 @@ body[data-theme="light"] .card::before{
   font-weight:900;
   letter-spacing:.2px;
   line-height:1.1;
+}
+body.dark-mode .hero-title,
+body[data-theme="dark"] .hero-title{
+  font-size:2.4rem;
+  letter-spacing:-0.02em;
 }
 .hero-sub{
   margin:0 0 1rem 0;

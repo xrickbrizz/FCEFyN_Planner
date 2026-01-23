@@ -175,6 +175,32 @@ button{
 .btn-danger{ background:var(--color-danger); color:var(--color-text-contrast);}
 .btn-small{ padding:.24rem .68rem; font-size:.8rem; border-radius:var(--radius-sm);box-shadow: none; }
 
+body.dark-mode .btn-blue,
+body[data-theme="dark"] .btn-blue{
+  background:#F5F7FA;
+  color:#0B0B0F;
+  border:1px solid rgba(255,255,255,0.7);
+  border-radius:var(--radius-pill);
+  box-shadow:none;
+}
+body.dark-mode .btn-blue:active,
+body[data-theme="dark"] .btn-blue:active{
+  transform:scale(0.98);
+}
+body.dark-mode .btn-gray,
+body[data-theme="dark"] .btn-gray{
+  background:rgba(255,255,255,0.04);
+  color:var(--color-text);
+  border:1px solid rgba(255,255,255,0.1);
+  box-shadow:none;
+}
+body.dark-mode .btn-outline,
+body[data-theme="dark"] .btn-outline{
+  background:transparent;
+  border-color:rgba(255,255,255,0.12);
+  box-shadow:none;
+}
+
 .section-label{
   display:inline-flex;
   align-items:center;
@@ -188,6 +214,12 @@ button{
   color:var(--color-text);
   box-shadow:0 10px 24px var(--shadow-color-soft);
   width: fit-content;
+}
+body.dark-mode .section-label,
+body[data-theme="dark"] .section-label{
+  background:rgba(255,255,255,0.04);
+  border-color:rgba(255,255,255,0.1);
+  box-shadow:none;
 }
 
 .content-header{
@@ -207,6 +239,12 @@ button{
 .content-header .section-label{
   justify-self:center;
 }
+body.dark-mode .content-header,
+body[data-theme="dark"] .content-header{
+  background:rgba(18,21,26,0.92);
+  border-color:rgba(255,255,255,0.08);
+  box-shadow:none;
+}
 .help-btn{
   border:1px solid rgba(var(--color-accent-rgb),.75);
   background:linear-gradient(135deg, rgba(var(--color-accent-rgb),.35), rgba(var(--color-accent-rgb),.25));
@@ -217,6 +255,13 @@ button{
   font-weight:800;
   font-size:1.05rem;
   box-shadow:0 12px 24px rgba(var(--color-accent-rgb),.25);
+}
+body.dark-mode .help-btn,
+body[data-theme="dark"] .help-btn{
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.14);
+  color:var(--color-text);
+  box-shadow:none;
 }
 .help-btn:hover{ filter:brightness(1.05); }
 
@@ -271,6 +316,19 @@ button{
   box-shadow:0 10px 26px rgba(var(--color-accent-rgb),.35);
   color:var(--color-primary-strong);
   font-weight:800;
+}
+body.dark-mode .tab-btn,
+body[data-theme="dark"] .tab-btn{
+  background:rgba(255,255,255,0.04);
+  border-color:rgba(255,255,255,0.1);
+  box-shadow:none;
+}
+body.dark-mode .tab-btn.tab-active,
+body[data-theme="dark"] .tab-btn.tab-active{
+  background:#F5F7FA;
+  color:#0B0B0F;
+  border-color:rgba(255,255,255,0.7);
+  box-shadow:none;
 }
 body.light-mode .tab-btn,
 body[data-theme="light"] .tab-btn{
