@@ -249,11 +249,13 @@
           <strong>Plan de estudios</strong>
         </div>
       </div>
-      <div class="notice" id="planTabNotice" style="display:none;">
+      <div class="plan-frame">
+        <div class="notice" id="planTabNotice" style="display:none;">
         Necesitás elegir tu carrera en Perfil para ver el plan de estudios automáticamente.
         <button class="link" type="button" id="planGoProfile">Ir a Perfil</button>
       </div>
       <iframe id="planFrame" class="plan-frame" title="Plan de estudios"></iframe>
+      </div>
     </div>
 
     <div id="tab-planificador" class="tab-card" style="display:none;">
@@ -339,7 +341,7 @@
           <div id="professorsList" class="prof-list"></div>
         </div>
       </div>
-      <div class="profDetail" id="professorDetailSection" >
+      <div class="profDetail" id="professorDetailSection" hidden >
         <button id="btnBackToFilters" type="button" hidden>← Volver</button>
                       <div id="profDetailBox" class="prof-detail-card" >
             <div class="small-muted">Seleccioná un profesor para ver detalles y valorar.</div>

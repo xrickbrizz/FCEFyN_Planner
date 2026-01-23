@@ -215,6 +215,7 @@ const helpContent = {
 function getProfileCareerSlug(){
   return AppState?.userProfile?.careerSlug || "";
 }
+// plan de estudio 
 
 function updatePlanTab(){
   const frame = document.getElementById("planFrame");
