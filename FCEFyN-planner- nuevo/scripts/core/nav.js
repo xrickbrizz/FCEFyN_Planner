@@ -42,9 +42,9 @@ export function initNav(ctx = {}) {
     const sidebarCtrl = createQuickSidebar({
       mount,
       items,
-      title: ctx.title || "Accesos rápidos",
-      subtitle: ctx.subtitle || "Navegación principal",
-      footer: ctx.footer || "Elegí sección",
+      title: ctx.title || null,
+      subtitle: ctx.subtitle || null,
+      //footer: ctx.footer ,
       collapsed: ctx.collapsed ?? true,
       onSelect: id => {
         console.log("[nav] click -> section", id);

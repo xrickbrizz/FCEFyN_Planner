@@ -2,9 +2,9 @@ export function createQuickSidebar(options){
   const {
     mount,
     items=[],
-    title="Accesos rápidos",
-    subtitle="Navegá las secciones principales",
-    footer="Se sincroniza con las pestaas actuales.",
+    title= null,
+    subtitle=null,
+    footer=null,
     collapsed=true,
     onSelect
   } = options || {};
