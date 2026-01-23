@@ -9,11 +9,15 @@ body.plans-embed {
     padding: 0 !important;
     overflow: hidden; /* Quita el scroll de la página interna */
     background: transparent; /* Opcional: para que tome el fondo de tu app principal */
+    box-shadow: none;
 }
 
 /* Ajustamos el margen del contenido principal para que no quede espacio arriba */
 body.plans-embed .grid-wrap {
     margin-top: 0 !important;
-    padding-top: 10px; /* Un pequeño respiro si lo deseas */
     height: 100vh; /* Que ocupe todo el alto visual del iframe */
+    border-color: transparent;
+    background: transparent; 
+    box-shadow: none;
+
 }

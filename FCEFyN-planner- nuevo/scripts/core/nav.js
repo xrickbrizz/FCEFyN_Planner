@@ -9,10 +9,10 @@ export const navItems = [
   { id:"planestudios", label:"Plan de estudios", icon:"🧭" },
   { id:"planificador", label:"Planificador", icon:"🧩" },
   { id:"profesores", label:"Profesores", icon:"⭐" },
-  { id:"mensajes", label:"Mensajes", icon:"💬" },
-  { id:"perfil", label:"Perfil", icon:"👤" },
+  //{ id:"mensajes", label:"Mensajes", icon:"💬" },
+  //{ id:"perfil", label:"Perfil", icon:"👤" },
 ];
-//xd
+
 console.log("[nav] loaded");
 
 export function initNav(ctx = {}) {
