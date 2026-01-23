@@ -54,11 +54,7 @@ export function createQuickSidebar(options){
 
     const ico = document.createElement("span");
     ico.className = "qs-ico";
-    if (typeof it.icon === "string" && it.icon.trim().startsWith("<svg")) {
-      ico.innerHTML = it.icon;
-    } else {
-      ico.textContent = it.icon || "•";
-    }
+    ico.textContent = it.icon || "•";
 
     const txt = document.createElement("span");
     txt.textContent = it.label || "Sección";
