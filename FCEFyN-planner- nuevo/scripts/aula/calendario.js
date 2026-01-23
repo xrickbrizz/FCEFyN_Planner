@@ -8,6 +8,7 @@ let estudiosCache = {};
 let editingIndex = -1;
 let studyViewYear = null;
 let studyViewMonth = null;
+let studyFocusDateKey = null;
 
 // ---- ACADEMICO
 let academicoCache = {};
@@ -21,9 +22,23 @@ const acadDoubleClickWindow = 550;
 
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
+const studyTodayLabel = document.getElementById("studyTodayLabel");
+const studyMonthStatus = document.getElementById("studyMonthStatus");
+const btnStudyReturn = document.getElementById("btnStudyReturn");
+const studyDetailTitle = document.getElementById("studyDetailTitle");
+const studyDetailDate = document.getElementById("studyDetailDate");
+const studyDetailTime = document.getElementById("studyDetailTime");
+const studyDetailList = document.getElementById("studyDetailList");
+const studyAddActivity = document.getElementById("studyAddActivity");
+const studyNewEntry = document.getElementById("studyNewEntry");
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
+const acadTodayLabel = document.getElementById("acadTodayLabel");
+const acadMonthStatus = document.getElementById("acadMonthStatus");
+const btnAcadReturn = document.getElementById("btnAcadReturn");
+const acadAddActivity = document.getElementById("acadAddActivity");
+const acadNewEntry = document.getElementById("acadNewEntry");
 const acadDetailBox = document.getElementById("acadDetailBox");
 const acadDetailTitle = document.getElementById("acadDetailTitle");
 const acadDetailSub = document.getElementById("acadDetailSub");
@@ -154,6 +169,24 @@ function dtLocalToParts(dtLocal){
   if ([y,m,d,hh,mm].some(isNaN)) return null;
   return { y,m,d,hh,mm };
 }
+function getTodayParts(){
+  const now = new Date();
+  return { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate(), date: now };
+}
+function getTodayKey(){
+  const today = getTodayParts();
+  return dateKeyFromYMD(today.y, today.m, today.d);
+}
+function normalizeLabel(value){
+  return String(value || "").toLowerCase().trim();
+}
+function getSubjectAccentColor(name){
+  const target = normalizeLabel(name);
+  if (!target) return null;
+  const subjects = getSubjects();
+  const match = subjects.find(subject => normalizeLabel(subject?.name) === target);
+  return match?.color || null;
+}
 function partsToDtLocal(p){
   if (!p) return "";
   return p.y + "-" + pad2(p.m) + "-" + pad2(p.d) + "T" + pad2(p.hh) + ":" + pad2(p.mm);
@@ -249,6 +282,12 @@ function initStudyNav(){
   const prevBtn = document.getElementById("btnStudyPrev");
   const nextBtn = document.getElementById("btnStudyNext");
   const todayBtn = document.getElementById("btnStudyToday");
+  const openStudyToday = () => {
+    const now = new Date();
+    studyViewYear = now.getFullYear();
+    studyViewMonth = now.getMonth();
+    renderStudyCalendar();
+  };
   if (prevBtn){
     prevBtn.addEventListener("click", ()=>{
       studyViewMonth--;
@@ -268,15 +307,20 @@ function initStudyNav(){
     warnMissing("btnStudyNext", nextBtn);
   }
   if (todayBtn){
-    todayBtn.addEventListener("click", ()=>{
-      const now = new Date();
-      studyViewYear = now.getFullYear();
-      studyViewMonth = now.getMonth();
-      renderStudyCalendar();
-    });
+    todayBtn.addEventListener("click", openStudyToday);
   } else {
     warnMissing("btnStudyToday", todayBtn);
   }
+  if (btnStudyReturn){
+    btnStudyReturn.addEventListener("click", openStudyToday);
+  }
+  const openStudyModalForFocus = () => {
+    const focusKey = studyFocusDateKey || getTodayKey();
+    const parts = ymdFromDateKey(focusKey);
+    if (parts) openModalStudy(parts.d, parts.m, parts.y);
+  };
+  if (studyAddActivity) studyAddActivity.addEventListener("click", openStudyModalForFocus);
+  if (studyNewEntry) studyNewEntry.addEventListener("click", openStudyModalForFocus);
 }
 
 export function renderStudyCalendar(){
@@ -304,6 +348,13 @@ export function renderStudyCalendar(){
   const labelDate = new Date(studyViewYear, studyViewMonth, 1);
   monthTitle.textContent = labelDate.toLocaleDateString("es-ES", { month:"long", year:"numeric" });
 
+  const todayParts = getTodayParts();
+  if (studyTodayLabel) studyTodayLabel.textContent = todayParts.date.toLocaleDateString("es-ES");
+  const isCurrentMonth = studyViewYear === todayParts.y && studyViewMonth === (todayParts.m - 1);
+  if (studyMonthStatus){
+    studyMonthStatus.hidden = isCurrentMonth;
+  }
+
   gridStudy.innerHTML = "";
 
   for (let i=0;i<offset;i++){
@@ -312,12 +363,14 @@ export function renderStudyCalendar(){
     gridStudy.appendChild(empty);
   }
 
-  const now = new Date();
-  const ty = now.getFullYear(), tm = now.getMonth(), td = now.getDate();
+  const now = todayParts.date;
+  const ty = todayParts.y, tm = todayParts.m - 1, td = todayParts.d;
 
   for (let d=1; d<=totalDays; d++){
     const box = document.createElement("div");
     box.className = "day";
+    const dateKey = dateKeyFromYMD(studyViewYear, studyViewMonth + 1, d);
+    box.dataset.dateKey = dateKey;
 
     if (studyViewYear === ty && studyViewMonth === tm && d === td){
       box.classList.add("is-today");
@@ -333,14 +386,25 @@ export function renderStudyCalendar(){
     head.appendChild(dot);
 
     box.appendChild(head);
+    const dots = document.createElement("div");
+    dots.className = "event-dots";
+    box.appendChild(dots);
 
     box.onclick = () => {
       console.log("[calendario] click study day", { day:d, month: studyViewMonth+1, year: studyViewYear });
+      studyFocusDateKey = dateKey;
+      renderStudyDetailPanel(dateKey);
+      highlightStudySelection(dateKey);
       openModalStudy(d, studyViewMonth+1, studyViewYear);
     };
     gridStudy.appendChild(box);
   }
 
+  const focusParts = ymdFromDateKey(studyFocusDateKey || "");
+  if (!focusParts || focusParts.y !== studyViewYear || (focusParts.m - 1) !== studyViewMonth){
+    studyFocusDateKey = isCurrentMonth ? getTodayKey() : dateKeyFromYMD(studyViewYear, studyViewMonth + 1, 1);
+  }
+  highlightStudySelection(studyFocusDateKey);
   paintStudyEvents();
 }
 
@@ -348,7 +412,8 @@ export function paintStudyEvents(){
   if (!gridStudy) return;
   const boxes = gridStudy.querySelectorAll(".day");
   boxes.forEach(b => {
-    Array.from(b.querySelectorAll(".event")).forEach(e => e.remove());
+    const dots = b.querySelector(".event-dots");
+    if (dots) dots.innerHTML = "";
   });
 
   if (!estudiosCache) return;
@@ -362,24 +427,77 @@ export function paintStudyEvents(){
     const events = estudiosCache[dateKey] || [];
     const d = parts.d;
 
-    boxes.forEach(box => {
-      const nEl = box.querySelector(".day-number span");
-      const n = nEl ? parseInt(nEl.textContent, 10) : NaN;
-      if (n === d){
-        events.forEach(ev => {
-          const e = document.createElement("div");
-          e.className = "event";
-          const horas = (ev.horas || 0) + "h " + (ev.mins || 0) + "m";
-          e.textContent = (ev.materia || "Materia") + " — " + horas + (ev.tema ? (" · " + ev.tema) : "");
-          box.appendChild(e);
-        });
-      }
+    const box = gridStudy.querySelector(`.day[data-date-key="${dateKey}"]`);
+    if (!box) return;
+    const dots = box.querySelector(".event-dots");
+    if (!dots) return;
+    events.forEach(ev => {
+      const dot = document.createElement("span");
+      dot.className = "event-dot";
+      const accent = getSubjectAccentColor(ev.materia);
+      if (accent) dot.style.setProperty("--accent", accent);
+      dot.title = `${ev.materia || "Materia"} · ${(ev.horas || 0)}h ${(ev.mins || 0)}m`;
+      dots.appendChild(dot);
     });
+  });
+  renderStudyDetailPanel(studyFocusDateKey || getTodayKey());
+}
+
+function highlightStudySelection(dateKey){
+  if (!gridStudy) return;
+  const normalizedKey = getDayKey(dateKey);
+  gridStudy.querySelectorAll(".day").forEach(card => {
+    const key = card.dataset.dateKey;
+    if (!key) return;
+    card.classList.toggle("is-selected", key === normalizedKey);
+  });
+}
+
+function renderStudyDetailPanel(dateKey){
+  if (!studyDetailTitle || !studyDetailDate || !studyDetailTime || !studyDetailList) return;
+  const normalizedKey = getDayKey(dateKey) || getTodayKey();
+  const parts = ymdFromDateKey(normalizedKey);
+  if (!parts) return;
+  studyFocusDateKey = normalizedKey;
+  highlightStudySelection(normalizedKey);
+
+  const detailDate = new Date(parts.y, parts.m - 1, parts.d);
+  studyDetailTitle.textContent = detailDate.toLocaleDateString("es-ES", { weekday:"long" });
+  studyDetailDate.textContent = detailDate.toLocaleDateString("es-ES", { day:"numeric", month:"long", year:"numeric" });
+  studyDetailTime.textContent = new Date().toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
+
+  const events = estudiosCache[normalizedKey] || [];
+  studyDetailList.innerHTML = "";
+  if (!events.length){
+    const empty = document.createElement("div");
+    empty.className = "small-muted";
+    empty.textContent = "No hay registros para este día.";
+    studyDetailList.appendChild(empty);
+    return;
+  }
+
+  const detailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>`;
+
+  events.forEach(ev => {
+    const card = document.createElement("div");
+    card.className = "study-event-card";
+    const accent = getSubjectAccentColor(ev.materia);
+    if (accent) card.style.setProperty("--accent", accent);
+    const horas = (ev.horas || 0) + "h " + (ev.mins || 0) + "m";
+    card.innerHTML = `
+      <div class="study-event-content">
+        <div class="study-event-title">${escapeHtml(ev.materia || "Materia")}</div>
+        <div class="study-event-meta">${escapeHtml(horas)} · ${escapeHtml(ev.tema || "Sin tema")}</div>
+      </div>
+      <span class="detail-icon">${detailIcon}</span>
+    `;
+    studyDetailList.appendChild(card);
   });
 }
 
 function openModalStudy(day, month, year){
   selectedDate = dateKeyFromYMD(year, month, day);
+  studyFocusDateKey = selectedDate;
   editingIndex = -1;
 
   console.log("[calendario] openModalStudy", { selectedDate });
@@ -392,6 +510,7 @@ function openModalStudy(day, month, year){
 
   const events = estudiosCache[selectedDate] || [];
   renderEventsList(events);
+  renderStudyDetailPanel(selectedDate);
 
   if (inpHoras) inpHoras.value = "";
   if (inpMins) inpMins.value = "";
@@ -554,6 +673,12 @@ function initAcademicoNav(){
   const prevBtn = document.getElementById("btnAcadPrev");
   const nextBtn = document.getElementById("btnAcadNext");
   const todayBtn = document.getElementById("btnAcadToday");
+  const openAcadToday = () => {
+    const now = new Date();
+    acadViewYear = now.getFullYear();
+    acadViewMonth = now.getMonth();
+    renderAcadCalendar();
+  };
   if (prevBtn){
     prevBtn.addEventListener("click", ()=>{
       acadViewMonth--;
@@ -573,15 +698,19 @@ function initAcademicoNav(){
     warnMissing("btnAcadNext", nextBtn);
   }
   if (todayBtn){
-    todayBtn.addEventListener("click", ()=>{
-      const now = new Date();
-      acadViewYear = now.getFullYear();
-      acadViewMonth = now.getMonth();
-      renderAcadCalendar();
-    });
+    todayBtn.addEventListener("click", openAcadToday);
   } else {
     warnMissing("btnAcadToday", todayBtn);
   }
+  if (btnAcadReturn){
+    btnAcadReturn.addEventListener("click", openAcadToday);
+  }
+  const openAcadModal = () => {
+    const targetKey = acadSelectedDateKey || getTodayKey();
+    openAcadModalForDate(targetKey, -1);
+  };
+  if (acadAddActivity) acadAddActivity.addEventListener("click", openAcadModal);
+  if (acadNewEntry) acadNewEntry.addEventListener("click", openAcadModal);
   if (btnAcadDayAdd){
     btnAcadDayAdd.addEventListener("click", ()=>{
       if (acadSelectedDateKey) openAcadModalForDate(acadSelectedDateKey, -1);
@@ -627,6 +756,11 @@ export function renderAcadCalendar(){
   acadSelectedDateKey = selectedKey;
 
   acadMonthTitle.textContent = firstDay.toLocaleString("es-ES", { month:"long", year:"numeric" });
+  if (acadTodayLabel) acadTodayLabel.textContent = now.toLocaleDateString("es-ES");
+  if (acadMonthStatus){
+    const isCurrent = acadViewYear === now.getFullYear() && acadViewMonth === now.getMonth();
+    acadMonthStatus.hidden = isCurrent;
+  }
 
   acadGrid.innerHTML = "";
 
@@ -650,48 +784,27 @@ export function renderAcadCalendar(){
     card.appendChild(head);
 
     const { items } = getAcadItemsWithKey(dateKey);
-
-    const list = document.createElement("div");
-    list.className = "acad-day-list";
+    const dots = document.createElement("div");
+    dots.className = "event-dots";
 
     items.forEach(({ item, index })=>{
-      const row = document.createElement("div");
-      row.className = "acad-day-item";
-      row.addEventListener("click", (e)=> {
+      const dotBtn = document.createElement("button");
+      dotBtn.type = "button";
+      dotBtn.className = "event-dot-button";
+      dotBtn.title = `${item.titulo || "Registro"} · ${item.materia || "Materia"}`;
+      dotBtn.addEventListener("click", (e)=> {
         e.stopPropagation();
         openAcadDayModal(dateKey, index);
       });
-
-      const left = document.createElement("div");
-      left.className = "acad-item-left";
-      left.innerHTML = `<div class="badge-soft">${escapeHtml(item.tipo || "Item")}</div>`;
-
-      const mid = document.createElement("div");
-      mid.className = "acad-item-mid";
-      mid.innerHTML = `
-        <div class="acad-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
-        <div class="acad-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")}</div>
-      `;
-
-      const right = document.createElement("div");
-      right.className = "acad-item-right";
-      right.textContent = getAcadTimeLabel(item);
-
-      row.appendChild(left);
-      row.appendChild(mid);
-      row.appendChild(right);
-
-      list.appendChild(row);
+      const dot = document.createElement("span");
+      dot.className = "event-dot";
+      const accent = getSubjectAccentColor(item.materia);
+      if (accent) dot.style.setProperty("--accent", accent);
+      dotBtn.appendChild(dot);
+      dots.appendChild(dotBtn);
     });
 
-    if (!items.length){
-      const empty = document.createElement("div");
-      empty.className = "small-muted";
-      empty.textContent = "—";
-      list.appendChild(empty);
-    }
-
-    card.appendChild(list);
+    card.appendChild(dots);
 
     card.addEventListener("click", ()=>{
       console.log("[calendario] click academico day", { dateKey });
@@ -752,9 +865,13 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
   acadDetailList.innerHTML = "";
   acadDetailBox.style.display = "block";
 
+  const detailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12h6"/><path d="M9 16h6"/><path d="M9 8h6"/><rect x="5" y="4" width="14" height="16" rx="2"/></svg>`;
+
   items.forEach(({ item })=>{
     const row = document.createElement("div");
     row.className = "acad-detail-row";
+    const accent = getSubjectAccentColor(item.materia);
+    if (accent) row.style.setProperty("--accent", accent);
 
     const left = document.createElement("div");
     left.className = "acad-detail-text";
@@ -766,6 +883,10 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
     `;
 
     row.appendChild(left);
+    const iconWrap = document.createElement("span");
+    iconWrap.className = "detail-icon";
+    iconWrap.innerHTML = detailIcon;
+    row.appendChild(iconWrap);
     acadDetailList.appendChild(row);
   });
 }

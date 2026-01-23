@@ -5,6 +5,7 @@
   <title>Panel del Estudiante</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/ui/saas-theme.css">
   <link rel="stylesheet" href="styles/study.css">
   <script src="scripts/ui/theme-toggle.js" defer></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" defer></script>
@@ -33,7 +34,7 @@
     <div class="page-content">
       <div class="content-header">
         <button class="quick-toggle-btn" id="sidebarToggle" type="button" aria-label="Abrir accesos rápidos">☰</button>
-        <div class="section-label" id="currentSectionLabel">📒 Estudio</div>
+        <div class="section-label" id="currentSectionLabel"><span>Inicio</span></div>
         <button class="help-btn" id="helpButton" type="button" aria-label="Ayuda contextual">?</button>
       </div>
       <div class="main-shell">
@@ -77,14 +78,32 @@
       <div class="tab-estudio-layout">
         <div class="calendar-container">
           <div class="calendar-header">
-            <div class="cal-left">
-              <button class="cal-nav-btn" id="btnStudyPrev">◀</button>
-              <button class="cal-nav-btn" id="btnStudyToday">Hoy</button>
-              <button class="cal-nav-btn" id="btnStudyNext">▶</button>
-              <h2 id="monthTitle" style="margin:0;"></h2>
+            <div class="cal-title">
+              <h2 id="monthTitle"></h2>
+              <div class="cal-view">Vista: Mes</div>
             </div>
-            <div class="cal-right small-muted" id="studyHint">Click en un día para registrar estudio</div>
+            <div class="cal-controls">
+              <div class="cal-controls-group">
+                <button class="cal-nav-btn" id="btnStudyPrev" type="button" title="Mes anterior">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                  <span>Mes anterior</span>
+                </button>
+                <button class="cal-nav-btn" id="btnStudyToday" type="button" title="Volver a la fecha actual">
+                  <span>Ir a hoy</span>
+                  <span class="cal-today-date" id="studyTodayLabel">—</span>
+                </button>
+                <button class="cal-nav-btn" id="btnStudyNext" type="button" title="Mes siguiente">
+                  <span>Mes siguiente</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              <div class="cal-status" id="studyMonthStatus" hidden>
+                <span>No estás en el mes actual</span>
+                <button type="button" id="btnStudyReturn">Volver a hoy</button>
+              </div>
+            </div>
           </div>
+          <div class="cal-hint" id="studyHint">Click en un día para registrar estudio</div>
 
           <div class="grid" id="studyDow">
             <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow">Sáb</div><div class="dow">Dom</div>
@@ -92,11 +111,20 @@
           <div class="grid" id="calendarGrid" style="margin-top:8px;"></div>
         </div>
 
-        <div class="stats-card">
-          <div class="stats-title">Estadísticas (próximamente)</div>
-          <div class="stats-item">• Total de horas este mes: <strong>—</strong></div>
-          <div class="stats-item">• Materia más estudiada: <strong>—</strong></div>
-          <div class="stats-item">• Días con estudio registrado: <strong>—</strong></div>
+        <div class="study-detail-panel" id="studyDetailPanel">
+          <div class="study-detail-header">
+            <div>
+              <div class="study-detail-day" id="studyDetailTitle">Detalle del día</div>
+              <div class="study-detail-date" id="studyDetailDate">—</div>
+            </div>
+            <div class="study-detail-time" id="studyDetailTime">—</div>
+          </div>
+          <div class="study-events" id="studyDetailList"></div>
+          <button class="detail-add" id="studyAddActivity" type="button">
+            <span class="add-plus">+</span>
+            <span>Agregar actividad para hoy</span>
+          </button>
+          <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
         </div>
       </div>
     </div>
@@ -104,12 +132,30 @@
     <div id="tab-academico" class="tab-card" style="display:none;">
       <div class="acad-layout">
         <div class="acad-shell">
-          <div class="calendar-header" style="margin-bottom:.25rem;">
-            <div class="cal-left">
-              <button class="cal-nav-btn" id="btnAcadPrev">◀</button>
-              <button class="cal-nav-btn" id="btnAcadToday">Hoy</button>
-              <button class="cal-nav-btn" id="btnAcadNext">▶</button>
-              <h2 id="acadMonthTitle" style="margin:0;"></h2>
+          <div class="calendar-header">
+            <div class="cal-title">
+              <h2 id="acadMonthTitle"></h2>
+              <div class="cal-view">Vista: Mes</div>
+            </div>
+            <div class="cal-controls">
+              <div class="cal-controls-group">
+                <button class="cal-nav-btn" id="btnAcadPrev" type="button" title="Mes anterior">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                  <span>Mes anterior</span>
+                </button>
+                <button class="cal-nav-btn" id="btnAcadToday" type="button" title="Volver a la fecha actual">
+                  <span>Ir a hoy</span>
+                  <span class="cal-today-date" id="acadTodayLabel">—</span>
+                </button>
+                <button class="cal-nav-btn" id="btnAcadNext" type="button" title="Mes siguiente">
+                  <span>Mes siguiente</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              <div class="cal-status" id="acadMonthStatus" hidden>
+                <span>No estás en el mes actual</span>
+                <button type="button" id="btnAcadReturn">Volver a hoy</button>
+              </div>
             </div>
           </div>
 
@@ -145,6 +191,13 @@
               </div>
               <div class="acad-detail-list" id="acadDetailList"></div>
             </div>
+          </div>
+          <div class="acad-action-group">
+            <button class="detail-add" id="acadAddActivity" type="button">
+              <span class="add-plus">+</span>
+              <span>Agregar actividad para hoy</span>
+            </button>
+          <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
           </div>
         </div>  
       </div>

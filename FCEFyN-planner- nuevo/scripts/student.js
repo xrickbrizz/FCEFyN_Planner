@@ -327,7 +327,8 @@ window.showTab = function(name){
   const nav = (Array.isArray(navItems) ? navItems : []).find(n => n.id === name) || null;
 
   if (label && nav){
-    label.textContent = (nav.icon || "") + " " + (nav.label || "");
+    const iconHtml = nav.icon ? `<span class="section-icon" aria-hidden="true">${nav.icon}</span>` : "";
+    label.innerHTML = `${iconHtml}<span>${nav.label || ""}</span>`;
   }
 };
 

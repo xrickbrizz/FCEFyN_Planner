@@ -54,7 +54,12 @@ export function createQuickSidebar(options){
 
     const ico = document.createElement("span");
     ico.className = "qs-ico";
-    ico.textContent = it.icon || "•";
+    ico.setAttribute("aria-hidden", "true");
+    if (typeof it.icon === "string" && it.icon.trim()){
+      ico.innerHTML = it.icon;
+    } else {
+      ico.textContent = "•";
+    }
 
     const txt = document.createElement("span");
     txt.textContent = it.label || "Sección";
