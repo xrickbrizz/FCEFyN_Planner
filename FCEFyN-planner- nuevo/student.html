@@ -125,6 +125,54 @@
             <span>Agregar actividad para hoy</span>
           </button>
           <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
+          <div id="studyInlineEditor" class="widget-card" style="display:none;">
+            <div class="widget-title" id="studyInlineTitle">Nuevo registro</div>
+            <div class="widget-grid">
+              <div class="widget-field">
+                <label for="studyInlineMateria">Materia</label>
+                <select id="studyInlineMateria"></select>
+              </div>
+              <div class="widget-field">
+                <label for="studyInlineTema">Tema</label>
+                <input id="studyInlineTema" type="text" placeholder="Tema a estudiar" />
+              </div>
+              <div class="widget-field widget-inline-row">
+                <div>
+                  <label for="studyInlineHoras">Horas</label>
+                  <input id="studyInlineHoras" type="number" min="0" max="12" placeholder="0" />
+                </div>
+                <div>
+                  <label for="studyInlineMins">Minutos</label>
+                  <input id="studyInlineMins" type="number" min="0" max="59" placeholder="0" />
+                </div>
+              </div>
+            </div>
+            <div class="widget-actions">
+              <button class="btn-outline btn-small" id="studyInlineCancel" type="button">Cancelar</button>
+              <button class="btn-blue btn-small" id="studyInlineSave" type="button">Guardar</button>
+            </div>
+          </div>
+          <section id="studyTimerWidget" class="widget-card">
+            <div class="widget-title">Timer de Estudio</div>
+            <div class="timer-display" id="studyTimerDisplay">00:00:00</div>
+            <div class="widget-grid">
+              <div class="widget-field">
+                <label for="studyTimerMateria">Materia</label>
+                <select id="studyTimerMateria"></select>
+              </div>
+              <div class="widget-field">
+                <label for="studyTimerTema">Tema (opcional)</label>
+                <input id="studyTimerTema" type="text" placeholder="Tema opcional" />
+              </div>
+            </div>
+            <div class="timer-actions">
+              <button class="btn-blue btn-small" id="studyTimerStart" type="button">Iniciar</button>
+              <button class="btn-outline btn-small" id="studyTimerPause" type="button">Pausar</button>
+              <button class="btn-outline btn-small" id="studyTimerResume" type="button" style="display:none;">Reanudar</button>
+              <button class="btn-gray btn-small" id="studyTimerReset" type="button">Reset</button>
+              <button class="btn-dark btn-small" id="studyTimerRegister" type="button">Registrar</button>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -161,7 +209,7 @@
 
           <div class="acad-help">
             Parciales, TPs, Tareas, Informes y Recordatorios (se guardan en tu planner de Firebase).
-            <br/>Tip: tocá un día para ver el detalle y tocá de nuevo para agregar un registro.
+            <br/>Tip: tocá un día para ver el detalle en el panel derecho y agregá registros desde ahí.
           </div>
 
           <div class="grid" id="acadDow">
@@ -199,6 +247,7 @@
             </button>
           <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
           </div>
+          <section id="acadUpcomingWidget" class="widget-card"></section>
         </div>  
       </div>
     </div>

@@ -524,6 +524,153 @@ body[data-theme="dark"] .quick-toggle-btn{
   font-weight: 700;
 }
 
+.widget-card{
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.widget-title{
+  font-weight: 700;
+  color: var(--text);
+}
+
+.widget-grid{
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.widget-field{
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.widget-field label{
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.widget-field input,
+.widget-field select{
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.widget-field input:focus,
+.widget-field select:focus{
+  outline: 2px solid rgba(47,111,237,0.25);
+  outline-offset: 1px;
+  border-color: rgba(47,111,237,0.5);
+}
+
+.widget-inline-row{
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.widget-inline-row > div{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.widget-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.timer-display{
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.timer-actions{
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.study-event-actions{
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.upcoming-list{
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.upcoming-row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.upcoming-main{
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.upcoming-title{
+  font-weight: 700;
+  color: var(--text);
+}
+
+.upcoming-meta{
+  font-size: 0.82rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.upcoming-badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.upcoming-actions{
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .btn-dark{
   width: 100%;
   border: none;

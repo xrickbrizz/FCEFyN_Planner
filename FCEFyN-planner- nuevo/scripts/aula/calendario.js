@@ -31,6 +31,23 @@ const studyDetailTime = document.getElementById("studyDetailTime");
 const studyDetailList = document.getElementById("studyDetailList");
 const studyAddActivity = document.getElementById("studyAddActivity");
 const studyNewEntry = document.getElementById("studyNewEntry");
+const studyInlineEditor = document.getElementById("studyInlineEditor");
+const studyInlineTitle = document.getElementById("studyInlineTitle");
+const studyInlineMateria = document.getElementById("studyInlineMateria");
+const studyInlineTema = document.getElementById("studyInlineTema");
+const studyInlineHoras = document.getElementById("studyInlineHoras");
+const studyInlineMins = document.getElementById("studyInlineMins");
+const studyInlineSave = document.getElementById("studyInlineSave");
+const studyInlineCancel = document.getElementById("studyInlineCancel");
+const studyTimerWidget = document.getElementById("studyTimerWidget");
+const studyTimerDisplay = document.getElementById("studyTimerDisplay");
+const studyTimerMateria = document.getElementById("studyTimerMateria");
+const studyTimerTema = document.getElementById("studyTimerTema");
+const studyTimerStart = document.getElementById("studyTimerStart");
+const studyTimerPause = document.getElementById("studyTimerPause");
+const studyTimerResume = document.getElementById("studyTimerResume");
+const studyTimerReset = document.getElementById("studyTimerReset");
+const studyTimerRegister = document.getElementById("studyTimerRegister");
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
@@ -47,6 +64,7 @@ const acadDetailList = document.getElementById("acadDetailList");
 const acadInfoEmpty = document.getElementById("acadInfoEmpty");
 const acadEmptyTitle = document.getElementById("acadEmptyTitle");
 const acadEmptySub = document.getElementById("acadEmptySub");
+const acadUpcomingWidget = document.getElementById("acadUpcomingWidget");
 const acadDayModalBg = document.getElementById("acadDayModalBg");
 const acadDayModalTitle = document.getElementById("acadDayModalTitle");
 const acadDayModalSubtitle = document.getElementById("acadDayModalSubtitle");
@@ -54,6 +72,10 @@ const acadDayModalList = document.getElementById("acadDayModalList");
 const acadRecordDetail = document.getElementById("acadRecordDetail");
 const btnAcadDayAdd = document.getElementById("btnAcadDayAdd");
 const btnAcadDayClose = document.getElementById("btnAcadDayClose");
+
+let studyTimerSeconds = 0;
+let studyTimerInterval = null;
+let studyTimerState = "idle";
 
 const getSubjects = () => {
   if (!CTX) return [];
@@ -87,6 +109,8 @@ export function initCalendario(ctx){
   initStudyNav();
   initAcademicoNav();
   initStudyModalUI();
+  initStudyInlineEditor();
+  initStudyTimer();
   initAcademicoModalUI();
 
   if (studyViewYear === null || studyViewMonth === null){
@@ -316,8 +340,7 @@ function initStudyNav(){
   }
   const openStudyModalForFocus = () => {
     const focusKey = studyFocusDateKey || getTodayKey();
-    const parts = ymdFromDateKey(focusKey);
-    if (parts) openModalStudy(parts.d, parts.m, parts.y);
+    openStudyInlineEditor(focusKey, -1);
   };
   if (studyAddActivity) studyAddActivity.addEventListener("click", openStudyModalForFocus);
   if (studyNewEntry) studyNewEntry.addEventListener("click", openStudyModalForFocus);
@@ -395,7 +418,6 @@ export function renderStudyCalendar(){
       studyFocusDateKey = dateKey;
       renderStudyDetailPanel(dateKey);
       highlightStudySelection(dateKey);
-      openModalStudy(d, studyViewMonth+1, studyViewYear);
     };
     gridStudy.appendChild(box);
   }
@@ -476,9 +498,7 @@ function renderStudyDetailPanel(dateKey){
     return;
   }
 
-  const detailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>`;
-
-  events.forEach(ev => {
+  events.forEach((ev, index) => {
     const card = document.createElement("div");
     card.className = "study-event-card";
     const accent = getSubjectAccentColor(ev.materia);
@@ -489,9 +509,22 @@ function renderStudyDetailPanel(dateKey){
         <div class="study-event-title">${escapeHtml(ev.materia || "Materia")}</div>
         <div class="study-event-meta">${escapeHtml(horas)} · ${escapeHtml(ev.tema || "Sin tema")}</div>
       </div>
-      <span class="detail-icon">${detailIcon}</span>
+      <div class="study-event-actions">
+        <button class="btn-outline btn-small" type="button" data-action="edit" data-index="${index}">Editar</button>
+        <button class="btn-danger btn-small" type="button" data-action="delete" data-index="${index}">Borrar</button>
+      </div>
     `;
     studyDetailList.appendChild(card);
+  });
+
+  studyDetailList.querySelectorAll("button[data-action]").forEach(btn => {
+    btn.addEventListener("click", async (e)=>{
+      const action = e.currentTarget.dataset.action;
+      const idx = parseInt(e.currentTarget.dataset.index, 10);
+      if (Number.isNaN(idx)) return;
+      if (action === "edit") openStudyInlineEditor(normalizedKey, idx);
+      if (action === "delete") await deleteStudyItem(normalizedKey, idx);
+    });
   });
 }
 
@@ -521,6 +554,223 @@ function openModalStudy(day, month, year){
 }
 
   if (modalBg) modalBg.style.display = "flex";
+}
+
+function initStudyInlineEditor(){
+  if (studyInlineCancel){
+    studyInlineCancel.addEventListener("click", ()=>{
+      if (studyInlineEditor) studyInlineEditor.style.display = "none";
+      editingIndex = -1;
+    });
+  }
+  if (studyInlineSave){
+    studyInlineSave.addEventListener("click", async ()=>{
+      const targetKey = studyFocusDateKey || getTodayKey();
+      if (!targetKey) return;
+      const materia = studyInlineMateria?.value;
+      const tema = studyInlineTema?.value || "";
+      const horas = studyInlineHoras?.value || "0";
+      const mins = studyInlineMins?.value || "0";
+      await saveStudyItem(targetKey, editingIndex, { materia, tema, horas, mins });
+      if (studyInlineEditor) studyInlineEditor.style.display = "none";
+      editingIndex = -1;
+    });
+  }
+}
+
+function openStudyInlineEditor(dateKey, index = -1){
+  const normalizedKey = getDayKey(dateKey) || getTodayKey();
+  if (!normalizedKey) return;
+  selectedDate = normalizedKey;
+  studyFocusDateKey = normalizedKey;
+  editingIndex = index;
+  highlightStudySelection(normalizedKey);
+  renderStudyDetailPanel(normalizedKey);
+
+  if (studyInlineTitle) studyInlineTitle.textContent = index >= 0 ? "Editar registro" : "Nuevo registro";
+  if (studyInlineEditor) studyInlineEditor.style.display = "flex";
+  if (studyInlineMateria) fillMateriaSelect(studyInlineMateria);
+
+  const events = estudiosCache[normalizedKey] || [];
+  const ev = index >= 0 ? events[index] : null;
+  if (studyInlineMateria){
+    if (ev?.materia){
+      const opt = Array.from(studyInlineMateria.options).find(o => o.value === ev.materia);
+      if (opt) studyInlineMateria.value = opt.value;
+    } else if (studyInlineMateria.options.length){
+      studyInlineMateria.selectedIndex = 0;
+    }
+  }
+  if (studyInlineTema) studyInlineTema.value = ev?.tema || "";
+  if (studyInlineHoras) studyInlineHoras.value = ev?.horas || "";
+  if (studyInlineMins) studyInlineMins.value = ev?.mins || "";
+}
+
+async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
+  const user = getCurrentUser();
+  if (!user) return;
+  const normalizedKey = getDayKey(dateKey);
+  if (!normalizedKey) return;
+
+  const subjects = getSubjects();
+  if (!subjects.length || !materia){
+    CTX?.notifyWarn?.("Primero creá al menos una materia en la pestaña 'Materias'.");
+    return;
+  }
+
+  const safeHoras = Math.max(0, parseInt(horas, 10) || 0);
+  const safeMins = Math.max(0, parseInt(mins, 10) || 0);
+
+  const { db, doc, getDoc, setDoc } = CTX || {};
+  if (!db || !doc || !getDoc || !setDoc) return;
+
+  const ref = doc(db, "planner", user.uid);
+  const snap = await getDoc(ref);
+  let data = snap.exists() ? snap.data() : {};
+  if (!data.estudios) data.estudios = {};
+  if (!Array.isArray(data.estudios[normalizedKey])) data.estudios[normalizedKey] = [];
+
+  const item = {
+    horas: String(safeHoras),
+    mins: String(safeMins),
+    tema: tema || "",
+    materia
+  };
+
+  if (index >= 0){
+    data.estudios[normalizedKey][index] = item;
+  } else {
+    data.estudios[normalizedKey].push(item);
+  }
+
+  await setDoc(ref, data);
+  estudiosCache = data.estudios || {};
+  paintStudyEvents();
+  renderStudyDetailPanel(normalizedKey);
+}
+
+async function deleteStudyItem(dateKey, index){
+  const user = getCurrentUser();
+  if (!user) return;
+  if (index < 0) return;
+  const normalizedKey = getDayKey(dateKey);
+  if (!normalizedKey) return;
+
+  const ok = await CTX?.showConfirm?.({
+    title:"Eliminar estudio",
+    message:"¿Seguro que querés eliminar este registro?",
+    confirmText:"Eliminar",
+    cancelText:"Cancelar",
+    danger:true
+  });
+  if (!ok) return;
+
+  const { db, doc, getDoc, setDoc } = CTX || {};
+  if (!db || !doc || !getDoc || !setDoc) return;
+
+  const ref = doc(db, "planner", user.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const data = snap.data() || {};
+  if (!data.estudios || !Array.isArray(data.estudios[normalizedKey])) return;
+
+  data.estudios[normalizedKey].splice(index, 1);
+  if (data.estudios[normalizedKey].length === 0) delete data.estudios[normalizedKey];
+
+  await setDoc(ref, data);
+  estudiosCache = data.estudios || {};
+  paintStudyEvents();
+  renderStudyDetailPanel(normalizedKey);
+}
+
+function initStudyTimer(){
+  if (studyTimerMateria) fillMateriaSelect(studyTimerMateria);
+  updateStudyTimerDisplay();
+  updateStudyTimerButtons();
+
+  if (studyTimerStart){
+    studyTimerStart.addEventListener("click", ()=>{
+      if (studyTimerState === "running") return;
+      studyTimerState = "running";
+      startStudyTimerInterval();
+      updateStudyTimerButtons();
+    });
+  }
+  if (studyTimerPause){
+    studyTimerPause.addEventListener("click", ()=>{
+      if (studyTimerState !== "running") return;
+      studyTimerState = "paused";
+      stopStudyTimerInterval();
+      updateStudyTimerButtons();
+    });
+  }
+  if (studyTimerResume){
+    studyTimerResume.addEventListener("click", ()=>{
+      if (studyTimerState !== "paused") return;
+      studyTimerState = "running";
+      startStudyTimerInterval();
+      updateStudyTimerButtons();
+    });
+  }
+  if (studyTimerReset){
+    studyTimerReset.addEventListener("click", ()=>{
+      stopStudyTimerInterval();
+      studyTimerSeconds = 0;
+      studyTimerState = "idle";
+      updateStudyTimerDisplay();
+      updateStudyTimerButtons();
+    });
+  }
+  if (studyTimerRegister){
+    studyTimerRegister.addEventListener("click", async ()=>{
+      const totalMin = Math.round(studyTimerSeconds / 60);
+      if (!totalMin){
+        CTX?.notifyWarn?.("El timer está en 0. Sumá tiempo antes de registrar.");
+        return;
+      }
+      const targetKey = studyFocusDateKey || getTodayKey();
+      const materia = studyTimerMateria?.value;
+      const tema = studyTimerTema?.value || "";
+      const horas = Math.floor(totalMin / 60);
+      const mins = totalMin % 60;
+      await saveStudyItem(targetKey, -1, { materia, tema, horas, mins });
+      stopStudyTimerInterval();
+      studyTimerSeconds = 0;
+      studyTimerState = "idle";
+      updateStudyTimerDisplay();
+      updateStudyTimerButtons();
+    });
+  }
+}
+
+function startStudyTimerInterval(){
+  stopStudyTimerInterval();
+  studyTimerInterval = setInterval(()=>{
+    studyTimerSeconds += 1;
+    updateStudyTimerDisplay();
+  }, 1000);
+}
+
+function stopStudyTimerInterval(){
+  if (studyTimerInterval){
+    clearInterval(studyTimerInterval);
+    studyTimerInterval = null;
+  }
+}
+
+function updateStudyTimerDisplay(){
+  if (!studyTimerDisplay) return;
+  const hrs = Math.floor(studyTimerSeconds / 3600);
+  const mins = Math.floor((studyTimerSeconds % 3600) / 60);
+  const secs = studyTimerSeconds % 60;
+  studyTimerDisplay.textContent = `${pad2(hrs)}:${pad2(mins)}:${pad2(secs)}`;
+}
+
+function updateStudyTimerButtons(){
+  if (studyTimerStart) studyTimerStart.disabled = studyTimerState === "running";
+  if (studyTimerPause) studyTimerPause.style.display = studyTimerState === "running" ? "inline-flex" : "none";
+  if (studyTimerResume) studyTimerResume.style.display = studyTimerState === "paused" ? "inline-flex" : "none";
 }
 
 function renderEventsList(events){
@@ -794,7 +1044,7 @@ export function renderAcadCalendar(){
       dotBtn.title = `${item.titulo || "Registro"} · ${item.materia || "Materia"}`;
       dotBtn.addEventListener("click", (e)=> {
         e.stopPropagation();
-        openAcadDayModal(dateKey, index);
+        renderRightPanel(dateKey);
       });
       const dot = document.createElement("span");
       dot.className = "event-dot";
@@ -822,6 +1072,7 @@ export function renderAcadCalendar(){
 
   highlightAcadSelection(acadSelectedDateKey);
   renderRightPanel(acadSelectedDateKey || todayKey);
+  renderAcadUpcomingWidget();
 }
 
 function highlightAcadSelection(dateKey){
@@ -847,7 +1098,7 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
     highlightAcadSelection(normalizedKey);
   }
 
-  const { items } = getAcadItemsWithKey(normalizedKey);
+  const { items, storageKey } = getAcadItemsWithKey(normalizedKey);
   const hasItems = items.length > 0;
 
   if (!hasItems){
@@ -865,9 +1116,7 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
   acadDetailList.innerHTML = "";
   acadDetailBox.style.display = "block";
 
-  const detailIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12h6"/><path d="M9 16h6"/><path d="M9 8h6"/><rect x="5" y="4" width="14" height="16" rx="2"/></svg>`;
-
-  items.forEach(({ item })=>{
+  items.forEach(({ item, index })=>{
     const row = document.createElement("div");
     row.className = "acad-detail-row";
     const accent = getSubjectAccentColor(item.materia);
@@ -883,10 +1132,33 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
     `;
 
     row.appendChild(left);
-    const iconWrap = document.createElement("span");
-    iconWrap.className = "detail-icon";
-    iconWrap.innerHTML = detailIcon;
-    row.appendChild(iconWrap);
+
+    const actions = document.createElement("div");
+    actions.className = "acad-detail-actions";
+
+    const btnView = document.createElement("button");
+    btnView.className = "btn-outline btn-small";
+    btnView.textContent = "Ver detalles";
+    btnView.addEventListener("click", ()=>{
+      renderAcadRecordDetail(item, normalizedKey);
+    });
+
+    const btnEdit = document.createElement("button");
+    btnEdit.className = "btn-outline btn-small";
+    btnEdit.textContent = "Editar";
+    btnEdit.addEventListener("click", ()=> openAcadModalForDate(normalizedKey, index, storageKey));
+
+    const btnDelete = document.createElement("button");
+    btnDelete.className = "btn-danger btn-small";
+    btnDelete.textContent = "Borrar";
+    btnDelete.addEventListener("click", async ()=>{
+      await deleteAcadItem(normalizedKey, index);
+    });
+
+    actions.appendChild(btnView);
+    actions.appendChild(btnEdit);
+    actions.appendChild(btnDelete);
+    row.appendChild(actions);
     acadDetailList.appendChild(row);
   });
 }
@@ -900,7 +1172,6 @@ function handleAcadDayClick(dateKey){
   }
   acadLastClick = { dateKey, time: now };
   renderRightPanel(dateKey);
-  openAcadDayModal(dateKey);
 }
 
 function handleAcadDayHover(dateKey){
@@ -1037,7 +1308,7 @@ async function deleteAcadItem(dateKey, index){
     academicoCache = data.academico || {};
     renderAcadCalendar();
     renderRightPanel(normalizedKey);
-    openAcadDayModal(normalizedKey);
+    renderAcadUpcomingWidget();
     CTX?.notifySuccess?.("Item eliminado.");
     console.log("[calendario] delete academico", { dateKey, index });
   }catch(e){
@@ -1189,6 +1460,7 @@ editingIndex = -1;
         acadSelectedDateKey = normalizedKey;
         renderAcadCalendar();
         renderRightPanel(normalizedKey);
+        renderAcadUpcomingWidget();
         if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Académico guardado.");
@@ -1237,6 +1509,7 @@ editingIndex = -1;
         acadSelectedDateKey = normalizedKey;
         renderAcadCalendar();
         renderRightPanel(normalizedKey);
+        renderAcadUpcomingWidget();
         if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Item eliminado.");
@@ -1248,6 +1521,93 @@ editingIndex = -1;
   } else {
     warnMissing("btnAcadDelete", deleteBtn);
   }
+}
+
+function buildUpcomingAcadItems({ daysAhead = 7 } = {}){
+  const items = [];
+  if (!academicoCache) return items;
+
+  const start = new Date();
+  start.setHours(0,0,0,0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + daysAhead);
+
+  Object.keys(academicoCache).forEach(storageKey =>{
+    const normalizedKey = getDayKey(storageKey);
+    if (!normalizedKey) return;
+    const parts = ymdFromDateKey(normalizedKey);
+    if (!parts) return;
+    const date = new Date(parts.y, parts.m - 1, parts.d);
+    if (date < start || date > end) return;
+
+    const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
+    entries.forEach((item, index)=>{
+      if (item?.estado === "done") return;
+      const minutes = getAcadItemMinutes(item);
+      items.push({ dateKey: normalizedKey, item, index, minutes, storageKey });
+    });
+  });
+
+  items.sort((a,b)=>{
+    if (a.dateKey !== b.dateKey) return a.dateKey.localeCompare(b.dateKey);
+    const am = a.minutes ?? 9999;
+    const bm = b.minutes ?? 9999;
+    return am - bm;
+  });
+
+  return items;
+}
+
+function renderAcadUpcomingWidget(){
+  if (!acadUpcomingWidget) return;
+  const items = buildUpcomingAcadItems({ daysAhead: 7 });
+  acadUpcomingWidget.innerHTML = `
+    <div class="widget-title">Próximos vencimientos</div>
+    ${items.length ? '<div class="upcoming-list"></div>' : '<div class="small-muted">No hay vencimientos próximos.</div>'}
+  `;
+  if (!items.length) return;
+
+  const list = acadUpcomingWidget.querySelector(".upcoming-list");
+  if (!list) return;
+
+  items.forEach(({ item, dateKey, minutes })=>{
+    const parts = ymdFromDateKey(dateKey);
+    const dateLabel = parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
+    const timeLabel = minutes !== null && minutes !== undefined ? minutesToTime(minutes) : "";
+
+    const row = document.createElement("div");
+    row.className = "upcoming-row";
+
+    const main = document.createElement("div");
+    main.className = "upcoming-main";
+    main.innerHTML = `
+      <div class="upcoming-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+      <div class="upcoming-meta">
+        <span>${escapeHtml(item.materia || "Materia")}</span>
+        <span>·</span>
+        <span>${escapeHtml(dateLabel)}</span>
+        ${timeLabel ? `<span>·</span><span>${escapeHtml(timeLabel)}</span>` : ""}
+      </div>
+      <span class="upcoming-badge">${escapeHtml(item.tipo || "Item")}</span>
+    `;
+
+    const actions = document.createElement("div");
+    actions.className = "upcoming-actions";
+    const btnView = document.createElement("button");
+    btnView.className = "btn-outline btn-small";
+    btnView.type = "button";
+    btnView.textContent = "Ver";
+    btnView.addEventListener("click", ()=>{
+      acadSelectedDateKey = dateKey;
+      renderAcadCalendar();
+      renderRightPanel(dateKey);
+      document.getElementById("acadInfoPanel")?.scrollIntoView({ behavior:"smooth", block:"start" });
+    });
+    actions.appendChild(btnView);
+    row.appendChild(main);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
 }
 // endCalendario
 
