@@ -26,7 +26,7 @@
   max-width:420px;
   padding:.55rem .65rem;
   border-radius:var(--radius-md);
-  border:1px solid rgba(var(--color-border-rgb),.8);
+  border:1px solid var(--border-80);
   background:var(--glass-soft);
   color:var(--color-text);
 }
@@ -48,8 +48,8 @@
 }
 
 .subject-list li{
-  background:rgba(var(--color-primary-rgb),.08);
-  border:1px solid rgba(var(--color-border-rgb),.6);
+  background:var(--primary-08);
+  border:1px solid var(--border-60);
   border-radius:var(--radius-md);
   padding:.4rem .6rem;
   list-style:disc;
@@ -59,9 +59,9 @@
   margin-top:.6rem;
   padding:.6rem .8rem;
   border-radius:var(--radius-md);
-  border:1px dashed rgba(var(--color-border-rgb),.6);
+  border:1px dashed var(--border-60);
   color:var(--text-subtle);
-  background:rgba(var(--color-surface-rgb),.45);
+  background:var(--surface-45);
 }
 
 .material-grid{
@@ -76,8 +76,8 @@
   gap:.5rem;
   padding:.9rem;
   border-radius:var(--radius-lg);
-  background:rgba(var(--color-surface-rgb),.9);
-  border:1px solid rgba(var(--color-border-rgb),.5);
+  background:var(--card-bg);
+  border:1px solid var(--border-50);
   box-shadow:none;
 }
 
