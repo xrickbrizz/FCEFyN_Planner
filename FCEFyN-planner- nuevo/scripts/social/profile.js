@@ -1,6 +1,5 @@
 import {
   doc,
-  getDoc,
   setDoc,
   serverTimestamp,
   storageRef,
@@ -10,10 +9,14 @@ import {
   sendPasswordResetEmail
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
+import { onProfileUpdated, getUserProfile as getSessionUserProfile, updateUserProfileCache } from "../core/session.js";
 
 let CTX = null;
 let pendingProfilePhotoFile = null;
 let pendingProfilePhotoPreviewUrl = null;
+let profileUnsubscribe = null;
+let didRenderProfile = false;
+let didEnsurePublicProfile = false;
 
 const profileEmailEl = document.getElementById("profileEmail");
 const profileFirstNameInput = document.getElementById("profileFirstName");
@@ -69,7 +72,7 @@ function applyAvatarEverywhere(photoURL){
 }
 
 function renderProfileAvatar(previewUrl = ""){
-  const userProfile = CTX?.AppState?.userProfile || null;
+  const userProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
   const currentUser = CTX?.getCurrentUser?.();
   const photoURL = previewUrl || userProfile?.photoURL || currentUser?.photoURL || "";
   if (previewUrl){
@@ -111,33 +114,20 @@ function renderCareerOptions(selectEl, selectedSlug){
   }
 }
 
-async function loadUserProfile(){
+function handleProfileUpdate(profile){
   const currentUser = CTX?.getCurrentUser?.();
-  const db = CTX?.db;
-  if (!currentUser || !db) return;
-  try{
-    const snap = await getDoc(doc(db, "users", currentUser.uid));
-    CTX.AppState.userProfile = snap.exists() ? snap.data() : null;
-  }catch(_){
-    CTX.AppState.userProfile = null;
+  if (!pendingProfilePhotoPreviewUrl){
+    const photoURL = profile?.photoURL || currentUser?.photoURL || "";
+    applyAvatarEverywhere(photoURL);
   }
-}
-
-function subscribeUserProfile(){
-  const currentUser = CTX?.getCurrentUser?.();
-  const db = CTX?.db;
-  if (!currentUser?.uid || !db) return;
-  if (CTX.AppState.userProfileUnsub) CTX.AppState.userProfileUnsub();
-  CTX.AppState.userProfileUnsub = CTX.onSnapshot(doc(db, "users", currentUser.uid), (snap) =>{
-    CTX.AppState.userProfile = snap.exists() ? snap.data() : null;
-    if (!pendingProfilePhotoPreviewUrl){
-      const photoURL = CTX.AppState.userProfile?.photoURL || currentUser?.photoURL || "";
-      applyAvatarEverywhere(photoURL);
-    }
-    CTX?.onProfileUpdated?.(CTX.AppState.userProfile || null);
-  }, (e)=>{
-    console.error("[Perfil] user profile snapshot error", { code: e?.code, message: e?.message });
-  });
+  if (!didRenderProfile){
+    renderProfileSection();
+    didRenderProfile = true;
+  }
+  if (!didEnsurePublicProfile && CTX?.db && currentUser){
+    didEnsurePublicProfile = true;
+    ensurePublicUserProfile(CTX.db, currentUser, profile || null);
+  }
 }
 
 async function uploadProfilePhoto(file){
@@ -162,7 +152,7 @@ async function uploadProfilePhoto(file){
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
   try{
-    const previousPath = CTX.AppState.userProfile?.photoPath || "";
+    const previousPath = getSessionUserProfile()?.photoPath || "";
     if (previousPath && previousPath !== path){
       try{
         await deleteObject(storageRef(storage, previousPath));
@@ -175,8 +165,8 @@ async function uploadProfilePhoto(file){
     const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
     await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
     await setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true });
-    CTX.AppState.userProfile = { ...(CTX.AppState.userProfile || {}), photoURL, photoPath: path };
-    await ensurePublicUserProfile(db, currentUser, CTX.AppState.userProfile);
+    const nextProfile = updateUserProfileCache({ photoURL, photoPath: path });
+    await ensurePublicUserProfile(db, currentUser, nextProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto actualizada.");
     applyAvatarEverywhere(photoURL);
@@ -196,7 +186,7 @@ async function removeProfilePhoto(){
   const notifyError = CTX?.notifyError;
   const notifySuccess = CTX?.notifySuccess;
   if (!currentUser || !db || !storage) return;
-  const photoPath = CTX.AppState.userProfile?.photoPath || "";
+  const photoPath = getSessionUserProfile()?.photoPath || "";
   setProfileAvatarStatus("Quitando foto...");
   try{
     if (photoPath){
@@ -209,8 +199,8 @@ async function removeProfilePhoto(){
     const payload = { photoURL: "", photoPath: "", updatedAt: serverTimestamp() };
     await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
     await setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true });
-    CTX.AppState.userProfile = { ...(CTX.AppState.userProfile || {}), photoURL: "", photoPath: "" };
-    await ensurePublicUserProfile(db, currentUser, CTX.AppState.userProfile);
+    const nextProfile = updateUserProfileCache({ photoURL: "", photoPath: "" });
+    await ensurePublicUserProfile(db, currentUser, nextProfile);
     pendingProfilePhotoFile = null;
     setProfileAvatarStatus("Foto quitada.");
     applyAvatarEverywhere("");
@@ -225,7 +215,7 @@ async function removeProfilePhoto(){
 
 function renderProfileSection(){
   const currentUser = CTX?.getCurrentUser?.();
-  const userProfile = CTX?.AppState?.userProfile || null;
+  const userProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
   if (!currentUser) return;
   if (profileEmailEl) profileEmailEl.textContent = currentUser.email || userProfile?.email || "—";
 
@@ -263,7 +253,8 @@ function bindProfileHandlers(){
       const name = `${firstName} ${lastName}`.trim();
       const careerSlug = profileCareerSelect?.value || "";
       const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
-      const careerName = plan?.nombre || (careerSlug ? (CTX?.AppState?.userProfile?.career || careerSlug) : "");
+      const cachedProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
+      const careerName = plan?.nombre || (careerSlug ? (cachedProfile?.career || careerSlug) : "");
       const yearRaw = profileYearInInput?.value.trim() || "";
       const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
       const documento = profileDocumentInput?.value.trim() || "";
@@ -274,8 +265,8 @@ function bindProfileHandlers(){
         return;
       }
 
-      const previousCareerSlug = CTX?.AppState?.userProfile?.careerSlug || "";
-      const previousCareer = CTX?.AppState?.userProfile?.career || "";
+      const previousCareerSlug = cachedProfile?.careerSlug || "";
+      const previousCareer = cachedProfile?.career || "";
       if ((previousCareerSlug || previousCareer) && careerSlug !== previousCareerSlug){
         const ok = await showConfirm?.({
           title:"Cambiar carrera",
@@ -305,8 +296,7 @@ function bindProfileHandlers(){
           dni: documento,
           legajo: documento
         }, { merge:true });
-        CTX.AppState.userProfile = {
-          ...(CTX.AppState.userProfile || {}),
+        const nextProfile = updateUserProfileCache({
           firstName,
           lastName,
           name,
@@ -316,8 +306,8 @@ function bindProfileHandlers(){
           documento,
           dni: documento,
           legajo: documento
-        };
-        await ensurePublicUserProfile(db, currentUser, CTX.AppState.userProfile);
+        });
+        await ensurePublicUserProfile(db, currentUser, nextProfile);
         notifySuccess?.("Perfil actualizado.");
         setProfileStatus(profileStatusEl, "Cambios guardados correctamente.");
       }catch(e){
@@ -433,19 +423,18 @@ const Profile = {
     bindProfileHandlers();
   },
   async load(){
-    await loadUserProfile();
     const currentUser = CTX?.getCurrentUser?.();
-    if (CTX?.db && currentUser){
-      await ensurePublicUserProfile(CTX.db, currentUser, CTX.AppState.userProfile);
-    }
-    subscribeUserProfile();
-    renderProfileSection();
+    if (!currentUser) return;
+    if (profileUnsubscribe) profileUnsubscribe();
+    profileUnsubscribe = onProfileUpdated((profile) => {
+      handleProfileUpdate(profile);
+    });
   },
   renderProfileSection,
   resolveAvatarUrl,
   applyAvatarEverywhere,
   getUserProfile(){
-    return CTX?.AppState?.userProfile || null;
+    return getSessionUserProfile() || CTX?.AppState?.userProfile || null;
   }
 };
 

@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth } from "./core/firebase.js";
-import { initSession, onSessionReady, getUid, getCurrentUser } from "./core/session.js";
+import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
 import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } 
@@ -13,8 +13,7 @@ let appCtx = null;
 
 const AppState = {
   currentUser: null,
-  userProfile: null,
-  userProfileUnsub: null
+  userProfile: getUserProfile()
 };
 
 const notify = (message, type="info") => showToast({ message, type });
@@ -36,6 +35,14 @@ initSession({
     window.location.href = "app.html";
   }
 });
+
+const handleProfileUpdate = (profile) => {
+  AppState.userProfile = profile;
+  appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
+  updatePlanTab();
+};
+
+onProfileUpdated(handleProfileUpdate);
 
 onSessionReady(async (user) => {
   AppState.currentUser = user;
@@ -74,13 +81,10 @@ onSessionReady(async (user) => {
     isBlockedByClientError,
     notifyBlockedByClient,
     navState,
-    showTab: window.showTab
+    showTab: window.showTab,
+    getUserProfile
   };
   appCtx = ctx;
-  ctx.onProfileUpdated = () => {
-    appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
-    updatePlanTab();
-  };
 
   await Aula.init(ctx);
   await Social.init(ctx);
