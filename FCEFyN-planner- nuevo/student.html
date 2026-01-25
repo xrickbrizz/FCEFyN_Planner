@@ -80,7 +80,6 @@
           <div class="calendar-header">
             <div class="cal-title">
               <h2 id="monthTitle"></h2>
-              <div class="cal-view">Vista: Mes</div>
             </div>
             <div class="cal-controls">
               <div class="cal-controls-group">
@@ -98,7 +97,6 @@
                 </button>
               </div>
               <div class="cal-status" id="studyMonthStatus" hidden>
-                <span>No estás en el mes actual</span>
                 <button type="button" id="btnStudyReturn">Volver a hoy</button>
               </div>
             </div>
@@ -154,10 +152,9 @@
       <div class="acad-layout">
         <div class="acad-shell">
           <div class="calendar-header">
-            <div class="cal-title">
-              <h2 id="acadMonthTitle"></h2>
-              <div class="cal-view">Vista: Mes</div>
-            </div>
+          <div class="cal-title">
+            <h2 id="acadMonthTitle"></h2>
+          </div>
             <div class="cal-controls">
               <div class="cal-controls-group">
                 <button class="cal-nav-btn" id="btnAcadPrev" type="button" title="Mes anterior">
@@ -173,10 +170,9 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
                 </button>
               </div>
-              <div class="cal-status" id="acadMonthStatus" hidden>
-                <span>No estás en el mes actual</span>
-                <button type="button" id="btnAcadReturn">Volver a hoy</button>
-              </div>
+            <div class="cal-status" id="acadMonthStatus" hidden>
+              <button type="button" id="btnAcadReturn">Volver a hoy</button>
+            </div>
             </div>
           </div>
 
@@ -321,7 +317,7 @@
     <div id="tab-planestudios" class="tab-card" style="display:none;">
       <div class="planner-toolbar" style="margin-bottom:.8rem;">
         <div class="planner-toolbar-left">
-          <strong>Plan de estudios</strong>
+          <strong>Correlativas</strong>
         </div>
       </div>
       <div class="plan-frame">
@@ -329,7 +325,7 @@
         Necesitás elegir tu carrera en Perfil para ver el plan de estudios automáticamente.
         <button class="link" type="button" id="planGoProfile">Ir a Perfil</button>
       </div>
-      <iframe id="planFrame" class="plan-frame" title="Plan de estudios"></iframe>
+      <iframe id="planFrame" class="plan-frame" title="Correlativas"></iframe>
       </div>
     </div>
 
@@ -617,17 +613,6 @@
             <input id="inpMins" placeholder="0" type="number" min="0" />
           </div>
         </div>
-        <div class="modal-field">
-          <div class="modal-section-title">Tipo de actividad</div>
-          <div class="pill-group" id="studyTypePills">
-            <button type="button" class="pill-btn" data-study-type="Examen">Examen</button>
-            <button type="button" class="pill-btn" data-study-type="Parcial">Parcial</button>
-            <button type="button" class="pill-btn" data-study-type="TP">TP</button>
-            <button type="button" class="pill-btn is-active" data-study-type="Estudio">Estudio</button>
-            <button type="button" class="pill-btn" data-study-type="Clase">Clase</button>
-            <button type="button" class="pill-btn" data-study-type="Práctico">Práctico</button>
-          </div>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn-outline" id="btnCancelar" type="button">Cancelar</button>
@@ -754,14 +739,6 @@
         <div class="modal-field">
           <label for="acadNotes">Notas (opcional)</label>
           <textarea id="acadNotes" placeholder="Detalles, requisitos, link, etc."></textarea>
-        </div>
-
-        <div class="modal-field">
-          <label for="acadStatus">Estado</label>
-          <select id="acadStatus">
-            <option value="pending">Pendiente</option>
-            <option value="done">Hecho</option>
-          </select>
         </div>
       </div>
 

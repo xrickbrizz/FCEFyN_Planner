@@ -18,7 +18,7 @@ export const navItems = [
   { id:"academico", label:"Académico", icon:ICONS.academic },
   { id:"agenda", label:"Agenda", icon:ICONS.agenda },
   { id:"materias", label:"Materias", icon:ICONS.materias },
-  { id:"planestudios", label:"Plan de estudio", icon:ICONS.plan },
+  { id:"planestudios", label:"Correlativas", icon:ICONS.plan },
   { id:"planificador", label:"Planificador", icon:ICONS.planificador },
   { id:"profesores", label:"Profesores", icon:ICONS.profesores },
   //{ id:"mensajes", label:"Mensajes", icon:"💬" },

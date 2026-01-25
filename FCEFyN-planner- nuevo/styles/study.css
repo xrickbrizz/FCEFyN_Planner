@@ -985,6 +985,12 @@ body[data-theme="light"] .event{
       padding-top: 6px;
       padding-bottom: 0;
     }
+    .agenda-hour-end{
+      height: 0;
+      border-bottom: none;
+      padding-top: 6px;
+      padding-bottom: 0;
+    }
     .agenda-day-col{ border-left:1px solid var(--border-85); position:relative; }
     .agenda-day-header{
       position: sticky;

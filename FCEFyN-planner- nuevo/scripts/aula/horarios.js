@@ -69,6 +69,10 @@ function renderAgendaGridInto(grid, data, allowEdit){
     hour.textContent = pad2(hh) + ":00";
     hourCol.appendChild(hour);
   }
+  const endHour = document.createElement("div");
+  endHour.className = "agenda-hour agenda-hour-end";
+  endHour.textContent = pad2(minutesEnd / 60) + ":00";
+  hourCol.appendChild(endHour);
   grid.appendChild(hourCol);
   pxPerMinute = computePxPerMinute();
 

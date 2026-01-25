@@ -178,14 +178,32 @@ import { showConfirm } from "./scripts/ui/notifications.js";
     return (promo / total) * 100;
   }
 
+  function porcentajeAprobadas(excludeId){
+    const estados = getEstados();
+    const total = materias.filter(m => m.id !== "practica" && m.id !== excludeId).length || 1;
+    let aprobadas = 0;
+
+    Object.entries(estados).forEach(([id, st])=>{
+      if(id === "practica") return;
+      if(excludeId && id === excludeId) return;
+      if(st === "promocion" || st === "regular") aprobadas++;
+    });
+
+    return (aprobadas / total) * 100;
+  }
+
   function updateStatsUI(){
     const estados = getEstados();
     const counts = { promocion:0, regular:0, libre:0, curso:0 };
     Object.values(estados).forEach(v => { if(counts[v] !== undefined) counts[v]++; });
 
     const total = materias.filter(m => m.id !== "practica").length || 1;
-    const promo = counts.promocion;
-    const pct = (promo / total) * 100;
+    let aprobadas = 0;
+    Object.entries(estados).forEach(([id, st])=>{
+      if(id === "practica") return;
+      if(st === "promocion" || st === "regular") aprobadas++;
+    });
+    const pct = (aprobadas / total) * 100;
 
     const elProm = document.getElementById("countProm");
     const elReg  = document.getElementById("countReg");
@@ -203,7 +221,7 @@ import { showConfirm } from "./scripts/ui/notifications.js";
 
     if(pctText) pctText.textContent = pct.toFixed(2).replace(".", ",") + "%";
     if(fill) fill.style.width = Math.min(pct, 100) + "%";
-    if(captionLeft) captionLeft.textContent = promo + " materias promocionadas";
+    if(captionLeft) captionLeft.textContent = aprobadas + " materias aprobadas/regularizadas";
     if(totalText) totalText.textContent = total + " materias totales";
   }
 function revalidateEstados() {
@@ -221,7 +239,7 @@ function revalidateEstados() {
 
       // requisito por porcentaje
       if (mat.requierePorcentaje) {
-        if (porcentajePromocionadas() < mat.requierePorcentaje) {
+        if (porcentajeAprobadas(mat.id) < mat.requierePorcentaje) {
           invalida = true;
         }
       }
@@ -269,7 +287,7 @@ function revalidateEstados() {
       let bloqueada = false;
 
       if(mat && mat.requierePorcentaje){
-        if(porcentajePromocionadas() < mat.requierePorcentaje) bloqueada = true;
+        if(porcentajeAprobadas(mat.id) < mat.requierePorcentaje) bloqueada = true;
       }else if(mat && mat.requiereAprobadas){
         const aprobadas = Object.values(estados).filter(e => e === "promocion" || e === "regular").length;
         if(aprobadas < mat.requiereAprobadas) bloqueada = true;
@@ -292,14 +310,12 @@ function revalidateEstados() {
     const id = element.dataset.id;
     menu.style.display = "block";
     menu.innerHTML = `
-      <div style="background:transparent; padding:0;">
-        <div style="background:var(--plan-glass); border-radius:12px; padding:8px; min-width:190px; border:1px solid var(--plan-line);">
-          <div data-estado="promocion" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Promoción</div>
-          <div data-estado="regular" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Regular</div>
-          <div data-estado="libre" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Libre</div>
-          <div data-estado="curso" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">En curso</div>
-          <div data-estado="ninguno" class="btn" style="display:block; width:100%; text-align:left;">Quitar estado</div>
-        </div>
+      <div class="plan-menu-card">
+        <div data-estado="promocion" class="btn plan-menu-item">Promoción</div>
+        <div data-estado="regular" class="btn plan-menu-item">Regular</div>
+        <div data-estado="libre" class="btn plan-menu-item">Libre</div>
+        <div data-estado="curso" class="btn plan-menu-item">En curso</div>
+        <div data-estado="ninguno" class="btn plan-menu-item plan-menu-item-last">Quitar estado</div>
       </div>
     `;
 
