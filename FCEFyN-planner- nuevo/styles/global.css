@@ -57,7 +57,7 @@ rgb(43, 105, 96)
   --accent-2: var(--color-accent-2);
   --color-accent-rgb: 243,226,158;
   --color-primary-rgb: 229,239,238;
-  --color-text-rgb: 31,46,49;
+  --color-text-rgb:none;
   --color-surface-rgb: 245,247,247;
   --color-danger-rgb: 214,84,84;
   --color-warn-rgb: 214,188,106;
