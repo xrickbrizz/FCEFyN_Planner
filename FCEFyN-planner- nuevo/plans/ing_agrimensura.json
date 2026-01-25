@@ -1,0 +1,56 @@
+{
+  "slug": "agrimensura",
+  "nombre": "Ingeniería en Agrimensura",
+  "storageKey": "estadosMaterias_v2_agrimensura",
+  "materias": [
+    { "id": "matematica", "nombre": "Matemática", "semestre": 1, "requisitos": [] },
+    { "id": "fyq", "nombre": "Física y Química", "semestre": 1, "requisitos": [] },
+    { "id": "ambientacion", "nombre": "Ambientación Universitaria", "semestre": 1, "requisitos": [] },
+
+    { "id": "introIng", "nombre": "Introducción a la Ingeniería", "semestre": 2, "requisitos": ["ambientacion"] },
+    { "id": "am1", "nombre": "Análisis Matemático 1", "semestre": 2, "requisitos": ["matematica"] },
+    { "id": "economia", "nombre": "Economía", "semestre": 2, "requisitos": ["matematica"] },
+    { "id": "agrGeomTerr", "nombre": "Agrimensura y Geometría Territorial", "semestre": 2, "requisitos": [] },
+
+    { "id": "algebra", "nombre": "Algebra Lineal", "semestre": 3, "requisitos": ["matematica"] },
+    { "id": "fisica1", "nombre": "Física 1", "semestre": 3, "requisitos": ["fyq","am1"] },
+    { "id": "sistRep", "nombre": "Sistemas de Representación", "semestre": 3, "requisitos": [] },
+    { "id": "elemConst", "nombre": "Elementos de la Construcción", "semestre": 3, "requisitos": ["economia"] },
+
+    { "id": "am2", "nombre": "Análisis Matemático 2", "semestre": 4, "requisitos": ["am1","algebra"] },
+    { "id": "pyestad", "nombre": "Probabilidad y Estadística", "semestre": 4, "requisitos": ["am1"] },
+    { "id": "topo1", "nombre": "Topografía 1 y Teoría de Errores", "semestre": 4, "requisitos": ["agrGeomTerr","sistRep"] },
+    { "id": "infoRural", "nombre": "Información Rural y Agrológica", "semestre": 4, "requisitos": ["economia","agrGeomTerr"] },
+
+    { "id": "fisica2", "nombre": "Física 2", "semestre": 5, "requisitos": ["fisica1","algebra"] },
+    { "id": "compu", "nombre": "Computación y Cálculo Numérico", "semestre": 5, "requisitos": ["am1","algebra"] },
+    { "id": "topo2", "nombre": "Topografía 2 e Hidrografía", "semestre": 5, "requisitos": ["pyestad","topo1"] },
+    { "id": "geoFisica", "nombre": "Geografía Física", "semestre": 5, "requisitos": ["agrGeomTerr"] },
+
+    { "id": "agrLegal1", "nombre": "Agrimensura Legal 1", "semestre": 6, "requisitos": ["agrGeomTerr"] },
+    { "id": "disCarto", "nombre": "Diseño Cartográfico y Cartografía", "semestre": 6, "requisitos": ["topo2"] },
+    { "id": "fotointerp", "nombre": "Fotointerpretación y Teledetección", "semestre": 6, "requisitos": ["geoFisica"] },
+    { "id": "ingles", "nombre": "Módulo de Inglés", "semestre": 6, "requisitos": [], "requiereAprobadas": 10 },
+
+    { "id": "agrLegal2", "nombre": "Agrimensura Legal 2", "semestre": 7, "requisitos": ["agrLegal1"] },
+    { "id": "geodesia", "nombre": "Geodesia", "semestre": 7, "requisitos": ["compu","topo2"] },
+    { "id": "fotogram", "nombre": "Fotogrametría", "semestre": 7, "requisitos": ["fisica2","fotointerp"] },
+
+    { "id": "orgIndSeg", "nombre": "Organización Industrial y Seguridad Laboral", "semestre": 8, "requisitos": ["elemConst"] },
+    { "id": "agrLegal3", "nombre": "Agrimensura Legal 3", "semestre": 8, "requisitos": ["agrLegal2"] },
+    { "id": "catastro", "nombre": "Catastro", "semestre": 8, "requisitos": ["agrLegal2","disCarto"] },
+    { "id": "sig", "nombre": "Sistemas de Información Geográfica", "semestre": 8, "requisitos": ["disCarto","fotogram"] },
+    { "id": "valuac1", "nombre": "Valuaciones 1", "semestre": 8, "requisitos": ["infoRural","elemConst","pyestad"] },
+
+    { "id": "georrefer", "nombre": "Georreferenciación y Límites Territoriales", "semestre": 9, "requisitos": ["geodesia","agrLegal3"] },
+    { "id": "mensura", "nombre": "Mensura", "semestre": 9, "requisitos": ["agrLegal3"] },
+    { "id": "valuac2", "nombre": "Valuaciones 2", "semestre": 9, "requisitos": ["catastro","valuac1"] },
+    { "id": "gestionProy", "nombre": "Gestión de Proyectos e Impacto Ambiental", "semestre": 9, "requisitos": ["sig","orgIndSeg"] },
+
+    { "id": "ordenTerr", "nombre": "Ordenamiento Territorial", "semestre": 10, "requisitos": ["sig","catastro"] },
+    { "id": "estTraz", "nombre": "Estudio y Trazados Especiales", "semestre": 10, "requisitos": ["fotogram","geodesia"] },
+    { "id": "pps", "nombre": "Práctica Profesional Supervisada", "semestre": 10, "requisitos": ["mensura","catastro"] },
+
+    { "id": "trabajoFinal", "nombre": "Trabajo Final", "semestre": 11, "requisitos": [], "requierePorcentaje": 100 }
+  ]
+}
