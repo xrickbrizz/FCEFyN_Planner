@@ -2,7 +2,8 @@ import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth } from "./core/fireb
 import { initSession, onSessionReady, getUid, getCurrentUser } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
-import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } from "./aula/calendario.js";
+import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } 
+from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
 
@@ -46,7 +47,7 @@ onSessionReady(async (user) => {
     items: navItems,
     showTab: window.showTab,
     activeSection: navState.activeSection
-  });
+  }); 
 
   const ctx = {
     db,
@@ -101,9 +102,7 @@ onSessionReady(async (user) => {
 
   Aula.open("agenda");
   Social.open("perfil");
-
   bindProfileShortcuts();
-  window.showTab("inicio");
 });
 
 window.logout = async function(){
@@ -215,6 +214,7 @@ const helpContent = {
 function getProfileCareerSlug(){
   return AppState?.userProfile?.careerSlug || "";
 }
+
 // plan de estudio 
 
 function updatePlanTab(){
@@ -422,4 +422,3 @@ function loadRemoteScript(url){
     document.head.appendChild(script);
   });
 }
-//listo
