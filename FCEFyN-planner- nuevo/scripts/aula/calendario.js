@@ -16,7 +16,6 @@ let acadViewYear = null;
 let acadViewMonth = null;
 let acadEditing = { dateKey: null, index: -1 };
 let acadSelectedDateKey = null;
-let acadHoverDateKey = null;
 
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
@@ -31,7 +30,6 @@ const studyAddActivity = document.getElementById("studyAddActivity");
 const studyNewEntry = document.getElementById("studyNewEntry");
 const studyModalTitle = document.getElementById("studyModalTitle");
 const btnStudyClose = document.getElementById("btnStudyClose");
-const studyTypePills = document.getElementById("studyTypePills");
 const studyTimerWidget = document.getElementById("studyTimerWidget");
 const studyTimerDisplay = document.getElementById("studyTimerDisplay");
 const studyTimerMateria = document.getElementById("studyTimerMateria");
@@ -577,7 +575,6 @@ function openStudyModalForDate(dateKey, index = -1){
   if (inpMins) inpMins.value = ev?.mins || "";
   if (inpTema) inpTema.value = ev?.tema || "";
 
-  setPillSelection(studyTypePills, ev?.tipo || "Estudio");
   if (modalBg) modalBg.style.display = "flex";
 }
 
@@ -752,8 +749,6 @@ function initStudyModalUI(){
   const cancelBtn = document.getElementById("btnCancelar");
   const saveBtn = document.getElementById("btnGuardar");
   const modalBg = document.getElementById("modalBg");
-
-  initPillGroup(studyTypePills);
 
   if (btnStudyClose && modalBg){
     btnStudyClose.addEventListener("click", ()=>{
@@ -951,12 +946,6 @@ export function renderAcadCalendar(){
       console.log("[calendario] click academico day", { dateKey });
       handleAcadDayClick(dateKey);
     });
-    card.addEventListener("mouseenter", ()=>{
-      handleAcadDayHover(dateKey);
-    });
-    card.addEventListener("mouseleave", ()=>{
-      handleAcadDayHoverEnd(dateKey);
-    });
 
     acadGrid.appendChild(card);
   }
@@ -1029,9 +1018,9 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
 
     const btnView = document.createElement("button");
     btnView.className = "btn-outline btn-small";
-    btnView.textContent = "Ver detalles";
+    btnView.textContent = "Ver";
     btnView.addEventListener("click", ()=>{
-      renderAcadRecordDetail(item, normalizedKey);
+      openAcadDayModal(normalizedKey, index);
     });
 
     const btnEdit = document.createElement("button");
@@ -1056,17 +1045,6 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
 
 function handleAcadDayClick(dateKey){
   renderRightPanel(dateKey);
-}
-
-function handleAcadDayHover(dateKey){
-  acadHoverDateKey = dateKey;
-  renderRightPanel(dateKey, { isHover: true });
-}
-
-function handleAcadDayHoverEnd(dateKey){
-  if (acadHoverDateKey !== dateKey) return;
-  acadHoverDateKey = null;
-  renderRightPanel(acadSelectedDateKey);
 }
 
 function setAcadTypeSelection(value){
@@ -1112,7 +1090,7 @@ function openAcadDayModal(dateKey, focusIndex = -1){
       left.className = "acad-detail-text";
       left.innerHTML = `
         <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
-        <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.estado || "—")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
+        <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
         <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
       `;
 
@@ -1165,7 +1143,6 @@ function renderAcadRecordDetail(item, dateKey){
   acadRecordDetail.innerHTML = `
     <strong>${escapeHtml(item.titulo || "(sin título)")}</strong><br/>
     <span>${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")}</span><br/>
-    <span>Estado: ${escapeHtml(item.estado || "—")}</span><br/>
     <span>Fecha: ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}</span>
     ${item.notas || item.notes ? `<div style="margin-top:.45rem;">${escapeHtml(item.notas || item.notes || "")}</div>` : ""}
   `;
@@ -1232,7 +1209,6 @@ function openAcadModalForDate(dateKey, index, legacyKey = null){
   const titleInp = document.getElementById("acadTitle");
   const whenInp = document.getElementById("acadWhen");
   const notesTxt = document.getElementById("acadNotes");
-  const statusSel = document.getElementById("acadStatus");
   const btnDelete = document.getElementById("btnAcadDelete");
 
   if (typeof CTX?.renderSubjectsOptions === "function"){
@@ -1252,7 +1228,6 @@ function openAcadModalForDate(dateKey, index, legacyKey = null){
       const minutes = getAcadItemMinutes(item);
       if (whenInp) whenInp.value = minutes !== null ? minutesToTime(minutes) : "12:00";
       if (notesTxt) notesTxt.value = item.notas || item.notes || "";
-      if (statusSel) statusSel.value = item.estado || "pending";
     }
     if (titleEl) titleEl.textContent = "Editar registro";
     if (btnDelete) btnDelete.style.display = "inline-block";
@@ -1262,7 +1237,6 @@ function openAcadModalForDate(dateKey, index, legacyKey = null){
     if (titleInp) titleInp.value = "";
     if (whenInp) whenInp.value = "12:00";
     if (notesTxt) notesTxt.value = "";
-    if (statusSel) statusSel.value = "pending";
     setAcadTypeSelection("Parcial");
     if (subjSel && subjSel.options.length) subjSel.selectedIndex = 0;
   }
@@ -1306,7 +1280,6 @@ editingIndex = -1;
       const titleInp = document.getElementById("acadTitle");
       const whenInp = document.getElementById("acadWhen");
       const notesTxt = document.getElementById("acadNotes");
-      const statusSel = document.getElementById("acadStatus");
 
       if (!subjSel || !subjSel.value){
         CTX?.notifyWarn?.("Elegí materia.");
@@ -1327,18 +1300,22 @@ editingIndex = -1;
         return;
       }
 
+      const { dateKey, index, legacyKey } = acadEditing;
+      const normalizedKey = getDayKey(dateKey);
+      if (!normalizedKey) return;
+      const storageKey = legacyKey || resolveAcadStorageKey(normalizedKey);
+      const currentItems = storageKey && Array.isArray(academicoCache?.[storageKey]) ? academicoCache[storageKey] : [];
+      const previousItem = index >= 0 ? currentItems[index] : null;
+      const estado = index >= 0 ? (previousItem?.estado || "pending") : "pending";
+
       const item = {
         tipo: getAcadTypeSelection(),
         materia: subjSel.value,
         titulo: titleInp.value.trim(),
         minutos,
         notas: notesTxt?.value,
-        estado: statusSel?.value
+        estado
       };
-
-      const { dateKey, index, legacyKey } = acadEditing;
-      const normalizedKey = getDayKey(dateKey);
-      if (!normalizedKey) return;
 
       const shouldRefreshDayModal = acadDayModalBg && acadDayModalBg.style.display === "flex";
       try{
@@ -1472,7 +1449,7 @@ function renderAcadUpcomingWidget(){
   const list = acadUpcomingWidget.querySelector(".upcoming-list");
   if (!list) return;
 
-  items.forEach(({ item, dateKey, minutes })=>{
+  items.forEach(({ item, dateKey, minutes, index, storageKey })=>{
     const parts = ymdFromDateKey(dateKey);
     const dateLabel = parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
     const timeLabel = minutes !== null && minutes !== undefined ? minutesToTime(minutes) : "";
@@ -1495,6 +1472,46 @@ function renderAcadUpcomingWidget(){
 
     const actions = document.createElement("div");
     actions.className = "upcoming-actions";
+    const btnDone = document.createElement("button");
+    btnDone.className = "btn-outline btn-small";
+    btnDone.type = "button";
+    btnDone.innerHTML = "✓";
+    btnDone.title = "Marcar como hecho";
+    btnDone.setAttribute("aria-label", "Marcar como hecho");
+    btnDone.addEventListener("click", async ()=>{
+      const ok = await CTX?.showConfirm?.({
+        title: "Marcar como hecho",
+        message: "¿Confirmás que ya lo realizaste? Se ocultará de Próximos vencimientos.",
+        confirmText: "Sí, marcar",
+        cancelText: "Cancelar"
+      });
+      if (!ok) return;
+
+      const user = getCurrentUser();
+      if (!user) return;
+
+      try{
+        const { db, doc, getDoc, setDoc } = CTX || {};
+        if (!db || !doc || !getDoc || !setDoc) return;
+        const ref = doc(db, "planner", user.uid);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const data = snap.data() || {};
+        const targetKey = storageKey || resolveAcadStorageKey(dateKey, data.academico);
+        if (!targetKey || !Array.isArray(data.academico?.[targetKey])) return;
+        if (!data.academico[targetKey][index]) return;
+
+        data.academico[targetKey][index].estado = "done";
+        await setDoc(ref, data);
+        academicoCache = data.academico || {};
+        renderAcadCalendar();
+        renderRightPanel(acadSelectedDateKey || getDayKey(dateKey));
+        renderAcadUpcomingWidget();
+        CTX?.notifySuccess?.("Marcado como hecho.");
+      }catch(e){
+        CTX?.notifyError?.("No se pudo marcar como hecho: " + (e.message || e));
+      }
+    });
     const btnView = document.createElement("button");
     btnView.className = "btn-outline btn-small";
     btnView.type = "button";
@@ -1505,6 +1522,7 @@ function renderAcadUpcomingWidget(){
       renderRightPanel(dateKey);
       document.getElementById("acadInfoPanel")?.scrollIntoView({ behavior:"smooth", block:"start" });
     });
+    actions.appendChild(btnDone);
     actions.appendChild(btnView);
     row.appendChild(main);
     row.appendChild(actions);
