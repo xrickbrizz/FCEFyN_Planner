@@ -344,6 +344,14 @@ body[data-theme="dark"]{
   --sidebar-bg: var(--color-surface-2);
   --sidebar-border: var(--inverse-06);
   --panel-border: var(--border-18);
+  
+  /*cambios mannuales*/
+  --card:var(--card-bg);
+  --surface-92: var(--card-bg);
+  --surface-98: var(--card-bg);
+  --surface-94: var(--card-bg);
+  
+
   --card-border: var(--border-18);
   --input-bg: var(--inverse-03);
   --input-border: var(--inverse-08);
