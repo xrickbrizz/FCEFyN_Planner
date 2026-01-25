@@ -833,10 +833,27 @@ body[data-theme="light"] .plans-page .subject{
   background:var(--surface-6);
   border-color: var(--color-border);
 }
+.plan-menu-card{
+  background: var(--surface-3);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 190px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+.plan-menu-item{
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  text-align: left;
+}
+.plan-menu-item-last{
+  margin-bottom: 0;
+}
 body.plans-page .promocion{ background:var(--color-ok) !important; color:var(--color-primary-strong); }
 body.plans-page .regular{ background:var(--color-accent) !important; color:var(--color-primary-strong); }
 body.plans-page .libre{ background:var(--color-danger) !important; color:var(--color-text-contrast); }
-body.plans-page .curso{ background:var(--color-primary-soft) !important; color:var(--color-text-contrast); }
+body.plans-page .curso{ background:var(--info-35) !important; color:var(--color-primary-strong) !important; }
 body.plans-page .subjects::-webkit-scrollbar{ width:8px; }
 body.plans-page .subjects::-webkit-scrollbar-thumb{
   background:var(--primary-20);

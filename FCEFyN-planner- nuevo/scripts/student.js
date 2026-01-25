@@ -167,7 +167,7 @@ const helpContent = {
     ]
   },
   planestudios: {
-    title: "Cómo usar Plan de estudios",
+    title: "Cómo usar Correlativas",
     bullets: [
       "El plan se carga automáticamente según tu carrera en Perfil.",
       "Podés marcar materias como promocionadas, regulares o libres para ver tu avance.",

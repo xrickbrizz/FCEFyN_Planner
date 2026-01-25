@@ -24,6 +24,9 @@ rgb(43, 105, 96)
   --space-5: 1.25rem;
   --space-6: 1.5rem;
 
+  --agenda-header-h: 40px;
+  --agenda-hour-h: 40px;
+
   --transition-fast: 0.12s ease;
   --transition-base: 0.2s ease;
 

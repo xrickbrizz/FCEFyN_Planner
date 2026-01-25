@@ -292,14 +292,12 @@ function revalidateEstados() {
     const id = element.dataset.id;
     menu.style.display = "block";
     menu.innerHTML = `
-      <div style="background:transparent; padding:0;">
-        <div style="background:var(--plan-glass); border-radius:12px; padding:8px; min-width:190px; border:1px solid var(--plan-line);">
-          <div data-estado="promocion" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Promoción</div>
-          <div data-estado="regular" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Regular</div>
-          <div data-estado="libre" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">Libre</div>
-          <div data-estado="curso" class="btn" style="display:block; width:100%; margin-bottom:8px; text-align:left;">En curso</div>
-          <div data-estado="ninguno" class="btn" style="display:block; width:100%; text-align:left;">Quitar estado</div>
-        </div>
+      <div class="plan-menu-card">
+        <div data-estado="promocion" class="btn plan-menu-item">Promoción</div>
+        <div data-estado="regular" class="btn plan-menu-item">Regular</div>
+        <div data-estado="libre" class="btn plan-menu-item">Libre</div>
+        <div data-estado="curso" class="btn plan-menu-item">En curso</div>
+        <div data-estado="ninguno" class="btn plan-menu-item plan-menu-item-last">Quitar estado</div>
       </div>
     `;
 
