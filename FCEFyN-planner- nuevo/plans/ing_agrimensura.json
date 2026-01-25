@@ -37,7 +37,6 @@
     { "id": "fotogram", "nombre": "Fotogrametría", "semestre": 7, "requisitos": ["fisica2","fotointerp"] },
     { "id": "orgIndSeg", "nombre": "Organización Industrial y Seguridad Laboral", "semestre": 7, "requisitos": ["elemConst"] },
 
-    { "id": "orgIndSeg", "nombre": "Organización Industrial y Seguridad Laboral", "semestre": 8, "requisitos": ["elemConst"] },
     { "id": "agrLegal3", "nombre": "Agrimensura Legal 3", "semestre": 8, "requisitos": ["agrLegal2"] },
     { "id": "catastro", "nombre": "Catastro", "semestre": 8, "requisitos": ["agrLegal2","disCarto"] },
     { "id": "sig", "nombre": "Sistemas de Información Geográfica", "semestre": 8, "requisitos": ["disCarto","fotogram"] },

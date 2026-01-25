@@ -34,28 +34,27 @@
     { "id": "termo", "nombre": "Termodinámica", "semestre": 6, "requisitos": ["fisica1","am2"] },
 
     { "id": "elemEqElec", "nombre": "Elementos y Equipos Eléctricos", "semestre": 7, "requisitos": ["electrotec","cienMat"] },
+    { "id": "mecanismos", "nombre": "Mecanismos y Elementos de Máquinas", "semestre": 7, "requisitos": ["mecEstruct","mecRacional","dibujoTec"] },
+    { "id": "sisMedicion", "nombre": "Sistemas de Medición", "semestre": 7, "requisitos": ["electronApl","pyestad"] },
+    { "id": "teoControl", "nombre": "Teoría de Control", "semestre": 7, "requisitos": ["mecRacional","electronApl","compu"] },
 
-    { "id": "mecanismos", "nombre": "Mecanismos y Elementos de Máquinas", "semestre": 8, "requisitos": ["mecEstruct","mecRacional","dibujoTec"] },
-    { "id": "sisMedicion", "nombre": "Sistemas de Medición", "semestre": 8, "requisitos": ["electronApl","pyestad"] },
-    { "id": "teoControl", "nombre": "Teoría de Control", "semestre": 8, "requisitos": ["mecRacional","electronApl","compu"] },
+    { "id": "calcEstr1", "nombre": "Cálculo Estructural 1", "semestre": 8, "requisitos": ["mecEstruct"] },
+    { "id": "maqElectricas", "nombre": "Máquinas Eléctricas", "semestre": 8, "requisitos": ["elemEqElec"] },
+    { "id": "mecFluidos", "nombre": "Mecánica de los Fluidos", "semestre": 8, "requisitos": ["termo","mecRacional"] },
+    { "id": "orgIndEmp", "nombre": "Organización Industrial y Empresarial", "semestre": 8, "requisitos": ["ingEcoLegal"] },
 
-    { "id": "calcEstr1", "nombre": "Cálculo Estructural 1", "semestre": 9, "requisitos": ["mecEstruct"] },
-    { "id": "maqElectricas", "nombre": "Máquinas Eléctricas", "semestre": 9, "requisitos": ["elemEqElec"] },
-    { "id": "mecFluidos", "nombre": "Mecánica de los Fluidos", "semestre": 9, "requisitos": ["termo","mecRacional"] },
-    { "id": "orgIndEmp", "nombre": "Organización Industrial y Empresarial", "semestre": 9, "requisitos": ["ingEcoLegal"] },
+    { "id": "calcEstr2", "nombre": "Cálculo Estructural 2", "semestre": 9, "requisitos": ["calcEstr1"] },
+    { "id": "distEnergia", "nombre": "Distribución de Energía Eléctrica", "semestre": 9, "requisitos": ["maqElectricas","sisMedicion"] },
+    { "id": "maquinas", "nombre": "Máquinas", "semestre": 9, "requisitos": ["mecFluidos","mecanismos"] },
+    { "id": "sisControl", "nombre": "Sistemas de Control", "semestre": 9, "requisitos": ["teoControl"] },
 
-    { "id": "calcEstr2", "nombre": "Cálculo Estructural 2", "semestre": 10, "requisitos": ["calcEstr1"] },
-    { "id": "distEnergia", "nombre": "Distribución de Energía Eléctrica", "semestre": 10, "requisitos": ["maqElectricas","sisMedicion"] },
-    { "id": "maquinas", "nombre": "Máquinas", "semestre": 10, "requisitos": ["mecFluidos","mecanismos"] },
-    { "id": "sisControl", "nombre": "Sistemas de Control", "semestre": 10, "requisitos": ["teoControl"] },
+    { "id": "genEnergia", "nombre": "Generación de Energía", "semestre": 10, "requisitos": ["maqElectricas","maquinas"] },
+    { "id": "instElec1", "nombre": "Instalaciones Eléctricas 1", "semestre": 10, "requisitos": ["maqElectricas"] },
+    { "id": "higiene", "nombre": "Higiene y Seguridad", "semestre": 10, "requisitos": ["orgIndEmp"] },
+    { "id": "tecMecanica", "nombre": "Tecnología Mecánica", "semestre": 10, "requisitos": ["cienMat","mecanismos"] },
 
-    { "id": "genEnergia", "nombre": "Generación de Energía", "semestre": 11, "requisitos": ["maqElectricas","maquinas"] },
-    { "id": "instElec1", "nombre": "Instalaciones Eléctricas 1", "semestre": 11, "requisitos": ["maqElectricas"] },
-    { "id": "higiene", "nombre": "Higiene y Seguridad", "semestre": 11, "requisitos": ["orgIndEmp"] },
-    { "id": "tecMecanica", "nombre": "Tecnología Mecánica", "semestre": 11, "requisitos": ["cienMat","mecanismos"] },
     { "id": "estTransform", "nombre": "Estaciones Transformadoras y Transmisión de Energía Eléctrica", "semestre": 11, "requisitos": ["distEnergia"] },
     { "id": "instElec2", "nombre": "Instalaciones Eléctricas 2", "semestre": 11, "requisitos": ["instElec1"] },
-
     { "id": "practica", "nombre": "Práctica Profesional Integradora", "semestre": 11, "requisitos": [], "requierePorcentaje": 80 },
     { "id": "proyDisMec", "nombre": "Proyecto y Diseño Mecánico", "semestre": 11, "requisitos": ["calcEstr2","tecMecanica"] }
   ]
