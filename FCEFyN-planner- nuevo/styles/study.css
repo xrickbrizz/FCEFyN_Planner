@@ -1108,9 +1108,7 @@ body[data-theme="light"] .event{
     .plan-frame{
       width:100%;
      height: 100%;
-      border-radius:var(--radius-md);
-      border:1px solid var(--border-85);
-      background:var(--surface-94);
+      border: 0;
 
     }
     .subject-form-field label{

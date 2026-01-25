@@ -31,7 +31,8 @@ rgb(43, 105, 96)
   --color-primary-strong: #2a4a4f;
   --color-primary-soft: #d2e1de;
   --color-surface: #f5f7f7;
-  --color-surface-2: #eef2f2;
+  /* este controla plan de estudio desde students*/
+  --color-surface-2: var(--color-surface-3);
   --color-surface-3: #ffffff;
   --color-border: #c8d5d2;
   --color-border-strong: #b3c3bf;
