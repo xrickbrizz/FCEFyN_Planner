@@ -959,6 +959,7 @@ body[data-theme="light"] .event{
       padding:.5rem;
       overflow:auto;
       box-shadow:none;
+      height: 40rem;
     }
     .agenda-grid{
       display:grid;

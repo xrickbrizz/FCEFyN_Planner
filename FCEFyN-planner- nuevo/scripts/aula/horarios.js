@@ -5,7 +5,7 @@ let CTX = null;
 const dayKeys = ['lunes','martes','miercoles','jueves','viernes','sabado'];
 const dayLabels = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
 const minutesStart = 8*60;
-const minutesEnd   = 23*60;
+const minutesEnd   = 22*60;
 let pxPerMinute  = 40/60;
 
 const agendaGrid = document.getElementById("agendaGrid");
