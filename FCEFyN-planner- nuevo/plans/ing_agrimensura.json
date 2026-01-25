@@ -35,6 +35,7 @@
     { "id": "agrLegal2", "nombre": "Agrimensura Legal 2", "semestre": 7, "requisitos": ["agrLegal1"] },
     { "id": "geodesia", "nombre": "Geodesia", "semestre": 7, "requisitos": ["compu","topo2"] },
     { "id": "fotogram", "nombre": "Fotogrametría", "semestre": 7, "requisitos": ["fisica2","fotointerp"] },
+    { "id": "orgIndSeg", "nombre": "Organización Industrial y Seguridad Laboral", "semestre": 7, "requisitos": ["elemConst"] },
 
     { "id": "orgIndSeg", "nombre": "Organización Industrial y Seguridad Laboral", "semestre": 8, "requisitos": ["elemConst"] },
     { "id": "agrLegal3", "nombre": "Agrimensura Legal 3", "semestre": 8, "requisitos": ["agrLegal2"] },
