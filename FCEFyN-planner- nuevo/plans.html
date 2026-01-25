@@ -178,15 +178,6 @@ import { showConfirm } from "./scripts/ui/notifications.js";
     return (promo / total) * 100;
   }
 
-  function porcentajeAprobadasRegularizadas(excludeId){
-    const estados = getEstados();
-    const total = materias.filter(m => m.id !== excludeId).length || 1;
-    const aprobadas = Object.entries(estados)
-      .filter(([id, st]) => id !== excludeId && (st === "promocion" || st === "regular"))
-      .length;
-    return (aprobadas / total) * 100;
-  }
-
   function updateStatsUI(){
     const estados = getEstados();
     const counts = { promocion:0, regular:0, libre:0, curso:0 };
@@ -230,7 +221,7 @@ function revalidateEstados() {
 
       // requisito por porcentaje
       if (mat.requierePorcentaje) {
-        if (porcentajeAprobadasRegularizadas(mat.id) < mat.requierePorcentaje) {
+        if (porcentajePromocionadas() < mat.requierePorcentaje) {
           invalida = true;
         }
       }
@@ -278,7 +269,7 @@ function revalidateEstados() {
       let bloqueada = false;
 
       if(mat && mat.requierePorcentaje){
-        if(porcentajeAprobadasRegularizadas(mat.id) < mat.requierePorcentaje) bloqueada = true;
+        if(porcentajePromocionadas() < mat.requierePorcentaje) bloqueada = true;
       }else if(mat && mat.requiereAprobadas){
         const aprobadas = Object.values(estados).filter(e => e === "promocion" || e === "regular").length;
         if(aprobadas < mat.requiereAprobadas) bloqueada = true;
