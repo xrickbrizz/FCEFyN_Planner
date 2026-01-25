@@ -125,33 +125,6 @@
             <span>Agregar actividad para hoy</span>
           </button>
           <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
-          <div id="studyInlineEditor" class="widget-card" style="display:none;">
-            <div class="widget-title" id="studyInlineTitle">Nuevo registro</div>
-            <div class="widget-grid">
-              <div class="widget-field">
-                <label for="studyInlineMateria">Materia</label>
-                <select id="studyInlineMateria"></select>
-              </div>
-              <div class="widget-field">
-                <label for="studyInlineTema">Tema</label>
-                <input id="studyInlineTema" type="text" placeholder="Tema a estudiar" />
-              </div>
-              <div class="widget-field widget-inline-row">
-                <div>
-                  <label for="studyInlineHoras">Horas</label>
-                  <input id="studyInlineHoras" type="number" min="0" max="12" placeholder="0" />
-                </div>
-                <div>
-                  <label for="studyInlineMins">Minutos</label>
-                  <input id="studyInlineMins" type="number" min="0" max="59" placeholder="0" />
-                </div>
-              </div>
-            </div>
-            <div class="widget-actions">
-              <button class="btn-outline btn-small" id="studyInlineCancel" type="button">Cancelar</button>
-              <button class="btn-blue btn-small" id="studyInlineSave" type="button">Guardar</button>
-            </div>
-          </div>
           <section id="studyTimerWidget" class="widget-card">
             <div class="widget-title">Timer de Estudio</div>
             <div class="timer-display" id="studyTimerDisplay">00:00:00</div>
@@ -620,18 +593,45 @@
     </div>
   </div> 
       </div> </div> </div> <div class="modal-bg" id="modalBg">
-    <div class="modal">
-      <h3 class="modal-title">Registrar estudio</h3>
-      <div id="eventsList"></div>
-
-      <input id="inpHoras" placeholder="Horas" type="number" min="0" />
-      <input id="inpMins" placeholder="Minutos" type="number" min="0" />
-      <textarea id="inpTema" placeholder="Tema"></textarea>
-      <select id="inpMateria"></select>
-
-      <div style="margin-top:.5rem; display:flex; gap:.5rem; justify-content:flex-end;">
-        <button class="btn-gray" id="btnCancelar">Cancelar</button>
-        <button class="btn-blue" id="btnGuardar">Guardar</button>
+    <div class="modal modal-planner">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studyModalTitle">Nuevo registro</h3>
+        <button class="modal-close" id="btnStudyClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label for="inpMateria">Materia</label>
+          <select id="inpMateria"></select>
+        </div>
+        <div class="modal-field">
+          <label for="inpTema">Tema</label>
+          <input id="inpTema" placeholder="Tema a estudiar" />
+        </div>
+        <div class="modal-field modal-inline-row">
+          <div>
+            <label for="inpHoras">Horas</label>
+            <input id="inpHoras" placeholder="0" type="number" min="0" />
+          </div>
+          <div>
+            <label for="inpMins">Minutos</label>
+            <input id="inpMins" placeholder="0" type="number" min="0" />
+          </div>
+        </div>
+        <div class="modal-field">
+          <div class="modal-section-title">Tipo de actividad</div>
+          <div class="pill-group" id="studyTypePills">
+            <button type="button" class="pill-btn" data-study-type="Examen">Examen</button>
+            <button type="button" class="pill-btn" data-study-type="Parcial">Parcial</button>
+            <button type="button" class="pill-btn" data-study-type="TP">TP</button>
+            <button type="button" class="pill-btn is-active" data-study-type="Estudio">Estudio</button>
+            <button type="button" class="pill-btn" data-study-type="Clase">Clase</button>
+            <button type="button" class="pill-btn" data-study-type="Práctico">Práctico</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" id="btnCancelar" type="button">Cancelar</button>
+        <button class="btn-blue btn-large" id="btnGuardar" type="button">Guardar</button>
       </div>
     </div>
   </div>
@@ -710,40 +710,65 @@
   </div>
 
   <div class="modal-bg" id="acadModalBg">
-    <div class="modal">
-      <h3 class="modal-title" id="acadModalTitle">Añadir académico</h3>
+    <div class="modal modal-planner">
+      <div class="modal-header">
+        <h3 class="modal-title" id="acadModalTitle">Nuevo registro</h3>
+        <button class="modal-close" id="btnAcadClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <div class="modal-section-title">Tipo de actividad</div>
+          <div class="pill-group" id="acadTypePills">
+            <button type="button" class="pill-btn" data-acad-type="Examen">Examen</button>
+            <button type="button" class="pill-btn is-active" data-acad-type="Parcial">Parcial</button>
+            <button type="button" class="pill-btn" data-acad-type="TP">TP</button>
+            <button type="button" class="pill-btn" data-acad-type="Estudio">Estudio</button>
+            <button type="button" class="pill-btn" data-acad-type="Clase">Clase</button>
+            <button type="button" class="pill-btn" data-acad-type="Práctico">Práctico</button>
+          </div>
+          <select id="acadType" class="sr-only" aria-hidden="true">
+            <option value="Examen">Examen</option>
+            <option value="Parcial">Parcial</option>
+            <option value="TP">TP</option>
+            <option value="Estudio">Estudio</option>
+            <option value="Clase">Clase</option>
+            <option value="Práctico">Práctico</option>
+          </select>
+        </div>
 
-      <label>Tipo</label>
-      <select id="acadType">
-        <option value="Parcial">Parcial</option>
-        <option value="TP">TP</option>
-        <option value="Tarea">Tarea</option>
-        <option value="Informe">Informe</option>
-        <option value="Recordatorio">Recordatorio</option>
-      </select>
+        <div class="modal-field">
+          <label for="acadSubject">Materia</label>
+          <select id="acadSubject"></select>
+        </div>
 
-      <label>Materia</label>
-      <select id="acadSubject"></select>
-      
-      <label>Título</label>
-      <input id="acadTitle" placeholder="Ej: 1er Parcial" />
+        <div class="modal-field">
+          <label for="acadTitle">Título</label>
+          <input id="acadTitle" placeholder="Ej: 1er Parcial" />
+        </div>
 
-      <label>Hora</label>
-      <input id="acadWhen" type="time" />
+        <div class="modal-field">
+          <label for="acadWhen">Hora</label>
+          <input id="acadWhen" type="time" />
+        </div>
 
-      <label>Notas (opcional)</label>
-      <textarea id="acadNotes" placeholder="Detalles, requisitos, link, etc."></textarea>
+        <div class="modal-field">
+          <label for="acadNotes">Notas (opcional)</label>
+          <textarea id="acadNotes" placeholder="Detalles, requisitos, link, etc."></textarea>
+        </div>
 
-      <label>Estado</label>
-      <select id="acadStatus">
-        <option value="pending">Pendiente</option>
-        <option value="done">Hecho</option>
-      </select>
+        <div class="modal-field">
+          <label for="acadStatus">Estado</label>
+          <select id="acadStatus">
+            <option value="pending">Pendiente</option>
+            <option value="done">Hecho</option>
+          </select>
+        </div>
+      </div>
 
-      <div style="margin-top:.6rem;display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap;">
-        <button class="btn-gray btn-small" id="btnAcadCancel">Cancelar</button>
-        <button class="btn-danger btn-small" id="btnAcadDelete" style="display:none;">Eliminar</button>
-        <button class="btn-blue btn-small" id="btnAcadSave">Guardar</button>
+      <div class="modal-footer">
+        <button class="btn-outline" id="btnAcadCancel">Cancelar</button>
+        <button class="btn-danger" id="btnAcadDelete" style="display:none;">Eliminar</button>
+        <button class="btn-blue btn-large" id="btnAcadSave">Guardar</button>
       </div>
     </div>
   </div>
