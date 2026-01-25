@@ -650,6 +650,7 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .btn-dark{
+  --cta-dark:black;
   width: 100%;
   border: none;
   border-radius: 999px;
