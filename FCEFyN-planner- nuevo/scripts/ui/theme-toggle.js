@@ -1,13 +1,14 @@
 (function(){
   const STORAGE_KEY = "fcefyn-theme";
   const body = document.body;
+   const night = null;
 
   function updateToggleButtons(isDark){
     document.querySelectorAll("[data-theme-toggle]").forEach(btn =>{
       btn.setAttribute("aria-pressed", String(isDark));
       const icon = btn.querySelector(".ico");
       const label = btn.querySelector(".label");
-      const iconChar = isDark ? "🌙" : "☀️";
+      const iconChar = isDark ? "luna :)" : "sol:)";
       const text = isDark ? "Modo oscuro" : "Modo claro";
       if (icon) icon.textContent = iconChar;
       if (label) label.textContent = text;

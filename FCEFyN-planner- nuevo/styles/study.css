@@ -27,7 +27,6 @@ header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:linear-gradient(120deg, rgba(255,255,255,.92), rgba(var(--color-primary-rgb),.55));
   gap:.8rem;
   border-bottom:1px solid rgba(var(--color-border-rgb),.75);
   backdrop-filter: blur(10px);
