@@ -1,20 +1,33 @@
 (function(){
   const STORAGE_KEY = "fcefyn-theme";
   const body = document.body;
-   const night = null;
+
+  const ICONS = {
+    sun: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.5v2.3M12 18.2v2.3M4.7 5.7l1.6 1.6M17.7 18.7l1.6 1.6M3.5 12h2.3M18.2 12h2.3M5.7 19.3l1.6-1.6M17.7 5.3l1.6-1.6"/></svg>`,
+    moon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.3 14.4A8.3 8.3 0 0 1 9.6 3.7a8.3 8.3 0 1 0 10.7 10.7z"/></svg>`
+  };
+
+  function ensureIconEl(btn){
+    let icon = btn.querySelector(".ico");
+    if (!icon){
+      icon = document.createElement("span");
+      icon.className = "ico";
+      btn.prepend(icon);
+    }
+    return icon;
+  }
 
   function updateToggleButtons(isDark){
+    const iconName = isDark ? "sun" : "moon";
+    const labelText = isDark ? "Activar modo claro" : "Activar modo oscuro";
     document.querySelectorAll("[data-theme-toggle]").forEach(btn =>{
       btn.setAttribute("aria-pressed", String(isDark));
-      const icon = btn.querySelector(".ico");
+      btn.setAttribute("aria-label", labelText);
+      btn.setAttribute("title", labelText);
+      const icon = ensureIconEl(btn);
       const label = btn.querySelector(".label");
-      const iconChar = isDark ? "luna :)" : "sol:)";
-      const text = isDark ? "Modo oscuro" : "Modo claro";
-      if (icon) icon.textContent = iconChar;
-      if (label) label.textContent = text;
-      if (!icon && !label){
-        btn.textContent = `${iconChar} ${text}`;
-      }
+      icon.innerHTML = ICONS[iconName];
+      if (label) label.textContent = "";
     });
   }
 
