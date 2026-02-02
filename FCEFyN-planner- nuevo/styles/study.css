@@ -698,6 +698,7 @@ body[data-theme="light"] .event{
       border:1px solid var(--border);
       padding:1rem;
       box-shadow:none;
+      margin-bottom: 12px;
     }
     .acad-widgets{
       padding: 1rem;
@@ -953,9 +954,9 @@ body[data-theme="light"] .event{
     }
     .agenda-shell{
       grid-column: 1 / -1;
-      background:var(--surface-94);
+      /* esto controla el fondo del calendario  background:var(--surface-94);*/
       border-radius:var(--radius-lg);
-      border:1px solid var(--border-85);
+      /*border:1px solid var(--border-85); */
       padding:.5rem;
       overflow:auto;
       box-shadow:none;
@@ -1356,9 +1357,11 @@ body[data-theme="light"] .event{
 
     /* TAB PLANIFICADOR */
     .planner-layout{
-      display:grid;
+      /* display:grid;
       grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
-      gap:1rem;
+      gap:1rem; */
+      display: block;
+      margin-bottom: 12px;
     }
     @media(max-width:980px){ .planner-layout{ grid-template-columns:1fr; } }
     .planner-toolbar{
