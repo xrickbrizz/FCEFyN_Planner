@@ -1,0 +1,6 @@
+{
+  "subjects": [
+    { "name": "Análisis Matemático 1", "teachers": ["Mors Horacio Anibal", "Pastore Liliana"] },
+    { "name": "Física 1", "teachers": ["Apellido Nombre", "Otro Profe"] }
+  ]
+}

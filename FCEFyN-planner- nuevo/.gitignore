@@ -1,0 +1,14 @@
+# Node
+node_modules/
+node/node_modules/
+
+# Credenciales
+node/serviceAccountKey.json
+.env
+# Node
+node_modules/
+node/node_modules/
+
+# Credenciales
+node/serviceAccountKey.json
+.env
