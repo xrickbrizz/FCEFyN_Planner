@@ -30,6 +30,37 @@ const navState = {
   lastNonMessagesSection: "inicio"
 };
 
+const NAV_LAST_KEY = "nav:lastSection";
+const DEBUG_NAV = true;
+
+const extraSections = ["mensajes", "perfil"];
+
+function isValidSectionId(sectionId){
+  if (!sectionId || typeof sectionId !== "string") return false;
+  const allowedIds = new Set([...(navItems || []).map(item => item.id), ...extraSections]);
+  if (!allowedIds.has(sectionId)) return false;
+  const tabEl = document.getElementById(`tab-${sectionId}`);
+  return !!tabEl;
+}
+
+function resolveSectionId(sectionId){
+  return isValidSectionId(sectionId) ? sectionId : "inicio";
+}
+
+function logNav(...args){
+  if (DEBUG_NAV) console.log(...args);
+}
+
+function restoreLastSection(){
+  const last = sessionStorage.getItem(NAV_LAST_KEY);
+  logNav("[nav] restore attempt", last);
+  if (!isValidSectionId(last)){
+    logNav("[nav] restore invalid, fallback to inicio", last);
+  }
+  const target = resolveSectionId(last);
+  window.showTab?.(target);
+}
+
 initSession({
   onMissingUser: () => {
     window.location.href = "app.html";
@@ -107,6 +138,7 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
   bindProfileShortcuts();
+  restoreLastSection();
 });
 
 window.logout = async function(){
@@ -291,6 +323,17 @@ if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === h
 let sidebarCtrl = null;
 
 window.showTab = function(name){
+  const targetSection = resolveSectionId(name);
+  if (isValidSectionId(name)){
+    sessionStorage.setItem(NAV_LAST_KEY, name);
+    logNav("[nav] stored section", name);
+  } else {
+    logNav("[nav] skip store invalid section", name);
+  }
+  if (targetSection !== name){
+    logNav("[nav] fallback to section", targetSection);
+  }
+  name = targetSection;
   if (name !== "mensajes") navState.lastNonMessagesSection = name;
   navState.activeSection = name;
   const tabInicio           = document.getElementById("tab-inicio");

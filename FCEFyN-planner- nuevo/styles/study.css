@@ -1357,11 +1357,12 @@ body[data-theme="light"] .event{
 
     /* TAB PLANIFICADOR */
     .planner-layout{
-      /* display:grid;
-      grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
-      gap:1rem; */
       display: block;
       margin-bottom: 12px;
+     /* display:grid;
+      grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+      gap:1rem; */
+
     }
     @media(max-width:980px){ .planner-layout{ grid-template-columns:1fr; } }
     .planner-toolbar{
@@ -1499,6 +1500,9 @@ body[data-theme="light"] .event{
 }
 @media(max-width:1000px){
   .prof-layout{ grid-template-columns:1fr; }
+}
+.profDetail {
+  margin-top: 1rem;
 }
 .prof-list-panel, .prof-detail-panel{
   display:flex;

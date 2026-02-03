@@ -327,26 +327,10 @@
     </div>
   <!--------------------- PLANIFICAR  ------------------------------------------------>
     <div id="tab-planificador" class="tab-card" style="display:none;">
-      <div class="planner-layout">
+      <div class="planner-layout">  
+        <!--------------------- PRESET ------------------------------------------------>
         <div class="planner-box">
-          <div class="planner-toolbar">
-            <div>
-              <strong>Horarios disponibles</strong>
-              <span class="badge" id="sectionsCountBadge">0</span>
-            </div>
-            <div>
-              <input class="input-mini" id="sectionsSearch" placeholder="Buscar materia / comisión / sede..." />
-              <button class="btn-outline btn-small" id="btnReloadSections">Recargar</button>
-            </div>
-          </div>
-          <div class="small-muted" style="margin-bottom:.6rem;">
-            Estos horarios los cargó el administrador (comisiones, días, horas y sedes). Elegí una comisión por materia.
-          </div>
-          <div class="planner-list" id="sectionsList"></div>
-        </div>
-
-        <div class="planner-box">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem; flex-wrap:wrap;">
             <strong>Presets</strong>
             <div class="small-muted" id="activePresetLabel">Sin preset cargado</div>
           </div>
@@ -379,8 +363,25 @@
             <div><strong>Vista previa semanal</strong> (solo preview)</div>
             <div class="small-muted">No modifica tu Agenda hasta que presiones “Pasar a Agenda”.</div>
           </div>
+        </div>  
+  <!--------------------- COMISIONES ------------------------------------------------>
+        <div class="planner-box">
+          <div class="planner-toolbar">
+            <div>
+              <strong>Horarios disponibles</strong>
+              <span class="badge" id="sectionsCountBadge">0</span>
+            </div>
+            <div>
+              <input class="input-mini" id="sectionsSearch" placeholder="Buscar materia / comisión / sede..." />
+              <button class="btn-outline btn-small" id="btnReloadSections">Recargar</button>
+            </div>
+          </div>
+          <div class="small-muted" style="margin-bottom:.6rem;">
+            Estos horarios los cargó el administrador (comisiones, días, horas y sedes). Elegí una comisión por materia.
+          </div>
+          <div class="planner-list" id="sectionsList"></div>
         </div>
-        
+
         <div class="agenda-shell">
         <div class="agenda-grid" id="plannerPreviewGrid"></div>
       </div>
@@ -409,7 +410,7 @@
           <div id="professorsList" class="prof-list"></div>
         </div>
       </div>
-      <div class="profDetail" id="professorDetailSection" hidden >
+      <div class="profDetail" id="professorDetailSection">
         <button id="btnBackToFilters" type="button" hidden>← Volver</button>
                       <div id="profDetailBox" class="prof-detail-card" >
             <div class="small-muted">Seleccioná un profesor para ver detalles y valorar.</div>
