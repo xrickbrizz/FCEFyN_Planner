@@ -488,8 +488,9 @@ async function submitProfessorRating(){
     anonymous
   };
   console.log("[Professors] Submit rating payload:", payload);
+  //------------------------ implemento callable ---------------------------------------//
   const functions = getFunctions(app, "us-central1");
-  const callable = httpsCallable(functions, "submitProfessorReview");
+  const callable = httpsCallable(functions, "submitProfessorReviewCallable");
 
   try{
     await callable(payload);
