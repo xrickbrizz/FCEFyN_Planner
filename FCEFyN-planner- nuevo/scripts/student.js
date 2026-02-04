@@ -61,20 +61,37 @@ function initHomeNotices(){
   const detail = document.getElementById("homeNoticesDetail");
   const detailBody = document.getElementById("homeNoticesDetailBody");
   const searchInput = document.getElementById("homeNoticesSearch");
+  const searchWrap = document.getElementById("homeNoticesSearchWrap");
   const listEl = document.getElementById("homeNoticesList");
   const emptyEl = document.getElementById("homeNoticesEmpty");
   const rangeEl = document.getElementById("homeNoticesRange");
   const prevBtn = document.getElementById("homeNoticesPrev");
   const nextBtn = document.getElementById("homeNoticesNext");
+  const navWrap = document.getElementById("homeNoticesNav");
   const backBtn = document.getElementById("homeNoticesBack");
 
-  if (!listing || !detail || !detailBody || !searchInput || !listEl || !emptyEl || !rangeEl || !prevBtn || !nextBtn || !backBtn) return;
+  if (!listing || !detail || !detailBody || !searchInput || !searchWrap || !listEl || !emptyEl || !rangeEl || !prevBtn || !nextBtn || !navWrap || !backBtn) return;
 
   const state = {
     query: "",
     page: 0,
     selectedId: null,
     items: []
+  };
+
+  const setMode = (mode) => {
+    const nextMode = mode === "detail" ? "detail" : "list";
+    panel.dataset.mode = nextMode;
+    const isDetail = nextMode === "detail";
+    listing.hidden = isDetail;
+    detail.hidden = !isDetail;
+    backBtn.hidden = !isDetail;
+    searchWrap.hidden = isDetail;
+    navWrap.hidden = isDetail;
+    if (!isDetail) {
+      state.selectedId = null;
+      detailBody.innerHTML = "";
+    }
   };
 
   const getFilteredNotices = () => {
@@ -88,8 +105,6 @@ function initHomeNotices(){
   };
 
   const renderList = () => {
-    listing.hidden = false;
-    detail.hidden = true;
     const filtered = getFilteredNotices();
     const total = filtered.length;
     const totalPages = Math.max(1, Math.ceil(total / HOME_NOTICE_PAGE_SIZE));
@@ -132,18 +147,17 @@ function initHomeNotices(){
   const openDetail = (item) => {
     if (!item) return;
     state.selectedId = item.id;
-    listing.hidden = true;
-    detail.hidden = false;
+    setMode("detail");
     detailBody.innerHTML = `
       <div class="home-notices-detail-title">${item.title}</div>
       <div class="home-notices-detail-date">${formatNoticeDate(item.createdAt || item.publishAt)}</div>
       <div class="home-notices-detail-text">${item.body}</div>
     `;
+    detailBody.scrollTop = 0;
   };
 
   const returnToList = () => {
-    detail.hidden = true;
-    listing.hidden = false;
+    setMode("list");
     renderList();
   };
 
@@ -196,7 +210,16 @@ function initHomeNotices(){
       return bTime - aTime;
     });
     state.items = items;
-    renderList();
+    if (panel.dataset.mode === "detail") {
+      const selected = state.items.find(item => item.id === state.selectedId);
+      if (selected) {
+        openDetail(selected);
+      } else {
+        returnToList();
+      }
+    } else {
+      renderList();
+    }
   };
 
   const handleSnapshotError = (err) => {
@@ -211,6 +234,7 @@ const announcementsQuery = query(
 );
 onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
 
+  setMode("list");
   renderList();
 }
 

@@ -105,20 +105,21 @@
           </div>
         </section>
 
-        <aside class="home-notices-panel" id="homeNoticesPanel">
-          <div class="home-notices-listing" id="homeNoticesListing">
-            <div class="home-notices-header">
-              <div class="home-notices-title">Avisos</div>
-              <label class="home-notices-search" aria-label="Buscar aviso">
-                <span class="home-search-icon" aria-hidden="true"></span>
-                <input id="homeNoticesSearch" type="search" placeholder="Buscar aviso..." />
-              </label>
-              <div class="home-notices-nav">
-                <span class="home-notices-range" id="homeNoticesRange">0–0</span>
-                <button class="home-notices-btn" id="homeNoticesPrev" type="button" aria-label="Avisos anteriores">‹</button>
-                <button class="home-notices-btn" id="homeNoticesNext" type="button" aria-label="Avisos siguientes">›</button>
-              </div>
+        <aside class="home-notices-panel" id="homeNoticesPanel" data-mode="list">
+          <div class="home-notices-header">
+            <button class="home-notices-back" id="homeNoticesBack" type="button" hidden>← Volver</button>
+            <div class="home-notices-title">Avisos</div>
+            <label class="home-notices-search" id="homeNoticesSearchWrap" aria-label="Buscar aviso">
+              <span class="home-search-icon" aria-hidden="true"></span>
+              <input id="homeNoticesSearch" type="search" placeholder="Buscar aviso..." />
+            </label>
+            <div class="home-notices-nav" id="homeNoticesNav">
+              <span class="home-notices-range" id="homeNoticesRange">0–0</span>
+              <button class="home-notices-btn" id="homeNoticesPrev" type="button" aria-label="Avisos anteriores">‹</button>
+              <button class="home-notices-btn" id="homeNoticesNext" type="button" aria-label="Avisos siguientes">›</button>
             </div>
+          </div>
+          <div class="home-notices-listing" id="homeNoticesListing">
             <div class="home-notices-content">
               <div class="home-notices-list" id="homeNoticesList"></div>
               <div class="home-notices-empty" id="homeNoticesEmpty" hidden>No hay avisos para mostrar.</div>
@@ -126,7 +127,6 @@
           </div>
 
           <div class="home-notices-detail" id="homeNoticesDetail" hidden>
-            <button class="home-notices-back" id="homeNoticesBack" type="button">← Volver</button>
             <div class="home-notices-detail-body" id="homeNoticesDetailBody"></div>
           </div>
         </aside>
@@ -174,13 +174,9 @@
               <div class="study-detail-day" id="studyDetailTitle">Detalle del día</div>
               <div class="study-detail-date" id="studyDetailDate">—</div>
             </div>
-            <div class="study-detail-time" id="studyDetailTime">—</div>
+          <div class="study-detail-time" id="studyDetailTime">—</div>
           </div>
           <div class="study-events" id="studyDetailList"></div>
-          <button class="detail-add" id="studyAddActivity" type="button">
-            <span class="add-plus">+</span>
-            <span>Agregar actividad para hoy</span>
-          </button>
           <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
           <section id="studyTimerWidget" class="widget-card">
             <div class="widget-title">Timer de Estudio</div>
@@ -269,11 +265,7 @@
             </div>
           </div>
           <div class="acad-action-group">
-            <button class="detail-add" id="acadAddActivity" type="button">
-              <span class="add-plus">+</span>
-              <span>Agregar actividad para hoy</span>
-            </button>
-          <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
+            <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
           </div>
           <section id="acadUpcomingWidget" class="widget-card"></section>
         </div>  
