@@ -29,6 +29,10 @@ import {
   getDownloadURL,
   deleteObject
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
@@ -79,5 +83,7 @@ export {
   storageRef,
   uploadBytes,
   getDownloadURL,
-  deleteObject
+  deleteObject,
+  getFunctions,
+  httpsCallable
 };

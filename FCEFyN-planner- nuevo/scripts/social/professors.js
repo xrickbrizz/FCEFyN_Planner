@@ -1,13 +1,10 @@
 import {
-  doc,
-  getDoc,
-  setDoc,
   collection,
   getDocs,
   query,
   where,
-  serverTimestamp,
-  updateDoc
+  getFunctions,
+  httpsCallable
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
 
@@ -44,15 +41,6 @@ function renderStars(value){
 function formatDecimal(val){
   return (typeof val === "number" ? val : 0).toFixed(1);
 }
-function currentUserDisplayName(){
-  const userProfile = CTX?.AppState?.userProfile || null;
-  const currentUser = CTX?.getCurrentUser?.();
-  if (userProfile && (userProfile.name || userProfile.fullName)) return userProfile.name || userProfile.fullName;
-  if (userProfile && userProfile.email) return userProfile.email;
-  if (currentUser && currentUser.email) return currentUser.email;
-  return "Estudiante";
-}
-
 async function loadProfessorsCatalog(){
   console.log("[Professors] Loading catalog...");
   professorsCatalog = [];
@@ -481,32 +469,24 @@ async function submitProfessorRating(){
   const comment = (document.getElementById("rateComment")?.value || "").trim();
   const anonymous = !!document.getElementById("rateAnonymous")?.checked;
 
-  const cache = professorReviewsCache[selectedProfessorId];
-  const existing = cache?.items?.find(r => r.userId === currentUser.uid);
-  const reviewId = `${selectedProfessorId}_${currentUser.uid}`;
   const btn = document.getElementById("btnSubmitRating");
   if (btn) btn.disabled = true;
 
   const payload = {
     professorId: selectedProfessorId,
-    userId: currentUser.uid,
     teachingQuality: teaching,
     examDifficulty: exams,
     studentTreatment: treatment,
     comment,
-    anonymous,
-    authorName: anonymous ? "" : currentUserDisplayName(),
-    createdAt: existing?.createdAt ? new Date(existing.createdAt) : serverTimestamp(),
-    updatedAt: serverTimestamp()
+    anonymous
   };
   console.log("[Professors] Submit rating payload:", payload);
 
   try{
-    const reviewRef = doc(CTX.db,"professorReviews",reviewId);
-    await setDoc(reviewRef, payload, { merge:true });
+    const callable = httpsCallable(getFunctions(), "submitProfessorReview");
+    await callable(payload);
     await loadProfessorReviews(selectedProfessorId);
     fillRatingFormFromMyReview(selectedProfessorId);
-    await recalcProfessorStats(selectedProfessorId);
     await loadProfessorsCatalog();
     renderProfessorsSection();
     notifySuccess("Valoración guardada.");
@@ -516,37 +496,6 @@ async function submitProfessorRating(){
   }finally{
     if (btn) btn.disabled = false;
   }
-}
-
-async function recalcProfessorStats(profId){
-  const snap = await getDocs(query(collection(CTX.db,"professorReviews"), where("professorId","==", profId)));
-  let count = 0;
-  let commentsCount = 0;
-  let sumT = 0, sumE = 0, sumTr = 0;
-  snap.forEach(d =>{
-    const data = d.data() || {};
-    const t = Number(data.teachingQuality || 0);
-    const e = Number(data.examDifficulty || 0);
-    const tr = Number(data.studentTreatment || 0);
-    sumT += t;
-    sumE += e;
-    sumTr += tr;
-    count++;
-    if ((data.comment || "").trim().length) commentsCount++;
-  });
-  const avgTeaching = count ? (sumT / count) : 0;
-  const avgExams = count ? (sumE / count) : 0;
-  const avgTreatment = count ? (sumTr / count) : 0;
-  const avgGeneral = count ? ((sumT + sumE + sumTr) / (count * 3)) : 0;
-  await updateDoc(doc(CTX.db,"professors",profId), {
-    avgTeaching,
-    avgExams,
-    avgTreatment,
-    avgGeneral,
-    ratingCount: count,
-    commentsCount,
-    updatedAt: serverTimestamp()
-  });
 }
 
 const Professors = {
