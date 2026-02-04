@@ -1,4 +1,8 @@
 (() => {
+  const isMobile = () =>
+    window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+  if (!isMobile()) return;
+
   const tabBar = document.querySelector(".mobile-bottombar");
   const moreSheet = document.querySelector(".mobile-more-sheet");
   if (!tabBar || !moreSheet) return;

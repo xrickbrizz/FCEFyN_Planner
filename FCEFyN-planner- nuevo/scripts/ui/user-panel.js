@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const mountEl = document.getElementById("vue-user-panel");
-  if (!mountEl || !window.Vue) return;
+  const mountEls = document.querySelectorAll("#vue-user-panel, #vue-user-panel-mobile");
+  if (!mountEls.length || !window.Vue) return;
 
   const svgFallback = encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const fallbackAvatar = `data:image/svg+xml;utf8,${svgFallback}`;
 
-  const app = Vue.createApp({
+  const createPanelApp = () => Vue.createApp({
     data() {
       return {
         isOpen: false,
@@ -89,5 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `
   });
 
-  app.mount(mountEl);
+  mountEls.forEach((mountEl) => {
+    const app = createPanelApp();
+    app.mount(mountEl);
+  });
 });
