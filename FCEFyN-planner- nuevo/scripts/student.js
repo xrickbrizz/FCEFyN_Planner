@@ -25,6 +25,228 @@ const themeColor = (varName, fallback) => {
   return (value || "").trim() || fallback;
 };
 
+const HOME_NOTICE_PAGE_SIZE = 10;
+const homeNoticeData = [
+  {
+    id:"aviso-1",
+    title:"Nueva inscripción a materias",
+    body:"La inscripción a materias se extiende hasta el viernes. Revisá tu plan de estudio y asegurate de completar todos los pasos en el sistema.",
+    createdAt:"2023-10-20",
+    pinned:true
+  },
+  {
+    id:"aviso-2",
+    title:"Recordatorio de parcial integrador",
+    body:"El parcial integrador de Física I se tomará el martes 24/10 en el aula 12. Llegá con 15 minutos de anticipación.",
+    createdAt:"2023-10-23",
+    pinned:false
+  },
+  {
+    id:"aviso-3",
+    title:"Entrega de TP de Programación",
+    body:"El trabajo práctico de programación se entrega el 27/10. Subí el repositorio y revisá la rúbrica en el campus.",
+    createdAt:"2023-10-24",
+    pinned:false
+  },
+  {
+    id:"aviso-4",
+    title:"Actualización de calendario académico",
+    body:"Se actualizó el calendario académico con nuevas fechas de recuperatorios y cierre de actas. Revisá el panel Académico.",
+    createdAt:"2023-10-26",
+    pinned:true
+  },
+  {
+    id:"aviso-5",
+    title:"Nueva comisión disponible",
+    body:"Se habilitó una comisión extra de Análisis Matemático II los viernes por la tarde. Podés verla en Planificador.",
+    createdAt:"2023-10-27",
+    pinned:false
+  },
+  {
+    id:"aviso-6",
+    title:"Aviso de biblioteca",
+    body:"La biblioteca extenderá su horario hasta las 22:00 esta semana para acompañar el período de parciales.",
+    createdAt:"2023-10-28",
+    pinned:false
+  },
+  {
+    id:"aviso-7",
+    title:"Charla sobre prácticas profesionales",
+    body:"El miércoles habrá una charla sobre prácticas profesionales en el auditorio. Inscribite desde el portal institucional.",
+    createdAt:"2023-10-29",
+    pinned:false
+  },
+  {
+    id:"aviso-8",
+    title:"Mantenimiento del sistema",
+    body:"El sábado a la mañana se realizará mantenimiento en los servicios de la facultad. Algunas funciones pueden estar inactivas.",
+    createdAt:"2023-10-30",
+    pinned:false
+  },
+  {
+    id:"aviso-9",
+    title:"Encuesta de satisfacción",
+    body:"Completá la encuesta de satisfacción sobre las materias del cuatrimestre. Tus respuestas ayudan a mejorar la cursada.",
+    createdAt:"2023-10-31",
+    pinned:false
+  },
+  {
+    id:"aviso-10",
+    title:"Inscripción a finales",
+    body:"La inscripción a finales abre el 2/11. Revisá los turnos disponibles y seleccioná tus fechas.",
+    createdAt:"2023-11-02",
+    pinned:false
+  },
+  {
+    id:"aviso-11",
+    title:"Cambio de aula en Química",
+    body:"La clase de Química de hoy se dicta en el aula 8 por mantenimiento en el laboratorio.",
+    createdAt:"2023-11-03",
+    pinned:false
+  },
+  {
+    id:"aviso-12",
+    title:"Foro de materias habilitado",
+    body:"Ya podés usar el foro de materias para coordinar grupos de estudio y compartir recursos.",
+    createdAt:"2023-11-04",
+    pinned:false
+  }
+];
+
+const normalizeText = (value) =>
+  (value || "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+const formatNoticeDate = (value) => {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("es-AR", {
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric"
+  }).format(date);
+};
+
+function initHomeNotices(){
+  const panel = document.getElementById("homeNoticesPanel");
+  if (!panel) return;
+
+  const listing = document.getElementById("homeNoticesListing");
+  const detail = document.getElementById("homeNoticesDetail");
+  const detailBody = document.getElementById("homeNoticesDetailBody");
+  const searchInput = document.getElementById("homeNoticesSearch");
+  const listEl = document.getElementById("homeNoticesList");
+  const emptyEl = document.getElementById("homeNoticesEmpty");
+  const rangeEl = document.getElementById("homeNoticesRange");
+  const prevBtn = document.getElementById("homeNoticesPrev");
+  const nextBtn = document.getElementById("homeNoticesNext");
+  const backBtn = document.getElementById("homeNoticesBack");
+
+  if (!listing || !detail || !detailBody || !searchInput || !listEl || !emptyEl || !rangeEl || !prevBtn || !nextBtn || !backBtn) return;
+
+  const state = {
+    query: "",
+    page: 0,
+    selectedId: null
+  };
+
+  const getFilteredNotices = () => {
+    const query = normalizeText(state.query);
+    if (!query) return [...homeNoticeData];
+    return homeNoticeData.filter(item => {
+      const title = normalizeText(item.title);
+      const body = normalizeText(item.body);
+      return title.includes(query) || body.includes(query);
+    });
+  };
+
+  const renderList = () => {
+    listing.hidden = false;
+    detail.hidden = true;
+    const filtered = getFilteredNotices();
+    const total = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(total / HOME_NOTICE_PAGE_SIZE));
+    if (state.page > totalPages - 1) state.page = totalPages - 1;
+    if (state.page < 0) state.page = 0;
+
+    const startIndex = total === 0 ? 0 : state.page * HOME_NOTICE_PAGE_SIZE;
+    const pageItems = filtered.slice(startIndex, startIndex + HOME_NOTICE_PAGE_SIZE);
+    const rangeLabel = total === 0
+      ? "0–0"
+      : `${startIndex + 1}–${Math.min(startIndex + HOME_NOTICE_PAGE_SIZE, total)}`;
+    rangeEl.textContent = rangeLabel;
+    prevBtn.disabled = state.page === 0;
+    nextBtn.disabled = startIndex + HOME_NOTICE_PAGE_SIZE >= total;
+
+    listEl.innerHTML = "";
+    emptyEl.hidden = total !== 0;
+
+    pageItems.forEach(item => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "home-notice-item";
+      button.innerHTML = `
+        <div class="home-notice-main">
+          <div class="home-notice-title-row">
+            <strong>${item.title}</strong>
+            ${item.pinned ? '<span class="notice-pin" aria-label="Aviso fijado"></span>' : ""}
+          </div>
+          <div class="home-notice-preview">${item.body}</div>
+        </div>
+        <div class="home-notice-meta">
+          <span class="home-notice-date">${formatNoticeDate(item.createdAt)}</span>
+        </div>
+      `;
+      button.addEventListener("click", () => openDetail(item));
+      listEl.appendChild(button);
+    });
+  };
+
+  const openDetail = (item) => {
+    if (!item) return;
+    state.selectedId = item.id;
+    listing.hidden = true;
+    detail.hidden = false;
+    detailBody.innerHTML = `
+      <div class="home-notices-detail-title">${item.title}</div>
+      <div class="home-notices-detail-date">${formatNoticeDate(item.createdAt)}</div>
+      <div class="home-notices-detail-text">${item.body}</div>
+    `;
+  };
+
+  const returnToList = () => {
+    detail.hidden = true;
+    listing.hidden = false;
+    renderList();
+  };
+
+  searchInput.addEventListener("input", () => {
+    state.query = searchInput.value;
+    state.page = 0;
+    renderList();
+  });
+  prevBtn.addEventListener("click", () => {
+    if (state.page > 0) {
+      state.page -= 1;
+      renderList();
+    }
+  });
+  nextBtn.addEventListener("click", () => {
+    const filtered = getFilteredNotices();
+    if ((state.page + 1) * HOME_NOTICE_PAGE_SIZE < filtered.length) {
+      state.page += 1;
+      renderList();
+    }
+  });
+  backBtn.addEventListener("click", returnToList);
+
+  renderList();
+}
+
 const navState = {
   activeSection: "inicio",
   lastNonMessagesSection: "inicio"
@@ -138,6 +360,7 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
   bindProfileShortcuts();
+  initHomeNotices();
   restoreLastSection();
 });
 
