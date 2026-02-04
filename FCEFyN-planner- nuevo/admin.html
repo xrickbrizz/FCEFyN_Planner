@@ -36,11 +36,6 @@
       <span>Material Ingreso</span>
       <span class="nav-badge" id="badgeIngresoMaterials">0</span>
     </div>
-
-    <div class="nav-item" id="navAnnouncements" data-section="announcements">
-      <span>Avisos</span>
-      <span class="nav-badge" id="badgeAnnouncements">0</span>
-    </div>
   </aside>
 
   <div class="main">
@@ -159,35 +154,6 @@
                 </tr>
               </thead>
               <tbody id="ingresoMaterialsTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div id="section-announcements" class="section-wrap">
-        <div class="card">
-          <div class="card-header">
-            <h2>Avisos</h2>
-            <div class="announcements-header-actions">
-              <div class="announcements-tabs">
-                <button class="btn btn-outline active" id="announcementsTabActive" type="button">Activos</button>
-                <button class="btn btn-outline" id="announcementsTabArchived" type="button">Archivados</button>
-              </div>
-              <button class="btn btn-blue" id="btnNewAnnouncement">+ Nuevo aviso</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Título</th>
-                  <th>Publicación</th>
-                  <th>Vence</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="announcementsTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -420,51 +386,12 @@
   </div>
 </div>
 
-<div class="modal-bg" id="announcementModalBg">
-  <div class="modal modal-wide">
-    <h3 id="announcementModalTitle">Nuevo aviso</h3>
-    <div class="modal-grid modal-grid-1">
-      <div>
-        <label>Título</label>
-        <input id="announcementTitle" placeholder="Título del aviso">
-      </div>
-      <div>
-        <label>Contenido</label>
-        <textarea id="announcementBody" placeholder="Escribí el detalle completo del aviso." rows="6"></textarea>
-      </div>
-      <div class="modal-grid modal-grid-2">
-        <div>
-          <label>Publicar desde</label>
-          <input id="announcementPublishAt" type="datetime-local">
-        </div>
-        <div>
-          <label>Vence (opcional)</label>
-          <input id="announcementExpireAt" type="datetime-local">
-        </div>
-      </div>
-      <label class="checkbox-row">
-        <input id="announcementPinned" type="checkbox">
-        <span>Fijado</span>
-      </label>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" type="button" id="btnCancelAnnouncement">Cancelar</button>
-      <div class="modal-footer-right">
-        <button class="btn btn-warn" type="button" id="btnArchiveAnnouncement" style="display:none;">Archivar</button>
-        <button class="btn btn-ok" type="button" id="btnUnarchiveAnnouncement" style="display:none;">Desarchivar</button>
-        <button class="btn btn-blue" type="button" id="btnSaveAnnouncement">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs,
-  addDoc, updateDoc, deleteDoc, serverTimestamp,
-  query, where, orderBy
+  addDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import {
   getStorage,
@@ -510,45 +437,8 @@ let ingresoMaterialsCache = [];
 let editingIngresoMaterialId = null;
 let editingIngresoMaterialData = null;
 
-/* ---------- NUEVO: avisos ---------- */
-let announcementsCache = [];
-let announcementsView = "active";
-let editingAnnouncementId = null;
-let editingAnnouncementData = null;
-
 /* ---------- helpers UI ---------- */
 const qs  = sel => document.querySelector(sel);
-
-function fmtDate(value){
-  if (!value) return "—";
-  try{
-    const date = value instanceof Date ? value : value.toDate?.();
-    if (!date) return "—";
-    return date.toLocaleString("es-AR");
-  }catch(_e){
-    return "—";
-  }
-}
-
-function toInputDate(value){
-  if (!value) return "";
-  const date = value instanceof Date ? value : value.toDate?.();
-  if (!date) return "";
-  const tzOffset = date.getTimezoneOffset() * 60000;
-  return new Date(date.getTime() - tzOffset).toISOString().slice(0,16);
-}
-
-function fromInputDate(value){
-  if (!value) return null;
-  const parsed = new Date(value);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
-}
-
-function addDays(date, days){
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
 
 /* ---------- planes (JSON local) ---------- */
 async function ensurePlansIndex(){
@@ -691,30 +581,25 @@ function setActiveNav(section){
   const navSecs  = qs("#navSections");
   const navProf  = qs("#navProfessors"); // NUEVO
   const navIngreso = qs("#navIngresoMaterials");
-  const navAnnouncements = qs("#navAnnouncements");
   const secUsers = qs("#section-users");
   const secSecs  = qs("#section-sections");
   const secProf  = qs("#section-professors"); // NUEVO
   const secIngreso = qs("#section-ingreso-materials");
-  const secAnnouncements = qs("#section-announcements");
   const topTitle = qs("#topbarTitle");
 
   navUsers.classList.toggle("active", section === "users");
   navSecs.classList.toggle("active", section === "sections");
   navProf.classList.toggle("active", section === "professors");
   navIngreso.classList.toggle("active", section === "ingreso-materials");
-  navAnnouncements.classList.toggle("active", section === "announcements");
 
   secUsers.classList.toggle("active", section === "users");
   secSecs.classList.toggle("active", section === "sections");
   secProf.classList.toggle("active", section === "professors");
   secIngreso.classList.toggle("active", section === "ingreso-materials");
-  secAnnouncements.classList.toggle("active", section === "announcements");
 
   if(section === "users") topTitle.textContent = "Panel de administración — Usuarios";
   else if(section === "sections") topTitle.textContent = "Panel de administración — Horarios de materias";
   else if(section === "professors") topTitle.textContent = "Panel de administración — Profesores";
-  else if(section === "announcements") topTitle.textContent = "Panel de administración — Avisos";
   else topTitle.textContent = "Panel de administración — Material de ingreso";
 }
 
@@ -723,7 +608,6 @@ function wireSidebar(){
   qs("#navSections").addEventListener("click", ()=> setActiveNav("sections"));
   qs("#navProfessors").addEventListener("click", ()=> setActiveNav("professors")); // NUEVO
   qs("#navIngresoMaterials").addEventListener("click", ()=> setActiveNav("ingreso-materials"));
-  qs("#navAnnouncements").addEventListener("click", ()=> setActiveNav("announcements"));
 }
 
 /* ---------- sesión / acceso ---------- */
@@ -748,7 +632,7 @@ onAuthStateChanged(auth, async (user) => {
   setActiveNav("users");
 
   // Cargamos también loadProfessors()
-  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials(), loadAnnouncements()]);
+  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials()]);
 });
 
 function attachGlobalHandlers(){
@@ -792,17 +676,6 @@ function attachGlobalHandlers(){
   qs("#btnSaveIngresoMaterial").addEventListener("click", saveIngresoMaterial);
   qs("#btnDeleteIngresoMaterial").addEventListener("click", deleteIngresoMaterial);
   qs("#ingresoMaterialFile").addEventListener("change", updateIngresoFileMeta);
-
-  // NUEVO: Botones Sección Avisos
-  qs("#btnNewAnnouncement").addEventListener("click", () => openAnnouncementModal(null));
-  qs("#btnCancelAnnouncement").addEventListener("click", closeAnnouncementModal);
-  qs("#announcementModalBg").addEventListener("click", (e)=>{ if (e.target === qs("#announcementModalBg")) closeAnnouncementModal(); });
-  qs("#btnSaveAnnouncement").addEventListener("click", saveAnnouncement);
-  qs("#btnArchiveAnnouncement").addEventListener("click", () => archiveAnnouncement(editingAnnouncementId));
-  qs("#btnUnarchiveAnnouncement").addEventListener("click", () => unarchiveAnnouncement(editingAnnouncementId));
-  qs("#announcementsTabActive").addEventListener("click", () => setAnnouncementsView("active"));
-  qs("#announcementsTabArchived").addEventListener("click", () => setAnnouncementsView("archived"));
-  qs("#announcementsTableBody").addEventListener("click", handleAnnouncementsTableClick);
 
   // acciones de tabla de horarios
   qs("#sectionsTableBody").addEventListener("click", async (e)=>{
@@ -1429,220 +1302,6 @@ async function deleteIngresoMaterial(){
   if (!ok) return;
   await removeIngresoMaterial(editingIngresoMaterialId);
   closeIngresoMaterialModal();
-}
-
-/* ---------- avisos ---------- */
-function setAnnouncementsView(view){
-  announcementsView = view === "archived" ? "archived" : "active";
-  qs("#announcementsTabActive").classList.toggle("active", announcementsView === "active");
-  qs("#announcementsTabArchived").classList.toggle("active", announcementsView === "archived");
-  loadAnnouncements().catch(console.error);
-}
-
-async function loadAnnouncements(){
-  const tbody = qs("#announcementsTableBody");
-  tbody.innerHTML = "";
-  announcementsCache = [];
-
-  let snap;
-  try{
-    const baseQuery = query(
-      collection(db, "announcements"),
-      where("active", "==", announcementsView === "active"),
-      orderBy("pinned", "desc"),
-      orderBy("publishAt", "desc")
-    );
-    snap = await getDocs(baseQuery);
-  }catch(e){
-    showToast({ message:"No se pudieron cargar avisos: " + (e.message || e), type:"error" });
-    qs("#badgeAnnouncements").textContent = "0";
-    return;
-  }
-
-  snap.forEach(d => announcementsCache.push({ id: d.id, ...d.data() }));
-
-  announcementsCache.forEach((data) => {
-    const tr = document.createElement("tr");
-    const statusLabel = data.pinned ? "Fijado" : "Normal";
-    const statusPill = data.pinned ? "pill ok" : "pill";
-    const actions = announcementsView === "active"
-      ? `
-        <button class="btn btn-outline btn-edit-announcement" data-id="${data.id}">Editar</button>
-        <button class="btn btn-gray btn-toggle-pin" data-id="${data.id}">${data.pinned ? "Desfijar" : "Fijar"}</button>
-        <button class="btn btn-warn btn-archive-announcement" data-id="${data.id}">Archivar</button>
-      `
-      : `
-        <button class="btn btn-outline btn-edit-announcement" data-id="${data.id}">Editar</button>
-        <button class="btn btn-ok btn-unarchive-announcement" data-id="${data.id}">Desarchivar</button>
-      `;
-
-    tr.innerHTML = `
-      <td>${data.title || "—"}</td>
-      <td>${fmtDate(data.publishAt || data.createdAt)}</td>
-      <td>${data.expireAt ? fmtDate(data.expireAt) : "—"}</td>
-      <td>
-        <div class="announcement-status">
-          <span class="${statusPill}">${statusLabel}</span>
-        </div>
-      </td>
-      <td>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
-          ${actions}
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  qs("#badgeAnnouncements").textContent = String(announcementsCache.length);
-}
-
-function handleAnnouncementsTableClick(e){
-  const id = e.target.getAttribute("data-id");
-  if (!id) return;
-  if (e.target.classList.contains("btn-edit-announcement")){
-    const data = announcementsCache.find(item => item.id === id);
-    openAnnouncementModal(id, data);
-  } else if (e.target.classList.contains("btn-archive-announcement")){
-    archiveAnnouncement(id);
-  } else if (e.target.classList.contains("btn-unarchive-announcement")){
-    unarchiveAnnouncement(id);
-  } else if (e.target.classList.contains("btn-toggle-pin")){
-    toggleAnnouncementPinned(id);
-  }
-}
-
-function openAnnouncementModal(id, data){
-  editingAnnouncementId = id;
-  editingAnnouncementData = data || null;
-  const publishAt = data?.publishAt || data?.createdAt || new Date();
-  const expireAt = data?.expireAt || null;
-
-  qs("#announcementModalTitle").textContent = id ? "Editar aviso" : "Nuevo aviso";
-  qs("#announcementTitle").value = data?.title || "";
-  qs("#announcementBody").value = data?.body || "";
-  qs("#announcementPinned").checked = !!data?.pinned;
-  qs("#announcementPublishAt").value = toInputDate(publishAt instanceof Date ? publishAt : publishAt?.toDate?.());
-  qs("#announcementExpireAt").value = toInputDate(expireAt instanceof Date ? expireAt : expireAt?.toDate?.());
-
-  qs("#btnArchiveAnnouncement").style.display = id && data?.active !== false ? "inline-flex" : "none";
-  qs("#btnUnarchiveAnnouncement").style.display = id && data?.active === false ? "inline-flex" : "none";
-  qs("#announcementModalBg").style.display = "flex";
-}
-
-function closeAnnouncementModal(){
-  editingAnnouncementId = null;
-  editingAnnouncementData = null;
-  qs("#announcementModalBg").style.display = "none";
-}
-
-async function saveAnnouncement(){
-  const title = qs("#announcementTitle").value.trim();
-  const body = qs("#announcementBody").value.trim();
-  const pinned = qs("#announcementPinned").checked;
-  const publishAt = fromInputDate(qs("#announcementPublishAt").value) || new Date();
-  const expireAt = fromInputDate(qs("#announcementExpireAt").value);
-
-  if (!title || !body){
-    showToast({ message:"Completá título y contenido.", type:"warning" });
-    return;
-  }
-
-  const payload = {
-    title,
-    body,
-    pinned,
-    publishAt,
-    expireAt: expireAt || null,
-    updatedAt: serverTimestamp()
-  };
-
-  try{
-    if (editingAnnouncementId){
-      const activeValue = editingAnnouncementData?.active !== false;
-      await updateDoc(doc(db, "announcements", editingAnnouncementId), {
-        ...payload,
-        active: activeValue
-      });
-      showToast({ message:"Aviso actualizado.", type:"success" });
-    } else {
-      await addDoc(collection(db, "announcements"), {
-        ...payload,
-        active: true,
-        createdAt: serverTimestamp(),
-        createdBy: currentUser?.uid || null
-      });
-      showToast({ message:"Aviso creado.", type:"success" });
-    }
-    closeAnnouncementModal();
-    await loadAnnouncements();
-  }catch(e){
-    showToast({ message:"No se pudo guardar el aviso: " + (e.message || e), type:"error" });
-  }
-}
-
-async function archiveAnnouncement(id){
-  if (!id) return;
-  const ok = await showConfirm({
-    title:"Archivar aviso",
-    message:"El aviso quedará inactivo y se eliminará automáticamente en 30 días.",
-    confirmText:"Archivar",
-    cancelText:"Cancelar",
-    danger:true
-  });
-  if (!ok) return;
-
-  const refDoc = doc(db, "announcements", id);
-  const snap = await getDoc(refDoc);
-  if (!snap.exists()) return;
-  const data = snap.data() || {};
-  const now = new Date();
-  const existingExpire = data.expireAt?.toDate?.() || null;
-  const nextExpire = existingExpire && existingExpire > now ? existingExpire : addDays(now, 30);
-
-  try{
-    await updateDoc(refDoc, {
-      active: false,
-      expireAt: nextExpire,
-      updatedAt: serverTimestamp()
-    });
-    closeAnnouncementModal();
-    await loadAnnouncements();
-    showToast({ message:"Aviso archivado.", type:"success" });
-  }catch(e){
-    showToast({ message:"No se pudo archivar el aviso: " + (e.message || e), type:"error" });
-  }
-}
-
-async function unarchiveAnnouncement(id){
-  if (!id) return;
-  try{
-    await updateDoc(doc(db, "announcements", id), {
-      active: true,
-      expireAt: null,
-      updatedAt: serverTimestamp()
-    });
-    closeAnnouncementModal();
-    await loadAnnouncements();
-    showToast({ message:"Aviso desarchivado.", type:"success" });
-  }catch(e){
-    showToast({ message:"No se pudo desarchivar el aviso: " + (e.message || e), type:"error" });
-  }
-}
-
-async function toggleAnnouncementPinned(id){
-  if (!id) return;
-  const data = announcementsCache.find(item => item.id === id);
-  const nextPinned = !(data?.pinned);
-  try{
-    await updateDoc(doc(db, "announcements", id), {
-      pinned: nextPinned,
-      updatedAt: serverTimestamp()
-    });
-    await loadAnnouncements();
-  }catch(e){
-    showToast({ message:"No se pudo actualizar el fijado.", type:"error" });
-  }
 }
 
 function setCareerSelectOptions(){
