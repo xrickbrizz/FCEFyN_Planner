@@ -40,36 +40,39 @@
       <div class="main-shell">
         
     <div id="tab-inicio" class="tab-card">
-      <div class="welcome-card">
-
-        <div>
-          <div class="eyebrow">FCEFyN Planner</div>
-          <h2 class="welcome-title">Tu punto de partida</h2>
-          <p class="welcome-sub">
-            Gestioná horarios, parciales, estudio y chats con tus compañeros en un solo lugar.
-            Todo se guarda en tu cuenta para que puedas continuar desde cualquier dispositivo.
-          </p>
-          <div class="welcome-grid">
-            <div class="welcome-item">
-              <div class="welcome-label">Calendarios</div>
-              <div class="welcome-desc">Ingresá a Estudio o Académico para trabajar con tu agenda diaria.</div>
-            </div>
-            <div class="welcome-item">
-              <div class="welcome-label">Horario semanal</div>
-              <div class="welcome-desc">Armá la semana en Agenda o probá combinaciones en Planificador.</div>
-            </div>
-            <div class="welcome-item">
-              <div class="welcome-label">Mensajería</div>
-              <div class="welcome-desc">Agregá amigos con su correo institucional y chateá en tiempo real.</div>
+      <div class="announcements-shell">
+        <div class="announcements-list-panel">
+          <div class="announcements-list-header">
+            <div class="announcements-range" id="announcementsRange">0–0</div>
+            <div class="announcements-pager">
+              <button class="btn-icon" id="announcementsPrev" type="button" aria-label="Página anterior">‹</button>
+              <button class="btn-icon" id="announcementsNext" type="button" aria-label="Página siguiente">›</button>
             </div>
           </div>
+          <div class="announcements-list" id="announcementsList"></div>
         </div>
-        <div class="welcome-credits">
-          <div class="welcome-credits-title">Créditos</div>
-          <div class="welcome-credits-body">
-            FCEFyN Planner — Creado por <strong>Rick Román</strong> y <strong>Agus Mella</strong>.<br/>
-            Seleccioná una sección en la barra izquierda para comenzar.
+
+        <div class="announcements-detail-panel">
+          <div class="announcements-detail-empty" id="announcementsDetailEmpty">
+            <div class="announcements-empty-logo">
+              <img src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
+            </div>
+            <div class="announcements-empty-title">Seleccioná un aviso para ver el detalle</div>
+            <div class="announcements-empty-sub">Elegí un anuncio de la lista para leerlo completo.</div>
           </div>
+          <article class="announcements-detail" id="announcementsDetail" style="display:none;">
+            <div class="announcements-detail-title" id="announcementsDetailTitle">—</div>
+            <div class="announcements-detail-date" id="announcementsDetailDate">—</div>
+            <div class="announcements-detail-body" id="announcementsDetailBody"></div>
+          </article>
+        </div>
+
+        <div class="announcements-empty-state" id="announcementsEmptyState" style="display:none;">
+          <div class="announcements-empty-logo">
+            <img src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
+          </div>
+          <div class="announcements-empty-title">No hay avisos por el momento</div>
+          <div class="announcements-empty-sub">Volvé más tarde para ver novedades de la FCEFyN.</div>
         </div>
       </div>
     </div>

@@ -38,6 +38,13 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // ---- announcements (TTL expireAt) ----
+    // Nota: configurar TTL en Firestore con el campo expireAt para announcements.
+    match /announcements/{id} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
     // ---- status / presencia ----
     match /userStatus/{uid} {
       allow read: if signedIn();

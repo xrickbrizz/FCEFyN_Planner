@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth } from "./core/firebase.js";
+import { doc, getDoc, getDocs, setDoc, onSnapshot, signOut, db, auth } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
@@ -6,6 +6,7 @@ import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioC
 from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
+import { buildAnnouncementsQuery, resolveAnnouncementDate, ANNOUNCEMENTS_PAGE_SIZE } from "./core/announcements.js";
 
 let html2canvasLib = null;
 let jsPDFLib = null;
@@ -28,6 +29,16 @@ const themeColor = (varName, fallback) => {
 const navState = {
   activeSection: "inicio",
   lastNonMessagesSection: "inicio"
+};
+
+const announcementsState = {
+  pageIndex: 0,
+  pageSize: ANNOUNCEMENTS_PAGE_SIZE,
+  cursors: [null],
+  lastDoc: null,
+  items: [],
+  selectedId: null,
+  loading: false
 };
 
 const NAV_LAST_KEY = "nav:lastSection";
@@ -134,6 +145,8 @@ onSessionReady(async (user) => {
     notifySuccess,
     showConfirm
   });
+
+  initAnnouncements();
 
   Aula.open("agenda");
   Social.open("perfil");
@@ -389,6 +402,177 @@ function isBlockedByClientError(error){
 
 function notifyBlockedByClient(){
   notifyError("Tenés un bloqueador (uBlock/Brave) bloqueando Firestore. Desactivá para este sitio.");
+}
+
+function formatAnnouncementDate(value){
+  if (!value) return "—";
+  try{
+    return value.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }catch(_e){
+    return "—";
+  }
+}
+
+function setAnnouncementsEmptyState(hasAnnouncements){
+  const emptyState = document.getElementById("announcementsEmptyState");
+  const listPanel = document.querySelector(".announcements-list-panel");
+  const detailPanel = document.querySelector(".announcements-detail-panel");
+  if (!emptyState || !listPanel || !detailPanel) return;
+  emptyState.style.display = hasAnnouncements ? "none" : "flex";
+  listPanel.style.display = hasAnnouncements ? "flex" : "none";
+  detailPanel.style.display = hasAnnouncements ? "flex" : "none";
+}
+
+function renderAnnouncementsList(items){
+  const list = document.getElementById("announcementsList");
+  if (!list) return;
+  list.innerHTML = "";
+
+  items.forEach(item => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "announcement-item";
+    button.dataset.id = item.id;
+    if (announcementsState.selectedId === item.id){
+      button.classList.add("active");
+    }
+
+    const textWrap = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "announcement-item-title";
+    title.textContent = item.title || "Aviso";
+    const preview = document.createElement("div");
+    preview.className = "announcement-item-preview";
+    preview.textContent = item.preview || "";
+    textWrap.appendChild(title);
+    textWrap.appendChild(preview);
+
+    const meta = document.createElement("div");
+    meta.className = "announcement-item-date";
+    meta.textContent = item.dateLabel || "—";
+
+    button.appendChild(textWrap);
+    button.appendChild(meta);
+    button.addEventListener("click", () => {
+      announcementsState.selectedId = item.id;
+      renderAnnouncementsList(items);
+      renderAnnouncementDetail(item);
+    });
+
+    list.appendChild(button);
+  });
+}
+
+function renderAnnouncementDetail(item){
+  const empty = document.getElementById("announcementsDetailEmpty");
+  const detail = document.getElementById("announcementsDetail");
+  const title = document.getElementById("announcementsDetailTitle");
+  const date = document.getElementById("announcementsDetailDate");
+  const body = document.getElementById("announcementsDetailBody");
+  if (!empty || !detail || !title || !date || !body) return;
+
+  if (!item){
+    empty.style.display = "flex";
+    detail.style.display = "none";
+    return;
+  }
+
+  empty.style.display = "none";
+  detail.style.display = "flex";
+  title.textContent = item.title || "Aviso";
+  date.textContent = item.dateLabel || "—";
+  body.textContent = item.body || "";
+  detail.scrollTop = 0;
+}
+
+function updateAnnouncementsRange(){
+  const range = document.getElementById("announcementsRange");
+  if (!range) return;
+  const total = announcementsState.items.length;
+  if (!total){
+    range.textContent = "0–0";
+    return;
+  }
+  const start = announcementsState.pageIndex * announcementsState.pageSize + 1;
+  const end = start + total - 1;
+  range.textContent = `${start}–${end}`;
+}
+
+async function loadAnnouncementsPage(){
+  if (announcementsState.loading) return;
+  announcementsState.loading = true;
+  const prevBtn = document.getElementById("announcementsPrev");
+  const nextBtn = document.getElementById("announcementsNext");
+  if (prevBtn) prevBtn.disabled = true;
+  if (nextBtn) nextBtn.disabled = true;
+
+  try{
+    const cursor = announcementsState.cursors[announcementsState.pageIndex] || null;
+    const queryRef = buildAnnouncementsQuery({ db, cursor, pageSize: announcementsState.pageSize, now: new Date() });
+    const snap = await getDocs(queryRef);
+    const items = [];
+    let lastDoc = null;
+
+    snap.forEach(docSnap => {
+      lastDoc = docSnap;
+      const data = docSnap.data() || {};
+      const resolvedDate = resolveAnnouncementDate(data);
+      const dateLabel = resolvedDate ? formatAnnouncementDate(resolvedDate) : "—";
+      items.push({
+        id: docSnap.id,
+        title: data.title || "Aviso",
+        body: data.body || "",
+        preview: (data.body || "").replace(/\s+/g, " ").trim(),
+        dateLabel
+      });
+    });
+
+    announcementsState.items = items;
+    announcementsState.lastDoc = lastDoc;
+    if (!items.length){
+      announcementsState.selectedId = null;
+    } else if (announcementsState.selectedId){
+      const stillExists = items.some(item => item.id === announcementsState.selectedId);
+      if (!stillExists) announcementsState.selectedId = null;
+    }
+
+    setAnnouncementsEmptyState(items.length > 0);
+    renderAnnouncementsList(items);
+    updateAnnouncementsRange();
+    renderAnnouncementDetail(items.find(item => item.id === announcementsState.selectedId) || null);
+
+    if (prevBtn) prevBtn.disabled = announcementsState.pageIndex === 0;
+    if (nextBtn) nextBtn.disabled = items.length < announcementsState.pageSize;
+  }catch(error){
+    console.error("[Avisos] Error cargando avisos", error);
+    notifyError("No pude cargar avisos. Intentá nuevamente.");
+  }finally{
+    announcementsState.loading = false;
+  }
+}
+
+function initAnnouncements(){
+  const prevBtn = document.getElementById("announcementsPrev");
+  const nextBtn = document.getElementById("announcementsNext");
+
+  if (prevBtn){
+    prevBtn.addEventListener("click", () => {
+      if (announcementsState.pageIndex === 0) return;
+      announcementsState.pageIndex -= 1;
+      loadAnnouncementsPage();
+    });
+  }
+  if (nextBtn){
+    nextBtn.addEventListener("click", () => {
+      if (!announcementsState.lastDoc) return;
+      const nextIndex = announcementsState.pageIndex + 1;
+      announcementsState.cursors[nextIndex] = announcementsState.lastDoc;
+      announcementsState.pageIndex = nextIndex;
+      loadAnnouncementsPage();
+    });
+  }
+
+  loadAnnouncementsPage();
 }
 
 
