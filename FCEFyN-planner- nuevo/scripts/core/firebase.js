@@ -34,6 +34,23 @@ import {
   httpsCallable
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const firebaseConfig = {
   apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
   authDomain: "fcefyn-planner.firebaseapp.com",

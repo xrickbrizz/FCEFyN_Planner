@@ -66,6 +66,8 @@ async function loadProfessorsCatalog(){
       });
     });
   }catch(e){
+    console.error("[Profesores] Firestore error", e?.code, e?.message, e);
+    console.error("[Profesores] Firestore op", "getDocs(query(collection(db, \"professors\"), where(\"active\",\"==\", true)))", "read/list");
     notifyError("No se pudieron cargar profesores: " + (e.message || e));
     professorsCatalog = [];
   }
@@ -423,6 +425,8 @@ async function loadProfessorReviews(profId){
     professorReviewsCache[profId] = { loading:false, items };
     console.log("[Professors] Reviews loaded:", items.length);
   }catch(e){
+    console.error("[Profesores] Firestore error", e?.code, e?.message, e);
+    console.error("[Profesores] Firestore op", "getDocs(collection(db, \"professors\", profId, \"reviews\"))", "read/list");
     professorReviewsCache[profId] = { loading:false, items:[] };
     notifyError("No se pudieron cargar reseñas: " + (e.message || e));
   }
