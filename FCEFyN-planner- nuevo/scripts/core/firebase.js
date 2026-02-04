@@ -47,6 +47,7 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const functions = getFunctions(app, "us-central1");
 
 enableIndexedDbPersistence(db).catch((err) => {
   if (err?.code === "failed-precondition") {
@@ -63,6 +64,7 @@ export {
   auth,
   db,
   storage,
+  functions,
   signOut,
   sendPasswordResetEmail,
   onAuthStateChanged,

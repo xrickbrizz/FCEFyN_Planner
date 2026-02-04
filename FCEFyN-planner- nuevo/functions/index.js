@@ -69,56 +69,66 @@ const recomputeProfessorStats = async (professorId) => {
 };
 
 exports.submitProfessorReview = onCall(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");
+  try {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");
+    }
+
+    const professorId = String(request.data?.professorId || "").trim();
+    if (!professorId) {
+      throw new HttpsError("invalid-argument", "Profesor inválido.");
+    }
+
+    const teachingQuality = normalizeRating(request.data?.teachingQuality);
+    const examDifficulty = normalizeRating(request.data?.examDifficulty);
+    const studentTreatment = normalizeRating(request.data?.studentTreatment);
+
+    if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
+      throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 0 y 5.");
+    }
+
+    const comment = typeof request.data?.comment === "string" ? request.data.comment.trim() : "";
+    const anonymous = Boolean(request.data?.anonymous);
+    const authorName = anonymous
+      ? ""
+      : request.auth.token.name
+        || request.auth.token.displayName
+        || request.auth.token.email
+        || "Estudiante";
+
+    const reviewId = `${professorId}_${request.auth.uid}`;
+    const reviewRef = db.collection("professorReviews").doc(reviewId);
+    const existing = await reviewRef.get();
+    const createdAt = existing.exists && existing.get("createdAt")
+      ? existing.get("createdAt")
+      : FieldValue.serverTimestamp();
+
+    await reviewRef.set(
+      {
+        professorId,
+        userId: request.auth.uid,
+        teachingQuality,
+        examDifficulty,
+        studentTreatment,
+        comment,
+        anonymous,
+        authorName,
+        createdAt,
+        updatedAt: FieldValue.serverTimestamp()
+      },
+      { merge: true }
+    );
+
+    return { ok: true };
+  } catch (err) {
+    console.error("submitProfessorReview error", err);
+    if (err instanceof HttpsError) {
+      throw err;
+    }
+    throw new HttpsError("internal", "No se pudo guardar la valoración.", {
+      message: err?.message || String(err)
+    });
   }
-
-  const professorId = String(request.data?.professorId || "").trim();
-  if (!professorId) {
-    throw new HttpsError("invalid-argument", "Profesor inválido.");
-  }
-
-  const teachingQuality = normalizeRating(request.data?.teachingQuality);
-  const examDifficulty = normalizeRating(request.data?.examDifficulty);
-  const studentTreatment = normalizeRating(request.data?.studentTreatment);
-
-  if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
-    throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 0 y 5.");
-  }
-
-  const comment = typeof request.data?.comment === "string" ? request.data.comment.trim() : "";
-  const anonymous = Boolean(request.data?.anonymous);
-  const authorName = anonymous
-    ? ""
-    : request.auth.token.name
-      || request.auth.token.displayName
-      || request.auth.token.email
-      || "Estudiante";
-
-  const reviewId = `${professorId}_${request.auth.uid}`;
-  const reviewRef = db.collection("professorReviews").doc(reviewId);
-  const existing = await reviewRef.get();
-  const createdAt = existing.exists && existing.get("createdAt")
-    ? existing.get("createdAt")
-    : FieldValue.serverTimestamp();
-
-  await reviewRef.set(
-    {
-      professorId,
-      userId: request.auth.uid,
-      teachingQuality,
-      examDifficulty,
-      studentTreatment,
-      comment,
-      anonymous,
-      authorName,
-      createdAt,
-      updatedAt: FieldValue.serverTimestamp()
-    },
-    { merge: true }
-  );
-
-  return { ok: true };
 });
 
 exports.onProfessorReviewWrite = onDocumentWritten(

@@ -12,3 +12,11 @@ node/node_modules/
 # Credenciales
 node/serviceAccountKey.json
 .env
+
+firebase.json
+.env
+
+firebase-debug.log
+.env
+firestore-debug.log
+.env

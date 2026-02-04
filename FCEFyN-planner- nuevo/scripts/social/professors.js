@@ -3,7 +3,7 @@ import {
   getDocs,
   query,
   where,
-  getFunctions,
+  functions,
   httpsCallable
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
@@ -483,7 +483,7 @@ async function submitProfessorRating(){
   console.log("[Professors] Submit rating payload:", payload);
 
   try{
-    const callable = httpsCallable(getFunctions(), "submitProfessorReview");
+    const callable = httpsCallable(functions, "submitProfessorReview");
     await callable(payload);
     await loadProfessorReviews(selectedProfessorId);
     fillRatingFormFromMyReview(selectedProfessorId);
@@ -491,8 +491,8 @@ async function submitProfessorRating(){
     renderProfessorsSection();
     notifySuccess("Valoración guardada.");
   }catch(e){
-    console.error("submitProfessorRating error", e);
-    notifyError("No se pudo guardar la valoración: " + (e.message || e));
+    console.error("submitProfessorRating error", e?.message, e?.details, e);
+    notifyError("No se pudo guardar la valoración: " + (e?.message || e));
   }finally{
     if (btn) btn.disabled = false;
   }
