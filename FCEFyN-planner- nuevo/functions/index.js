@@ -1,6 +1,5 @@
 const admin = require("firebase-admin");
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 
 admin.initializeApp();
 
@@ -9,64 +8,13 @@ const { FieldValue } = admin.firestore;
 
 const normalizeRating = (value) => {
   const num = Number(value);
-  if (!Number.isFinite(num) || num < 0 || num > 5) {
+  if (!Number.isFinite(num) || num < 1 || num > 5) {
     return null;
   }
   return num;
 };
 
-const recomputeProfessorStats = async (professorId) => {
-  if (!professorId) return;
-
-  const snap = await db
-    .collection("professorReviews")
-    .where("professorId", "==", professorId)
-    .get();
-
-  let count = 0;
-  let commentsCount = 0;
-  let sumTeaching = 0;
-  let sumExams = 0;
-  let sumTreatment = 0;
-
-  snap.forEach((doc) => {
-    const data = doc.data() || {};
-    const teaching = normalizeRating(data.teachingQuality);
-    const exams = normalizeRating(data.examDifficulty);
-    const treatment = normalizeRating(data.studentTreatment);
-
-    if ([teaching, exams, treatment].some((value) => value === null)) {
-      return;
-    }
-
-    count += 1;
-    sumTeaching += teaching;
-    sumExams += exams;
-    sumTreatment += treatment;
-
-    if ((data.comment || "").trim().length) {
-      commentsCount += 1;
-    }
-  });
-
-  const avgTeaching = count ? sumTeaching / count : 0;
-  const avgExams = count ? sumExams / count : 0;
-  const avgTreatment = count ? sumTreatment / count : 0;
-  const avgGeneral = count ? (sumTeaching + sumExams + sumTreatment) / (count * 3) : 0;
-
-  await db.collection("professors").doc(professorId).set(
-    {
-      avgTeaching,
-      avgExams,
-      avgTreatment,
-      avgGeneral,
-      ratingCount: count,
-      commentsCount,
-      updatedAt: FieldValue.serverTimestamp()
-    },
-    { merge: true }
-  );
-};
+const MAX_COMMENT_LENGTH = 500;
 
 exports.submitProfessorReview = onCall(async (request) => {
   try {
@@ -79,15 +27,16 @@ exports.submitProfessorReview = onCall(async (request) => {
       throw new HttpsError("invalid-argument", "Profesor inválido.");
     }
 
-    const teachingQuality = normalizeRating(request.data?.teachingQuality);
-    const examDifficulty = normalizeRating(request.data?.examDifficulty);
-    const studentTreatment = normalizeRating(request.data?.studentTreatment);
-
-    if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
-      throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 0 y 5.");
+    const rating = normalizeRating(request.data?.rating);
+    if (rating === null) {
+      throw new HttpsError("invalid-argument", "La valoración debe estar entre 1 y 5.");
     }
 
     const comment = typeof request.data?.comment === "string" ? request.data.comment.trim() : "";
+    if (comment.length > MAX_COMMENT_LENGTH) {
+      throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
+    }
+
     const anonymous = Boolean(request.data?.anonymous);
     const authorName = anonymous
       ? ""
@@ -96,28 +45,72 @@ exports.submitProfessorReview = onCall(async (request) => {
         || request.auth.token.email
         || "Estudiante";
 
-    const reviewId = `${professorId}_${request.auth.uid}`;
-    const reviewRef = db.collection("professorReviews").doc(reviewId);
-    const existing = await reviewRef.get();
-    const createdAt = existing.exists && existing.get("createdAt")
-      ? existing.get("createdAt")
-      : FieldValue.serverTimestamp();
+    const uid = request.auth.uid;
+    const professorRef = db.collection("professors").doc(professorId);
+    const reviewRef = professorRef.collection("reviews").doc(uid);
 
-    await reviewRef.set(
-      {
-        professorId,
-        userId: request.auth.uid,
-        teachingQuality,
-        examDifficulty,
-        studentTreatment,
-        comment,
-        anonymous,
-        authorName,
-        createdAt,
-        updatedAt: FieldValue.serverTimestamp()
-      },
-      { merge: true }
-    );
+    // Seguridad: cálculo de agregados en transacción para evitar manipulación desde el cliente.
+    await db.runTransaction(async (tx) => {
+      const [profSnap, reviewSnap] = await Promise.all([
+        tx.get(professorRef),
+        tx.get(reviewRef)
+      ]);
+
+      if (!profSnap.exists) {
+        throw new HttpsError("not-found", "Profesor no encontrado.");
+      }
+
+      const profData = profSnap.data() || {};
+      const ratingCount = Number(profData.ratingCount || 0);
+      const ratingSum = Number(profData.ratingSum || 0);
+      const commentsCount = Number(profData.commentsCount || 0);
+
+      const previousRating = reviewSnap.exists ? Number(reviewSnap.get("rating")) : null;
+      const previousComment = reviewSnap.exists ? String(reviewSnap.get("comment") || "") : "";
+
+      const hadComment = previousComment.trim().length > 0;
+      const hasComment = comment.trim().length > 0;
+
+      const nextCount = reviewSnap.exists ? ratingCount : ratingCount + 1;
+      const nextSum = reviewSnap.exists && Number.isFinite(previousRating)
+        ? ratingSum - previousRating + rating
+        : ratingSum + rating;
+      const nextAvg = nextCount > 0 ? nextSum / nextCount : 0;
+      const nextComments = commentsCount + (hasComment ? 1 : 0) - (hadComment ? 1 : 0);
+
+      const now = FieldValue.serverTimestamp();
+      const createdAt = reviewSnap.exists && reviewSnap.get("createdAt")
+        ? reviewSnap.get("createdAt")
+        : now;
+
+      tx.set(
+        reviewRef,
+        {
+          professorId,
+          userId: uid,
+          rating,
+          comment,
+          anonymous,
+          authorName,
+          createdAt,
+          updatedAt: now
+        },
+        { merge: true }
+      );
+
+      tx.set(
+        professorRef,
+        {
+          ratingCount: nextCount,
+          ratingSum: nextSum,
+          ratingAvg: nextAvg,
+          avgGeneral: nextAvg,
+          commentsCount: Math.max(0, nextComments),
+          updatedAt: now
+        },
+        { merge: true }
+      );
+    });
 
     return { ok: true };
   } catch (err) {
@@ -130,14 +123,3 @@ exports.submitProfessorReview = onCall(async (request) => {
     });
   }
 });
-
-exports.onProfessorReviewWrite = onDocumentWritten(
-  "professorReviews/{reviewId}",
-  async (event) => {
-    const afterData = event.data?.after?.data();
-    const beforeData = event.data?.before?.data();
-    const professorId = afterData?.professorId || beforeData?.professorId;
-
-    await recomputeProfessorStats(professorId);
-  }
-);

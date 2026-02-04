@@ -38,6 +38,19 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // ---- professors (lectura pública autenticada) ----
+    match /professors/{professorId} {
+      allow read: if signedIn();
+      // Seguridad: los agregados se actualizan solo desde Cloud Functions.
+      allow create, update, delete: if isAdmin();
+
+      match /reviews/{uid} {
+        allow read: if signedIn();
+        // Solo Cloud Functions (Admin SDK) puede escribir reviews.
+        allow create, update, delete: if false;
+      }
+    }
+
     // ---- status / presencia ----
     match /userStatus/{uid} {
       allow read: if signedIn();

@@ -1,9 +1,10 @@
 import {
+  app,
   collection,
   getDocs,
   query,
   where,
-  functions,
+  getFunctions,
   httpsCallable
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
@@ -49,15 +50,17 @@ async function loadProfessorsCatalog(){
     const snap = await getDocs(query(collection(CTX.db,"professors"), where("active","==", true)));
     snap.forEach(d =>{
       const data = d.data() || {};
+      const ratingAvg = typeof data.ratingAvg === "number" ? data.ratingAvg : null;
       professorsCatalog.push({
         id: d.id,
         name: data.name || "",
         careers: Array.isArray(data.careers) ? data.careers : [],
         subjects: Array.isArray(data.subjects) ? data.subjects : [],
-        avgGeneral: typeof data.avgGeneral === "number" ? data.avgGeneral : 0,
-        avgTeaching: typeof data.avgTeaching === "number" ? data.avgTeaching : 0,
-        avgExams: typeof data.avgExams === "number" ? data.avgExams : 0,
-        avgTreatment: typeof data.avgTreatment === "number" ? data.avgTreatment : 0,
+        // Nota: se mantienen los campos históricos, pero la fuente segura es ratingAvg.
+        avgGeneral: ratingAvg ?? (typeof data.avgGeneral === "number" ? data.avgGeneral : 0),
+        avgTeaching: ratingAvg ?? (typeof data.avgTeaching === "number" ? data.avgTeaching : 0),
+        avgExams: ratingAvg ?? (typeof data.avgExams === "number" ? data.avgExams : 0),
+        avgTreatment: ratingAvg ?? (typeof data.avgTreatment === "number" ? data.avgTreatment : 0),
         ratingCount: data.ratingCount || 0,
         commentsCount: data.commentsCount || 0
       });
@@ -272,8 +275,8 @@ function resetRatingForm(){
   ids.forEach(({input,label})=>{
     const el = document.getElementById(input);
     const lab = document.getElementById(label);
-    if (el){ el.value = 0; }
-    if (lab){ lab.textContent = "0 ★"; }
+    if (el){ el.value = 1; }
+    if (lab){ lab.textContent = "1 ★"; }
   });
   const comment = document.getElementById("rateComment");
   const anon = document.getElementById("rateAnonymous");
@@ -374,8 +377,8 @@ function renderProfessorDetail(){
       const who = document.createElement("div");
       who.textContent = c.anonymous ? "Anónimo" : (c.authorName || "Estudiante");
       const score = document.createElement("div");
-      const avgLocal = (c.teachingQuality + c.examDifficulty + c.studentTreatment) / 3;
-      score.innerHTML = `<div class="stars">${renderStars(avgLocal)}</div><div class="small-muted">${formatDecimal(avgLocal)} ★</div>`;
+      const ratingValue = Number(c.rating || 0);
+      score.innerHTML = `<div class="stars">${renderStars(ratingValue)}</div><div class="small-muted">${formatDecimal(ratingValue)} ★</div>`;
       headC.appendChild(who);
       headC.appendChild(score);
       const body = document.createElement("div");
@@ -399,18 +402,17 @@ async function loadProfessorReviews(profId){
   console.log("[Professors] Loading reviews for:", profId);
   professorReviewsCache[profId] = { loading:true, items:[] };
   try{
-    const snap = await getDocs(query(collection(CTX.db,"professorReviews"), where("professorId","==", profId)));
+    const snap = await getDocs(collection(CTX.db, "professors", profId, "reviews"));
     const items = [];
     snap.forEach(d =>{
       const data = d.data() || {};
       const createdAt = data.createdAt && typeof data.createdAt.toMillis === "function" ? data.createdAt.toMillis() : null;
+      const rating = Number(data.rating || 0);
       items.push({
         id: d.id,
         professorId: profId,
-        userId: data.userId || "",
-        teachingQuality: Number(data.teachingQuality || 0),
-        examDifficulty: Number(data.examDifficulty || 0),
-        studentTreatment: Number(data.studentTreatment || 0),
+        userId: data.userId || d.id || "",
+        rating,
         comment: data.comment || "",
         anonymous: !!data.anonymous,
         authorName: data.authorName || "",
@@ -436,9 +438,10 @@ function fillRatingFormFromMyReview(profId){
     if (el){ el.value = value; }
     if (lab){ lab.textContent = value + " ★"; }
   };
-  apply("rateTeaching","labelRateTeaching", mine ? Number(mine.teachingQuality || 0) : 0);
-  apply("rateExams","labelRateExams", mine ? Number(mine.examDifficulty || 0) : 0);
-  apply("rateTreatment","labelRateTreatment", mine ? Number(mine.studentTreatment || 0) : 0);
+  const ratingValue = mine ? Number(mine.rating || 1) : 1;
+  apply("rateTeaching","labelRateTeaching", ratingValue);
+  apply("rateExams","labelRateExams", ratingValue);
+  apply("rateTreatment","labelRateTreatment", ratingValue);
   const comment = document.getElementById("rateComment");
   const anon = document.getElementById("rateAnonymous");
   if (comment) comment.value = mine ? (mine.comment || "") : "";
@@ -460,30 +463,30 @@ async function submitProfessorRating(){
   const exams = Number(document.getElementById("rateExams")?.value || 0);
   const treatment = Number(document.getElementById("rateTreatment")?.value || 0);
 
-  const withinRange = v => Number.isFinite(v) && v >= 0 && v <= 5;
+  const withinRange = v => Number.isFinite(v) && v >= 1 && v <= 5;
   if (![teaching, exams, treatment].every(withinRange)){
-    notifyWarn("Cada criterio debe estar entre 0 y 5 estrellas.");
+    notifyWarn("Cada criterio debe estar entre 1 y 5 estrellas.");
     return;
   }
 
   const comment = (document.getElementById("rateComment")?.value || "").trim();
   const anonymous = !!document.getElementById("rateAnonymous")?.checked;
+  const rating = Number(((teaching + exams + treatment) / 3).toFixed(2));
 
   const btn = document.getElementById("btnSubmitRating");
   if (btn) btn.disabled = true;
 
+  // Seguridad: la persistencia se delega al backend para evitar manipulación de promedios.
   const payload = {
     professorId: selectedProfessorId,
-    teachingQuality: teaching,
-    examDifficulty: exams,
-    studentTreatment: treatment,
+    rating,
     comment,
     anonymous
   };
   console.log("[Professors] Submit rating payload:", payload);
 
   try{
-    const callable = httpsCallable(functions, "submitProfessorReview");
+    const callable = httpsCallable(getFunctions(app), "submitProfessorReview");
     await callable(payload);
     await loadProfessorReviews(selectedProfessorId);
     fillRatingFormFromMyReview(selectedProfessorId);
