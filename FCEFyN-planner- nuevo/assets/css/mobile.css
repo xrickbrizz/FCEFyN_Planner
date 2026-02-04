@@ -1,0 +1,203 @@
+.mobile-topbar,
+.mobile-bottombar,
+.mobile-more-sheet {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  header {
+    display: none;
+  }
+
+  #quickSidebarMount,
+  .quick-sidebar,
+  .quick-sidebar-wrap,
+  .quick-toggle-btn {
+    display: none !important;
+  }
+
+  .page-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .page-content {
+    padding-top: 72px;
+    padding-bottom: 84px;
+  }
+
+  .mobile-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: var(--surface-2, #ffffff);
+    border-bottom: 1px solid var(--ui-border, rgba(0,0,0,0.08));
+    z-index: 1200;
+  }
+
+  .mobile-topbar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: var(--color-text, #111827);
+  }
+
+  .mobile-topbar .brand img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mobile-topbar .messages-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--ui-border, rgba(0,0,0,0.08));
+    background: var(--surface-3, #f8fafc);
+    color: var(--color-text, #111827);
+    cursor: pointer;
+  }
+
+  .mobile-topbar .messages-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--accent-50, #ef4444);
+    color: #fff;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    display: none;
+  }
+
+  .mobile-bottombar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 8px 10px;
+    background: var(--surface-2, #ffffff);
+    border-top: 1px solid var(--ui-border, rgba(0,0,0,0.08));
+    z-index: 1200;
+  }
+
+  .mobile-bottombar .mobile-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 0;
+    background: transparent;
+    color: var(--color-muted, #6b7280);
+    cursor: pointer;
+  }
+
+  .mobile-bottombar .mobile-tab svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-bottombar .mobile-tab.active {
+    color: var(--accent-60, #0f766e);
+  }
+
+  .mobile-more-sheet {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 1300;
+  }
+
+  .mobile-more-sheet.is-open {
+    display: block;
+  }
+
+  .mobile-more-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .mobile-more-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--surface-2, #ffffff);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 -16px 40px rgba(15, 23, 42, 0.2);
+  }
+
+  .mobile-more-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .mobile-more-header h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .mobile-more-close {
+    border: 0;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .mobile-more-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mobile-more-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--ui-border, rgba(0,0,0,0.08));
+    background: var(--surface-3, #f8fafc);
+    font-weight: 600;
+    color: var(--color-text, #111827);
+    cursor: pointer;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .quick-sidebar .qs-item:hover,
+  .quick-toggle-btn:hover {
+    transform: none;
+    background: inherit;
+    border-color: inherit;
+  }
+}

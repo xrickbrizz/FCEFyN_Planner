@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/ui/saas-theme.css">
   <link rel="stylesheet" href="styles/study.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
   <script src="scripts/ui/theme-toggle.js" defer></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" defer></script>
   <script src="scripts/ui/user-panel.js" defer></script>
@@ -29,6 +30,16 @@
       </button>
       <div id="vue-user-panel"></div> 
   </header>
+  <div class="mobile-topbar" aria-label="Navegación móvil">
+    <div class="brand">
+      <img src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" />
+      <span>FCEFyN Planner</span>
+    </div>
+    <button class="messages-btn" type="button" data-section="mensajes" aria-label="Mensajes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H6l-3 3v-6.5A8.5 8.5 0 1 1 21 12z"/></svg>
+      <span class="messages-badge" id="mobileMessagesBadge">0</span>
+    </button>
+  </div>
   <div class="page-layout sidebar-collapsed" id="pageLayout">
     <div id="quickSidebarMount"></div>
     <div class="page-content">
@@ -825,9 +836,47 @@
       </div>
     </div>
   </div>
+  <nav class="mobile-bottombar" aria-label="Navegación inferior móvil">
+    <button class="mobile-tab" type="button" data-section="inicio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5"/><path d="M5 10.5V20h5v-5h4v5h5v-9.5"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="mobile-tab" type="button" data-section="estudio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h12a3 3 0 0 1 3 3V19H7a3 3 0 0 0-3 3V5.5z"/><path d="M4 5.5v13.5a3 3 0 0 1 3-3h12"/></svg>
+      <span>Estudio</span>
+    </button>
+    <button class="mobile-tab" type="button" data-section="academico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10.5v5.5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5.5"/></svg>
+      <span>Académico</span>
+    </button>
+    <button class="mobile-tab" type="button" data-section="agenda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 3v3M16 3v3"/><path d="M3 9h18"/></svg>
+      <span>Agenda</span>
+    </button>
+    <button class="mobile-tab" type="button" data-more-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      <span>Más</span>
+    </button>
+  </nav>
+  <div class="mobile-more-sheet" role="dialog" aria-modal="true" aria-label="Más secciones">
+    <div class="mobile-more-backdrop"></div>
+    <div class="mobile-more-panel">
+      <div class="mobile-more-header">
+        <h3>Más</h3>
+        <button class="mobile-more-close" type="button" data-more-close aria-label="Cerrar">×</button>
+      </div>
+      <div class="mobile-more-grid">
+        <button class="mobile-more-item" type="button" data-section="materias">Materias</button>
+        <button class="mobile-more-item" type="button" data-section="planestudios">Correlativas</button>
+        <button class="mobile-more-item" type="button" data-section="planificador">Planificador</button>
+        <button class="mobile-more-item" type="button" data-section="profesores">Profesores</button>
+      </div>
+    </div>
+  </div>
 <script type="module" src="scripts/student.js"></script>
   <script type="module" src="scripts/subScripts/Profesores.js"></script>
 <script type="module" src="scripts/ui/scroll-ui.js"></script>
+  <script src="assets/js/mobile-nav.js" defer></script>
 
 </body>
 </html>
