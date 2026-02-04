@@ -205,12 +205,11 @@ function initHomeNotices(){
   };
 
   const announcementsRef = collection(db, "announcements");
-  const announcementsQuery = query(
-    announcementsRef,
-    where("active", "==", true),
-    orderBy("publishAt", "desc")
-  );
-  onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
+const announcementsQuery = query(
+  announcementsRef,
+  orderBy("publishAt", "desc")
+);
+onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
 
   renderList();
 }
