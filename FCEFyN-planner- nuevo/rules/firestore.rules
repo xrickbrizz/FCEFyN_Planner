@@ -54,16 +54,7 @@ service cloud.firestore {
     // ---- professorReviews (lectura autenticada) ----
     match /professorReviews/{reviewId} {
       allow read: if signedIn();
-      allow create: if signedIn()
-        && request.resource.data.professorId is string
-        && reviewId == request.resource.data.professorId + "_" + request.auth.uid
-        && request.resource.data.uid == request.auth.uid;
-      allow update: if signedIn()
-        && resource.data.professorId is string
-        && reviewId == resource.data.professorId + "_" + request.auth.uid
-        && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == request.auth.uid;
-      allow delete: if false;
+      allow write: if false;
     }
 
     // ---- status / presencia ----

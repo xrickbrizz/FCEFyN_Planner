@@ -16,7 +16,7 @@ const normalizeRating = (value) => {
 
 const MAX_COMMENT_LENGTH = 500;
 
-exports.submitProfessorReview = onCall(async (request) => {
+exports.submitProfessorReview = onCall({ region: "us-central1" }, async (request) => {
   try {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");

@@ -488,9 +488,10 @@ async function submitProfessorRating(){
     anonymous
   };
   console.log("[Professors] Submit rating payload:", payload);
+  const functions = getFunctions(app, "us-central1");
+  const callable = httpsCallable(functions, "submitProfessorReview");
 
   try{
-    const callable = httpsCallable(getFunctions(app), "submitProfessorReview");
     await callable(payload);
     await loadProfessorReviews(selectedProfessorId);
     fillRatingFormFromMyReview(selectedProfessorId);
@@ -498,7 +499,7 @@ async function submitProfessorRating(){
     renderProfessorsSection();
     notifySuccess("Valoración guardada.");
   }catch(e){
-    console.error("submitProfessorRating error", e?.message, e?.details, e);
+    console.error("submitProfessorRating error", e?.code, e?.message, e?.details, e);
     notifyError("No se pudo guardar la valoración: " + (e?.message || e));
   }finally{
     if (btn) btn.disabled = false;
