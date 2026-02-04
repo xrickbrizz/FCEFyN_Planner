@@ -1,6 +1,8 @@
 {
   "subjects": [
     { "name": "Análisis Matemático 1", "teachers": ["Mors Horacio Anibal", "Pastore Liliana"] },
-    { "name": "Física 1", "teachers": ["Apellido Nombre", "Otro Profe"] }
+    { "name": "Física 1", "teachers": ["Apellido Nombre", "Otro Profe"] },
+    { "name": "Física 2", "teachers": ["Apellido Nombre", "Otro Profe"] },
+    { "name": "Física 3", "teachers": ["Apellido Nombre", "Otro Profe"] }
   ]
 }

@@ -1,4 +1,5 @@
 // scripts/import_subjects_teachers.js
+//--------------- este creo la coleccion -> busco el json -> y subio el archivo ------- //
 const fs = require("fs");
 const path = require("path");
 const { db, admin } = require("./initAdmin");
