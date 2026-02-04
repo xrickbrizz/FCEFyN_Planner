@@ -32,6 +32,10 @@
       <span>Profesores</span>
       <span class="nav-badge" id="badgeProfessors">0</span>
     </div>
+    <div class="nav-item" id="navAnnouncements" data-section="announcements">
+      <span>Avisos</span>
+      <span class="nav-badge" id="badgeAnnouncements">0</span>
+    </div>
     <div class="nav-item" id="navIngresoMaterials" data-section="ingreso-materials">
       <span>Material Ingreso</span>
       <span class="nav-badge" id="badgeIngresoMaterials">0</span>
@@ -154,6 +158,30 @@
                 </tr>
               </thead>
               <tbody id="ingresoMaterialsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-announcements" class="section-wrap">
+        <div class="card">
+          <div class="card-header">
+            <h2>Avisos</h2>
+            <button class="btn btn-blue" id="btnNewAnnouncement">+ Nuevo aviso</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Estado</th>
+                  <th>Fijado</th>
+                  <th>Publicar</th>
+                  <th>Expira</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="announcementsTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -386,6 +414,47 @@
   </div>
 </div>
 
+<div class="modal-bg" id="announcementModalBg">
+  <div class="modal">
+    <h3 id="announcementModalTitle">Nuevo aviso</h3>
+
+    <div class="modal-grid">
+      <div>
+        <label>Título</label>
+        <input id="announcementTitle" placeholder="Título del aviso">
+      </div>
+      <div>
+        <label>Publicar desde (opcional)</label>
+        <input id="announcementPublishAt" type="datetime-local">
+      </div>
+      <div>
+        <label>Expira (opcional)</label>
+        <input id="announcementExpireAt" type="datetime-local">
+      </div>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:1.4rem;">
+        <input id="announcementPinned" type="checkbox">
+        <label for="announcementPinned">Fijar aviso</label>
+      </div>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:1.4rem;">
+        <input id="announcementActive" type="checkbox">
+        <label for="announcementActive">Activo</label>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label>Detalle</label>
+        <textarea id="announcementBody" placeholder="Escribí el cuerpo del aviso..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" type="button" id="btnCancelAnnouncement">Cancelar</button>
+      <div class="modal-footer-right">
+        <button class="btn btn-warn" type="button" id="btnArchiveAnnouncement" style="display:none;">Archivar</button>
+        <button class="btn btn-blue" type="button" id="btnSaveAnnouncement">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -437,8 +506,41 @@ let ingresoMaterialsCache = [];
 let editingIngresoMaterialId = null;
 let editingIngresoMaterialData = null;
 
+/* ---------- NUEVO: avisos ---------- */
+let announcementsCache = [];
+let editingAnnouncementId = null;
+
 /* ---------- helpers UI ---------- */
 const qs  = sel => document.querySelector(sel);
+
+const coerceDate = (value) => {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  if (typeof value?.toDate === "function") return value.toDate();
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const formatDateTime = (value) => {
+  const date = coerceDate(value);
+  if (!date) return "—";
+  return new Intl.DateTimeFormat("es-AR", {
+    dateStyle:"short",
+    timeStyle:"short"
+  }).format(date);
+};
+
+const toDateTimeInput = (value) => {
+  const date = coerceDate(value);
+  if (!date) return "";
+  const pad = (num) => String(num).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const mins = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${mins}`;
+};
 
 /* ---------- planes (JSON local) ---------- */
 async function ensurePlansIndex(){
@@ -580,26 +682,31 @@ function setActiveNav(section){
   const navUsers = qs("#navUsers");
   const navSecs  = qs("#navSections");
   const navProf  = qs("#navProfessors"); // NUEVO
+  const navAnnouncements = qs("#navAnnouncements");
   const navIngreso = qs("#navIngresoMaterials");
   const secUsers = qs("#section-users");
   const secSecs  = qs("#section-sections");
   const secProf  = qs("#section-professors"); // NUEVO
+  const secAnnouncements = qs("#section-announcements");
   const secIngreso = qs("#section-ingreso-materials");
   const topTitle = qs("#topbarTitle");
 
   navUsers.classList.toggle("active", section === "users");
   navSecs.classList.toggle("active", section === "sections");
   navProf.classList.toggle("active", section === "professors");
+  navAnnouncements.classList.toggle("active", section === "announcements");
   navIngreso.classList.toggle("active", section === "ingreso-materials");
 
   secUsers.classList.toggle("active", section === "users");
   secSecs.classList.toggle("active", section === "sections");
   secProf.classList.toggle("active", section === "professors");
+  secAnnouncements.classList.toggle("active", section === "announcements");
   secIngreso.classList.toggle("active", section === "ingreso-materials");
 
   if(section === "users") topTitle.textContent = "Panel de administración — Usuarios";
   else if(section === "sections") topTitle.textContent = "Panel de administración — Horarios de materias";
   else if(section === "professors") topTitle.textContent = "Panel de administración — Profesores";
+  else if(section === "announcements") topTitle.textContent = "Panel de administración — Avisos";
   else topTitle.textContent = "Panel de administración — Material de ingreso";
 }
 
@@ -607,6 +714,7 @@ function wireSidebar(){
   qs("#navUsers").addEventListener("click", ()=> setActiveNav("users"));
   qs("#navSections").addEventListener("click", ()=> setActiveNav("sections"));
   qs("#navProfessors").addEventListener("click", ()=> setActiveNav("professors")); // NUEVO
+  qs("#navAnnouncements").addEventListener("click", ()=> setActiveNav("announcements"));
   qs("#navIngresoMaterials").addEventListener("click", ()=> setActiveNav("ingreso-materials"));
 }
 
@@ -632,7 +740,7 @@ onAuthStateChanged(auth, async (user) => {
   setActiveNav("users");
 
   // Cargamos también loadProfessors()
-  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials()]);
+  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials(), loadAnnouncements()]);
 });
 
 function attachGlobalHandlers(){
@@ -676,6 +784,13 @@ function attachGlobalHandlers(){
   qs("#btnSaveIngresoMaterial").addEventListener("click", saveIngresoMaterial);
   qs("#btnDeleteIngresoMaterial").addEventListener("click", deleteIngresoMaterial);
   qs("#ingresoMaterialFile").addEventListener("change", updateIngresoFileMeta);
+
+  // NUEVO: Botones Sección Avisos
+  qs("#btnNewAnnouncement").addEventListener("click", ()=> openAnnouncementModal(null));
+  qs("#btnCancelAnnouncement").addEventListener("click", closeAnnouncementModal);
+  qs("#announcementModalBg").addEventListener("click", (e)=>{ if (e.target === qs("#announcementModalBg")) closeAnnouncementModal(); });
+  qs("#btnSaveAnnouncement").addEventListener("click", saveAnnouncement);
+  qs("#btnArchiveAnnouncement").addEventListener("click", toggleAnnouncementActive);
 
   // acciones de tabla de horarios
   qs("#sectionsTableBody").addEventListener("click", async (e)=>{
@@ -742,6 +857,27 @@ function attachGlobalHandlers(){
       });
       if (!ok) return;
       await removeIngresoMaterial(id);
+    }
+  });
+
+  // NUEVO: acciones de tabla de avisos
+  qs("#announcementsTableBody").addEventListener("click", async (e)=>{
+    const id = e.target.getAttribute("data-id");
+    if (!id) return;
+
+    if (e.target.classList.contains("btn-edit-announcement")){
+      const ref = doc(db,"announcements",id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      openAnnouncementModal({ id, ...snap.data() });
+    } else if (e.target.classList.contains("btn-toggle-announcement")){
+      const ref = doc(db,"announcements",id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const active = snap.data().active !== false;
+      await updateDoc(ref, { active: !active });
+      await loadAnnouncements();
+      showToast({ message: !active ? "Aviso activado." : "Aviso archivado.", type: !active ? "success" : "warning" });
     }
   });
 }
@@ -1139,6 +1275,51 @@ async function loadIngresoMaterials(){
   qs("#badgeIngresoMaterials").textContent = String(ingresoMaterialsCache.length);
 }
 
+async function loadAnnouncements(){
+  const tbody = qs("#announcementsTableBody");
+  tbody.innerHTML = "";
+  announcementsCache = [];
+
+  let snap;
+  try{
+    snap = await getDocs(collection(db,"announcements"));
+  }catch(e){
+    showToast({ message:"No se pudieron cargar avisos: " + (e.message || e), type:"error" });
+    qs("#badgeAnnouncements").textContent = "0";
+    return;
+  }
+
+  snap.forEach(d => announcementsCache.push({ id: d.id, ...d.data() }));
+  announcementsCache.sort((a, b) => {
+    const aDate = coerceDate(a.publishAt) || new Date(0);
+    const bDate = coerceDate(b.publishAt) || new Date(0);
+    return bDate - aDate;
+  });
+
+  announcementsCache.forEach((data) => {
+    const active = data.active !== false;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.title || "—"}</td>
+      <td>${active ? "Activo" : "Archivado"}</td>
+      <td>${data.pinned ? "Sí" : "No"}</td>
+      <td>${formatDateTime(data.publishAt)}</td>
+      <td>${formatDateTime(data.expireAt)}</td>
+      <td>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-edit-announcement" data-id="${data.id}">Editar</button>
+          <button class="btn ${active ? "btn-warn" : "btn-ok"} btn-toggle-announcement" data-id="${data.id}">
+            ${active ? "Archivar" : "Desarchivar"}
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  qs("#badgeAnnouncements").textContent = String(announcementsCache.length);
+}
+
 function renderIngresoCareerOptions(selected=[]) {
   const cont = qs("#ingresoMaterialCareers");
   cont.innerHTML = "";
@@ -1302,6 +1483,97 @@ async function deleteIngresoMaterial(){
   if (!ok) return;
   await removeIngresoMaterial(editingIngresoMaterialId);
   closeIngresoMaterialModal();
+}
+
+function openAnnouncementModal(data){
+  const isEditing = Boolean(data?.id);
+  editingAnnouncementId = data?.id || null;
+
+  qs("#announcementModalTitle").textContent = isEditing ? "Editar aviso" : "Nuevo aviso";
+  qs("#announcementTitle").value = data?.title || "";
+  qs("#announcementBody").value = data?.body || "";
+  qs("#announcementPinned").checked = Boolean(data?.pinned);
+  qs("#announcementActive").checked = data?.active !== false;
+  qs("#announcementPublishAt").value = toDateTimeInput(data?.publishAt);
+  qs("#announcementExpireAt").value = toDateTimeInput(data?.expireAt);
+
+  const archiveBtn = qs("#btnArchiveAnnouncement");
+  if (isEditing){
+    const isActive = data?.active !== false;
+    archiveBtn.style.display = "inline-flex";
+    archiveBtn.textContent = isActive ? "Archivar" : "Desarchivar";
+    archiveBtn.className = `btn ${isActive ? "btn-warn" : "btn-ok"}`;
+  } else {
+    archiveBtn.style.display = "none";
+  }
+
+  qs("#announcementModalBg").style.display = "flex";
+}
+
+function closeAnnouncementModal(){
+  editingAnnouncementId = null;
+  qs("#announcementModalBg").style.display = "none";
+}
+
+async function saveAnnouncement(){
+  const title = qs("#announcementTitle").value.trim();
+  const body = qs("#announcementBody").value.trim();
+  const pinned = qs("#announcementPinned").checked;
+  const active = qs("#announcementActive").checked;
+  const publishRaw = qs("#announcementPublishAt").value;
+  const expireRaw = qs("#announcementExpireAt").value;
+  const publishAt = publishRaw ? new Date(publishRaw) : new Date();
+  const expireAt = expireRaw ? new Date(expireRaw) : null;
+
+  if (!title){
+    showToast({ message:"Ingresá un título para el aviso.", type:"warning" });
+    return;
+  }
+  if (!body){
+    showToast({ message:"Ingresá el contenido del aviso.", type:"warning" });
+    return;
+  }
+  if (expireAt && publishAt && expireAt <= publishAt){
+    showToast({ message:"La fecha de expiración debe ser posterior a la publicación.", type:"warning" });
+    return;
+  }
+
+  const payload = {
+    title,
+    body,
+    pinned,
+    active,
+    publishAt,
+    expireAt,
+    updatedAt: serverTimestamp()
+  };
+
+  try{
+    if (editingAnnouncementId){
+      await updateDoc(doc(db,"announcements",editingAnnouncementId), payload);
+      showToast({ message:"Aviso actualizado.", type:"success" });
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(collection(db,"announcements"), payload);
+      showToast({ message:"Aviso creado.", type:"success" });
+    }
+    closeAnnouncementModal();
+    await loadAnnouncements();
+  }catch(e){
+    showToast({ message:"No se pudo guardar el aviso: " + (e.message || e), type:"error" });
+  }
+}
+
+async function toggleAnnouncementActive(){
+  if (!editingAnnouncementId) return;
+  const ref = doc(db,"announcements",editingAnnouncementId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+  const active = snap.data().active !== false;
+  await updateDoc(ref, { active: !active });
+  showToast({ message: !active ? "Aviso activado." : "Aviso archivado.", type: !active ? "success" : "warning" });
+  closeAnnouncementModal();
+  await loadAnnouncements();
 }
 
 function setCareerSelectOptions(){
