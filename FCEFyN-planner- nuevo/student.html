@@ -40,96 +40,37 @@
       <div class="main-shell">
         
     <div id="tab-inicio" class="tab-card">
-      <div class="home-layout">
-        <section class="home-left">
+      <div class="welcome-card">
+
+        <div>
           <div class="eyebrow">FCEFyN Planner</div>
-          <h2 class="home-title">Tu punto de partida</h2>
-          <p class="home-sub">
-            Organizá tu cursada desde un solo lugar: estudio, parciales, materias y horarios para avanzar con claridad.
+          <h2 class="welcome-title">Tu punto de partida</h2>
+          <p class="welcome-sub">
+            Gestioná horarios, parciales, estudio y chats con tus compañeros en un solo lugar.
+            Todo se guarda en tu cuenta para que puedas continuar desde cualquier dispositivo.
           </p>
-          <div class="home-cards">
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h12a3 3 0 0 1 3 3V19H7a3 3 0 0 0-3 3V5.5z"/><path d="M4 5.5v13.5a3 3 0 0 1 3-3h12"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Estudio</div>
-                <div class="home-card-desc">Registrar horas/minutos de estudio por día y tema.</div>
-              </div>
-            </article>
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10.5v5.5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5.5"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Académico</div>
-                <div class="home-card-desc">Registrar parciales, TPs, fechas importantes y notas.</div>
-              </div>
-            </article>
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 3v3M16 3v3"/><path d="M3 9h18"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Agenda</div>
-                <div class="home-card-desc">Armar el horario semanal (materias por día y hora).</div>
-              </div>
-            </article>
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="7" height="15" rx="2"/><rect x="13" y="4.5" width="7" height="15" rx="2"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Materias</div>
-                <div class="home-card-desc">Ver y gestionar materias del plan (colores/estado).</div>
-              </div>
-            </article>
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9a4 4 0 0 1 4 4v8"/><path d="M20 18H7a3 3 0 0 1-3-3V6"/><path d="M7 11h7"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Correlativas</div>
-                <div class="home-card-desc">Ver el plan/correlativas y progreso de la carrera.</div>
-              </div>
-            </article>
-            <article class="home-card">
-              <div class="home-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>
-              </div>
-              <div>
-                <div class="home-card-title">Planificador</div>
-                <div class="home-card-desc">Probar combinaciones de comisiones/horarios (simulador).</div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <aside class="home-notices-panel" id="homeNoticesPanel">
-          <div class="home-notices-listing" id="homeNoticesListing">
-            <div class="home-notices-header">
-              <div class="home-notices-title">Avisos</div>
-              <label class="home-notices-search" aria-label="Buscar aviso">
-                <span class="home-search-icon" aria-hidden="true"></span>
-                <input id="homeNoticesSearch" type="search" placeholder="Buscar aviso..." />
-              </label>
-              <div class="home-notices-nav">
-                <span class="home-notices-range" id="homeNoticesRange">0–0</span>
-                <button class="home-notices-btn" id="homeNoticesPrev" type="button" aria-label="Avisos anteriores">‹</button>
-                <button class="home-notices-btn" id="homeNoticesNext" type="button" aria-label="Avisos siguientes">›</button>
-              </div>
+          <div class="welcome-grid">
+            <div class="welcome-item">
+              <div class="welcome-label">Calendarios</div>
+              <div class="welcome-desc">Ingresá a Estudio o Académico para trabajar con tu agenda diaria.</div>
             </div>
-            <div class="home-notices-content">
-              <div class="home-notices-list" id="homeNoticesList"></div>
-              <div class="home-notices-empty" id="homeNoticesEmpty" hidden>No hay avisos para mostrar.</div>
+            <div class="welcome-item">
+              <div class="welcome-label">Horario semanal</div>
+              <div class="welcome-desc">Armá la semana en Agenda o probá combinaciones en Planificador.</div>
+            </div>
+            <div class="welcome-item">
+              <div class="welcome-label">Mensajería</div>
+              <div class="welcome-desc">Agregá amigos con su correo institucional y chateá en tiempo real.</div>
             </div>
           </div>
-
-          <div class="home-notices-detail" id="homeNoticesDetail" hidden>
-            <button class="home-notices-back" id="homeNoticesBack" type="button">← Volver</button>
-            <div class="home-notices-detail-body" id="homeNoticesDetailBody"></div>
+        </div>
+        <div class="welcome-credits">
+          <div class="welcome-credits-title">Créditos</div>
+          <div class="welcome-credits-body">
+            FCEFyN Planner — Creado por <strong>Rick Román</strong> y <strong>Agus Mella</strong>.<br/>
+            Seleccioná una sección en la barra izquierda para comenzar.
           </div>
-        </aside>
+        </div>
       </div>
     </div>
 
