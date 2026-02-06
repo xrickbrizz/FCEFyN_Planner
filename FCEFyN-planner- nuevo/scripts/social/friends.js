@@ -39,6 +39,25 @@ function sortFriendsRows(rows){
   });
 }
 
+function getInitials(profile = {}){
+  const name = (profile.name || profile.fullName || profile.email || "").trim();
+  if (!name) return "U";
+  const parts = name.split(/\s+/).filter(Boolean);
+  const initials = parts.slice(0, 2).map(part => part[0]).join("");
+  return initials.toUpperCase();
+}
+
+function formatChatTime(value){
+  if (!value) return "";
+  try{
+    const date = value?.toDate ? value.toDate() : new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("es-AR", { hour:"2-digit", minute:"2-digit" }).format(date);
+  }catch(_){
+    return "";
+  }
+}
+
 async function loadFriendRequests(){
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser?.uid) return;
@@ -346,16 +365,28 @@ function renderFriendsList(){
     const name = profile.name || profile.fullName || profile.email || "Estudiante";
     const status = CTX.getUserStatusLabel?.(f.otherUid) || "Desconectado";
     const online = CTX.socialState.userStatusMap.get(f.otherUid)?.online;
-    const avatarUrl = CTX.resolveAvatarUrl?.(profile.photoURL);
+    const hasAvatar = Boolean(profile.photoURL);
+    const avatarUrl = hasAvatar ? CTX.resolveAvatarUrl?.(profile.photoURL) : "";
+    const lastMessage = (f.lastMessage || "").trim() || status;
+    const timeLabel = formatChatTime(f.updatedAt || f.createdAt);
+    const initials = getInitials(profile);
     const div = document.createElement("div");
-    div.className = "friend-row";
+    div.className = "friend-row chat-item";
+    div.setAttribute("role", "listitem");
+    div.dataset.chatId = f.chatId;
     div.innerHTML = `
       <div class="friend-main">
-        <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}">
-        <div>
-          <div class="friend-name">${name}</div>
-          <div class="friend-meta">${status}</div>
+        <div class="friend-avatar-wrap${hasAvatar ? " has-image" : ""}">
+          <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}" ${hasAvatar ? "" : "hidden"}>
+          <span class="avatar-fallback">${initials}</span>
         </div>
+        <div class="friend-text">
+          <div class="friend-name">${name}</div>
+          <div class="friend-last-msg">${lastMessage}</div>
+        </div>
+      </div>
+      <div class="friend-meta-right">
+        <div class="friend-time">${timeLabel}</div>
       </div>
       <button class="btn-outline btn-small" data-chat="${f.chatId}">Chat</button>
     `;

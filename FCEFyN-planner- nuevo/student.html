@@ -544,31 +544,45 @@
             <div id="outgoingRequests" class="requests-box"></div>
           </div>
 
-          <div class="card-block">
+          <div class="card-block mobile-chat-list-card">
+            <div class="mobile-chat-list-header">Mensajes</div>
             <div class="block-title" style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
                Amigos
               <span class="small-muted" style="margin-left:.4rem;">Solo podés chatear con aceptados</span>
             </div>
-            <div id="friendsListBox" class="friends-box"></div>
+            <div id="friendsListBox" class="friends-box chat-list" role="list"></div>
           </div>
         </div>
 
         <div class="messages-right">
-          <div class="card-block">
+          <div class="card-block chat-thread">
             <div class="chat-header">
-              <div>
-                <div id="chatHeader" class="chat-title">Seleccioná un amigo para chatear</div>
-                <div id="chatSubheader" class="small-muted">Estado y última conexión según privacidad.</div>
+              <button class="mobile-chat-back" type="button" aria-label="Volver">←</button>
+              <div class="chat-header-main">
+                <div class="chat-header-avatar" id="chatHeaderAvatar" aria-hidden="true">
+                  <img id="chatHeaderAvatarImg" alt="" />
+                  <span id="chatHeaderAvatarFallback"></span>
+                </div>
+                <div>
+                  <div id="chatHeader" class="chat-title">Seleccioná un amigo para chatear</div>
+                  <div id="chatSubheader" class="small-muted">Estado y última conexión según privacidad.</div>
+                </div>
               </div>
               <label class="toggle-line">
                 <input type="checkbox" id="toggleLastSeen" />
                 <span>Mostrar mi última conexión</span>
               </label>
             </div>
-            <div id="messagesList" class="messages-box"></div>
+            <div id="messagesList" class="messages-box messages" role="list"></div>
             <div class="chat-input-row" id="chatInputRow">
+              <button class="chat-attach-btn" type="button" aria-label="Adjuntar archivo">📎</button>
               <input id="messageInput" placeholder="Seleccioná un amigo para chatear" disabled />
-              <button class="btn-blue btn-small" id="btnSendMessage" type="button" disabled>Enviar</button>
+              <button class="btn-blue btn-small" id="btnSendMessage" type="button" aria-label="Enviar mensaje" disabled>
+                <span class="send-label">Enviar</span>
+                <svg class="send-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 12h14M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -908,6 +922,7 @@
   <script type="module" src="scripts/subScripts/Profesores.js"></script>
 <script type="module" src="scripts/ui/scroll-ui.js"></script>
   <script src="assets/js/mobile-nav.js" defer></script>
+  <script src="assets/js/mobile-chat.js" defer></script>
 
 </body>
 </html>
