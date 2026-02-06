@@ -219,9 +219,6 @@ function renderMessaging(){
   const list = document.getElementById("messagesList");
   const sub = document.getElementById("chatSubheader");
   const inputRow = document.getElementById("chatInputRow");
-  const avatarImg = document.getElementById("chatHeaderAvatarImg");
-  const avatarFallback = document.getElementById("chatHeaderAvatarFallback");
-  const avatarWrap = document.getElementById("chatHeaderAvatar");
   if (!header || !list){
     return;
   }
@@ -231,29 +228,11 @@ function renderMessaging(){
     list.innerHTML = "<div class='muted'>No hay conversación activa.</div>";
     setChatInputState(false, "Seleccioná un amigo para chatear");
     if (inputRow) inputRow.style.display = "none";
-    if (avatarWrap) avatarWrap.classList.remove("has-image");
-    if (avatarImg) avatarImg.hidden = true;
-    if (avatarFallback) avatarFallback.textContent = "";
     return;
   }
   const profile = CTX.socialState.activeChatPartner.otherProfile || {};
-  const avatarUrl = profile.photoURL ? CTX.resolveAvatarUrl?.(profile.photoURL) : "";
-  const initialsSource = profile.name || profile.fullName || profile.email || "";
-  const initials = initialsSource
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0])
-    .join("")
-    .toUpperCase() || "U";
   header.textContent = (profile.name || profile.email || "Chat");
   if (sub) sub.textContent = userStatusLabel(CTX.socialState.activeChatPartner.otherUid);
-  if (avatarWrap) avatarWrap.classList.toggle("has-image", Boolean(avatarUrl));
-  if (avatarImg){
-    avatarImg.hidden = !avatarUrl;
-    avatarImg.src = avatarUrl || "";
-  }
-  if (avatarFallback) avatarFallback.textContent = initials;
   setChatInputState(true, "Escribí un mensaje...");
   if (inputRow) inputRow.style.display = "flex";
 
@@ -268,7 +247,6 @@ function renderMessaging(){
     const me = senderId === CTX.getCurrentUser?.()?.uid;
     const wrap = document.createElement("div");
     wrap.className = "msg-row " + (me ? "me" : "other");
-    wrap.setAttribute("role", "listitem");
     const date = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString("es-AR") : "";
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";

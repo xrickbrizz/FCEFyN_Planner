@@ -2083,55 +2083,17 @@ body[data-theme="light"] .event{
   align-items:center;
   gap:.6rem;
 }
-.friend-avatar-wrap{
-  position:relative;
+.friend-avatar{
   width:40px;
   height:40px;
-  flex:0 0 auto;
-}
-.friend-avatar{
-  width:100%;
-  height:100%;
   border-radius:50%;
   object-fit:cover;
   border:1px solid var(--border-45);
   background:var(--color-surface-3);
 }
-.avatar-fallback{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:var(--color-surface-3);
-  border:1px solid var(--border-45);
-  color:var(--text-soft);
-  font-weight:700;
-  font-size:.85rem;
-}
-.friend-avatar-wrap.has-image .avatar-fallback{
-  display:none;
-}
 .friend-row.friend-online{
   border-color:var(--ok-5);
   box-shadow:none;
-}
-.friend-text{
-  display:flex;
-  flex-direction:column;
-  gap:.2rem;
-}
-.friend-last-msg{
-  color:var(--text-soft);
-  font-size:.85rem;
-}
-.friend-meta-right{
-  display:none;
-}
-.friend-time{
-  color:var(--text-soft);
-  font-size:.75rem;
 }
 .friend-name{ font-weight:700; }
 .friend-meta{ color:var(--text-soft); font-size:.85rem; display:flex; gap:.45rem; align-items:center; }
@@ -2153,15 +2115,6 @@ body[data-theme="light"] .event{
   align-items:center;
   gap:.6rem;
   flex-wrap:wrap;
-}
-.chat-header-main{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-}
-.chat-header-avatar,
-.mobile-chat-back{
-  display:none;
 }
 .chat-title{
   font-weight:800;
@@ -2207,12 +2160,6 @@ body[data-theme="light"] .event{
   display:flex;
   gap:.5rem;
   margin-top:auto;
-}
-.chat-attach-btn{
-  display:none;
-}
-.send-icon{
-  display:none;
 }
 .chat-input-row input{
   flex:1;

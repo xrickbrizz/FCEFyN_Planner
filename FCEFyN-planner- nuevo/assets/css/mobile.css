@@ -14,8 +14,6 @@
     --mobile-card-border: rgba(15, 23, 42, 0.08);
     --mobile-muted: rgba(15, 23, 42, 0.6);
     --mobile-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-    --mobile-bottom-bar-height: 64px;
-    --mobile-topbar-height: 64px;
   }
 
   body.dark-mode,
@@ -44,8 +42,8 @@
   }
 
   .page-content {
-    padding-top: calc(var(--mobile-topbar-height) + env(safe-area-inset-top));
-    padding-bottom: calc(var(--mobile-bottom-bar-height) + env(safe-area-inset-bottom) + 16px);
+    padding-top: 80px;
+    padding-bottom: 96px;
   }
 
   .mobile-topbar {
@@ -125,15 +123,14 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: calc(var(--mobile-bottom-bar-height) + env(safe-area-inset-bottom));
+    height: 72px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 4px;
-    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    padding: 8px 10px;
     background: var(--mobile-surface);
     border-top: 1px solid var(--mobile-card-border);
     z-index: 1200;
-    pointer-events: none;
   }
 
   .mobile-bottombar .mobile-tab {
@@ -148,8 +145,6 @@
     background: transparent;
     color: var(--mobile-muted);
     cursor: pointer;
-    pointer-events: auto;
-    touch-action: manipulation;
   }
 
   .mobile-bottombar .mobile-tab svg {
@@ -364,260 +359,6 @@
   .home-notice-date {
     font-size: 0.75rem;
     color: var(--mobile-muted);
-  }
-
-  .main-shell,
-  .tab-card {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .tab-card {
-    padding: 0.75rem;
-    border-radius: 18px;
-  }
-
-  #tab-mensajes {
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  #tab-mensajes .messages-layout {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - var(--mobile-topbar-height) - var(--mobile-bottom-bar-height) - env(safe-area-inset-top));
-  }
-
-  #tab-mensajes .messages-left,
-  #tab-mensajes .messages-right {
-    flex: 1;
-    min-height: 0;
-  }
-
-  #tab-mensajes .messages-right {
-    display: none;
-  }
-
-  #tab-mensajes.is-thread .messages-left {
-    display: none;
-  }
-
-  #tab-mensajes.is-thread .messages-right {
-    display: flex;
-  }
-
-  #tab-mensajes .messages-left .card-block:not(.mobile-chat-list-card) {
-    display: none;
-  }
-
-  #tab-mensajes .mobile-chat-list-card {
-    background: transparent;
-    border: 0;
-    padding: 0;
-  }
-
-  #tab-mensajes .mobile-chat-list-header {
-    font-weight: 800;
-    font-size: 1.05rem;
-    margin: 4px 12px 0;
-  }
-
-  #tab-mensajes .chat-list {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    padding: 8px 10px 12px;
-  }
-
-  #tab-mensajes .chat-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 16px;
-    background: var(--mobile-card);
-    border: 1px solid var(--mobile-card-border);
-    box-shadow: var(--mobile-shadow);
-    margin-bottom: 10px;
-  }
-
-  #tab-mensajes .chat-item .btn-outline {
-    display: none;
-  }
-
-  #tab-mensajes .friend-main {
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  #tab-mensajes .friend-text {
-    min-width: 0;
-  }
-
-  #tab-mensajes .friend-name {
-    font-size: 0.95rem;
-  }
-
-  #tab-mensajes .friend-last-msg {
-    font-size: 0.82rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  #tab-mensajes .friend-meta-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-  }
-
-  #tab-mensajes .friend-time {
-    font-size: 0.72rem;
-    color: var(--mobile-muted);
-  }
-
-  #tab-mensajes .chat-thread {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    padding: 0;
-    background: transparent;
-    border: 0;
-  }
-
-  #tab-mensajes .chat-header {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--mobile-card-border);
-    background: var(--mobile-surface);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  #tab-mensajes .chat-header .toggle-line {
-    display: none;
-  }
-
-  #tab-mensajes .chat-header-main {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  #tab-mensajes .chat-header-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--mobile-surface-alt);
-    border: 1px solid var(--mobile-card-border);
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    font-weight: 700;
-  }
-
-  #tab-mensajes .chat-header-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  #tab-mensajes .mobile-chat-back {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
-    border: 1px solid var(--mobile-card-border);
-    background: var(--mobile-surface-alt);
-    font-size: 1rem;
-  }
-
-  #tab-mensajes .messages {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    padding: 12px;
-    background: transparent;
-    border: 0;
-  }
-
-  #tab-mensajes .msg-row {
-    margin-bottom: 10px;
-  }
-
-  #tab-mensajes .msg-bubble {
-    border-radius: 18px;
-    line-height: 1.4;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  }
-
-  #tab-mensajes .msg-row.me .msg-bubble {
-    background: var(--color-primary, #0f766e);
-    color: #fff;
-  }
-
-  #tab-mensajes .msg-row.other .msg-bubble {
-    background: var(--mobile-surface-alt);
-  }
-
-  #tab-mensajes .chat-input-row {
-    position: sticky;
-    bottom: calc(var(--mobile-bottom-bar-height) + env(safe-area-inset-bottom));
-    padding: 10px 12px;
-    background: var(--mobile-surface);
-    border-top: 1px solid var(--mobile-card-border);
-    gap: 8px;
-  }
-
-  #tab-mensajes .chat-attach-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 1px solid var(--mobile-card-border);
-    background: var(--mobile-surface-alt);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.05rem;
-  }
-
-  #tab-mensajes .chat-input-row input {
-    border-radius: 24px;
-    padding: 10px 14px;
-  }
-
-  #tab-mensajes .chat-input-row .btn-blue {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #tab-mensajes .chat-input-row .send-label {
-    display: none;
-  }
-
-  #tab-mensajes .chat-input-row .send-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  #tab-mensajes button:active {
-    transform: none;
   }
 }
 
