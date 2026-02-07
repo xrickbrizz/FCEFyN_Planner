@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth } from "./core/firebase.js";
+import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, collection, query, where, orderBy } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
@@ -24,6 +24,219 @@ const themeColor = (varName, fallback) => {
   const value = getComputedStyle(document.documentElement).getPropertyValue(varName);
   return (value || "").trim() || fallback;
 };
+
+const HOME_NOTICE_PAGE_SIZE = 10;
+
+const normalizeText = (value) =>
+  (value || "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+const coerceDate = (value) => {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  if (typeof value?.toDate === "function") return value.toDate();
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const formatNoticeDate = (value) => {
+  const date = coerceDate(value);
+  if (!date) return "-";
+  return new Intl.DateTimeFormat("es-AR", {
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric"
+  }).format(date);
+};
+
+function initHomeNotices(){
+  const panel = document.getElementById("homeNoticesPanel");
+  if (!panel) return;
+
+  const listing = document.getElementById("homeNoticesListing");
+  const detail = document.getElementById("homeNoticesDetail");
+  const detailBody = document.getElementById("homeNoticesDetailBody");
+  const searchInput = document.getElementById("homeNoticesSearch");
+  const searchWrap = document.getElementById("homeNoticesSearchWrap");
+  const listEl = document.getElementById("homeNoticesList");
+  const emptyEl = document.getElementById("homeNoticesEmpty");
+  const rangeEl = document.getElementById("homeNoticesRange");
+  const prevBtn = document.getElementById("homeNoticesPrev");
+  const nextBtn = document.getElementById("homeNoticesNext");
+  const navWrap = document.getElementById("homeNoticesNav");
+  const backBtn = document.getElementById("homeNoticesBack");
+
+  if (!listing || !detail || !detailBody || !searchInput || !searchWrap || !listEl || !emptyEl || !rangeEl || !prevBtn || !nextBtn || !navWrap || !backBtn) return;
+
+  const state = {
+    query: "",
+    page: 0,
+    selectedId: null,
+    items: []
+  };
+
+  const setMode = (mode) => {
+    const nextMode = mode === "detail" ? "detail" : "list";
+    panel.dataset.mode = nextMode;
+    const isDetail = nextMode === "detail";
+    listing.hidden = isDetail;
+    detail.hidden = !isDetail;
+    backBtn.hidden = !isDetail;
+    searchWrap.hidden = isDetail;
+    navWrap.hidden = isDetail;
+    if (!isDetail) {
+      state.selectedId = null;
+      detailBody.innerHTML = "";
+    }
+  };
+
+  const getFilteredNotices = () => {
+    const query = normalizeText(state.query);
+    if (!query) return [...state.items];
+    return state.items.filter(item => {
+      const title = normalizeText(item.title);
+      const body = normalizeText(item.body);
+      return title.includes(query) || body.includes(query);
+    });
+  };
+
+  const renderList = () => {
+    const filtered = getFilteredNotices();
+    const total = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(total / HOME_NOTICE_PAGE_SIZE));
+    if (state.page > totalPages - 1) state.page = totalPages - 1;
+    if (state.page < 0) state.page = 0;
+
+    const startIndex = total === 0 ? 0 : state.page * HOME_NOTICE_PAGE_SIZE;
+    const pageItems = filtered.slice(startIndex, startIndex + HOME_NOTICE_PAGE_SIZE);
+    const rangeLabel = total === 0
+      ? "0–0"
+      : `${startIndex + 1}–${Math.min(startIndex + HOME_NOTICE_PAGE_SIZE, total)}`;
+    rangeEl.textContent = rangeLabel;
+    prevBtn.disabled = state.page === 0;
+    nextBtn.disabled = startIndex + HOME_NOTICE_PAGE_SIZE >= total;
+
+    listEl.innerHTML = "";
+    emptyEl.hidden = total !== 0;
+
+    pageItems.forEach(item => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "home-notice-item";
+      button.innerHTML = `
+        <div class="home-notice-main">
+          <div class="home-notice-title-row">
+            <strong>${item.title}</strong>
+            ${item.pinned ? '<span class="notice-pin" aria-label="Aviso fijado"></span>' : ""}
+          </div>
+          <div class="home-notice-preview">${item.body}</div>
+        </div>
+        <div class="home-notice-meta">
+          <span class="home-notice-date">${formatNoticeDate(item.createdAt || item.publishAt)}</span>
+        </div>
+      `;
+      button.addEventListener("click", () => openDetail(item));
+      listEl.appendChild(button);
+    });
+  };
+
+  const openDetail = (item) => {
+    if (!item) return;
+    state.selectedId = item.id;
+    setMode("detail");
+    detailBody.innerHTML = `
+      <div class="home-notices-detail-title">${item.title}</div>
+      <div class="home-notices-detail-date">${formatNoticeDate(item.createdAt || item.publishAt)}</div>
+      <div class="home-notices-detail-text">${item.body}</div>
+    `;
+    detailBody.scrollTop = 0;
+  };
+
+  const returnToList = () => {
+    setMode("list");
+    renderList();
+  };
+
+  searchInput.addEventListener("input", () => {
+    state.query = searchInput.value;
+    state.page = 0;
+    renderList();
+  });
+  prevBtn.addEventListener("click", () => {
+    if (state.page > 0) {
+      state.page -= 1;
+      renderList();
+    }
+  });
+  nextBtn.addEventListener("click", () => {
+    const filtered = getFilteredNotices();
+    if ((state.page + 1) * HOME_NOTICE_PAGE_SIZE < filtered.length) {
+      state.page += 1;
+      renderList();
+    }
+  });
+  backBtn.addEventListener("click", returnToList);
+
+  const handleSnapshot = (snap) => {
+    const now = new Date();
+    const items = snap.docs.map(docSnap => {
+      const data = docSnap.data() || {};
+      const publishAt = coerceDate(data.publishAt);
+      const expireAt = coerceDate(data.expireAt);
+      const createdAt = coerceDate(data.createdAt) || publishAt;
+      return {
+        id: docSnap.id,
+        title: data.title || "",
+        body: data.body || "",
+        pinned: Boolean(data.pinned),
+        active: Boolean(data.active),
+        publishAt,
+        expireAt,
+        createdAt
+      };
+    }).filter(item => {
+      if (!item.active) return false;
+      if (item.publishAt && item.publishAt > now) return false;
+      if (item.expireAt && item.expireAt <= now) return false;
+      return true;
+    }).sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      const aTime = a.publishAt ? a.publishAt.getTime() : 0;
+      const bTime = b.publishAt ? b.publishAt.getTime() : 0;
+      return bTime - aTime;
+    });
+    state.items = items;
+    if (panel.dataset.mode === "detail") {
+      const selected = state.items.find(item => item.id === state.selectedId);
+      if (selected) {
+        openDetail(selected);
+      } else {
+        returnToList();
+      }
+    } else {
+      renderList();
+    }
+  };
+
+  const handleSnapshotError = (err) => {
+    console.error("[home-notices] snapshot error", err);
+    notifyError("No se pudieron cargar los avisos.");
+  };
+
+  const announcementsRef = collection(db, "announcements");
+const announcementsQuery = query(
+  announcementsRef,
+  orderBy("publishAt", "desc")
+);
+onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
+
+  setMode("list");
+  renderList();
+}
 
 const navState = {
   activeSection: "inicio",
@@ -138,6 +351,7 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
   bindProfileShortcuts();
+  initHomeNotices();
   restoreLastSection();
 });
 
