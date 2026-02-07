@@ -527,7 +527,7 @@ body[data-theme="light"] .event{
       padding:1.5rem;
     }
     .modal{
-      background:#fff;
+      background: var(--color-surface-3);
       border-radius:18px;
       padding:1.25rem 1.35rem;
       min-width:320px;

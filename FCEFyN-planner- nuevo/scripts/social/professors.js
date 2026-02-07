@@ -19,6 +19,8 @@ const notifySuccess = (message) => CTX?.notifySuccess?.(message);
 const notifyError = (message) => CTX?.notifyError?.(message);
 const notifyWarn = (message) => CTX?.notifyWarn?.(message);
 
+// ---------------- Funciones para resolver datos y renderizar UI ------------------------------------//
+
 function resolveProfileCareerName(){
   const profile = CTX?.AppState?.userProfile || null;
   if (!profile) return "";
@@ -29,6 +31,8 @@ function resolveProfileCareerName(){
   }
   return "";
 }
+
+// Dado un valor numérico, devuelve el HTML para mostrar esa cantidad de estrellas llenas (★) y vacías (☆).
 
 function renderStars(value){
   const val = Math.round(value || 0);
@@ -42,6 +46,7 @@ function renderStars(value){
 function formatDecimal(val){
   return (typeof val === "number" ? val : 0).toFixed(1);
 }
+// Carga el catálogo de profesores activos desde Firestore, actualiza el estado y renderiza la sección.
 async function loadProfessorsCatalog(){
   console.log("[Professors] Loading catalog...");
   professorsCatalog = [];
