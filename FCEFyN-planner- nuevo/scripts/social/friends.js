@@ -40,6 +40,9 @@ function sortFriendsRows(rows){
 }
 
 async function loadFriendRequests(){
+
+    console.log("[DEBUG] loadFriendRequests → CTX.socialState =", CTX?.socialState);
+
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser?.uid) return;
   const state = CTX.socialState;
@@ -48,11 +51,13 @@ async function loadFriendRequests(){
   try{
     const incomingQueries = [
       query(collection(CTX.db,"friendRequests"), where("toUid","==", currentUser.uid)),
-      query(collection(CTX.db,"friendRequests"), where("receiverUid","==", currentUser.uid))
+      query(collection(CTX.db,"friendRequests"), where("receiverUid","==", currentUser.uid)),
+      query(collection(CTX.db,"friendRequests"), where("recipientUid","==", currentUser.uid))
     ];
     const outgoingQueries = [
       query(collection(CTX.db,"friendRequests"), where("fromUid","==", currentUser.uid)),
-      query(collection(CTX.db,"friendRequests"), where("senderUid","==", currentUser.uid))
+      query(collection(CTX.db,"friendRequests"), where("senderUid","==", currentUser.uid)),
+      query(collection(CTX.db,"friendRequests"), where("senderId","==", currentUser.uid))
     ];
     const [incomingSnaps, outgoingSnaps] = await Promise.all([
       Promise.all(incomingQueries.map((q)=> getDocs(q))),
@@ -63,8 +68,8 @@ async function loadFriendRequests(){
       return {
         id: docSnap.id,
         ...data,
-        fromUid: data.fromUid || data.senderUid || "",
-        toUid: data.receiverUid || data.toUid || ""
+        fromUid: data.fromUid || data.senderUid || data.senderId || "",
+        toUid: data.receiverUid || data.toUid || data.recipientUid || ""
       };
     };
     const incomingMap = new Map();
