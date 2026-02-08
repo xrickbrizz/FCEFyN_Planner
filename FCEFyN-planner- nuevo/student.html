@@ -461,6 +461,7 @@
     </div>
   </div>
     <!------------------------- PROFESORES ------------------------------->
+    
     <div id="tab-profesores" class="tab-card" style="display:none;">
       <div class="prof-layout" id="filtersSection">
         <div class="prof-list-panel">
@@ -483,11 +484,11 @@
           <div id="professorsList" class="prof-list"></div>
         </div>
       </div>
-      <div class="profDetail" id="professorDetailSection">
-        <button id="btnBackToFilters" type="button" hidden>← Volver</button>
+
+       <div class="profDetail hidden" id="professorDetailSection">
+        <button id="volverListaProfesores" type="button" >← Volver</button>
                       <div id="profDetailBox" class="prof-detail-card" >
             <div class="small-muted">Seleccioná un profesor para ver detalles y valorar.</div>
-          
           </div>
           <div class="prof-rate-card">
             <h3 class="prof-rate-title">Tu valoración</h3>
@@ -520,6 +521,7 @@
             </div>
           </div>
       </div>
+
     </div>
     <!----------------------------- Mensajeria  ------------------------------------------>
     <div id="tab-mensajes" class="tab-card" style="display:none;">
@@ -905,7 +907,6 @@
     </div>
   </div>
 <script type="module" src="scripts/student.js"></script>
-  <script type="module" src="scripts/subScripts/Profesores.js"></script>
 <script type="module" src="scripts/ui/scroll-ui.js"></script>
   <script src="assets/js/mobile-nav.js" defer></script>
 

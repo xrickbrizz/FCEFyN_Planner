@@ -5,7 +5,8 @@ import {
   query,
   where,
   getFunctions,
-  httpsCallable
+  httpsCallable,
+  doc
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
 
@@ -20,7 +21,6 @@ const notifyError = (message) => CTX?.notifyError?.(message);
 const notifyWarn = (message) => CTX?.notifyWarn?.(message);
 
 // ---------------- Funciones para resolver datos y renderizar UI ------------------------------------//
-
 function resolveProfileCareerName(){
   const profile = CTX?.AppState?.userProfile || null;
   if (!profile) return "";
@@ -31,6 +31,7 @@ function resolveProfileCareerName(){
   }
   return "";
 }
+
 
 // Dado un valor numérico, devuelve el HTML para mostrar esa cantidad de estrellas llenas (★) y vacías (☆).
 
@@ -43,6 +44,9 @@ function renderStars(value){
   }
   return html;
 }
+
+// Formatea un número decimal a una cadena con un decimal y el símbolo de estrella.
+
 function formatDecimal(val){
   return (typeof val === "number" ? val : 0).toFixed(1);
 }
@@ -114,6 +118,7 @@ function initProfessorsUI(){
   if (btn) btn.addEventListener("click", submitProfessorRating);
 }
 
+// Función para enviar la valoración de un profesor. Se llama desde el botón de submit en el formulario de valoración.
 function renderProfessorsSection(){
   renderProfessorsFilters();
   renderProfessorsList();
@@ -181,6 +186,9 @@ function renderProfessorsFilters(){
     });
   }
 }
+
+// Renderiza la lista de profesores según los filtros seleccionados. 
+// Si el profesor seleccionado ya no está en la lista filtrada, se selecciona el primero de la lista.
 
 function renderProfessorsList(){
   const list = document.getElementById("professorsList");
@@ -258,20 +266,35 @@ function renderProfessorsList(){
     card.appendChild(meta);
     card.appendChild(badges);
 
+    // Al hacer click en la tarjeta del profesor, se selecciona ese profesor, se carga su detalle y sus reseñas.
     card.addEventListener("click", ()=>{
       selectedProfessorId = p.id;
+      ocularListaProfesores();
       renderProfessorsList();
       renderProfessorDetail();
       professorReviewsCache[p.id] = { loading:true, items:[] };
       loadProfessorReviews(p.id).then(()=>{
-        renderProfessorDetail();
+      renderProfessorDetail();
         fillRatingFormFromMyReview(p.id);
       });
     });
-
     list.appendChild(card);
   });
 }
+    const back1 = document.getElementById("volverListaProfesores");
+    back1.addEventListener("click", ()=>{
+    document.getElementById("professorDetailSection").classList.add("hidden");
+    document.getElementById("filtersSection").classList.remove("hidden");
+    });
+
+function ocularListaProfesores(){
+  document.getElementById("filtersSection").classList.add("hidden");
+  document.getElementById("professorDetailSection").classList.remove("hidden");
+  } 
+
+// Renderiza el detalle del profesor seleccionado, incluyendo sus promedios por criterio y los comentarios de los estudiantes.
+//  Si no hay profesor seleccionado, muestra un mensaje indicándolo. 
+// Si el profesor seleccionado no se encuentra en el catálogo (lo cual no debería ocurrir), muestra un mensaje de error.
 
 function resetRatingForm(){
   const ids = [
@@ -456,17 +479,8 @@ function fillRatingFormFromMyReview(profId){
   if (comment) comment.value = mine ? (mine.comment || "") : "";
   if (anon) anon.checked = !!(mine && mine.anonymous);
 }
-
+// Función para enviar la valoración de un profesor. Se llama desde el botón de submit en el formulario de valoración.
 async function submitProfessorRating(){
-  const currentUser = CTX?.getCurrentUser?.();
-  if (!currentUser){
-    notifyWarn("Necesitás iniciar sesión para valorar.");
-    return;
-  }
-  if (!selectedProfessorId){
-    notifyWarn("Seleccioná un profesor primero.");
-    return;
-  }
 
   const teaching = Number(document.getElementById("rateTeaching")?.value || 0);
   const exams = Number(document.getElementById("rateExams")?.value || 0);
@@ -497,18 +511,55 @@ async function submitProfessorRating(){
   const functions = getFunctions(app, "us-central1");
   const callable = httpsCallable(functions, "submitProfessorReviewCallable");
 
-  try{
-    await callable(payload);
-    await loadProfessorReviews(selectedProfessorId);
-    fillRatingFormFromMyReview(selectedProfessorId);
-    await loadProfessorsCatalog();
-    renderProfessorsSection();
-    notifySuccess("Valoración guardada.");
-  }catch(e){
-    console.error("submitProfessorRating error", e?.code, e?.message, e?.details, e);
-    notifyError("No se pudo guardar la valoración: " + (e?.message || e));
-  }finally{
-    if (btn) btn.disabled = false;
+  // Nota: el backend se encarga de validar que el usuario no pueda enviar múltiples reseñas, y de recalcular los promedios de forma atómica.
+ try {
+  await callable(payload);
+
+  // 1️⃣ Recargar SOLO las reviews del profesor actual
+  await loadProfessorReviews(selectedProfessorId);
+
+  // 2️⃣ Actualizar stats del profesor actual
+  await refreshSelectedProfessorStats(selectedProfessorId);
+
+  // 3️⃣ Volver a renderizar el detalle
+  renderProfessorDetail();
+
+  // 4️⃣ Rellenar el formulario con mi review
+  fillRatingFormFromMyReview(selectedProfessorId);
+
+  notifySuccess("Valoración guardada.");
+} catch (e) {
+  console.error("submitProfessorRating error", e?.code, e?.message, e?.details, e);
+  notifyError("No se pudo guardar la valoración: " + (e?.message || e));
+}
+
+}
+
+async function refreshSelectedProfessorStats(profId){
+  if (!profId) return;
+
+  try {
+    const ref = doc(CTX.db, "professors", profId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+
+    const data = snap.data() || {};
+    const idx = professorsCatalog.findIndex(p => p.id === profId);
+    if (idx === -1) return;
+
+    const ratingAvg = typeof data.ratingAvg === "number" ? data.ratingAvg : 0;
+
+    professorsCatalog[idx] = {
+      ...professorsCatalog[idx],
+      avgGeneral: ratingAvg,
+      avgTeaching: ratingAvg,
+      avgExams: ratingAvg,
+      avgTreatment: ratingAvg,
+      ratingCount: data.ratingCount || 0,
+      commentsCount: data.commentsCount || 0
+    };
+  } catch (e) {
+    console.error("refreshSelectedProfessorStats error", e);
   }
 }
 

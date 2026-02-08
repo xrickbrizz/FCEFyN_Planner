@@ -1636,6 +1636,9 @@ body[data-theme="light"] .event{
       max-height:360px;
       overflow:auto;
     }
+    .hidden{
+      display:none;
+    }
     .section-card{
       background:var(--color-surface-3);
       border-radius:var(--radius-md);
