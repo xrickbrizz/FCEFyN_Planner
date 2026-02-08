@@ -113,7 +113,12 @@ function initProfessorsUI(){
       el.addEventListener("input", ()=>{ lab.textContent = (el.value || 0) + " ★"; });
     }
   });
+}
 
+// Se movió el registro del listener del submit a una función dedicada para que
+// se inicialice una sola vez y no se vea afectado por re-renders. Esto evita
+// el bloqueo lógico que ocurría al volver a renderizar el detalle.
+function initProfessorRating(){
   const btn = document.getElementById("btnSubmitRating");
   if (btn) btn.addEventListener("click", submitProfessorRating);
 }
@@ -509,7 +514,7 @@ async function submitProfessorRating(){
   console.log("[Professors] Submit rating payload:", payload);
   //------------------------ implemento callable ---------------------------------------//
   const functions = getFunctions(app, "us-central1");
-  const callable = httpsCallable(functions, "submitProfessorReviewCallable");
+ const callable = httpsCallable(functions, "submitProfessorReviewCallable");
 
   // Nota: el backend se encarga de validar que el usuario no pueda enviar múltiples reseñas, y de recalcular los promedios de forma atómica.
  try {
@@ -531,6 +536,9 @@ async function submitProfessorRating(){
 } catch (e) {
   console.error("submitProfessorRating error", e?.code, e?.message, e?.details, e);
   notifyError("No se pudo guardar la valoración: " + (e?.message || e));
+} finally {
+  // Se asegura re-habilitar el botón tras cada envío para permitir múltiples submits.
+  if (btn) btn.disabled = false;
 }
 
 }
@@ -576,6 +584,9 @@ const Professors = {
     await ensurePublicUserProfile(CTX.db, currentUser, CTX?.AppState?.userProfile || null);
     await loadProfessorsCatalog();
     initProfessorsUI();
+    // Se movió el handler de submit aquí para que se registre una única vez
+    // y permanezca estable frente a re-renderizaciones.
+    initProfessorRating();
   },
   renderProfessorsSection
 };
