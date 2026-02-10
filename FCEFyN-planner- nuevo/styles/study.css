@@ -1779,7 +1779,6 @@ body[data-theme="light"] .event{
 }
 .prof-list{
   display:flex;
-  flex-direction:column;
   gap:.65rem;
 }
 .prof-card{
