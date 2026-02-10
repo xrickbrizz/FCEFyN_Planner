@@ -2,6 +2,7 @@ import {
   app,
   collection,
   getDocs,
+  getDoc,
   query,
   where,
   getFunctions,
@@ -287,7 +288,9 @@ function renderProfessorsList(){
   });
 }
     const back1 = document.getElementById("volverListaProfesores");
-    back1.addEventListener("click", ()=>{
+    back1.addEventListener("click",async ()=>{
+    await actualizarDatosProfesorSeleccionado();      // 🔑 clave esta se encarga de actualiza
+    renderProfessorsList();    // ahora sí con datos nuevos 
     document.getElementById("professorDetailSection").classList.add("hidden");
     document.getElementById("filtersSection").classList.remove("hidden");
     });
@@ -519,16 +522,13 @@ async function submitProfessorRating(){
   // Nota: el backend se encarga de validar que el usuario no pueda enviar múltiples reseñas, y de recalcular los promedios de forma atómica.
  try {
   await callable(payload);
-
+  await actualizarDatosProfesorSeleccionado();
   // 1️⃣ Recargar SOLO las reviews del profesor actual
   await loadProfessorReviews(selectedProfessorId);
-
   // 2️⃣ Actualizar stats del profesor actual
   await refreshSelectedProfessorStats(selectedProfessorId);
-
   // 3️⃣ Volver a renderizar el detalle
   renderProfessorDetail();
-
   // 4️⃣ Rellenar el formulario con mi review
   fillRatingFormFromMyReview(selectedProfessorId);
 
@@ -542,6 +542,30 @@ async function submitProfessorRating(){
 }
 
 }
+async function actualizarDatosProfesorSeleccionado() {
+  const ref = doc(CTX.db, "professors", selectedProfessorId);
+  const snap = await getDoc(ref); // 🔑 await
+
+  if (!snap.exists()) return;
+
+  const data = snap.data(); // ✅ ahora sí
+
+  const avg = typeof data.avgGeneral === "number" ? data.avgGeneral : 0;
+
+  const idx = professorsCatalog.findIndex(p => p.id === selectedProfessorId);
+  if (idx !== -1) {
+    professorsCatalog[idx] = {
+      ...professorsCatalog[idx],
+      avgGeneral: avg,
+      avgTeaching: avg,
+      avgExams: avg,
+      avgTreatment: avg,
+      ratingCount: data.ratingCount || 0,
+      commentsCount: data.commentsCount || 0
+    };
+  }
+}
+
 
 async function refreshSelectedProfessorStats(profId){
   if (!profId) return;

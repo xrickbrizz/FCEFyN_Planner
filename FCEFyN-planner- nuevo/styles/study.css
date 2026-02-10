@@ -1637,7 +1637,7 @@ body[data-theme="light"] .event{
       overflow:auto;
     }
     .hidden{
-      display:none;
+      display:none; 
     }
     .section-card{
       background:var(--color-surface-3);
