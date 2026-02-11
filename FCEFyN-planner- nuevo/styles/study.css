@@ -2777,7 +2777,71 @@ body[data-theme="light"] .event{
    Header sticky + scroll top + icono mensajería
    ========================================================= */
 html{
+  font-size:80%;
   scroll-behavior:smooth;
+}
+
+/* =========================================================
+   Escala global compacta (equivalente visual a zoom 80% real)
+   ========================================================= */
+:root{
+  --layout-compact-padding-x:1rem;
+  --layout-compact-gap:1rem;
+  --layout-compact-content-gap:.62rem;
+  --layout-compact-card-padding:.9rem;
+  --layout-compact-max-width:1400px;
+}
+
+header{
+  padding:.82rem 1rem;
+  gap:.62rem;
+}
+
+.page-layout{
+  gap:var(--layout-compact-gap);
+  width:calc(100% - (var(--layout-compact-padding-x) * 2));
+  max-width:var(--layout-compact-max-width);
+  margin:0 auto;
+  padding-top:.35rem;
+}
+
+.page-content{
+  gap:var(--layout-compact-content-gap);
+}
+
+.main-shell{
+  max-width:var(--layout-compact-max-width);
+}
+
+.tabs-bar{
+  gap:.4rem;
+  margin-bottom:.72rem;
+}
+
+.tab-card{
+  padding:var(--layout-compact-card-padding);
+}
+
+@media(max-width:1024px){
+  .page-layout{
+    width:calc(100% - 1.2rem);
+    padding:0 .6rem;
+    max-width:none;
+  }
+}
+
+@media(max-width:768px){
+  html{
+    font-size:88%;
+  }
+
+  header{
+    padding:.78rem .82rem;
+  }
+
+  .tab-card{
+    padding:.82rem;
+  }
 }
 
 header{
@@ -2788,7 +2852,7 @@ header{
 }
 
 .page-layout{
-  padding-top:.5rem;
+  padding-top:.35rem;
 }
 
 .header-msg-btn{
