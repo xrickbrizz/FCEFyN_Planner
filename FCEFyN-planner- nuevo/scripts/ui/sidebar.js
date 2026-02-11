@@ -46,6 +46,7 @@ export function createQuickSidebar(options){
   items.forEach(it =>{
     const row = document.createElement("button");
     row.className = "qs-item";
+    if (it.comingSoon) row.classList.add("coming-soon");
     row.type = "button";
     row.dataset.id = it.id;
 
@@ -67,6 +68,14 @@ export function createQuickSidebar(options){
     label.appendChild(ico);
     label.appendChild(txt);
     row.appendChild(label);
+
+    if (it.comingSoon){
+      const pill = document.createElement("span");
+      pill.className = "qs-pill";
+      pill.textContent = "Próx.";
+      row.appendChild(pill);
+    }
+
     row.addEventListener("click", ()=>{
       if (typeof onSelect === "function") onSelect(it.id);
       setActive(it.id);

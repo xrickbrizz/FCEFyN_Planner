@@ -559,6 +559,10 @@ window.showTab = function(name){
   const tabPlanEstudios     = document.getElementById("tab-planestudios");
   const tabPlanificador     = document.getElementById("tab-planificador");
   const tabProfesores       = document.getElementById("tab-profesores");
+  const tabComunidad        = document.getElementById("tab-comunidad");
+  const tabRecreo           = document.getElementById("tab-recreo");
+  const tabBiblioteca       = document.getElementById("tab-biblioteca");
+  const tabTransporte       = document.getElementById("tab-transporte");
   const tabMensajes         = document.getElementById("tab-mensajes");
   const tabPerfil           = document.getElementById("tab-perfil");
   const toggleTab = (el, visible)=>{ if (el) el.style.display = visible ? "block" : "none"; };
@@ -571,6 +575,10 @@ window.showTab = function(name){
   toggleTab(tabPlanEstudios, name === "planestudios");
   toggleTab(tabPlanificador, name === "planificador");
   toggleTab(tabProfesores, name === "profesores");
+  toggleTab(tabComunidad, name === "comunidad");
+  toggleTab(tabRecreo, name === "recreo");
+  toggleTab(tabBiblioteca, name === "biblioteca");
+  toggleTab(tabTransporte, name === "transporte");
   toggleTab(tabMensajes, name === "mensajes");
   toggleTab(tabPerfil, name === "perfil");
 

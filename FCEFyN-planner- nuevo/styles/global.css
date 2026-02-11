@@ -656,6 +656,21 @@ body[data-theme="dark"] .theme-toggle{
   background: var(--accent-bg);
   box-shadow:none;
 }
+
+.quick-sidebar .qs-item.coming-soon{
+  opacity:.72;
+  cursor:default;
+}
+.quick-sidebar .qs-item.coming-soon:hover{
+  transform:none;
+  border-color:transparent;
+  background:var(--glass-strong);
+}
+.quick-sidebar .qs-item.coming-soon.active{
+  opacity:1;
+  border-color:var(--accent-60);
+  background: var(--accent-bg);
+}
 .quick-sidebar .qs-footer{
   margin-top:.9rem;
   color:var(--ui-muted);
