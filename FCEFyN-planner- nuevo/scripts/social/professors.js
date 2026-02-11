@@ -10,27 +10,110 @@ import {
   doc
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
+import { getPlanWithSubjects, findPlanByName } from "../plans-data.js";
 
 let CTX = null;
 let professorsCatalog = [];
-let professorFilters = { career:"", subject:"" };
+let professorFilters = { subject:"" };
 let professorReviewsCache = {};
 let selectedProfessorId = null;
+let userCareerContext = { slug:"", name:"" };
+let careerSubjectsCatalog = [];
+let isCatalogLoading = false;
 
 const notifySuccess = (message) => CTX?.notifySuccess?.(message);
 const notifyError = (message) => CTX?.notifyError?.(message);
 const notifyWarn = (message) => CTX?.notifyWarn?.(message);
 
 // ---------------- Funciones para resolver datos y renderizar UI ------------------------------------//
-function resolveProfileCareerName(){
+function resolveCareerNameFromSlug(careerSlug = ""){
+  if (!careerSlug) return "";
+  const plan = (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug);
+  return plan?.nombre || "";
+}
+
+async function resolveUserCareerContext(){
   const profile = CTX?.AppState?.userProfile || null;
-  if (!profile) return "";
-  if (profile.career) return profile.career;
-  if (profile.careerSlug){
-    const plan = (CTX?.getCareerPlans?.() || []).find(p => p.slug === profile.careerSlug);
-    return plan?.nombre || "";
+  const currentUser = CTX?.getCurrentUser?.();
+
+  const fromProfileSlug = profile?.careerSlug || "";
+  const fromProfileName = profile?.career || resolveCareerNameFromSlug(fromProfileSlug);
+  if (fromProfileSlug || fromProfileName){
+    return { slug: fromProfileSlug, name: fromProfileName };
+  }
+
+  if (!currentUser?.uid) return { slug:"", name:"" };
+
+  try{
+    const userSnap = await getDoc(doc(CTX.db, "users", currentUser.uid));
+    if (!userSnap.exists()) return { slug:"", name:"" };
+    const data = userSnap.data() || {};
+    const slug = data.careerSlug || "";
+    const name = data.career || resolveCareerNameFromSlug(slug);
+    return { slug, name };
+  }catch (e){
+    console.error("[Profesores] No se pudo resolver carrera de usuario", e?.code, e?.message, e);
+    return { slug:"", name:"" };
+  }
+}
+
+function resolveCareerSlugForPlans(careerContext){
+  if (careerContext?.slug) return careerContext.slug;
+  if (careerContext?.name){
+    const byCtx = CTX?.findPlanByName?.(careerContext.name);
+    if (byCtx?.slug) return byCtx.slug;
+    const byData = findPlanByName(careerContext.name);
+    if (byData?.slug) return byData.slug;
   }
   return "";
+}
+
+function parseCareerSubjects(rawSubjects = []){
+  const normalizeStr = CTX?.normalizeStr || ((v) => (v || "").toString().toLowerCase());
+  const parsed = [];
+  const seen = new Set();
+  rawSubjects.forEach((item, idx) => {
+    const name = item?.nombre || item?.name || item?.id || "";
+    if (!name) return;
+    const key = normalizeStr(name);
+    if (seen.has(key)) return;
+    seen.add(key);
+    parsed.push({
+      name,
+      order: idx,
+      semester: Number(item?.semestre ?? item?.semester ?? 0) || 0
+    });
+  });
+  return parsed;
+}
+
+async function loadCareerSubjectsCatalog(careerContext){
+  const careerSlug = resolveCareerSlugForPlans(careerContext);
+  if (!careerSlug){
+    careerSubjectsCatalog = [];
+    return;
+  }
+
+  try{
+    const planData = await getPlanWithSubjects(careerSlug);
+    careerSubjectsCatalog = parseCareerSubjects(planData?.subjects || []);
+  }catch(error){
+    console.error("[Profesores] No se pudieron cargar materias de la carrera", error);
+    careerSubjectsCatalog = [];
+  }
+}
+
+function getCareerSubjectNames(){
+  return careerSubjectsCatalog.map(item => item.name).filter(Boolean);
+}
+
+function getProfessorSubjectsForCareer(professor){
+  const normalizeStr = CTX?.normalizeStr;
+  const profSubjects = Array.isArray(professor?.subjects) ? professor.subjects.filter(Boolean) : [];
+  const careerSubjects = getCareerSubjectNames();
+  if (!careerSubjects.length) return profSubjects;
+  const careerSet = new Set(careerSubjects.map(s => normalizeStr ? normalizeStr(s) : s.toLowerCase()));
+  return profSubjects.filter(subject => careerSet.has(normalizeStr ? normalizeStr(subject) : subject.toLowerCase()));
 }
 
 
@@ -53,12 +136,45 @@ function formatDecimal(val){
 }
 // Carga el catálogo de profesores activos desde Firestore, actualiza el estado y renderiza la sección.
 async function loadProfessorsCatalog(){
+  if (isCatalogLoading) return;
+  isCatalogLoading = true;
   console.log("[Professors] Loading catalog...");
   professorsCatalog = [];
   professorReviewsCache = {};
+  const normalizeStr = CTX?.normalizeStr;
+
   try{
-    const snap = await getDocs(query(collection(CTX.db,"professors"), where("active","==", true)));
-    snap.forEach(d =>{
+    userCareerContext = await resolveUserCareerContext();
+    await loadCareerSubjectsCatalog(userCareerContext);
+
+    const careerCandidates = [userCareerContext.name, userCareerContext.slug]
+      .filter(Boolean)
+      .filter((value, index, arr) => {
+        if (!normalizeStr) return arr.indexOf(value) === index;
+        return index === arr.findIndex(candidate => normalizeStr(candidate) === normalizeStr(value));
+      });
+
+    if (!careerCandidates.length){
+      notifyWarn("Completá tu carrera en Perfil para ver profesores.");
+      renderProfessorsSection();
+      return;
+    }
+
+    const docsById = new Map();
+    for (const careerValue of careerCandidates){
+      const snap = await getDocs(
+        query(
+          collection(CTX.db,"professors"),
+          where("active","==", true),
+          where("careers", "array-contains", careerValue)
+        )
+      );
+      snap.forEach(d =>{
+        if (!docsById.has(d.id)) docsById.set(d.id, d);
+      });
+    }
+
+    docsById.forEach(d => {
       const data = d.data() || {};
       const ratingAvg = typeof data.ratingAvg === "number" ? data.ratingAvg : null;
       professorsCatalog.push({
@@ -66,7 +182,6 @@ async function loadProfessorsCatalog(){
         name: data.name || "",
         careers: Array.isArray(data.careers) ? data.careers : [],
         subjects: Array.isArray(data.subjects) ? data.subjects : [],
-        // Nota: se mantienen los campos históricos, pero la fuente segura es ratingAvg.
         avgGeneral: ratingAvg ?? (typeof data.avgGeneral === "number" ? data.avgGeneral : 0),
         avgTeaching: ratingAvg ?? (typeof data.avgTeaching === "number" ? data.avgTeaching : 0),
         avgExams: ratingAvg ?? (typeof data.avgExams === "number" ? data.avgExams : 0),
@@ -77,24 +192,33 @@ async function loadProfessorsCatalog(){
     });
   }catch(e){
     console.error("[Profesores] Firestore error", e?.code, e?.message, e);
-    console.error("[Profesores] Firestore op", "getDocs(query(collection(db, \"professors\"), where(\"active\",\"==\", true)))", "read/list");
+    console.error("[Profesores] Firestore op", "query professors active + careers array-contains", "read/list");
     notifyError("No se pudieron cargar profesores: " + (e.message || e));
     professorsCatalog = [];
+  }finally{
+    isCatalogLoading = false;
   }
-  console.log("[Professors] Professors loaded:", professorsCatalog.length);
+
+  console.log("[Professors] Professors loaded:", professorsCatalog.length, "subjects:", careerSubjectsCatalog.length);
   renderProfessorsSection();
+}
+
+
+function needsCareerCatalogReload(){
+  const normalizeStr = CTX?.normalizeStr;
+  const profile = CTX?.AppState?.userProfile || null;
+  const expectedSlug = profile?.careerSlug || "";
+  const expectedName = profile?.career || resolveCareerNameFromSlug(expectedSlug);
+  const sameSlug = (normalizeStr ? normalizeStr(userCareerContext.slug || "") : (userCareerContext.slug || "").toLowerCase())
+    === (normalizeStr ? normalizeStr(expectedSlug) : expectedSlug.toLowerCase());
+  const sameName = (normalizeStr ? normalizeStr(userCareerContext.name || "") : (userCareerContext.name || "").toLowerCase())
+    === (normalizeStr ? normalizeStr(expectedName) : expectedName.toLowerCase());
+  return !(sameSlug && sameName);
 }
 
 function initProfessorsUI(){
   console.log("[Professors] Init UI");
-  const selCareer = document.getElementById("profFilterCareer");
   const selSubject = document.getElementById("profFilterSubject");
-  if (selCareer){
-    selCareer.addEventListener("change", ()=>{
-      professorFilters.career = selCareer.value;
-      renderProfessorsSection();
-    });
-  }
   if (selSubject){
     selSubject.addEventListener("change", ()=>{
       professorFilters.subject = selSubject.value;
@@ -126,52 +250,22 @@ function initProfessorRating(){
 
 // Función para enviar la valoración de un profesor. Se llama desde el botón de submit en el formulario de valoración.
 function renderProfessorsSection(){
+  if (needsCareerCatalogReload()){
+    if (!isCatalogLoading) loadProfessorsCatalog();
+    return;
+  }
   renderProfessorsFilters();
   renderProfessorsList();
   renderProfessorDetail();
 }
 
 function renderProfessorsFilters(){
-  const selCareer = document.getElementById("profFilterCareer");
   const selSubject = document.getElementById("profFilterSubject");
   const normalizeStr = CTX?.normalizeStr;
-  const preferredCareer = resolveProfileCareerName();
-
-  if (!professorFilters.career && preferredCareer){
-    professorFilters.career = preferredCareer;
-  }
-
-  const careers = new Set();
-  const subjectsSet = new Set();
-  professorsCatalog.forEach(p=>{
-    (p.careers || []).forEach(c=> careers.add(c));
-    (p.subjects || []).forEach(s=> subjectsSet.add(s));
-  });
-
-  if (selCareer){
-    const existing = Array.from(careers).map(c => normalizeStr ? normalizeStr(c) : c.toLowerCase());
-    if (professorFilters.career && !existing.includes(normalizeStr ? normalizeStr(professorFilters.career) : professorFilters.career.toLowerCase())){
-      professorFilters.career = "";
-    }
-    selCareer.innerHTML = "";
-    const optAll = document.createElement("option");
-    optAll.value = "";
-    optAll.textContent = "Todas las carreras";
-    selCareer.appendChild(optAll);
-    Array.from(careers).sort((a,b)=> {
-      if (!normalizeStr) return a.localeCompare(b);
-      return normalizeStr(a) < normalizeStr(b) ? -1 : 1;
-    }).forEach(c=>{
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      if (professorFilters.career && normalizeStr && normalizeStr(professorFilters.career) === normalizeStr(c)) opt.selected = true;
-      selCareer.appendChild(opt);
-    });
-  }
+  const subjectOptions = getCareerSubjectNames();
 
   if (selSubject){
-    const existing = Array.from(subjectsSet).map(s => normalizeStr ? normalizeStr(s) : s.toLowerCase());
+    const existing = subjectOptions.map(s => normalizeStr ? normalizeStr(s) : s.toLowerCase());
     if (professorFilters.subject && !existing.includes(normalizeStr ? normalizeStr(professorFilters.subject) : professorFilters.subject.toLowerCase())){
       professorFilters.subject = "";
     }
@@ -180,14 +274,14 @@ function renderProfessorsFilters(){
     optAllS.value = "";
     optAllS.textContent = "Todas las materias";
     selSubject.appendChild(optAllS);
-    Array.from(subjectsSet).sort((a,b)=> {
-      if (!normalizeStr) return a.localeCompare(b);
-      return normalizeStr(a) < normalizeStr(b) ? -1 : 1;
-    }).forEach(s=>{
+
+    subjectOptions.forEach(subjectName => {
       const opt = document.createElement("option");
-      opt.value = s;
-      opt.textContent = s;
-      if (professorFilters.subject && normalizeStr && normalizeStr(professorFilters.subject) === normalizeStr(s)) opt.selected = true;
+      opt.value = subjectName;
+      opt.textContent = subjectName;
+      if (professorFilters.subject && (normalizeStr ? normalizeStr(professorFilters.subject) : professorFilters.subject.toLowerCase()) === (normalizeStr ? normalizeStr(subjectName) : subjectName.toLowerCase())){
+        opt.selected = true;
+      }
       selSubject.appendChild(opt);
     });
   }
@@ -203,11 +297,8 @@ function renderProfessorsList(){
   list.innerHTML = "";
 
   let filtered = professorsCatalog.slice();
-  if (professorFilters.career){
-    filtered = filtered.filter(p => Array.isArray(p.careers) && p.careers.some(c => (normalizeStr ? normalizeStr(c) : c.toLowerCase()) === (normalizeStr ? normalizeStr(professorFilters.career) : professorFilters.career.toLowerCase())));
-  }
   if (professorFilters.subject){
-    filtered = filtered.filter(p => Array.isArray(p.subjects) && p.subjects.some(s => (normalizeStr ? normalizeStr(s) : s.toLowerCase()) === (normalizeStr ? normalizeStr(professorFilters.subject) : professorFilters.subject.toLowerCase())));
+    filtered = filtered.filter(p => getProfessorSubjectsForCareer(p).some(s => (normalizeStr ? normalizeStr(s) : s.toLowerCase()) === (normalizeStr ? normalizeStr(professorFilters.subject) : professorFilters.subject.toLowerCase())));
   }
 
   filtered.sort((a,b)=>{
@@ -261,12 +352,9 @@ function renderProfessorsList(){
     badges.className = "prof-badges";
     const subjectsLabel = document.createElement("span");
     subjectsLabel.className = "prof-badge";
-    subjectsLabel.textContent = (p.subjects || []).join(" · ") || "Sin materias";
-    const careersLabel = document.createElement("span");
-    careersLabel.className = "prof-badge";
-    careersLabel.textContent = (p.careers || []).join(" · ") || "Sin carreras";
+    const subjectsInCareer = getProfessorSubjectsForCareer(p);
+    subjectsLabel.textContent = subjectsInCareer.join(" · ") || "Sin materias";
     badges.appendChild(subjectsLabel);
-    badges.appendChild(careersLabel);
 
     card.appendChild(row);
     card.appendChild(meta);
@@ -354,7 +442,7 @@ function renderProfessorDetail(){
   nameEl.textContent = prof.name || "Profesor";
   const meta = document.createElement("div");
   meta.className = "prof-detail-meta";
-  meta.textContent = `Carreras: ${(prof.careers || []).join(", ") || "—"} · Materias: ${(prof.subjects || []).join(", ") || "—"}`;
+  meta.textContent = getProfessorSubjectsForCareer(prof).join(" · ") || "Sin materias";
   left.appendChild(nameEl);
   left.appendChild(meta);
 
