@@ -913,7 +913,16 @@ body[data-theme="light"] .event{
       color:var(--color-text);
     }
     /* Select option */
-    
+    #subjectNameSelect optgroup {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  }
+  #studyTimerMateria option{
+      background-color: var(--card-bg);
+  color: var(--text-primary);
+  }
+
+   /* Select option */
     .modal select:disabled,
     .subject-form-box select:disabled,
     .prof-filters select:disabled,

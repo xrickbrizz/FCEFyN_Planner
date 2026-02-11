@@ -307,7 +307,7 @@ body[data-theme="dark"] .hero-title{
 }
 @media(max-width:520px){ .feature-grid{ grid-template-columns:1fr; } }
 .feat{
-  background:var(--surface-9);
+  background:var(--card-bg);
   border:1px solid var(--border-85);
   border-radius:var(--radius-lg);
   padding:.75rem .8rem;
@@ -834,7 +834,8 @@ body[data-theme="light"] .plans-page .subject{
   border-color: var(--color-border);
 }
 .plan-menu-card{
-  background: var(--surface-3);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
   border-radius: 12px;
   padding: 8px;
   min-width: 190px;
