@@ -683,3 +683,26 @@ function loadRemoteScript(url){
     document.head.appendChild(script);
   });
 }
+const bottonMostrar = document.getElementById("agregarColorManual");
+const backMostrar = document.getElementById("backMostrar");
+const ColorManual = document.getElementById("inputColorManual");
+
+bottonMostrar.addEventListener("click", () => {
+ocultar("agregarColorManual","inputColorManual","backMostrar");
+console.log("clickMostrar");});
+
+backMostrar.addEventListener("click", () => {
+ocultar1("backMostrar","inputColorManual","agregarColorManual");});
+
+
+function ocultar(ocultar,mostrar,mostrar2){
+  document.getElementById(ocultar).classList.add("hidden");
+  document.getElementById(mostrar).classList.remove("hidden");
+  document.getElementById(mostrar2).classList.remove("hidden");
+  }
+
+  function ocultar1(ocultar,ocultar1,mostrar){
+    document.getElementById(ocultar).classList.add("hidden");
+  document.getElementById(ocultar1).classList.add("hidden");
+  document.getElementById(mostrar).classList.remove("hidden");
+} 

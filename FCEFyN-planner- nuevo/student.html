@@ -367,9 +367,13 @@
               <input id="subjectColor" type="color" value="#E6D98C" class="subject-color-input" aria-label="Selector de color personalizado" />
               <span class="small-muted">Se usará en Agenda, Estudio y Académico.</span>
             </div>
-            <div class="subject-color-manual">
+            <!-- agregar boton de color manual -->
+             <button id="agregarColorManual">Agregar color Manual</button>
+            <div class="subject-color-manual hidden" id="inputColorManual">
+               <button id="backMostrar" class="hidden" >Volver</button>
               <input id="subjectColorText" type="text" class="subject-color-text" placeholder="#AABBCC o rgb(34, 123, 200)" autocomplete="off" />
-              <small class="subject-color-hint" id="subjectColorHint">Podés pegar un color manualmente si lo preferís.</small>
+             <!-- <small class="subject-color-hint" id="subjectColorHint">Podés pegar un color manualmente si lo preferís.</small>
+             --> 
             </div>
           </div>
           <div class="subject-form-actions">
@@ -528,53 +532,72 @@
       <div class="messages-layout">
         <div class="messages-left">
           <div class="card-block">
+          <section class="messages-layout mensajeria-container" aria-label="Mensajería entre estudiantes">
+            <aside class="messages-left sidebar-mensajes">
+            <article class="card-block add-amigo">
             <div class="block-title">Agregar amigo</div>
-            <div class="small-muted">Enviá una solicitud usando el correo institucional.</div>
-            <div class="friend-form">
-              <input id="friendEmailInput" type="email" placeholder="correo@mi.unc.edu.ar" />
-              <button class="btn-blue btn-small" id="btnSendFriendRequest" type="button" >Enviar solicitud</button>
+            <!-- eliminar -->
+             <div class="small-muted">Buscá por correo institucional y enviá la solicitud.</div>
+            <div class="friend-form add-amigo-form">
+              <input id="friendEmailInput" type="email" placeholder="correo@mi.unc.edu.ar" aria-label="Correo para agregar amigo" />
+              <button class="btn-blue btn-small" id="btnSendFriendRequest" type="button">Enviar solicitud</button>
             </div>
-          </div>
+          </article>
 
-          <div class="card-block">
-            <div class="block-title">Solicitudes recibidas</div>
-            <div id="incomingRequests" class="requests-box"></div>
-          </div>
-
-          <div class="card-block">
-            <div class="block-title">Solicitudes enviadas</div>
-            <div id="outgoingRequests" class="requests-box"></div>
-          </div>
-
-          <div class="card-block">
-            <div class="block-title" style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
-               Amigos
-              <span class="small-muted" style="margin-left:.4rem;">Solo podés chatear con aceptados</span>
+          <article class="card-block suggestions-block">
+            <div class="block-title">Sugerencias</div>
+            <div class="small-muted">Personas que podrías conocer por tu carrera y año.</div>
+            <div class="suggestions-list" aria-live="polite">
+              <div class="suggestion-chip">comision2024@mi.unc.edu.ar</div>
+              <div class="suggestion-chip">grupo.estudio@mi.unc.edu.ar</div>
+              <div class="suggestion-chip">lab.fisica@mi.unc.edu.ar</div>
             </div>
-            <div id="friendsListBox" class="friends-box"></div>
-          </div>
-        </div>
+          </article>
 
-        <div class="messages-right">
-          <div class="card-block">
+          <article class="card-block requests-block">
+            <div class="block-title">Recibidas</div>
+            <div id="incomingRequests" class="requests-box friend-list"></div>
+          </article>
+
+          <article class="card-block requests-block">
+            <div class="block-title">Enviadas</div>
+            <div id="outgoingRequests" class="requests-box friend-list"></div>
+          </article>
+
+          <article class="card-block friends-block">
+            <div class="block-title friends-title-row">
+              <span>Lista de amigos</span>
+              <span class="small-muted">Solo podés chatear con solicitudes aceptadas</span>
+            </div>
+            <div class="friend-list-note small-muted">Cada fila muestra estado (online/offline), última conexión y acceso directo al chat.</div>
+            <div id="friendsListBox" class="friends-box friend-list" aria-live="polite"></div>
+          </article>
+        </aside>
+
+             <section class="messages-right panel-chat">
+          <article class="card-block chat-card">
             <div class="chat-header">
               <div>
-                <div id="chatHeader" class="chat-title">Seleccioná un amigo para chatear</div>
-                <div id="chatSubheader" class="small-muted">Estado y última conexión según privacidad.</div>
+                <div id="chatHeader" class="chat-title">No hay conversación activa</div>
+                <div id="chatSubheader" class="chat-subtitle">Seleccioná un amigo para empezar a chatear.</div>
+              </div>
               </div>
               <label class="toggle-line">
                 <input type="checkbox" id="toggleLastSeen" />
                 <span>Mostrar mi última conexión</span>
               </label>
             </div>
-            <div id="messagesList" class="messages-box"></div>
+            <div id="messagesList" class="messages-box">
+              <div class="chat-placeholder">No hay conversación activa</div>
+            </div>
             <div class="chat-input-row" id="chatInputRow">
               <input id="messageInput" placeholder="Seleccioná un amigo para chatear" disabled />
               <button class="btn-blue btn-small" id="btnSendMessage" type="button" disabled>Enviar</button>
             </div>
-          </div>
-        </div>
-      </div>
+          </article>
+        </section>
+      </section>
+      <!-- END MENSAJERIA -->
     </div>
     <div id="tab-perfil" class="tab-card" style="display:none;">
       <div class="profile-layout">
