@@ -918,8 +918,8 @@ body[data-theme="light"] .event{
   color: var(--text-primary);
   }
   #studyTimerMateria option{
-      background-color: var(--card-bg);
-  color: var(--text-primary);
+    background-color: var(--card-bg);
+    color: var(--text-primary);
   }
 
    /* Select option */
@@ -2848,7 +2848,7 @@ header{
   position:sticky;
   top:0;
   z-index:1100;
-  background:var(--header-bg);
+  /*background:var(--header-bg); */
 }
 
 .page-layout{

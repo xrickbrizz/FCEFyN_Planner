@@ -855,7 +855,7 @@ body[data-theme="light"] .quick-toggle-btn{
 }
 .toast-card{
   pointer-events:auto;
-  background: var(--ui-surface);
+    background-color: var(--card-bg);
   border:1px solid var(--ui-border);
   border-left:3px solid var(--ui-accent);
   border-radius:var(--radius-lg);
@@ -886,7 +886,7 @@ body[data-theme="light"] .quick-toggle-btn{
   letter-spacing:.15px;
 }
 .toast-card .toast-msg{
-  color:var(--ui-text);
+    color: var(--text-primary);
   opacity:.9;
   line-height:1.35;
   font-size:.93rem;
@@ -932,7 +932,6 @@ body[data-theme="dark"] .toast-btn.primary{
   background:var(--glass-soft);
   color:var(--ui-muted);
   border-radius:var(--radius-xs);
-  width:26px; height:26px;
   cursor:pointer;
   font-weight:800;
 }
