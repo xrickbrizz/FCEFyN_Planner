@@ -1045,3 +1045,11 @@ body[data-theme="light"] .dialog-btn.primary{
   from{ opacity:0; transform:translateY(-6px); }
   to{ opacity:1; transform:translateY(0); }
 }
+
+    .modal select option:checked,
+    .subject-form-box select option:checked,
+    .prof-filters select option:checked,
+    #tab-perfil.profile-page .profile-field select option:checked{
+      background:var(--card-bg);
+      color:var(--color-text);
+    }

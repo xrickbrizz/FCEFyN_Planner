@@ -772,7 +772,7 @@ body[data-theme="light"] .event{
     .modal-bg{
       position:fixed;
       inset:0;
-      background:var(--overlay-soft);
+      background:rgba(15,23,42,.35);
       backdrop-filter: blur(3px);
       display:none;
       align-items:center;
@@ -788,7 +788,7 @@ body[data-theme="light"] .event{
       max-width:640px;
       width:100%;
       border:1px solid var(--border-70);
-      box-shadow:var(--shadow-soft);
+      box-shadow:0 18px 45px rgba(15,23,42,.12);
       display:flex;
       flex-direction:column;
       gap:1rem;
@@ -854,23 +854,38 @@ body[data-theme="light"] .event{
       padding-right:2.1rem;
       caret-color:var(--color-text);
       color:var(--color-text);
-      background-color:var(--input-bg);
-      border-color:var(--input-border);
     }
     .modal select option,
     .subject-form-box select option,
     .prof-filters select option,
     #tab-perfil.profile-page .profile-field select option{
-      background:var(--surface-3);
+      background:var(--card-bg);
       color:var(--color-text);
     }
     .modal select option:checked,
     .subject-form-box select option:checked,
     .prof-filters select option:checked,
     #tab-perfil.profile-page .profile-field select option:checked{
-      background:var(--accent-bg-strong);
+      background:var(--card-bg);
       color:var(--color-text);
     }
+    /* Select option */
+    .modal select option:checked,
+    .subject-form-box select option:checked,
+    .prof-filters select option:checked,
+    #tab-perfil.profile-page .profile-field select option{
+      background:var(--card-bg);
+      color:var(--color-text);
+    }
+    .modal select option:checked,
+    .subject-form-box select option:checked,
+    .prof-filters select option:checked,
+    #tab-perfil.profile-page .profile-field select option:checked{
+      background:var(--card-bg);
+      color:var(--color-text);
+    }
+
+
     .modal select:disabled,
     .subject-form-box select:disabled,
     .prof-filters select:disabled,
@@ -1726,7 +1741,6 @@ body[data-theme="light"] .event{
       text-overflow:ellipsis;
       overflow:hidden;
       max-width:100%;
-      color:var(--text-soft);
     }
     @media (max-width:880px){
       .planner-filters{
