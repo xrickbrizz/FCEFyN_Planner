@@ -15,11 +15,11 @@
 </head>
 
 <body>
+  <!-- HEADER -->
   <header>
-          <div class="brand" id="logoPanel"> <!-- curso : point (none corregir despues logica link) -->
+    <div class="brand" id="logoPanel"> <!-- curso : point (none corregir despues logica link) -->
       <img class="logo" src="assets/fcefyn-logo.svg" alt="Logo FCEFyN" id="logoFcefyn" style="cursor: pointer"/>
-      <div class="brand-txt">
-      </div>
+      <div class="brand-txt"></div>
     </div>
     <div class="header-left">
       <div class="header-title">Panel del Estudiante</div>
@@ -29,7 +29,11 @@
       <button class="theme-toggle" id="themeToggleBtn" data-theme-toggle type="button">
         <span class="ico"></span>
       </button>
-      <div id="vue-user-panel"></div> 
+      <button class="header-msg-btn" type="button" data-section="mensajes" aria-label="Abrir mensajería" onclick="window.showTab && window.showTab('mensajes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <div id="vue-user-panel"></div>
+    </div>
   </header>
   <div class="mobile-topbar" aria-label="Navegación móvil">
     <div class="mobile-brand">
@@ -54,7 +58,8 @@
         <div class="section-label mqb-home" id="currentSectionLabel"><span>Inicio</span></div>
         <button class="help-btn mqb-help" id="helpButton" type="button" aria-label="Ayuda contextual">?</button>
       </div>
-      <div class="main-shell">
+      <!-- MAIN -->
+      <main class="main-shell">
         
     <div id="tab-inicio" class="tab-card">
       <div class="mobile-home-header">
@@ -527,24 +532,20 @@
       </div>
 
     </div>
-    <!----------------------------- Mensajeria  ------------------------------------------>
+    <!-- MENSAJERÍA -->
     <div id="tab-mensajes" class="tab-card" style="display:none;">
-      <div class="messages-layout">
-        <div class="messages-left">
-          <div class="card-block">
-          <section class="messages-layout mensajeria-container" aria-label="Mensajería entre estudiantes">
-            <aside class="messages-left sidebar-mensajes">
-            <article class="card-block add-amigo">
+      <section class="mensajeria-layout mensajeria-container" aria-label="Mensajería entre estudiantes">
+        <aside class="mensajeria-sidebar messages-left sidebar-mensajes">
+          <article class="card-block mensajeria-card add-amigo">
             <div class="block-title">Agregar amigo</div>
-            <!-- eliminar -->
-             <div class="small-muted">Buscá por correo institucional y enviá la solicitud.</div>
+            <div class="small-muted">Buscá por correo institucional y enviá la solicitud.</div>
             <div class="friend-form add-amigo-form">
               <input id="friendEmailInput" type="email" placeholder="correo@mi.unc.edu.ar" aria-label="Correo para agregar amigo" />
               <button class="btn-blue btn-small" id="btnSendFriendRequest" type="button">Enviar solicitud</button>
             </div>
           </article>
 
-          <article class="card-block suggestions-block">
+          <article class="card-block mensajeria-card suggestions-block">
             <div class="block-title">Sugerencias</div>
             <div class="small-muted">Personas que podrías conocer por tu carrera y año.</div>
             <div class="suggestions-list" aria-live="polite">
@@ -554,17 +555,17 @@
             </div>
           </article>
 
-          <article class="card-block requests-block">
+          <article class="card-block mensajeria-card requests-block">
             <div class="block-title">Recibidas</div>
             <div id="incomingRequests" class="requests-box friend-list"></div>
           </article>
 
-          <article class="card-block requests-block">
+          <article class="card-block mensajeria-card requests-block">
             <div class="block-title">Enviadas</div>
             <div id="outgoingRequests" class="requests-box friend-list"></div>
           </article>
 
-          <article class="card-block friends-block">
+          <article class="card-block mensajeria-card friends-block">
             <div class="block-title friends-title-row">
               <span>Lista de amigos</span>
               <span class="small-muted">Solo podés chatear con solicitudes aceptadas</span>
@@ -574,19 +575,18 @@
           </article>
         </aside>
 
-             <section class="messages-right panel-chat">
-          <article class="card-block chat-card">
+        <section class="mensajeria-chat messages-right panel-chat">
+          <article class="card-block mensajeria-card mensajeria-chat-card chat-card">
             <div class="chat-header">
               <div>
                 <div id="chatHeader" class="chat-title">No hay conversación activa</div>
                 <div id="chatSubheader" class="chat-subtitle">Seleccioná un amigo para empezar a chatear.</div>
               </div>
-              </div>
               <label class="toggle-line">
                 <input type="checkbox" id="toggleLastSeen" />
                 <span>Mostrar mi última conexión</span>
               </label>
-              <div>
+            </div>
             <div id="messagesList" class="messages-box">
               <div class="chat-placeholder">No hay conversación activa</div>
             </div>
@@ -594,14 +594,12 @@
               <input id="messageInput" placeholder="Seleccioná un amigo para chatear" disabled />
               <button class="btn-blue btn-small" id="btnSendMessage" type="button" disabled>Enviar</button>
             </div>
-            </div>
-            </div>
-
           </article>
         </section>
       </section>
-      <!-- END MENSAJERIA -->
     </div>
+
+    <!-- PERFIL -->
     <div id="tab-perfil" class="tab-card" style="display:none;">
       <div class="profile-layout">
         <div class="profile-card">
@@ -686,8 +684,11 @@
         </div>
       </div>
     </div>
-  </div> 
-      </div> </div> </div> <div class="modal-bg" id="modalBg">
+  </main>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modalBg">
     <div class="modal modal-planner">
       <div class="modal-header">
         <h3 class="modal-title" id="studyModalTitle">Nuevo registro</h3>

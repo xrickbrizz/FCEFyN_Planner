@@ -2291,3 +2291,82 @@ body[data-theme="light"] .event{
   }
 }
 /* END Mensajería Styles */
+/* =========================================================
+   Mensajería encapsulada + botón de header
+   ========================================================= */
+.header-msg-btn{
+  width:42px;
+  height:42px;
+  padding:0;
+  border-radius:999px;
+  border:1px solid var(--border-85);
+  background:var(--surface-94);
+  color:var(--color-text);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.header-msg-btn svg{
+  width:20px;
+  height:20px;
+}
+.header-msg-btn:hover{
+  border-color:var(--accent-805);
+}
+
+#tab-mensajes{
+  position:relative;
+  z-index:2;
+  min-height:calc(100vh - 230px);
+}
+
+#tab-mensajes .mensajeria-layout{
+  display:grid;
+  grid-template-columns:minmax(300px, 380px) minmax(0, 1fr);
+  gap:1rem;
+  align-items:stretch;
+  min-height:calc(100vh - 260px);
+}
+
+#tab-mensajes .mensajeria-sidebar,
+#tab-mensajes .mensajeria-chat{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:.85rem;
+}
+
+#tab-mensajes .mensajeria-card{
+  overflow:hidden;
+}
+
+#tab-mensajes .mensajeria-chat-card{
+  flex:1;
+  min-height:560px;
+  display:flex;
+  flex-direction:column;
+}
+
+#tab-mensajes .messages-box{
+  flex:1;
+  min-height:280px;
+  max-height:none;
+  height:auto;
+  overflow:auto;
+}
+
+#tab-mensajes .chat-input-row{
+  margin-top:.65rem;
+}
+
+@media (max-width: 1080px){
+  #tab-mensajes .mensajeria-layout{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+
+  #tab-mensajes .mensajeria-chat-card{
+    min-height:460px;
+  }
+}
