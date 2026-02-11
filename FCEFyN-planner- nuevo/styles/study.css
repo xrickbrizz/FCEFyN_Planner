@@ -350,6 +350,49 @@ body[data-theme="light"] .tab-card{
   box-shadow:none;
   backdrop-filter:none;
 }
+
+
+.coming-view{
+  min-height:calc(100vh - 260px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:.6rem;
+  padding:1.2rem;
+}
+.coming-illustration{
+  width:min(100%, 360px);
+  color:var(--color-text);
+}
+.coming-illustration svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.coming-view h2{
+  margin:.2rem 0 0;
+  font-size:clamp(2rem, 2.8vw, 2.6rem);
+  line-height:1.12;
+  color:var(--color-primary-strong);
+}
+.coming-view p{
+  margin:0;
+  max-width:620px;
+  color:var(--text-soft);
+  font-size:1.03rem;
+  line-height:1.45;
+}
+@media (max-width: 900px){
+  .coming-view{
+    min-height:calc(100vh - 220px);
+    padding:1rem .7rem;
+  }
+  .coming-illustration{
+    width:min(100%, 300px);
+  }
+}
     .home-layout{
       display:grid;
       grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);

@@ -8,7 +8,11 @@ export const ICONS = {
   materias: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4.5" width="7" height="15" rx="2"/><rect x="13" y="4.5" width="7" height="15" rx="2"/></svg>`,
   plan: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9a4 4 0 0 1 4 4v8"/><path d="M20 18H7a3 3 0 0 1-3-3V6"/><path d="M7 11h7"/></svg>`,
   planificador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>`,
-  profesores: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M17 7.5a3 3 0 1 1 0 6"/><path d="M17 13.5c2.2 0 4 1.8 4 4"/></svg>`
+  profesores: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M17 7.5a3 3 0 1 1 0 6"/><path d="M17 13.5c2.2 0 4 1.8 4 4"/></svg>`,
+  comunidad: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="8" r="2.5"/><path d="M3.5 19a4.5 4.5 0 0 1 9 0"/><path d="M13 18.5a3.8 3.8 0 0 1 7.5 0"/></svg>`,
+  recreo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8.5h10a4 4 0 0 1 4 4v2.5a2 2 0 0 1-2 2h-1.5l-1.2-2.1A2.5 2.5 0 0 0 14.2 13h-4.4a2.5 2.5 0 0 0-2.1 1.2L6.5 17H5a2 2 0 0 1-2-2v-2.5a4 4 0 0 1 4-4z"/><path d="M8.5 10.5v3"/><path d="M7 12h3"/><circle cx="15.8" cy="11.3" r="1"/><circle cx="18.5" cy="13.7" r="1"/></svg>`,
+  biblioteca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A1.5 1.5 0 0 1 5.5 5H10v14H5.5A1.5 1.5 0 0 1 4 17.5z"/><path d="M10 5h5a1.5 1.5 0 0 1 1.5 1.5V19H10"/><path d="M16.5 8.5H20v10.5h-3.5"/></svg>`,
+  transporte: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4.5" width="16" height="12" rx="3"/><path d="M4 10h16"/><path d="M7.5 16.5v3M16.5 16.5v3"/><circle cx="8" cy="19.5" r="1.5"/><circle cx="16" cy="19.5" r="1.5"/></svg>`
   
 };
 
@@ -21,6 +25,10 @@ export const navItems = [
   { id:"planestudios", label:"Correlativas", icon:ICONS.plan },
   { id:"planificador", label:"Planificador", icon:ICONS.planificador },
   { id:"profesores", label:"Profesores", icon:ICONS.profesores },
+  { id:"comunidad", label:"Comunidad", icon:ICONS.comunidad, comingSoon:true },
+  { id:"recreo", label:"Recreo", icon:ICONS.recreo, comingSoon:true },
+  { id:"biblioteca", label:"Biblioteca", icon:ICONS.biblioteca, comingSoon:true },
+  { id:"transporte", label:"Transporte", icon:ICONS.transporte, comingSoon:true },
   //{ id:"mensajes", label:"Mensajes", icon:"💬" },
   //{ id:"perfil", label:"Perfil", icon:"👤" },
 ];
