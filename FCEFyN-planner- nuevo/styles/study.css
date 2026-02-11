@@ -1274,19 +1274,31 @@ body[data-theme="light"] .event{
     .class-block{
       position:absolute;
       left:4px; right:4px;
-      border-radius:var(--radius-sm);
-      padding:4px 6px;
-      color:var(--color-primary-strong);
+      border-radius:8px;
+      padding:6px 8px;
+      color:var(--text);
       font-size:.75rem;
-      box-shadow:none;
-      border:1px solid var(--accent-605);
+      box-shadow:0 4px 10px color-mix(in srgb, var(--accent) 16%, transparent);
+      border:1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+      border-left:5px solid var(--accent);
       cursor:pointer;
       overflow:hidden;
-      background-color:var(--accent);
+      background-color:color-mix(in srgb, var(--accent) 18%, var(--surface-98));
       font-weight:700;
     }
-    .class-block strong{ display:block; font-size:.78rem; }
-    .class-block small{ display:block; font-size:.72rem; opacity:.95; }
+    .class-block strong{
+      display:block;
+      font-size:.8rem;
+      line-height:1.2;
+      letter-spacing:.01em;
+      color:var(--text);
+    }
+    .class-block small{
+      display:block;
+      font-size:.72rem;
+      opacity:.9;
+      color:color-mix(in srgb, var(--text) 82%, var(--muted));
+    }
 
     /* TAB MATERIAS */
     .subjects-layout{

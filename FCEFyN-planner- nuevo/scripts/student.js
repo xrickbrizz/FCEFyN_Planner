@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, collection, query, where, orderBy } from "./core/firebase.js";
+import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, storage, collection, query, where, orderBy } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
@@ -303,6 +303,7 @@ onSessionReady(async (user) => {
   const ctx = {
     db,
     auth,
+    storage,
     doc,
     getDoc,
     setDoc,
