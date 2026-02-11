@@ -2370,3 +2370,235 @@ body[data-theme="light"] .event{
     min-height:460px;
   }
 }
+
+/* =========================================================
+   PERFIL · LAVADO VISUAL (aislado)
+   Scope: #tab-perfil.profile-page
+   ========================================================= */
+#tab-perfil.profile-page{
+  --perfil-bg:#f4f7ff;
+  --perfil-card:#ffffff;
+  --perfil-border:#d9e2f2;
+  --perfil-shadow:0 12px 30px rgba(15, 23, 42, .08);
+  --perfil-text:#111827;
+  --perfil-muted:#64748b;
+  --perfil-primary:#2563eb;
+  --perfil-primary-hover:#1d4ed8;
+  --perfil-input:#f8fbff;
+  background:var(--perfil-bg);
+  border-radius:24px;
+  padding:1rem;
+}
+
+#tab-perfil.profile-page .profile-page-shell{
+  width:min(100%, 980px);
+  margin:0 auto;
+  display:grid;
+  gap:1rem;
+}
+
+#tab-perfil.profile-page .profile-card{
+  background:var(--perfil-card);
+  border:1px solid var(--perfil-border);
+  border-radius:22px;
+  box-shadow:var(--perfil-shadow);
+  padding:1.25rem;
+}
+
+#tab-perfil.profile-page .profile-header{
+  margin-bottom:.75rem;
+}
+
+#tab-perfil.profile-page .profile-header strong{
+  font-size:1.35rem;
+  line-height:1.2;
+  color:var(--perfil-text);
+}
+
+#tab-perfil.profile-page .profile-header .small-muted,
+#tab-perfil.profile-page .profile-status,
+#tab-perfil.profile-page .profile-avatar-status{
+  color:var(--perfil-muted);
+  font-size:.92rem;
+}
+
+#tab-perfil.profile-page .profile-header-center{
+  text-align:center;
+}
+
+#tab-perfil.profile-page .profile-avatar-centered{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:.7rem;
+  margin-bottom:1.15rem;
+}
+
+#tab-perfil.profile-page .profile-avatar img{
+  width:132px;
+  height:132px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #fff;
+  box-shadow:0 8px 20px rgba(37,99,235,.25);
+  background:#edf3ff;
+}
+
+#tab-perfil.profile-page .profile-email{
+  background:#eff6ff;
+  border:1px solid #cfe0ff;
+  color:#1e3a8a;
+  font-size:.86rem;
+  border-radius:999px;
+  padding:.4rem .9rem;
+}
+
+#tab-perfil.profile-page .profile-avatar-actions{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.65rem;
+}
+
+#tab-perfil.profile-page .profile-avatar-input{
+  width:min(100%, 320px);
+  justify-content:center;
+  padding:.7rem 1rem;
+  border:1px dashed #7ea6ff;
+  border-radius:12px;
+  background:#f8fbff;
+  color:#1e40af;
+  font-weight:600;
+}
+
+#tab-perfil.profile-page .profile-avatar-buttons{
+  width:min(100%, 320px);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.6rem;
+}
+
+#tab-perfil.profile-page .profile-section{
+  margin-top:.25rem;
+  border-top:1px solid #e8eef9;
+  padding-top:1rem;
+}
+
+#tab-perfil.profile-page .profile-section-title{
+  font-size:1rem;
+  font-weight:700;
+  color:var(--perfil-text);
+  margin-bottom:.85rem;
+}
+
+#tab-perfil.profile-page .profile-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+}
+
+#tab-perfil.profile-page .profile-field{
+  gap:.45rem;
+}
+
+#tab-perfil.profile-page .profile-field label{
+  color:#334155;
+  font-size:.9rem;
+  font-weight:600;
+}
+
+#tab-perfil.profile-page .profile-field input,
+#tab-perfil.profile-page .profile-field select{
+  width:100%;
+  min-height:48px;
+  border-radius:12px;
+  border:1px solid #cdd9ee;
+  background:var(--perfil-input);
+  padding:.7rem .85rem;
+  color:#0f172a;
+  font-size:1rem;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+#tab-perfil.profile-page .profile-field input:focus,
+#tab-perfil.profile-page .profile-field select:focus{
+  outline:none;
+  border-color:#3b82f6;
+  box-shadow:0 0 0 3px rgba(59,130,246,.2);
+}
+
+#tab-perfil.profile-page .profile-actions{
+  margin-top:1.15rem;
+  display:flex;
+  flex-direction:column;
+  gap:.65rem;
+}
+
+#tab-perfil.profile-page #btnProfileSave{
+  width:100%;
+  min-height:50px;
+  border-radius:12px;
+  border:1px solid transparent;
+  background:var(--perfil-primary);
+  color:#fff;
+  font-size:1rem;
+  font-weight:700;
+  box-shadow:0 10px 20px rgba(37,99,235,.25);
+}
+
+#tab-perfil.profile-page #btnProfileSave:hover{
+  background:var(--perfil-primary-hover);
+}
+
+#tab-perfil.profile-page .profile-security{
+  gap:.8rem;
+}
+
+#tab-perfil.profile-page #btnPasswordReset,
+#tab-perfil.profile-page #btnUploadAvatar,
+#tab-perfil.profile-page #btnRemoveAvatar{
+  min-height:44px;
+  border-radius:10px;
+  font-weight:600;
+}
+
+/* Desktop */
+@media (min-width:768px){
+  #tab-perfil.profile-page{
+    padding:1.4rem;
+  }
+
+  #tab-perfil.profile-page .profile-page-shell{
+    gap:1.25rem;
+  }
+
+  #tab-perfil.profile-page .profile-main-card,
+  #tab-perfil.profile-page .profile-security-card{
+    padding:1.5rem;
+  }
+
+  #tab-perfil.profile-page .profile-grid{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+
+  #tab-perfil.profile-page .profile-field-wide{
+    grid-column:1 / -1;
+  }
+
+  #tab-perfil.profile-page .profile-avatar-buttons,
+  #tab-perfil.profile-page .profile-avatar-input{
+    width:min(100%, 360px);
+  }
+
+  #tab-perfil.profile-page .profile-actions{
+    align-items:flex-start;
+  }
+
+  #tab-perfil.profile-page #btnProfileSave{
+    width:auto;
+    min-width:240px;
+    padding-inline:1.8rem;
+  }
+}

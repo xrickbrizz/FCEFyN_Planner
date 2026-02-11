@@ -600,80 +600,79 @@
     </div>
 
     <!-- PERFIL -->
-    <div id="tab-perfil" class="tab-card" style="display:none;">
-      <div class="profile-layout">
-        <div class="profile-card">
-          <div class="profile-header">
-            <div>
-              <strong>Tu perfil</strong>
-              <div class="small-muted">Actualizá tus datos básicos y mantenelos al día.</div>
-            </div>
-            <div class="profile-email" id="profileEmail">—</div>
-          </div>
+    <div id="tab-perfil" class="tab-card profile-page" style="display:none;">
+      <div class="profile-page-shell">
+        <section class="profile-card profile-main-card">
+          <header class="profile-header profile-header-center">
+            <strong>Tu perfil</strong>
+            <div class="small-muted">Actualizá tus datos básicos y mantenelos al día.</div>
+          </header>
 
-          <div class="profile-avatar">
+          <div class="profile-avatar profile-avatar-centered">
             <img id="profileAvatarImg" alt="Foto de perfil" />
+            <div class="profile-email" id="profileEmail">—</div>
             <div class="profile-avatar-actions">
-              <label class="profile-avatar-input">
+              <label class="profile-avatar-input" for="inpAvatar">
                 <span>Seleccionar imagen</span>
                 <input type="file" id="inpAvatar" accept="image/*" />
               </label>
               <div class="profile-avatar-buttons">
                 <button class="btn-blue btn-small" id="btnUploadAvatar" type="button">Guardar foto</button>
-                <button class="btn-outline btn-small" id="btnRemoveAvatar" type="button">Quitar foto</button>
+                <button class="btn-outline btn-small" id="btnRemoveAvatar" type="button">Quitar</button>
               </div>
               <div class="profile-avatar-status" id="profileAvatarStatus"></div>
             </div>
           </div>
 
-          <div class="profile-grid">
-            <div class="profile-field">
-              <label>Nombre</label>
-              <input id="profileFirstName" placeholder="Nombre" />
-            </div>
-            <div class="profile-field">
-              <label>Apellido</label>
-              <input id="profileLastName" placeholder="Apellido" />
-            </div>
-            <div class="profile-field">
-              <label>Carrera</label>
-              <select id="profileCareer"></select>
-            </div>
-            <div class="profile-field">
-              <label>Año de ingreso</label>
-              <input id="profileYearIn" type="number" min="1990" max="2100" placeholder="Ej: 2024" />
-            </div>
+          <section class="profile-section">
+            <div class="profile-section-title">Datos básicos</div>
+            <div class="profile-grid">
+              <div class="profile-field">
+                <label>Nombre</label>
+                <input id="profileFirstName" placeholder="Nombre" />
+              </div>
+              <div class="profile-field">
+                <label>Apellido</label>
+                <input id="profileLastName" placeholder="Apellido" />
+              </div>
+              <div class="profile-field">
+                <label>Carrera</label>
+                <select id="profileCareer"></select>
+              </div>
+              <div class="profile-field">
+                <label>Año de ingreso</label>
+                <input id="profileYearIn" type="number" min="1990" max="2100" placeholder="Ej: 2024" />
+              </div>
 
-            <!-- mi intento de 2 carrera  -->
-            <div class="profile-field">
-              <label>2da Carrera (opcional)</label>
-              <select id="profileCareer2"></select>
+              <div class="profile-field">
+                <label>2da Carrera (opcional)</label>
+                <select id="profileCareer2"></select>
+              </div>
+              <div class="profile-field">
+                <label>Año de ingreso</label>
+                <input id="profileYearIn2" type="number" min="1990" max="2100" placeholder="Ej: 2024" />
+              </div>
+
+              <div class="profile-field profile-field-wide">
+                <label>Documento / DNI / Legajo</label>
+                <input id="profileDocument" placeholder="Opcional" />
+              </div>
             </div>
-            <div class="profile-field">
-              <label>Año de ingreso</label>
-              <input id="profileYearIn2" type="number" min="1990" max="2100" placeholder="Ej: 2024" />
-            </div>
-            <!-- end intento -->
-            
-            <div class="profile-field profile-field-wide">
-              <label>Documento / DNI / Legajo</label>
-              <input id="profileDocument" placeholder="Opcional" />
-            </div>
-          </div>
+          </section>
 
           <div class="profile-actions">
             <button class="btn-blue" id="btnProfileSave" type="button">Guardar cambios</button>
             <div class="profile-status" id="profileStatus"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="profile-card">
-          <div class="profile-header">
+        <section class="profile-card profile-security-card">
+          <header class="profile-header">
             <div>
               <strong>Seguridad</strong>
               <div class="small-muted">Gestioná tu contraseña desde el correo institucional.</div>
             </div>
-          </div>
+          </header>
           <div class="profile-security">
             <div class="small-muted">
               Al confirmar, te enviaremos un correo para cambiar tu contraseña de forma segura.
@@ -681,7 +680,7 @@
             <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
             <div class="profile-status" id="passwordStatus"></div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   </main>
