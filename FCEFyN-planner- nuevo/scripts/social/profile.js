@@ -17,6 +17,7 @@ let pendingProfilePhotoPreviewUrl = null;
 let profileUnsubscribe = null;
 let didRenderProfile = false;
 let didEnsurePublicProfile = false;
+let profileHandlersBound = false;
 
 const profileEmailEl = document.getElementById("profileEmail");
 const profileFirstNameInput = document.getElementById("profileFirstName");
@@ -61,6 +62,48 @@ const updateUserPanelAvatar = (url) => {
 
 function setProfileAvatarStatus(message){
   if (profileAvatarStatusEl) profileAvatarStatusEl.textContent = message || "";
+}
+
+function reportContextNotReady(action, options = {}){
+  const notifyWarn = CTX?.notifyWarn;
+  const details = {
+    hasCTX: Boolean(CTX),
+    hasAuth: Boolean(CTX?.auth),
+    hasDB: Boolean(CTX?.db),
+    hasStorage: Boolean(CTX?.storage),
+    hasGetCurrentUser: typeof CTX?.getCurrentUser === "function",
+    hasUser: Boolean(CTX?.getCurrentUser?.())
+  };
+  console.warn(`[Perfil] ${action} cancelado: contexto incompleto`, details);
+  notifyWarn?.("Todavía estamos inicializando tu sesión. Probá nuevamente en unos segundos.");
+  if (options.avatarStatus) setProfileAvatarStatus("Esperando inicialización de sesión...");
+  if (options.profileStatus) setProfileStatus(profileStatusEl, "Esperando inicialización de sesión...");
+  if (options.passwordStatus) setProfileStatus(passwordStatusEl, "Esperando inicialización de sesión...");
+}
+
+function getReadyProfileContext(action, options = {}){
+  const requireDB = options.requireDB !== false;
+  const requireStorage = Boolean(options.requireStorage);
+  const requireAuth = Boolean(options.requireAuth);
+  const currentUser = CTX?.getCurrentUser?.();
+  const hasBaseContext = Boolean(CTX && currentUser);
+  const hasDB = !requireDB || Boolean(CTX?.db);
+  const hasStorage = !requireStorage || Boolean(CTX?.storage);
+  const hasAuth = !requireAuth || Boolean(CTX?.auth);
+  if (!hasBaseContext || !hasDB || !hasStorage || !hasAuth){
+    reportContextNotReady(action, options);
+    return null;
+  }
+  return {
+    currentUser,
+    db: CTX.db,
+    storage: CTX.storage,
+    auth: CTX.auth,
+    notifyWarn: CTX.notifyWarn,
+    notifyError: CTX.notifyError,
+    notifySuccess: CTX.notifySuccess,
+    showConfirm: CTX.showConfirm
+  };
 }
 
 function applyAvatarEverywhere(photoURL){
@@ -131,13 +174,15 @@ function handleProfileUpdate(profile){
 }
 
 async function uploadProfilePhoto(file){
-  const currentUser = CTX?.getCurrentUser?.();
-  const db = CTX?.db;
-  const storage = CTX?.storage;
-  const notifyWarn = CTX?.notifyWarn;
-  const notifyError = CTX?.notifyError;
-  const notifySuccess = CTX?.notifySuccess;
-  if (!currentUser || !file || !db || !storage) return;
+  const ready = getReadyProfileContext("Subir foto de perfil", { avatarStatus: true, requireStorage: true, requireDB: true });
+  if (!ready) return;
+  const { currentUser, db, storage, notifyWarn, notifyError, notifySuccess } = ready;
+  if (!file){
+    console.warn("[Perfil] Subida cancelada: no se seleccionó archivo.");
+    notifyWarn?.("Seleccioná una imagen primero.");
+    setProfileAvatarStatus("Seleccioná una imagen para subir.");
+    return;
+  }
   if (!file.type?.startsWith("image/")){
     notifyWarn?.("Seleccioná una imagen válida (JPG/PNG)." );
     setProfileAvatarStatus("Formato de imagen inválido.");
@@ -148,7 +193,9 @@ async function uploadProfilePhoto(file){
     setProfileAvatarStatus("La imagen supera 2MB.");
     return;
   }
-  const path = `fotoperfil/${currentUser.uid}/avatar.jpg`;
+  const extension = file.type?.split("/")?.[1] || "jpg";
+  const safeExtension = extension.replace(/[^a-zA-Z0-9]/g, "") || "jpg";
+  const path = `fotoperfil/${currentUser.uid}/avatar_${Date.now()}.${safeExtension}`;
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
   try{
@@ -180,12 +227,9 @@ async function uploadProfilePhoto(file){
 }
 
 async function removeProfilePhoto(){
-  const currentUser = CTX?.getCurrentUser?.();
-  const db = CTX?.db;
-  const storage = CTX?.storage;
-  const notifyError = CTX?.notifyError;
-  const notifySuccess = CTX?.notifySuccess;
-  if (!currentUser || !db || !storage) return;
+  const ready = getReadyProfileContext("Quitar foto de perfil", { avatarStatus: true, requireStorage: true, requireDB: true });
+  if (!ready) return;
+  const { currentUser, db, storage, notifyError, notifySuccess } = ready;
   const photoPath = getSessionUserProfile()?.photoPath || "";
   setProfileAvatarStatus("Quitando foto...");
   try{
@@ -239,15 +283,15 @@ function renderProfileSection(){
 }
 
 function bindProfileHandlers(){
+  if (profileHandlersBound) return;
+  profileHandlersBound = true;
+
   if (btnProfileSave){
-    btnProfileSave.addEventListener("click", async ()=>{
-      const currentUser = CTX?.getCurrentUser?.();
-      const db = CTX?.db;
-      const notifyWarn = CTX?.notifyWarn;
-      const notifySuccess = CTX?.notifySuccess;
-      const notifyError = CTX?.notifyError;
-      const showConfirm = CTX?.showConfirm;
-      if (!currentUser || !db) return;
+    btnProfileSave.addEventListener("click", async (event)=>{
+      event?.preventDefault?.();
+      const ready = getReadyProfileContext("Guardar perfil", { profileStatus: true, requireDB: true });
+      if (!ready) return;
+      const { currentUser, db, notifyWarn, notifySuccess, notifyError, showConfirm } = ready;
       const firstName = profileFirstNameInput?.value.trim() || "";
       const lastName = profileLastNameInput?.value.trim() || "";
       const name = `${firstName} ${lastName}`.trim();
@@ -318,12 +362,17 @@ function bindProfileHandlers(){
   }
 
   if (btnPasswordReset){
-    btnPasswordReset.addEventListener("click", async ()=>{
-      const currentUser = CTX?.getCurrentUser?.();
-      const showConfirm = CTX?.showConfirm;
-      const notifySuccess = CTX?.notifySuccess;
-      const notifyError = CTX?.notifyError;
-      if (!currentUser || !currentUser.email) return;
+    btnPasswordReset.addEventListener("click", async (event)=>{
+      event?.preventDefault?.();
+      const ready = getReadyProfileContext("Resetear contraseña", { passwordStatus: true, requireDB: false, requireAuth: true });
+      if (!ready) return;
+      const { currentUser, showConfirm, notifySuccess, notifyError, auth } = ready;
+      if (!currentUser.email){
+        console.warn("[Perfil] Reset de contraseña cancelado: usuario sin email", currentUser);
+        notifyError?.("No encontramos un email asociado a tu cuenta.");
+        setProfileStatus(passwordStatusEl, "No encontramos un email asociado a tu cuenta.");
+        return;
+      }
       const ok = await showConfirm?.({
         title:"Cambiar contraseña",
         message:`Te enviaremos un correo a ${currentUser.email} para cambiar la contraseña.`,
@@ -332,7 +381,7 @@ function bindProfileHandlers(){
       });
       if (!ok) return;
       try{
-        await sendPasswordResetEmail(CTX.auth, currentUser.email);
+        await sendPasswordResetEmail(auth, currentUser.email);
         notifySuccess?.("Correo enviado para cambiar la contraseña.");
         setProfileStatus(passwordStatusEl, "Correo enviado. Revisá tu bandeja.");
       }catch(e){
@@ -389,10 +438,12 @@ function bindProfileHandlers(){
   }
 
   if (btnUploadAvatar){
-    btnUploadAvatar.addEventListener("click", async ()=>{
+    btnUploadAvatar.addEventListener("click", async (event)=>{
+      event?.preventDefault?.();
       const notifyWarn = CTX?.notifyWarn;
       if (!pendingProfilePhotoFile){
         notifyWarn?.("Seleccioná una imagen primero.");
+        setProfileAvatarStatus("Seleccioná una imagen para subir.");
         return;
       }
       await uploadProfilePhoto(pendingProfilePhotoFile);
@@ -405,7 +456,8 @@ function bindProfileHandlers(){
   }
 
   if (btnRemoveAvatar){
-    btnRemoveAvatar.addEventListener("click", async ()=>{
+    btnRemoveAvatar.addEventListener("click", async (event)=>{
+      event?.preventDefault?.();
       await removeProfilePhoto();
       if (profileAvatarInput) profileAvatarInput.value = "";
       if (pendingProfilePhotoPreviewUrl){
@@ -419,6 +471,8 @@ function bindProfileHandlers(){
 const Profile = {
   init(ctx){
     CTX = ctx;
+    didRenderProfile = false;
+    didEnsurePublicProfile = false;
     CTX.resolveAvatarUrl = resolveAvatarUrl;
     bindProfileHandlers();
   },
