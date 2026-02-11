@@ -269,7 +269,16 @@ body[data-theme="dark"] .help-btn{
   padding: 0;
   gap:.75rem;
 }
-.main-shell{ max-width:none; margin:0; padding:0; }
+.main-shell{
+  max-width:none;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+.main-shell > .tab-card{
+  width:100%;
+}
+
 @media(max-width:1024px){
   .page-layout{ grid-template-columns:1fr; width:calc(100% - 1.6rem); padding:0 .8rem; }
 }
@@ -1782,8 +1791,10 @@ body[data-theme="light"] .event{
 
 /* ===== PROFESORES ===== */
 .prof-layout{
-  grid-template-columns: minmax(0,1.2fr) minmax(0,0.8fr);
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr);
   gap:1rem;
+  align-items:start;
 }
 @media(max-width:1000px){
   .prof-layout{ grid-template-columns:1fr; }
