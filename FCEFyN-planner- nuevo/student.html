@@ -942,6 +942,26 @@
       </div>
     </div>
   </div>
+  <button class="scroll-top-btn" id="scrollTopBtn" type="button" aria-label="Volver arriba" title="Volver arriba">
+    <span aria-hidden="true">↑</span>
+  </button>
+<script>
+  (() => {
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (!scrollTopBtn) return;
+
+    const toggleScrollTopBtn = () => {
+      scrollTopBtn.classList.toggle('is-visible', window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', toggleScrollTopBtn, { passive: true });
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    toggleScrollTopBtn();
+  })();
+</script>
 <script type="module" src="scripts/student.js"></script>
 <script type="module" src="scripts/ui/scroll-ui.js"></script>
   <script src="assets/js/mobile-nav.js" defer></script>
