@@ -913,22 +913,7 @@ body[data-theme="light"] .event{
       color:var(--color-text);
     }
     /* Select option */
-    .modal select option:checked,
-    .subject-form-box select option:checked,
-    .prof-filters select option:checked,
-    #tab-perfil.profile-page .profile-field select option{
-      background:var(--card-bg);
-      color:var(--color-text);
-    }
-    .modal select option:checked,
-    .subject-form-box select option:checked,
-    .prof-filters select option:checked,
-    #tab-perfil.profile-page .profile-field select option:checked{
-      background:var(--card-bg);
-      color:var(--color-text);
-    }
-
-
+    
     .modal select:disabled,
     .subject-form-box select:disabled,
     .prof-filters select:disabled,
