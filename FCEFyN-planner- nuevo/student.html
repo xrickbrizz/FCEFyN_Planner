@@ -317,7 +317,10 @@
       <div class="agenda-presets-bar" aria-label="Presets guardados">
         <div class="agenda-presets-head">
           <strong>Presets guardados</strong>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;">
           <button class="btn-outline btn-small" id="btnOpenPlannerModal" type="button">Abrir planificador</button>
+          <button class="btn-outline btn-small" id="btnOpenSubjectsModal" type="button">Materias</button>
+          </div>
         </div>
         <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
       </div>
@@ -827,6 +830,28 @@
     </div>
   </div>
 
+
+  <div class="modal-bg planner-modal-bg" id="subjectsModalBg" aria-hidden="true">
+    <div class="planner-modal" role="dialog" aria-modal="true" aria-labelledby="subjectsModalTitle">
+      <div class="planner-modal-header">
+        <div>
+          <h2 class="planner-modal-title" id="subjectsModalTitle">Materias</h2>
+          <p class="small-muted">Listado de materias creadas para tus vistas académicas.</p>
+        </div>
+        <button class="modal-close" id="btnSubjectsClose" aria-label="Cerrar materias">✕</button>
+      </div>
+
+      <div class="planner-list" id="subjectsModalList" aria-live="polite"></div>
+
+      <div class="planner-modal-footer">
+        <div class="small-muted">Podés gestionar tus materias completas desde la sección Materias.</div>
+        <div class="planner-footer-actions">
+          <button class="btn-outline btn-small" id="btnSubjectsCancel" type="button">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-bg" id="presetToAgendaModalBg">
     <div class="modal modal-wide">
       <h3 class="modal-title">Pasar preset a Agenda</h3>
@@ -932,6 +957,19 @@
       <div class="acad-day-modal-actions">
         <button class="btn-gray btn-small" id="btnAcadDayClose">Cerrar</button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="studyDayModalBg">
+    <div class="modal">
+      <div class="acad-day-modal-top">
+        <div>
+          <h3 class="modal-title" id="studyDayModalTitle">Detalle del día</h3>
+          <div class="small-muted" id="studyDayModalSubtitle">—</div>
+        </div>
+        <button class="modal-close" id="btnStudyDayClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="acad-day-modal-list" id="studyDayModalList"></div>
     </div>
   </div>
 

@@ -30,6 +30,11 @@ const studyAddActivity = document.getElementById("studyAddActivity");
 const studyNewEntry = document.getElementById("studyNewEntry");
 const studyModalTitle = document.getElementById("studyModalTitle");
 const btnStudyClose = document.getElementById("btnStudyClose");
+const studyDayModalBg = document.getElementById("studyDayModalBg");
+const studyDayModalTitle = document.getElementById("studyDayModalTitle");
+const studyDayModalSubtitle = document.getElementById("studyDayModalSubtitle");
+const studyDayModalList = document.getElementById("studyDayModalList");
+const btnStudyDayClose = document.getElementById("btnStudyDayClose");
 const studyTimerWidget = document.getElementById("studyTimerWidget");
 const studyTimerDisplay = document.getElementById("studyTimerDisplay");
 const studyTimerMateria = document.getElementById("studyTimerMateria");
@@ -97,10 +102,12 @@ export function initCalendario(ctx){
   warnMissing("acadDetailList", acadDetailList);
   warnMissing("acadInfoEmpty", acadInfoEmpty);
   warnMissing("acadDayModalBg", acadDayModalBg);
+  warnMissing("studyDayModalBg", studyDayModalBg);
 
   initStudyNav();
   initAcademicoNav();
   initStudyModalUI();
+  initStudyDayModalUI();
   initStudyTimer();
   initAcademicoModalUI();
 
@@ -432,6 +439,7 @@ export function renderStudyCalendar(){
       studyFocusDateKey = dateKey;
       renderStudyDetailPanel(dateKey);
       highlightStudySelection(dateKey);
+      openStudyDayModal(dateKey);
     };
     gridStudy.appendChild(box);
   }
@@ -489,6 +497,11 @@ function highlightStudySelection(dateKey){
   });
 }
 
+function getStudyEventsForDate(dateKey){
+  const normalizedKey = getDayKey(dateKey) || getTodayKey();
+  return estudiosCache[normalizedKey] || [];
+}
+
 function renderStudyDetailPanel(dateKey){
   if (!studyDetailTitle || !studyDetailDate || !studyDetailTime || !studyDetailList) return;
   const normalizedKey = getDayKey(dateKey) || getTodayKey();
@@ -502,7 +515,7 @@ function renderStudyDetailPanel(dateKey){
   studyDetailDate.textContent = detailDate.toLocaleDateString("es-ES", { day:"numeric", month:"long", year:"numeric" });
   studyDetailTime.textContent = new Date().toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
 
-  const events = estudiosCache[normalizedKey] || [];
+  const events = getStudyEventsForDate(normalizedKey);
   studyDetailList.innerHTML = "";
   if (!events.length){
     const empty = document.createElement("div");
@@ -540,6 +553,57 @@ function renderStudyDetailPanel(dateKey){
       if (action === "delete") await deleteStudyItem(normalizedKey, idx);
     });
   });
+}
+
+
+function openStudyDayModal(dateKey){
+  if (!studyDayModalBg || !studyDayModalTitle || !studyDayModalSubtitle || !studyDayModalList) return;
+  const normalizedKey = getDayKey(dateKey) || getTodayKey();
+  const parts = ymdFromDateKey(normalizedKey);
+  if (!parts) return;
+
+  const detailDate = new Date(parts.y, parts.m - 1, parts.d);
+  studyDayModalTitle.textContent = detailDate.toLocaleDateString("es-ES", { day:"numeric", month:"long", year:"numeric" });
+  studyDayModalSubtitle.textContent = detailDate.toLocaleDateString("es-ES", { weekday:"long" });
+
+  const events = getStudyEventsForDate(normalizedKey);
+  studyDayModalList.innerHTML = "";
+
+  if (!events.length){
+    const empty = document.createElement("div");
+    empty.className = "small-muted";
+    empty.textContent = "No hay registros para este día";
+    studyDayModalList.appendChild(empty);
+  } else {
+    events.forEach((ev)=>{
+      const row = document.createElement("div");
+      row.className = "acad-detail-row";
+      const accent = getSubjectAccentColor(ev.materia);
+      if (accent) row.style.setProperty("--accent", accent);
+      row.innerHTML = `
+        <div class="acad-detail-text">
+          <strong>${escapeHtml(ev.materia || "Materia")}</strong>
+          <div class="acad-detail-meta">${escapeHtml((ev.horas || 0) + "h " + (ev.mins || 0) + "m")}</div>
+          <div class="acad-detail-notes">${escapeHtml(ev.tema || "Sin tema")}</div>
+        </div>
+      `;
+      studyDayModalList.appendChild(row);
+    });
+  }
+
+  studyDayModalBg.style.display = "flex";
+}
+
+function initStudyDayModalUI(){
+  if (btnStudyDayClose && studyDayModalBg){
+    btnStudyDayClose.addEventListener("click", ()=>{ studyDayModalBg.style.display = "none"; });
+  }
+
+  if (studyDayModalBg){
+    studyDayModalBg.addEventListener("click", (e)=>{
+      if (e.target.id === "studyDayModalBg") e.target.style.display = "none";
+    });
+  }
 }
 
 function openStudyModalForDate(dateKey, index = -1){

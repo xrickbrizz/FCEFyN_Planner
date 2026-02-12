@@ -761,7 +761,11 @@ body[data-theme="light"] .tab-card{
       display:grid;
       grid-template-columns: minmax(0,2.2fr) minmax(0,1fr);
       gap: 1rem;
+      position: relative;
+      z-index: 0;
     }
+    .tab-estudio-layout .study-detail-panel{ order:1; }
+    .tab-estudio-layout .calendar-container{ order:2; }
     @media(max-width:900px){ .tab-estudio-layout{ grid-template-columns:1fr; } }
 
     .calendar-container{
@@ -770,6 +774,8 @@ body[data-theme="light"] .tab-card{
       padding: 1rem;
       border:1px solid var(--border);
       box-shadow:none;
+      position: relative;
+      z-index: 2;
     }
     .calendar-header{
       display:flex;
@@ -801,6 +807,9 @@ body[data-theme="light"] .tab-card{
       grid-template-columns:repeat(7,minmax(0,1fr)); gap:10px;
       width: 100%;
       min-width: 0;
+      position: relative;
+      z-index: 2;
+      pointer-events: auto;
     }
     .grid > *{ min-width:0; }
     .dow{
@@ -825,6 +834,14 @@ body[data-theme="light"] .tab-card{
       min-width: 0;
       max-width: 100%;
       overflow:hidden;
+      z-index: 3;
+      pointer-events: auto;
+    }
+    #calendarGrid .day > *{ pointer-events:none; }
+
+    .study-detail-panel{
+      position: relative;
+      z-index: 1;
     }
     .day:hover{ border-color:var(--info-45); }
     .day-number{
@@ -2992,6 +3009,7 @@ header{
   margin-bottom:.75rem;
 }
 .agenda-presets-head{ display:flex; justify-content:space-between; align-items:center; gap:.5rem; margin-bottom:.45rem; }
+.agenda-presets-actions{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
 .preset-chips-row{ display:flex; flex-wrap:wrap; gap:.45rem; }
 .preset-chip-wrap{ display:flex; align-items:center; gap:.2rem; }
 .preset-chip{

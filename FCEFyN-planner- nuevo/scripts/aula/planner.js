@@ -433,15 +433,58 @@ function selectPresetAndRefreshAgenda(id){
   applyPresetToAgendaDirect(id, true).catch(() => {});
 }
 
+function togglePlannerStyleModal(modalId, open){
+  const bg = document.getElementById(modalId);
+  if (!bg) return;
+  bg.style.display = open ? "flex" : "none";
+  bg.setAttribute("aria-hidden", open ? "false" : "true");
+}
+
 function openPlannerModal(){
-  const bg = document.getElementById("plannerModalBg");
-  if (bg) bg.style.display = "flex";
+  togglePlannerStyleModal("plannerModalBg", true);
 }
 
 function closePlannerModal(){
   closePresetBubble();
-  const bg = document.getElementById("plannerModalBg");
-  if (bg) bg.style.display = "none";
+  togglePlannerStyleModal("plannerModalBg", false);
+}
+
+function renderSubjectsModalList(){
+  const list = document.getElementById("subjectsModalList");
+  if (!list) return;
+  const subjects = Array.isArray(CTX?.aulaState?.subjects) ? CTX.aulaState.subjects : [];
+  if (!subjects.length){
+    list.innerHTML = '<div class="small-muted">Todavía no tenés materias creadas.</div>';
+    return;
+  }
+
+  list.innerHTML = subjects
+    .slice()
+    .sort((a,b)=> (a?.name || "").localeCompare(b?.name || "", "es"))
+    .map((subject) => {
+      const color = subject?.color || "#dbeafe";
+      const name = subject?.name || "(Sin nombre)";
+      return `
+      <article class="section-card">
+        <div class="section-card-top">
+          <div>
+            <div class="section-title" style="display:flex;align-items:center;gap:.5rem;">
+              <span class="subject-color-dot" style="background:${color};"></span>${name}
+            </div>
+          </div>
+        </div>
+      </article>`;
+    })
+    .join("");
+}
+
+function openSubjectsModal(){
+  renderSubjectsModalList();
+  togglePlannerStyleModal("subjectsModalBg", true);
+}
+
+function closeSubjectsModal(){
+  togglePlannerStyleModal("subjectsModalBg", false);
 }
 
 async function applyPlannerChanges(){
@@ -475,11 +518,16 @@ function initPlanificadorUI(){
   document.getElementById("btnPresetDuplicate")?.addEventListener("click", duplicatePreset);
   document.getElementById("btnPresetDelete")?.addEventListener("click", deletePreset);
   document.getElementById("btnOpenPlannerModal")?.addEventListener("click", openPlannerModal);
+  document.getElementById("btnGoMateriasFromAgenda")?.addEventListener("click", () => CTX.showTab?.("materias"));
   document.getElementById("btnPlanificadorAgenda")?.addEventListener("click", openPlannerModal);
+  document.getElementById("btnOpenSubjectsModal")?.addEventListener("click", openSubjectsModal);
   document.getElementById("btnPlannerClose")?.addEventListener("click", closePlannerModal);
   document.getElementById("btnPlannerCancel")?.addEventListener("click", closePlannerModal);
   document.getElementById("btnPlannerApplyToAgenda")?.addEventListener("click", () => applyPlannerChanges().catch(()=>{}));
   document.getElementById("plannerModalBg")?.addEventListener("click", (e) => { if (e.target.id === "plannerModalBg") closePlannerModal(); });
+  document.getElementById("btnSubjectsClose")?.addEventListener("click", closeSubjectsModal);
+  document.getElementById("btnSubjectsCancel")?.addEventListener("click", closeSubjectsModal);
+  document.getElementById("subjectsModalBg")?.addEventListener("click", (e) => { if (e.target.id === "subjectsModalBg") closeSubjectsModal(); });
 
 
   renderPlannerAll();
