@@ -23,13 +23,13 @@
   }
 
   .mobile-topbar .mobile-brand {
-    gap: 10px;
+    gap: 0.625rem;
     font-size: 1rem;
   }
 
   .mobile-topbar .mobile-brand img {
-    width: 28px;
-    height: 28px;
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .mobile-topbar-actions {
@@ -47,8 +47,8 @@
 
   .mobile-topbar .mobile-icon-btn svg,
   .mobile-topbar .mobile-theme-toggle svg {
-    width: 18px;
-    height: 18px;
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
   .mobile-topbar .mobile-avatar .user-avatar {
@@ -62,10 +62,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    min-height: 40px;
-    padding: 4px 10px;
-    border-radius: 14px;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.875rem;
   }
 
   .content-header .section-label {
@@ -75,19 +75,19 @@
     line-height: 1.1;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.375rem;
   }
 
   .help-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 62.438rem;
     font-size: 0.85rem;
     box-shadow: var(--mobile-soft-shadow);
   }
 
   .mobile-home-header {
-    padding: 2px 4px 8px;
+    padding: 2px 0.25rem 0.5rem;
   }
 
   .mobile-home-header h1 {
@@ -105,7 +105,7 @@
 
   .home-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 0.625rem;
   }
 
   @media (max-width: 360px) {
@@ -115,7 +115,7 @@
   }
 
   .home-card {
-    min-height: 132px;
+    min-height: 8.25rem;
     align-items: flex-start;
     overflow: hidden;
   }
@@ -124,12 +124,12 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0.25rem;
   }
 
   .home-card-icon {
-    width: 44px;
-    height: 44px;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
   }
 
@@ -150,13 +150,13 @@
   }
 
   .home-notices-panel {
-    padding: 12px;
+    padding: 0.75rem;
   }
 
   .home-notices-header {
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 0.5rem;
   }
 
   .home-notices-title {
@@ -166,16 +166,16 @@
   .home-notices-nav {
     margin-left: 0;
     align-items: center;
-    gap: 6px;
+    gap: 0.375rem;
   }
 
   .home-notices-btn {
-    width: 26px;
-    height: 26px;
+    width: 1.625rem;
+    height: 1.625rem;
   }
 
   .home-notice-item {
-    padding: 8px 10px;
+    padding: 0.5rem 0.625rem;
   }
 
   .home-notice-meta {
@@ -187,41 +187,41 @@
   }
 
   .mobile-quickbar {
-    height: 40px !important;
-    padding: 6px 10px !important;
-    margin: 10px 12px 8px !important;
-    border-radius: 18px !important;
+    height: 2.5rem !important;
+    padding: 0.375rem 0.625rem !important;
+    margin: 0.625rem 0.75rem 0.5rem !important;
+    border-radius: 1.125rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 10px !important;
+    gap: 0.625rem !important;
     background: var(--surface, #fff) !important;
     border: 1px solid rgba(0, 0, 0, 0.06) !important;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
   }
 
   .mobile-quickbar .mqb-home {
-    height: 28px !important;
-    padding: 0 10px !important;
-    border-radius: 999px !important;
+    height: 1.75rem !important;
+    padding: 0 0.625rem !important;
+    border-radius: 62.438rem !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    font-size: 13px !important;
+    gap: 0.5rem !important;
+    font-size: 0.812rem !important;
     font-weight: 600 !important;
     line-height: 1 !important;
   }
 
   .mobile-quickbar .mqb-home svg,
   .mobile-quickbar .mqb-home i {
-    width: 16px !important;
-    height: 16px !important;
+    width: 1rem !important;
+    height: 1rem !important;
   }
 
   .mobile-quickbar .mqb-help {
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 999px !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    border-radius: 62.438rem !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -233,7 +233,7 @@
   }
 
   .mobile-bottombar {
-    height: calc(64px + env(safe-area-inset-bottom));
+    height: calc(4rem + env(safe-area-inset-bottom));
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
     background: var(--mobile-bottom-bg, var(--mobile-surface, #fff));
   }
@@ -252,10 +252,10 @@
   .mobile-bottombar .mobile-tab.active::after {
     content: "";
     position: absolute;
-    bottom: 4px;
-    width: 24px;
-    height: 3px;
-    border-radius: 999px;
+    bottom: 0.25rem;
+    width: 1.5rem;
+    height: 0.188rem;
+    border-radius: 62.438rem;
     background: currentColor;
     opacity: 1;
   }

@@ -52,9 +52,9 @@ body{
 }
 
 .quick-sidebar .qs-ico{
-  width: 24px;
-  height: 24px;
-  border-radius: 10px;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.625rem;
   background: transparent;
   color: var(--color-muted);
 }
@@ -66,8 +66,8 @@ body{
 
 .quick-sidebar .qs-ico svg,
 .section-label svg{
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 body.light-mode .quick-sidebar,
@@ -136,7 +136,7 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .quick-sidebar.collapsed{
-  max-width: 76px;
+  max-width: 4.75rem;
   padding: 0.75rem 0.6rem;
 }
 
@@ -155,7 +155,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   gap: 0.55rem;
   background: var(--card-bg);
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: 62.438rem;
   padding: 0.55rem 1rem;
   color: var(--color-text);
   box-shadow: none;
@@ -229,7 +229,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   gap: 0.35rem;
   background: var(--card);
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: 62.438rem;
   padding: 0.35rem;
   box-shadow: none;
 }
@@ -239,7 +239,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.75rem;
-  border-radius: 999px;
+  border-radius: 62.438rem;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text);
@@ -254,8 +254,8 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .cal-nav-btn svg{
-  width: 18px;
-  height: 18px;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .cal-today-date{
@@ -270,7 +270,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   background: var(--accent-12);
   color: var(--info);
   padding: 0.3rem 0.75rem;
-  border-radius: 999px;
+  border-radius: 62.438rem;
   border: 1px solid var(--info-20);
   font-size: 0.78rem;
 }
@@ -289,15 +289,15 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .grid{
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .day{
-  min-height: 110px;
+  min-height: 6.875rem;
   background: var(--card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 0.625rem;
   box-shadow: none;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
@@ -319,9 +319,9 @@ body[data-theme="dark"] .quick-toggle-btn{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 62.438rem;
 }
 
 .day.is-selected .day-number span:first-child,
@@ -340,14 +340,14 @@ body[data-theme="dark"] .quick-toggle-btn{
 .event-dots{
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 0.375rem;
   margin-top: 0.5rem;
 }
 
 .event-dot{
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 62.438rem;
   background: var(--accent-1);
   border: 1px solid var(--border-10);
   display: inline-flex;
@@ -440,10 +440,10 @@ body[data-theme="dark"] .quick-toggle-btn{
   content: "";
   position: absolute;
   left: 0;
-  top: 12px;
-  bottom: 12px;
-  width: 3px;
-  border-radius: 999px;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 0.188rem;
+  border-radius: 62.438rem;
   background: var(--accent-1);
 }
 
@@ -473,8 +473,8 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .detail-icon svg{
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .detail-add{
@@ -491,9 +491,9 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .detail-add .add-plus{
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 62.438rem;
   background: var(--accent-12);
   display: inline-flex;
   align-items: center;
@@ -540,7 +540,7 @@ body[data-theme="dark"] .quick-toggle-btn{
 .widget-field input,
 .widget-field select{
   padding: 0.55rem 0.75rem;
-  border-radius: 999px;
+  border-radius: 62.438rem;
   border: 1px solid var(--color-border);
   background: var(--surface);
   color: var(--text);
@@ -636,7 +636,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   align-items: center;
   justify-content: center;
   padding: 0.15rem 0.45rem;
-  border-radius: 999px;
+  border-radius: 62.438rem;
   background: var(--accent-12);
   color: var(--info);
   font-size: 0.75rem;
@@ -653,7 +653,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   --cta-dark:black;
   width: 100%;
   border: none;
-  border-radius: 999px;
+  border-radius: 62.438rem;
   padding: 0.7rem 1rem;
   background: var(--cta-dark);
   color: var(--surface-3);
@@ -685,7 +685,7 @@ body[data-theme="dark"] .quick-toggle-btn{
 }
 
 .acad-empty-logo img{
-  width: 72px;
+  width: 4.5rem;
 }
 
 .acad-action-group{

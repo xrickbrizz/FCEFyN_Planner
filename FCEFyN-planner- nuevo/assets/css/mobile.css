@@ -51,11 +51,11 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 64px;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0 1rem;
     background: var(--mobile-surface);
     border-bottom: 1px solid var(--mobile-card-border);
     z-index: 1200;
@@ -64,21 +64,21 @@
   .mobile-topbar .mobile-brand {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     font-weight: 800;
     color: var(--color-text, #111827);
     letter-spacing: 0.2px;
   }
 
   .mobile-topbar .mobile-brand img {
-    width: 30px;
-    height: 30px;
+    width: 1.875rem;
+    height: 1.875rem;
   }
 
   .mobile-topbar-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.625rem;
   }
 
   .mobile-topbar .mobile-icon-btn,
@@ -86,9 +86,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 0.75rem;
     border: 1px solid var(--mobile-card-border);
     background: var(--mobile-surface-alt);
     color: var(--color-text, #111827);
@@ -97,8 +97,8 @@
 
   .mobile-topbar .mobile-icon-btn svg,
   .mobile-topbar .mobile-theme-toggle svg {
-    width: 20px;
-    height: 20px;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   .mobile-topbar .mobile-theme-toggle {
@@ -106,9 +106,9 @@
   }
 
   .mobile-topbar .mobile-avatar .user-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 999px;
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 62.438rem;
     border: 1px solid var(--mobile-card-border);
     background: var(--mobile-surface-alt);
   }
@@ -123,11 +123,11 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 72px;
+    height: 4.5rem;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    padding: 8px 10px;
+    gap: 0.25rem;
+    padding: 0.5rem 0.625rem;
     background: var(--mobile-surface);
     border-top: 1px solid var(--mobile-card-border);
     z-index: 1200;
@@ -138,8 +138,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    font-size: 11px;
+    gap: 0.25rem;
+    font-size: 0.688rem;
     font-weight: 700;
     border: 0;
     background: transparent;
@@ -148,8 +148,8 @@
   }
 
   .mobile-bottombar .mobile-tab svg {
-    width: 22px;
-    height: 22px;
+    width: 1.375rem;
+    height: 1.375rem;
   }
 
   .mobile-bottombar .mobile-tab.active {
@@ -181,7 +181,7 @@
     background: var(--mobile-surface);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    padding: 16px;
+    padding: 1rem;
     box-shadow: var(--mobile-shadow);
   }
 
@@ -194,14 +194,14 @@
 
   .mobile-more-header h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 700;
   }
 
   .mobile-more-close {
     border: 0;
     background: transparent;
-    font-size: 20px;
+    font-size: 1.25rem;
     cursor: pointer;
   }
 
@@ -213,8 +213,8 @@
   .mobile-more-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 6px;
+    gap: 0.75rem;
+    padding: 0.75rem 0.375rem;
     border: 0;
     border-bottom: 1px solid var(--mobile-card-border);
     background: transparent;
@@ -229,9 +229,9 @@
   }
 
   .mobile-more-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -242,13 +242,13 @@
   }
 
   .mobile-more-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
   .mobile-home-header {
     display: block;
-    padding: 6px 4px 12px;
+    padding: 0.375rem 0.25rem 0.75rem;
   }
 
   .mobile-home-header h1 {
@@ -259,7 +259,7 @@
   }
 
   .mobile-home-header p {
-    margin: 4px 0 2px;
+    margin: 0.25rem 0 2px;
     font-size: 0.95rem;
     color: var(--mobile-muted);
   }
@@ -283,12 +283,12 @@
   .home-cards {
     margin-top: 0.6rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .home-card {
-    border-radius: 18px;
-    padding: 12px;
+    border-radius: 1.125rem;
+    padding: 0.75rem;
     background: var(--mobile-card);
     border: 1px solid var(--mobile-card-border);
     box-shadow: var(--mobile-shadow);
@@ -304,9 +304,9 @@
   }
 
   .home-card-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 0.75rem;
     background: var(--mobile-surface-alt);
     border: 1px solid var(--mobile-card-border);
     color: var(--color-text, #111827);
@@ -315,8 +315,8 @@
   .home-notices-panel {
     order: 3;
     margin-top: 4px;
-    padding: 14px;
-    border-radius: 20px;
+    padding: 0.875rem;
+    border-radius: 1.25rem;
     background: var(--mobile-card);
     border: 1px solid var(--mobile-card-border);
     box-shadow: var(--mobile-shadow);
@@ -347,8 +347,8 @@
   }
 
   .home-notice-item {
-    border-radius: 14px;
-    padding: 10px 12px;
+    border-radius: 0.875rem;
+    padding: 0.625rem 0.75rem;
     background: transparent;
   }
 
