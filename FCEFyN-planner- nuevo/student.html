@@ -173,57 +173,16 @@
 
     <div id="tab-estudio" class="tab-card" style="display:none;">
       <div class="tab-estudio-layout">
-        <div class="calendar-container">
-          <div class="calendar-header">
-            <div class="cal-title">
-              <h2 id="monthTitle"></h2>
-            </div>
-            <div class="cal-controls">
-              <div class="cal-controls-group">
-                <button class="cal-nav-btn" id="btnStudyPrev" type="button" title="Mes anterior">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                  <span>Mes anterior</span>
-                </button>
-                <button class="cal-nav-btn" id="btnStudyToday" type="button" title="Volver a la fecha actual">
-                  <span>Ir a hoy</span>
-                  <span class="cal-today-date" id="studyTodayLabel">—</span>
-                </button>
-                <button class="cal-nav-btn" id="btnStudyNext" type="button" title="Mes siguiente">
-                  <span>Mes siguiente</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-                </button>
-              </div>
-              <div class="cal-status" id="studyMonthStatus" hidden>
-                <button type="button" id="btnStudyReturn">Volver a hoy</button>
-              </div>
-            </div>
-          </div>
-          <div class="cal-hint" id="studyHint">Click en un día para registrar estudio</div>
-
-          <div class="grid" id="studyDow">
-            <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow">Sáb</div><div class="dow">Dom</div>
-          </div>
-          <div class="grid" id="calendarGrid" style="margin-top:8px;"></div>
-        </div>
-
-        <div class="study-detail-panel" id="studyDetailPanel">
-          <div class="study-detail-header">
-            <div>
-              <div class="study-detail-day" id="studyDetailTitle">Detalle del día</div>
-              <div class="study-detail-date" id="studyDetailDate">—</div>
-            </div>
-          <div class="study-detail-time" id="studyDetailTime">—</div>
-          </div>
-          <div class="study-events" id="studyDetailList"></div>
-          <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
-          <section id="studyTimerWidget" class="widget-card">
-            <div class="widget-title">Timer de Estudio</div>
-            <div class="timer-header">
-              <div class="timer-display" id="studyTimerDisplay">00:00:00</div>
-              <div class="timer-controls" aria-label="Controles del temporizador">
-                <button class="icon-btn" id="studyTimerStart" type="button" aria-label="Iniciar">▶</button>
-                <button class="icon-btn" id="studyTimerPause" type="button" aria-label="Pausar">⏸</button>
+        <div class="study-main-column">
+          <section id="studyTimerWidget" class="widget-card study-timer-card">
+            <div class="widget-title">Temporizador de estudio</div>
+            <div class="study-timer-status" id="studyTimerStatus">Estado: listo para comenzar</div>
+            <div class="timer-header timer-header-dashboard">
+              <div class="timer-display timer-display-dashboard" id="studyTimerDisplay">00:00:00</div>
+              <div class="timer-controls timer-controls-dashboard" aria-label="Controles del temporizador">
                 <button class="icon-btn" id="studyTimerReset" type="button" aria-label="Reiniciar">⟲</button>
+                <button class="icon-btn" id="studyTimerStart" type="button" aria-label="Iniciar">▶</button>
+                <button class="icon-btn" id="studyTimerPause" type="button" aria-label="Detener">⏸</button>
               </div>
             </div>
             <div class="widget-grid">
@@ -236,11 +195,75 @@
                 <input id="studyTimerTema" type="text" placeholder="Tema opcional" />
               </div>
             </div>
-            <div class="timer-actions">
-              <button class="btn-dark btn-small" id="studyTimerRegister" type="button">Registrar</button>
+            <div class="timer-actions timer-actions-dashboard">
+              <button class="btn-dark btn-small" id="studyTimerRegister" type="button">Registrar sesión</button>
             </div>
           </section>
+
+          <section class="study-detail-panel" id="studyDetailPanel">
+          <div class="study-detail-header">
+            <div>
+              <div class="study-detail-day" id="studyDetailTitle">Detalle del día</div>
+              <div class="study-detail-date" id="studyDetailDate">—</div>
+            </div>
+          <div class="study-detail-time" id="studyDetailTime">—</div>
+          </div>
+          <div class="study-events" id="studyDetailList"></div>
+          <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
+          </section>
+
+          <section class="study-stats-grid" aria-label="Resumen de estudio">
+            <article class="study-stat-card">
+              <div class="study-stat-label">🔥 Racha</div>
+              <div class="study-stat-value" id="studyStreakValue">0 días</div>
+            </article>
+            <article class="study-stat-card">
+              <div class="study-stat-label">⏱ Horas hoy</div>
+              <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
+            </article>
+            <article class="study-stat-card">
+              <div class="study-stat-label">🎯 Meta semanal</div>
+              <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
+            </article>
+          </section>
         </div>
+
+        <aside class="study-side-column">
+          <div class="calendar-container study-calendar-compact">
+            <div class="calendar-header">
+              <div class="cal-title">
+                <h2 id="monthTitle"></h2>
+              </div>
+              <div class="cal-controls">
+                <div class="cal-controls-group">
+                  <button class="cal-nav-btn" id="btnStudyPrev" type="button" title="Mes anterior">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    <span>Mes anterior</span>
+                  </button>
+                  <button class="cal-nav-btn" id="btnStudyToday" type="button" title="Volver a la fecha actual">
+                    <span>Ir a hoy</span>
+                    <span class="cal-today-date" id="studyTodayLabel">—</span>
+                  </button>
+                  <button class="cal-nav-btn" id="btnStudyNext" type="button" title="Mes siguiente">
+                    <span>Mes siguiente</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                  </button>
+                </div>
+                <div class="cal-status" id="studyMonthStatus" hidden>
+                  <button type="button" id="btnStudyReturn">Volver a hoy</button>
+                </div>
+              </div>
+            </div>
+            <div class="cal-hint" id="studyHint">Click en un día para registrar estudio</div>
+
+            <div class="grid" id="studyDow">
+              <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow">Sáb</div><div class="dow">Dom</div>
+            </div>
+            <div class="grid" id="calendarGrid"></div>
+          </div>
+
+          <section id="studyUpcomingWidget" class="widget-card"></section>
+        </aside>
       </div>
     </div>
 
@@ -308,6 +331,7 @@
           <div class="acad-action-group">
             <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
           </div>
+          <section id="acadPendingWidget" class="widget-card"></section>
           <section id="acadUpcomingWidget" class="widget-card"></section>
         </div>  
       </div>

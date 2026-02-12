@@ -366,14 +366,18 @@ body[data-theme="dark"] .quick-toggle-btn{
 .tab-estudio-layout,
 .acad-layout{
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
-  gap: var(--gap);
+  grid-template-columns: minmax(0, 70%) minmax(280px, 30%);
+  gap: 1.5rem;
 }
 
 @media (max-width: 960px){
   .tab-estudio-layout,
   .acad-layout{
     grid-template-columns: 1fr;
+  }
+
+  .acad-widgets{
+    position: static;
   }
 }
 
@@ -702,6 +706,56 @@ body[data-theme="dark"] .quick-toggle-btn{
   align-items: center;
   gap: 0.4rem;
 }
+
+
+.acad-widgets{
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+
+.widget-title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.6rem;
+}
+
+.acad-pending-list{
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+}
+
+.acad-pending-item{
+  border-radius: var(--radius-sm);
+  border:1px solid var(--color-border);
+  padding:.65rem .75rem;
+  background: var(--card-bg, var(--card));
+}
+
+.acad-pending-item-title{ font-weight:700; color:var(--text); }
+.acad-pending-item-meta{ font-size:.82rem; color:var(--color-muted); }
+.acad-pending-item-time{ font-size:.8rem; color:var(--color-muted); margin-top:.2rem; }
+.acad-pending-item.priority-alta{ border-color: color-mix(in srgb, #c44 35%, var(--color-border)); background: color-mix(in srgb, #c44 8%, var(--card-bg, var(--card))); }
+.acad-pending-item.priority-media{ border-color: color-mix(in srgb, #d6ab3b 45%, var(--color-border)); background: color-mix(in srgb, #d6ab3b 10%, var(--card-bg, var(--card))); }
+.acad-pending-item.priority-baja{ border-color: var(--color-border); background: var(--card-bg, var(--card)); }
+
+.widget-link{
+  border:0;
+  background:transparent;
+  color:var(--info);
+  font-weight:600;
+  text-align:left;
+  padding:0;
+  cursor:pointer;
+}
+
+.upcoming-list--timeline{ gap:.55rem; }
+.upcoming-row--timeline{ align-items:center; }
+.upcoming-date-block{ min-width:3rem; text-align:center; display:flex; flex-direction:column; line-height:1.05; }
+.upcoming-date-month{ font-size:.72rem; text-transform:uppercase; color:var(--color-muted); letter-spacing:.05em; }
+.upcoming-date-day{ font-size:1.35rem; color:var(--text); }
 
 .btn-dark{
   --cta-dark:black;

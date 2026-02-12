@@ -12,7 +12,7 @@ import {
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
 
 let CTX = null;
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 6;
 
 const METRICS = [
   { key:"teachingQuality", label:"Calidad de enseñanza", descriptor: teachingDescriptor },

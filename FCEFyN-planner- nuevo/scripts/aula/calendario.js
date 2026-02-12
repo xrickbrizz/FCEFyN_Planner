@@ -43,6 +43,11 @@ const studyTimerStart = document.getElementById("studyTimerStart");
 const studyTimerPause = document.getElementById("studyTimerPause");
 const studyTimerReset = document.getElementById("studyTimerReset");
 const studyTimerRegister = document.getElementById("studyTimerRegister");
+const studyTimerStatus = document.getElementById("studyTimerStatus");
+const studyStreakValue = document.getElementById("studyStreakValue");
+const studyTodayHoursValue = document.getElementById("studyTodayHoursValue");
+const studyWeeklyGoalValue = document.getElementById("studyWeeklyGoalValue");
+const studyUpcomingWidget = document.getElementById("studyUpcomingWidget");
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
@@ -59,6 +64,7 @@ const acadDetailList = document.getElementById("acadDetailList");
 const acadInfoEmpty = document.getElementById("acadInfoEmpty");
 const acadEmptyTitle = document.getElementById("acadEmptyTitle");
 const acadEmptySub = document.getElementById("acadEmptySub");
+const acadPendingWidget = document.getElementById("acadPendingWidget");
 const acadUpcomingWidget = document.getElementById("acadUpcomingWidget");
 const acadTypePills = document.getElementById("acadTypePills");
 const btnAcadClose = document.getElementById("btnAcadClose");
@@ -450,6 +456,8 @@ export function renderStudyCalendar(){
   }
   highlightStudySelection(studyFocusDateKey);
   paintStudyEvents();
+  renderStudyStats();
+  renderStudyUpcomingWidget();
 }
 
 export function paintStudyEvents(){
@@ -682,6 +690,8 @@ async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
   estudiosCache = data.estudios || {};
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
+  renderStudyStats();
+  renderStudyUpcomingWidget();
 }
 
 async function deleteStudyItem(dateKey, index){
@@ -717,12 +727,15 @@ async function deleteStudyItem(dateKey, index){
   estudiosCache = data.estudios || {};
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
+  renderStudyStats();
+  renderStudyUpcomingWidget();
 }
 
 function initStudyTimer(){
   if (studyTimerMateria) fillMateriaSelect(studyTimerMateria);
   updateStudyTimerDisplay();
   updateStudyTimerButtons();
+  updateStudyTimerStatus();
 
   if (studyTimerStart){
     studyTimerStart.addEventListener("click", ()=>{
@@ -730,6 +743,7 @@ function initStudyTimer(){
       studyTimerState = "running";
       startStudyTimerInterval();
       updateStudyTimerButtons();
+      updateStudyTimerStatus();
     });
   }
   if (studyTimerPause){
@@ -738,6 +752,7 @@ function initStudyTimer(){
       studyTimerState = "paused";
       stopStudyTimerInterval();
       updateStudyTimerButtons();
+      updateStudyTimerStatus();
     });
   }
   if (studyTimerReset){
@@ -747,6 +762,7 @@ function initStudyTimer(){
       studyTimerState = "idle";
       updateStudyTimerDisplay();
       updateStudyTimerButtons();
+      updateStudyTimerStatus();
     });
   }
   if (studyTimerRegister){
@@ -764,9 +780,10 @@ function initStudyTimer(){
       await saveStudyItem(targetKey, -1, { materia, tema, horas, mins });
       stopStudyTimerInterval();
       studyTimerSeconds = 0;
-      studyTimerState = "idle";
+      studyTimerState = "finished";
       updateStudyTimerDisplay();
       updateStudyTimerButtons();
+      updateStudyTimerStatus();
     });
   }
 }
@@ -802,6 +819,20 @@ function updateStudyTimerButtons(){
   if (studyTimerStart) studyTimerStart.classList.toggle("is-hidden", isRunning);
   if (studyTimerPause) studyTimerPause.classList.toggle("is-hidden", !isRunning);
   if (studyTimerReset) studyTimerReset.classList.toggle("is-hidden", !hasElapsedTime);
+  updateStudyTimerStatus();
+}
+
+function updateStudyTimerStatus(){
+  if (!studyTimerStatus) return;
+  const labels = {
+    idle: "Estado: listo para comenzar",
+    running: "Estado: en progreso",
+    paused: "Estado: pausado",
+    finished: "Estado: finalizado"
+  };
+  studyTimerStatus.textContent = labels[studyTimerState] || labels.idle;
+  const stateAttr = ["running", "paused", "finished"].includes(studyTimerState) ? studyTimerState : "idle";
+  studyTimerStatus.dataset.state = stateAttr;
 }
 
 function initStudyModalUI(){
@@ -1461,7 +1492,33 @@ editingIndex = -1;
   }
 }
 
-function buildUpcomingAcadItems({ daysAhead = 7 } = {}){
+function getAcadPriority(item){
+  const rawPriority = String(item?.prioridad || item?.priority || "").toLowerCase();
+  if (["alta", "high"].includes(rawPriority)) return "alta";
+  if (["media", "medium"].includes(rawPriority)) return "media";
+  if (["baja", "low"].includes(rawPriority)) return "baja";
+
+  const type = normalizeStr(item?.tipo || "");
+  if (type.includes("examen") || type.includes("final")) return "alta";
+  if (type.includes("parcial") || type.includes("tp") || type.includes("tarea")) return "media";
+  return "baja";
+}
+
+function getRelativePastLabel(dateKey, minutes){
+  const parts = ymdFromDateKey(dateKey);
+  if (!parts) return "";
+  const target = new Date(parts.y, parts.m - 1, parts.d, 0, 0, 0, 0);
+  if (Number.isFinite(minutes)) target.setMinutes(minutes);
+  const diff = Date.now() - target.getTime();
+  if (diff <= 0) return "";
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (hours < 1) return "Hace menos de 1h";
+  if (hours <= 72) return `Hace ${hours}h`;
+  return "";
+}
+
+function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false } = {}){
   const items = [];
   if (!academicoCache) return items;
 
@@ -1480,9 +1537,9 @@ function buildUpcomingAcadItems({ daysAhead = 7 } = {}){
 
     const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
     entries.forEach((item, index)=>{
-      if (item?.estado === "done") return;
+      if (!includeDone && item?.estado === "done") return;
       const minutes = getAcadItemMinutes(item);
-      items.push({ dateKey: normalizedKey, item, index, minutes, storageKey });
+      items.push({ dateKey: normalizedKey, item, index, minutes, storageKey, priority: getAcadPriority(item) });
     });
   });
 
@@ -1496,95 +1553,84 @@ function buildUpcomingAcadItems({ daysAhead = 7 } = {}){
   return items;
 }
 
+function renderAcadPendingWidget(items){
+  if (!acadPendingWidget) return;
+
+  const visibleItems = items.slice(0, 4);
+  const total = items.length;
+
+  acadPendingWidget.innerHTML = `
+    <div class="widget-title-row">
+      <div class="widget-title">📋 Tareas Pendientes</div>
+      <span class="badge-soft">${total} total</span>
+    </div>
+    ${visibleItems.length ? '<div class="acad-pending-list"></div>' : '<div class="small-muted">No hay tareas pendientes.</div>'}
+    <button class="widget-link" type="button" id="acadCompletedLink">Ver todas las tareas completadas →</button>
+  `;
+
+  const link = acadPendingWidget.querySelector("#acadCompletedLink");
+  link?.addEventListener("click", ()=>{
+    const doneItems = buildUpcomingAcadItems({ daysAhead: 45, includeDone: true }).filter(({ item })=> item?.estado === "done");
+    CTX?.notifySuccess?.(`Tareas completadas en vista rápida: ${doneItems.length}`);
+  });
+
+  const list = acadPendingWidget.querySelector(".acad-pending-list");
+  if (!list) return;
+
+  visibleItems.forEach(({ item, dateKey, minutes, priority })=>{
+    const dateLabel = (()=>{
+      const parts = ymdFromDateKey(dateKey);
+      return parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
+    })();
+    const relative = getRelativePastLabel(dateKey, minutes);
+    const row = document.createElement("article");
+    row.className = `acad-pending-item priority-${priority}`;
+    row.innerHTML = `
+      <div class="acad-pending-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+      <div class="acad-pending-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(dateLabel)}</div>
+      ${relative ? `<div class="acad-pending-item-time">${escapeHtml(relative)}</div>` : ""}
+    `;
+    list.appendChild(row);
+  });
+}
+
 function renderAcadUpcomingWidget(){
   if (!acadUpcomingWidget) return;
-  const items = buildUpcomingAcadItems({ daysAhead: 7 });
+  const items = buildUpcomingAcadItems({ daysAhead: 14 });
+
+  renderAcadPendingWidget(items);
+
+  const monthFmt = new Intl.DateTimeFormat("es-AR", { month: "short" });
+  const visibleItems = items.slice(0, 4);
   acadUpcomingWidget.innerHTML = `
-    <div class="widget-title">Próximos vencimientos</div>
-    ${items.length ? '<div class="upcoming-list"></div>' : '<div class="small-muted">No hay vencimientos próximos.</div>'}
+    <div class="widget-title">🔔 Próximos vencimientos</div>
+    ${visibleItems.length ? '<div class="upcoming-list upcoming-list--timeline"></div>' : '<div class="small-muted">No hay vencimientos próximos.</div>'}
   `;
-  if (!items.length) return;
+  if (!visibleItems.length) return;
 
   const list = acadUpcomingWidget.querySelector(".upcoming-list");
   if (!list) return;
 
-  items.forEach(({ item, dateKey, minutes, index, storageKey })=>{
+  visibleItems.forEach(({ item, dateKey })=>{
     const parts = ymdFromDateKey(dateKey);
-    const dateLabel = parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
-    const timeLabel = minutes !== null && minutes !== undefined ? minutesToTime(minutes) : "";
+    const dueDate = parts ? new Date(parts.y, parts.m - 1, parts.d) : null;
+    const day = dueDate ? String(dueDate.getDate()) : "—";
+    const month = dueDate ? monthFmt.format(dueDate).replace(".", "") : "---";
+    const daysLeft = dueDate ? Math.ceil((dueDate.setHours(23,59,59,999) - Date.now()) / (1000 * 60 * 60 * 24)) : null;
+    const secondary = Number.isFinite(daysLeft) ? (daysLeft > 0 ? `Faltan ${daysLeft} días` : daysLeft === 0 ? "Vence hoy" : "Vencido") : "";
 
-    const row = document.createElement("div");
-    row.className = "upcoming-row";
-
-    const main = document.createElement("div");
-    main.className = "upcoming-main";
-    main.innerHTML = `
-      <div class="upcoming-title">${escapeHtml(item.titulo || "(sin título)")}</div>
-      <div class="upcoming-meta">
-        <span>${escapeHtml(item.materia || "Materia")}</span>
-        <span>·</span>
-        <span>${escapeHtml(dateLabel)}</span>
-        ${timeLabel ? `<span>·</span><span>${escapeHtml(timeLabel)}</span>` : ""}
+    const row = document.createElement("article");
+    row.className = "upcoming-row upcoming-row--timeline";
+    row.innerHTML = `
+      <div class="upcoming-date-block">
+        <span class="upcoming-date-month">${escapeHtml(month)}</span>
+        <strong class="upcoming-date-day">${escapeHtml(day)}</strong>
       </div>
-      <span class="upcoming-badge">${escapeHtml(item.tipo || "Item")}</span>
+      <div class="upcoming-main">
+        <div class="upcoming-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+        <div class="upcoming-meta">${escapeHtml(secondary)} · ${escapeHtml(item.materia || "Materia")}</div>
+      </div>
     `;
-
-    const actions = document.createElement("div");
-    actions.className = "upcoming-actions";
-    const btnDone = document.createElement("button");
-    btnDone.className = "btn-outline btn-small";
-    btnDone.type = "button";
-    btnDone.innerHTML = "✓";
-    btnDone.title = "Marcar como hecho";
-    btnDone.setAttribute("aria-label", "Marcar como hecho");
-    btnDone.addEventListener("click", async ()=>{
-      const ok = await CTX?.showConfirm?.({
-        title: "Marcar como hecho",
-        message: "¿Confirmás que ya lo realizaste? Se ocultará de Próximos vencimientos.",
-        confirmText: "Sí, marcar",
-        cancelText: "Cancelar"
-      });
-      if (!ok) return;
-
-      const user = getCurrentUser();
-      if (!user) return;
-
-      try{
-        const { db, doc, getDoc, setDoc } = CTX || {};
-        if (!db || !doc || !getDoc || !setDoc) return;
-        const ref = doc(db, "planner", user.uid);
-        const snap = await getDoc(ref);
-        if (!snap.exists()) return;
-        const data = snap.data() || {};
-        const targetKey = storageKey || resolveAcadStorageKey(dateKey, data.academico);
-        if (!targetKey || !Array.isArray(data.academico?.[targetKey])) return;
-        if (!data.academico[targetKey][index]) return;
-
-        data.academico[targetKey][index].estado = "done";
-        await setDoc(ref, data);
-        academicoCache = data.academico || {};
-        renderAcadCalendar();
-        renderRightPanel(acadSelectedDateKey || getDayKey(dateKey));
-        renderAcadUpcomingWidget();
-        CTX?.notifySuccess?.("Marcado como hecho.");
-      }catch(e){
-        CTX?.notifyError?.("No se pudo marcar como hecho: " + (e.message || e));
-      }
-    });
-    const btnView = document.createElement("button");
-    btnView.className = "btn-outline btn-small";
-    btnView.type = "button";
-    btnView.textContent = "Ver";
-    btnView.addEventListener("click", ()=>{
-      acadSelectedDateKey = dateKey;
-      renderAcadCalendar();
-      renderRightPanel(dateKey);
-      document.getElementById("acadInfoPanel")?.scrollIntoView({ behavior:"smooth", block:"start" });
-    });
-    actions.appendChild(btnDone);
-    actions.appendChild(btnView);
-    row.appendChild(main);
-    row.appendChild(actions);
     list.appendChild(row);
   });
 }
