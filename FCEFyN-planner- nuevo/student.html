@@ -799,15 +799,16 @@
       </div>
 
       <div class="planner-filters" data-component="Filters">
-        <input class="input-mini" id="sectionsSearch" placeholder="Buscar materia..." aria-label="Buscar materia" />
-        <select class="input-mini" id="sectionsProfessorFilter" aria-label="Filtrar por profesor"></select>
-        <button class="btn-outline btn-small" id="btnPlannerAdvancedFilters" type="button">Filtros avanzados</button>
+        <select class="input-mini" id="sectionsSubjectFilter" aria-label="Filtrar por materia"></select>
       </div>
 
-      <div class="planner-filters planner-filters-secondary">
-        <select class="input-mini" id="sectionsSubjectFilter" aria-label="Filtrar por materia"></select>
-        <div class="small-muted planner-career-badge" id="plannerCareerBadge">Carrera: —</div>
-        <button class="btn-outline btn-small" id="btnReloadSections" type="button">Recargar</button>
+      <div class="planner-preset-bubble" id="plannerPresetBubble" aria-hidden="true">
+        <label for="plannerPresetNameInput">Nombre del preset</label>
+        <input class="input-mini" id="plannerPresetNameInput" type="text" maxlength="60" placeholder="Ej: Cursado mañana" />
+        <div class="planner-preset-bubble-actions">
+          <button class="btn-outline btn-small" id="btnPlannerPresetCancel" type="button">Cancelar</button>
+          <button class="btn-plan-add" id="btnPlannerPresetConfirm" type="button">Confirmar</button>
+        </div>
       </div>
 
       <div class="planner-list" id="sectionsList" aria-live="polite"></div>

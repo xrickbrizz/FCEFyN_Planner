@@ -8,11 +8,6 @@ function getStudentCareerSlug(){
   return CTX.normalizeStr(profile.careerSlug || profile.career || "");
 }
 
-function getStudentCareerLabel(){
-  const profile = CTX?.getUserProfile?.() || {};
-  return profile.careerName || profile.career || profile.careerSlug || "Sin carrera";
-}
-
 function sectionMatchesCareer(section, careerSlug){
   if (!careerSlug) return false;
   const sectionCareer = CTX.normalizeStr(section.degree || "");
@@ -120,11 +115,6 @@ function getConflictInfo(candidateSection){
   return { blocked: false, reason: "" };
 }
 
-function updateCareerBadge(){
-  const badge = document.getElementById("plannerCareerBadge");
-  if (badge) badge.textContent = "Carrera: " + getStudentCareerLabel();
-}
-
 function populateSubjectFilter(filteredByCareer){
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
   if (!subjectFilter) return;
@@ -142,25 +132,6 @@ function populateSubjectFilter(filteredByCareer){
     subjectFilter.appendChild(opt);
   });
   subjectFilter.value = uniqueSubjects.includes(current) ? current : "";
-}
-
-function populateProfessorFilter(filteredByCareer){
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
-  if (!professorFilter) return;
-  const current = professorFilter.value || "";
-  const unique = [...new Set(filteredByCareer.flatMap(getSectionTeachers).filter(Boolean))].sort((a,b)=> a.localeCompare(b, "es"));
-  professorFilter.innerHTML = "";
-  const allOpt = document.createElement("option");
-  allOpt.value = "";
-  allOpt.textContent = "Todos los profesores";
-  professorFilter.appendChild(allOpt);
-  unique.forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    professorFilter.appendChild(opt);
-  });
-  professorFilter.value = unique.includes(current) ? current : "";
 }
 
 async function loadCourseSections(){
@@ -249,16 +220,12 @@ function renderPlannerPreview(){
 function renderSectionsList(){
   const list = document.getElementById("sectionsList");
   if (!list) return;
-  const q = CTX.normalizeStr(document.getElementById("sectionsSearch")?.value || "");
   const selectedSubject = document.getElementById("sectionsSubjectFilter")?.value || "";
-  const selectedProfessor = document.getElementById("sectionsProfessorFilter")?.value || "";
   list.innerHTML = "";
 
   const careerSlug = getStudentCareerSlug();
   const byCareer = getCareerFilteredSections();
   populateSubjectFilter(byCareer);
-  populateProfessorFilter(byCareer);
-  updateCareerBadge();
 
   if (!careerSlug){
     list.innerHTML = '<div class="small-muted">Completá tu carrera en Perfil para ver comisiones.</div>';
@@ -267,14 +234,6 @@ function renderSectionsList(){
 
   let filtered = byCareer.slice();
   if (selectedSubject) filtered = filtered.filter(sec => sec.subject === selectedSubject);
-  if (selectedProfessor) filtered = filtered.filter(sec => getSectionTeachers(sec).some(name => name.includes(selectedProfessor)));
-
-  if (q){
-    filtered = filtered.filter(sec => {
-      const hay = [sec.subject, sec.commission, sec.room, sec.campus, ...getSectionTeachers(sec), formatSchedule(sec)].join(" | ");
-      return CTX.normalizeStr(hay).includes(q);
-    });
-  }
 
   if (!filtered.length){
     list.innerHTML = '<div class="small-muted">No hay comisiones con los filtros actuales.</div>';
@@ -290,12 +249,9 @@ function renderSectionsList(){
     const card = document.createElement("article");
     card.className = "section-card" + (conflict.blocked ? " blocked" : "");
     const teachers = getSectionTeachers(sec);
-    const codeLabel = sec.code || sec.id;
-
     card.innerHTML = `
       <div class="section-card-top">
         <div>
-          <div class="section-code">CÓDIGO: ${codeLabel}</div>
           <div class="section-title">${sec.subject || "(Sin materia)"}</div>
           <div class="section-sub"><strong>Comisión:</strong> ${sec.commission || "—"}</div>
           <div class="section-sub">${formatSchedule(sec)}</div>
@@ -307,7 +263,7 @@ function renderSectionsList(){
       </div>`;
 
     const btn = document.createElement("button");
-    btn.className = "btn-blue btn-small";
+    btn.className = "btn-plan-add btn-small";
     if (selected){
       btn.textContent = "Quitar";
       btn.className = "btn-outline btn-small";
@@ -317,7 +273,7 @@ function renderSectionsList(){
       btn.disabled = true;
       btn.className = "btn-gray btn-small";
     } else {
-      btn.textContent = "Añadir";
+      btn.innerHTML = '<span aria-hidden="true">＋</span> Añadir';
       btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
     }
 
@@ -351,9 +307,35 @@ function loadPreset(id){
 }
 
 function newPreset(){
+  const input = document.getElementById("plannerPresetNameInput");
+  const bubble = document.getElementById("plannerPresetBubble");
+  if (!input || !bubble) return;
+  input.value = "";
+  bubble.classList.add("is-open");
+  bubble.setAttribute("aria-hidden", "false");
+  input.focus();
+}
+
+function closePresetBubble(){
+  const bubble = document.getElementById("plannerPresetBubble");
+  if (!bubble) return;
+  bubble.classList.remove("is-open");
+  bubble.setAttribute("aria-hidden", "true");
+}
+
+async function confirmNewPreset(){
+  const input = document.getElementById("plannerPresetNameInput");
+  const name = (input?.value || "").trim();
+  if (!name){
+    CTX?.notifyWarn?.("Ingresá un nombre para el preset.");
+    input?.focus();
+    return;
+  }
   CTX.aulaState.activePresetId = null;
-  CTX.aulaState.activePresetName = "";
+  CTX.aulaState.activePresetName = name;
   CTX.aulaState.activeSelectedSectionIds = [];
+  await upsertActivePreset(name);
+  closePresetBubble();
   renderPlannerAll();
 }
 
@@ -376,8 +358,7 @@ async function upsertActivePreset(silentName = ""){
 }
 
 async function saveActivePreset(){
-  const suggested = (CTX.aulaState.activePresetName || "").trim() || `Preset ${CTX.aulaState.presets.length + 1}`;
-  const name = (window.prompt("Nombre del preset", suggested) || suggested).trim();
+  const name = (CTX.aulaState.activePresetName || "").trim() || `Preset ${CTX.aulaState.presets.length + 1}`;
   if (!CTX.aulaState.activeSelectedSectionIds.length){
     CTX?.notifyWarn?.("Seleccioná al menos una comisión para guardar el preset.");
     return;
@@ -458,6 +439,7 @@ function openPlannerModal(){
 }
 
 function closePlannerModal(){
+  closePresetBubble();
   const bg = document.getElementById("plannerModalBg");
   if (bg) bg.style.display = "none";
 }
@@ -476,17 +458,20 @@ async function applyPlannerChanges(){
 }
 
 function initPlanificadorUI(){
-  const search = document.getElementById("sectionsSearch");
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
-  const btnReload = document.getElementById("btnReloadSections");
+  const presetNameInput = document.getElementById("plannerPresetNameInput");
 
-  search?.addEventListener("input", renderSectionsList);
   subjectFilter?.addEventListener("change", renderSectionsList);
-  professorFilter?.addEventListener("change", renderSectionsList);
-  btnReload?.addEventListener("click", async () => { await loadCourseSections(); renderSectionsList(); });
   document.getElementById("btnPresetSave")?.addEventListener("click", saveActivePreset);
   document.getElementById("btnPresetNew")?.addEventListener("click", newPreset);
+  document.getElementById("btnPlannerPresetCancel")?.addEventListener("click", closePresetBubble);
+  document.getElementById("btnPlannerPresetConfirm")?.addEventListener("click", () => confirmNewPreset().catch(()=>{}));
+  presetNameInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){
+      e.preventDefault();
+      confirmNewPreset().catch(()=>{});
+    }
+  });
   document.getElementById("btnPresetDuplicate")?.addEventListener("click", duplicatePreset);
   document.getElementById("btnPresetDelete")?.addEventListener("click", deletePreset);
   document.getElementById("btnOpenPlannerModal")?.addEventListener("click", openPlannerModal);
@@ -496,7 +481,6 @@ function initPlanificadorUI(){
   document.getElementById("btnPlannerApplyToAgenda")?.addEventListener("click", () => applyPlannerChanges().catch(()=>{}));
   document.getElementById("plannerModalBg")?.addEventListener("click", (e) => { if (e.target.id === "plannerModalBg") closePlannerModal(); });
 
-  document.getElementById("btnPlannerAdvancedFilters")?.addEventListener("click", () => CTX?.notifyInfo?.("Próximamente: filtros por sede, día y franja horaria."));
 
   renderPlannerAll();
 }
