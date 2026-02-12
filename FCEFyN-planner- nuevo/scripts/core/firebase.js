@@ -20,6 +20,8 @@ import {
   onSnapshot,
   orderBy,
   limit,
+  startAfter,
+  getCountFromServer,
   enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import {
@@ -98,6 +100,8 @@ export {
   onSnapshot,
   orderBy,
   limit,
+  startAfter,
+  getCountFromServer,
   enableIndexedDbPersistence,
   storageRef,
   uploadBytes,

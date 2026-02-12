@@ -486,18 +486,20 @@
         <header class="prof-directory-header">
           <div>
             <h2>Directorio de Profesores</h2>
-            <div id="profCareerLabel" class="small-muted">Carrera detectada automáticamente</div>
+            <div id="profTotalLabel" class="small-muted">0 profesores</div>
           </div>
           <div class="prof-filters">
-            <input id="profSearchInput" type="search" placeholder="Buscar profesor por nombre" aria-label="Buscar profesor por nombre">
-            <select id="profFilterSubject" aria-label="Filtrar por materia"></select>
+            <label class="prof-search-input" aria-label="Buscar profesor por nombre">
+              <span>🔎</span>
+              <input id="profSearchInput" type="search" placeholder="Buscar profesor por nombre">
+            </label>
             <select id="profSortSelect" aria-label="Ordenar profesores">
               <option value="rating_desc">Mejor calificación</option>
               <option value="rating_asc">Peor calificación</option>
               <option value="reviews_desc">Más reseñas</option>
               <option value="reviews_asc">Menos reseñas</option>
-              <option value="name_asc">A-Z</option>
-              <option value="name_desc">Z-A</option>
+              <option value="name_asc">Orden alfabético A-Z</option>
+              <option value="name_desc">Orden alfabético Z-A</option>
             </select>
           </div>
         </header>

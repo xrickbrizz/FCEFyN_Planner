@@ -13,8 +13,8 @@ const normalizeMetric = (value) => {
   return num;
 };
 
-const reviewAverage = ({ quality, difficulty, treatment }) => {
-  const avg = (Number(quality || 0) + Number(difficulty || 0) + Number(treatment || 0)) / 3;
+const reviewAverage = ({ teachingQuality, examDifficulty, studentTreatment }) => {
+  const avg = (Number(teachingQuality || 0) + Number(examDifficulty || 0) + Number(studentTreatment || 0)) / 3;
   return Number(avg.toFixed(2));
 };
 
@@ -25,10 +25,10 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const professorId = String(request.data?.professorId || "").trim();
     if (!professorId) throw new HttpsError("invalid-argument", "Profesor inválido.");
 
-    const quality = normalizeMetric(request.data?.quality);
-    const difficulty = normalizeMetric(request.data?.difficulty);
-    const treatment = normalizeMetric(request.data?.treatment);
-    if ([quality, difficulty, treatment].some((value) => value === null)) {
+    const teachingQuality = normalizeMetric(request.data?.teachingQuality ?? request.data?.quality);
+    const examDifficulty = normalizeMetric(request.data?.examDifficulty ?? request.data?.difficulty);
+    const studentTreatment = normalizeMetric(request.data?.studentTreatment ?? request.data?.treatment);
+    if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
       throw new HttpsError("invalid-argument", "Cada métrica debe estar entre 1 y 5.");
     }
 
@@ -55,9 +55,9 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const sumDifficulty = Number(ratings.sumDifficulty || 0);
       const sumTreatment = Number(ratings.sumTreatment || 0);
 
-      const previousQuality = reviewSnap.exists ? Number(reviewSnap.get("quality") || reviewSnap.get("rating") || 0) : 0;
-      const previousDifficulty = reviewSnap.exists ? Number(reviewSnap.get("difficulty") || reviewSnap.get("rating") || 0) : 0;
-      const previousTreatment = reviewSnap.exists ? Number(reviewSnap.get("treatment") || reviewSnap.get("rating") || 0) : 0;
+      const previousQuality = reviewSnap.exists ? Number(reviewSnap.get("teachingQuality") || reviewSnap.get("quality") || reviewSnap.get("rating") || 0) : 0;
+      const previousDifficulty = reviewSnap.exists ? Number(reviewSnap.get("examDifficulty") || reviewSnap.get("difficulty") || reviewSnap.get("rating") || 0) : 0;
+      const previousTreatment = reviewSnap.exists ? Number(reviewSnap.get("studentTreatment") || reviewSnap.get("treatment") || reviewSnap.get("rating") || 0) : 0;
       const previousComment = reviewSnap.exists ? String(reviewSnap.get("comment") || "") : "";
 
       const hadComment = previousComment.trim().length > 0;
@@ -65,9 +65,9 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const previousCommentsCount = Number(profData.commentsCount || 0);
 
       const nextCount = reviewSnap.exists ? totalReviews : totalReviews + 1;
-      const nextSumQuality = reviewSnap.exists ? (sumQuality - previousQuality + quality) : (sumQuality + quality);
-      const nextSumDifficulty = reviewSnap.exists ? (sumDifficulty - previousDifficulty + difficulty) : (sumDifficulty + difficulty);
-      const nextSumTreatment = reviewSnap.exists ? (sumTreatment - previousTreatment + treatment) : (sumTreatment + treatment);
+      const nextSumQuality = reviewSnap.exists ? (sumQuality - previousQuality + teachingQuality) : (sumQuality + teachingQuality);
+      const nextSumDifficulty = reviewSnap.exists ? (sumDifficulty - previousDifficulty + examDifficulty) : (sumDifficulty + examDifficulty);
+      const nextSumTreatment = reviewSnap.exists ? (sumTreatment - previousTreatment + studentTreatment) : (sumTreatment + studentTreatment);
 
       const qualityAvg = nextCount > 0 ? nextSumQuality / nextCount : 0;
       const difficultyAvg = nextCount > 0 ? nextSumDifficulty / nextCount : 0;
@@ -77,14 +77,17 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
       const now = FieldValue.serverTimestamp();
       const createdAt = reviewSnap.exists && reviewSnap.get("createdAt") ? reviewSnap.get("createdAt") : now;
-      const rating = reviewAverage({ quality, difficulty, treatment });
+      const rating = reviewAverage({ teachingQuality, examDifficulty, studentTreatment });
 
       tx.set(reviewRef, {
         professorId,
         userId: uid,
-        quality,
-        difficulty,
-        treatment,
+        teachingQuality,
+        examDifficulty,
+        studentTreatment,
+        quality: teachingQuality,
+        difficulty: examDifficulty,
+        treatment: studentTreatment,
         rating,
         comment,
         anonymous,
@@ -111,6 +114,8 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
         avgExams: difficultyAvg,
         avgTreatment: treatmentAvg,
         commentsCount: Math.max(0, nextComments),
+        averageRating: average,
+        totalReviews: nextCount,
         updatedAt: now
       }, { merge: true });
     });

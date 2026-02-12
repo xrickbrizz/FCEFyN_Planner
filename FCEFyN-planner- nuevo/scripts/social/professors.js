@@ -6,6 +6,9 @@ import {
   query,
   where,
   orderBy,
+  limit,
+  startAfter,
+  getCountFromServer,
   getFunctions,
   httpsCallable,
   doc
@@ -13,23 +16,35 @@ import {
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
 
 let CTX = null;
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
 
 const METRICS = [
-  { key:"quality", label:"Calidad de enseñanza", descriptor: qualityDescriptor },
-  { key:"difficulty", label:"Dificultad de parciales", descriptor: difficultyDescriptor },
-  { key:"treatment", label:"Trato con estudiantes", descriptor: qualityDescriptor }
+  { key:"teachingQuality", label:"Calidad de enseñanza", descriptor: teachingDescriptor },
+  { key:"examDifficulty", label:"Dificultad de parciales", descriptor: examsDescriptor },
+  { key:"studentTreatment", label:"Trato con estudiantes", descriptor: treatmentDescriptor }
 ];
+
+const SORT_OPTIONS = {
+  rating_desc: { field:"ratingAvg", direction:"desc" },
+  rating_asc: { field:"ratingAvg", direction:"asc" },
+  reviews_desc: { field:"ratingCount", direction:"desc" },
+  reviews_asc: { field:"ratingCount", direction:"asc" },
+  name_asc: { field:"name", direction:"asc" },
+  name_desc: { field:"name", direction:"desc" }
+};
 
 const state = {
   userCareer: "",
-  professors: [],
-  subjects: [],
-  filters: { search:"", subject:"", sort:"rating_desc" },
+  filters: { search:"", sort:"rating_desc" },
   page: 1,
   selectedProfessorId: null,
+  pageItems: [],
+  totalPages: 1,
+  totalItems: 0,
+  professorsById: new Map(),
+  queryCache: new Map(),
   reviewsByProfessor: new Map(),
-  ratingDraft: { quality:0, difficulty:0, treatment:0, comment:"", anonymous:false }
+  ratingDraft: { teachingQuality:0, examDifficulty:0, studentTreatment:0, comment:"", anonymous:false }
 };
 
 const notifySuccess = (message) => CTX?.notifySuccess?.(message);
@@ -42,54 +57,82 @@ function normalize(value = ""){
   return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
 
+function escapeHTML(value = ""){
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function formatDecimal(value){
   return (Number.isFinite(Number(value)) ? Number(value) : 0).toFixed(1);
 }
 
-function qualityDescriptor(value){
+function teachingDescriptor(value){
+  if (value <= 1) return "Muy mala";
   if (value <= 2) return "Mala";
-  if (value < 4) return "Regular";
+  if (value <= 3) return "Regular";
+  if (value <= 4) return "Buena";
   return "Excelente";
 }
 
-function difficultyDescriptor(value){
-  if (value <= 2) return "Fácil";
-  if (value < 4) return "Moderado";
-  return "Difícil";
+function examsDescriptor(value){
+  if (value <= 1) return "Muy difíciles";
+  if (value <= 2) return "Difíciles";
+  if (value <= 3) return "Normales";
+  if (value <= 4) return "Fáciles";
+  return "Muy fáciles";
 }
 
-function renderStars(value){
-  const rounded = Math.round(Number(value) || 0);
-  let html = "";
-  for (let i = 1; i <= 5; i += 1){
-    html += `<span class="star ${i <= rounded ? "full" : ""}">★</span>`;
-  }
-  return html;
+function treatmentDescriptor(value){
+  if (value <= 1) return "Muy malo";
+  if (value <= 2) return "Malo";
+  if (value <= 3) return "Normal";
+  if (value <= 4) return "Bueno";
+  return "Excelente";
+}
+
+function reviewAverage(review){
+  const teaching = Number(review.teachingQuality || 0);
+  const exams = Number(review.examDifficulty || 0);
+  const treatment = Number(review.studentTreatment || 0);
+  return Number(((teaching + exams + treatment) / 3).toFixed(2));
 }
 
 function parseProfessor(docSnap){
   const data = docSnap.data() || {};
   const ratings = data.ratings || {};
-  const qualityAvg = Number(ratings.qualityAvg ?? data.avgTeaching ?? data.ratingAvg ?? 0);
-  const difficultyAvg = Number(ratings.difficultyAvg ?? data.avgExams ?? data.ratingAvg ?? 0);
-  const treatmentAvg = Number(ratings.treatmentAvg ?? data.avgTreatment ?? data.ratingAvg ?? 0);
-  const average = Number(ratings.average ?? data.avgGeneral ?? data.ratingAvg ?? ((qualityAvg + difficultyAvg + treatmentAvg) / 3) ?? 0);
-  const totalReviews = Number(ratings.totalReviews ?? data.ratingCount ?? 0);
+  const teachingQualityAvg = Number(ratings.qualityAvg ?? ratings.teachingQualityAvg ?? data.avgTeaching ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const examDifficultyAvg = Number(ratings.difficultyAvg ?? ratings.examDifficultyAvg ?? data.avgExams ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const studentTreatmentAvg = Number(ratings.treatmentAvg ?? ratings.studentTreatmentAvg ?? data.avgTreatment ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const averageRating = Number(ratings.average ?? data.avgGeneral ?? data.ratingAvg ?? data.averageRating ?? ((teachingQualityAvg + examDifficultyAvg + studentTreatmentAvg) / 3) ?? 0);
+  const totalReviews = Number(ratings.totalReviews ?? data.ratingCount ?? data.totalReviews ?? 0);
 
   return {
     id: docSnap.id,
     name: data.name || "Profesor",
-    career: data.career || "",
     subjects: Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : [],
-    photoUrl: data.photoUrl || data.photoURL || "",
-    ratings: {
-      average,
-      totalReviews,
-      qualityAvg,
-      difficultyAvg,
-      treatmentAvg
-    }
+    photoURL: data.photoURL || data.photoUrl || "",
+    averageRating,
+    totalReviews,
+    teachingQualityAvg,
+    examDifficultyAvg,
+    studentTreatmentAvg
   };
+}
+
+function professorBaseQuery(){
+  return query(collection(CTX.db, "professors"), where("career", "==", state.userCareer));
+}
+
+function sortConfig(){
+  return SORT_OPTIONS[state.filters.sort] || SORT_OPTIONS.rating_desc;
+}
+
+function queryCacheKey(){
+  return `${state.filters.sort}`;
 }
 
 async function resolveUserCareer(){
@@ -123,108 +166,98 @@ async function resolveUserCareer(){
   return state.userCareer;
 }
 
-async function loadSubjectsForCareer(career){
-  state.subjects = [];
-  if (!career) return;
+function getFromCacheForPage(page){
+  const bucket = state.queryCache.get(queryCacheKey());
+  if (!bucket) return null;
+  return bucket.pages.get(page) || null;
+}
+
+function savePageToCache(page, records, lastVisible){
+  const key = queryCacheKey();
+  if (!state.queryCache.has(key)){
+    state.queryCache.set(key, { pages:new Map(), cursors:new Map(), totalItems:0, totalPages:1 });
+  }
+  const bucket = state.queryCache.get(key);
+  bucket.pages.set(page, records);
+  bucket.cursors.set(page, lastVisible || null);
+}
+
+async function computeTotalForSort(){
+  const key = queryCacheKey();
+  if (!state.queryCache.has(key)){
+    state.queryCache.set(key, { pages:new Map(), cursors:new Map(), totalItems:0, totalPages:1 });
+  }
+  const bucket = state.queryCache.get(key);
+  if (bucket.totalItems > 0) return;
 
   try{
-    const subjectsSnap = await getDocs(query(collection(CTX.db, "subjects"), where("career", "==", career)));
-    const subjects = [];
-    subjectsSnap.forEach((subjectDoc) => {
-      const data = subjectDoc.data() || {};
-      const slug = data.slug || subjectDoc.id;
-      subjects.push({ slug, name: data.name || data.nombre || slug });
-    });
-    state.subjects = subjects.sort((a,b)=> normalize(a.name).localeCompare(normalize(b.name)));
+    const counter = await getCountFromServer(professorBaseQuery());
+    bucket.totalItems = counter.data().count || 0;
+    bucket.totalPages = Math.max(1, Math.ceil(bucket.totalItems / PAGE_SIZE));
   }catch(error){
-    console.error("[Profesores] No se pudo cargar materias por carrera", error);
-    state.subjects = [];
+    console.warn("[Profesores] No se pudo contar profesores", error);
+    bucket.totalItems = 0;
+    bucket.totalPages = 1;
   }
 }
 
-async function loadProfessors(){
-  state.professors = [];
-  state.reviewsByProfessor.clear();
-  const career = await resolveUserCareer();
-  if (!career) return;
+async function fetchPage(page){
+  const cached = getFromCacheForPage(page);
+  if (cached) return cached;
 
-  try{
-    const professorsQuery = query(collection(CTX.db, "professors"), where("career", "==", career));
-    const snap = await getDocs(professorsQuery);
-    snap.forEach((docSnap) => state.professors.push(parseProfessor(docSnap)));
-  }catch(error){
-    console.error("[Profesores] Error al cargar profesores", error);
-    notifyError("No se pudieron cargar profesores para tu carrera.");
-  }
-}
+  const { field, direction } = sortConfig();
+  const orderSegments = field === "name"
+    ? [orderBy(field, direction)]
+    : [orderBy(field, direction), orderBy("name", "asc")];
 
-function getSubjectName(subjectSlug){
-  const fromCatalog = state.subjects.find(subject => normalize(subject.slug) === normalize(subjectSlug));
-  return fromCatalog?.name || subjectSlug;
-}
+  let q = query(professorBaseQuery(), ...orderSegments, limit(PAGE_SIZE));
 
-function getFilteredAndSortedProfessors(){
-  const search = normalize(state.filters.search);
-  let list = [...state.professors];
-
-  if (state.filters.subject){
-    list = list.filter(prof => prof.subjects.some(subject => normalize(subject) === normalize(state.filters.subject)));
-  }
-  if (search){
-    list = list.filter(prof => normalize(prof.name).includes(search));
-  }
-
-  const sorters = {
-    rating_desc: (a,b) => b.ratings.average - a.ratings.average,
-    rating_asc: (a,b) => a.ratings.average - b.ratings.average,
-    reviews_desc: (a,b) => b.ratings.totalReviews - a.ratings.totalReviews,
-    reviews_asc: (a,b) => a.ratings.totalReviews - b.ratings.totalReviews,
-    name_asc: (a,b) => normalize(a.name).localeCompare(normalize(b.name)),
-    name_desc: (a,b) => normalize(b.name).localeCompare(normalize(a.name))
-  };
-
-  const sorter = sorters[state.filters.sort] || sorters.rating_desc;
-  list.sort((a,b) => {
-    const result = sorter(a,b);
-    if (result !== 0) return result;
-    return normalize(a.name).localeCompare(normalize(b.name));
-  });
-
-  return list;
-}
-
-function renderSubjectFilter(){
-  const select = document.getElementById("profFilterSubject");
-  if (!select) return;
-  const selected = state.filters.subject;
-
-  const options = [];
-  const seen = new Set();
-  state.subjects.forEach(subject => {
-    const key = normalize(subject.slug);
-    if (!seen.has(key)){
-      seen.add(key);
-      options.push({ value:subject.slug, label:subject.name });
+  if (page > 1){
+    const prevBucket = state.queryCache.get(queryCacheKey());
+    const previousCursor = prevBucket?.cursors?.get(page - 1) || null;
+    if (!previousCursor){
+      await fetchPage(page - 1);
     }
-  });
-  state.professors.forEach(prof => {
-    prof.subjects.forEach(subject => {
-      const key = normalize(subject);
-      if (!seen.has(key)){
-        seen.add(key);
-        options.push({ value:subject, label:getSubjectName(subject) });
-      }
-    });
+    const cursor = prevBucket?.cursors?.get(page - 1) || null;
+    if (cursor){
+      q = query(professorBaseQuery(), ...orderSegments, startAfter(cursor), limit(PAGE_SIZE));
+    }
+  }
+
+  const snap = await getDocs(q);
+  const rows = [];
+  snap.forEach((profDoc) => {
+    const parsed = parseProfessor(profDoc);
+    rows.push(parsed);
+    state.professorsById.set(parsed.id, parsed);
   });
 
-  select.innerHTML = '<option value="">Filtrar por materia</option>';
-  options.sort((a,b)=> normalize(a.label).localeCompare(normalize(b.label))).forEach(option => {
-    const el = document.createElement("option");
-    el.value = option.value;
-    el.textContent = option.label;
-    if (normalize(option.value) === normalize(selected)) el.selected = true;
-    select.appendChild(el);
-  });
+  const lastVisible = snap.docs[snap.docs.length - 1] || null;
+  savePageToCache(page, rows, lastVisible);
+  return rows;
+}
+
+function applySearchFilter(items){
+  const search = normalize(state.filters.search);
+  if (!search) return items;
+  return items.filter((professor) => normalize(professor.name).includes(search));
+}
+
+async function loadDirectoryPage(){
+  await computeTotalForSort();
+  const bucket = state.queryCache.get(queryCacheKey());
+  state.totalItems = bucket?.totalItems || 0;
+  state.totalPages = bucket?.totalPages || 1;
+  if (state.page > state.totalPages) state.page = state.totalPages;
+
+  const serverItems = await fetchPage(state.page);
+  state.pageItems = applySearchFilter(serverItems);
+
+  if (normalize(state.filters.search)) {
+    state.totalItems = state.pageItems.length;
+    state.totalPages = 1;
+    state.page = 1;
+  }
 }
 
 function renderDirectory(){
@@ -232,31 +265,25 @@ function renderDirectory(){
   const pageLabel = document.getElementById("profPageIndicator");
   const prevBtn = document.getElementById("profPrevPage");
   const nextBtn = document.getElementById("profNextPage");
-  if (!listEl || !pageLabel || !prevBtn || !nextBtn) return;
-
-  const filtered = getFilteredAndSortedProfessors();
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  if (state.page > totalPages) state.page = totalPages;
-
-  const offset = (state.page - 1) * PAGE_SIZE;
-  const pageItems = filtered.slice(offset, offset + PAGE_SIZE);
+  const totalLabel = document.getElementById("profTotalLabel");
+  if (!listEl || !pageLabel || !prevBtn || !nextBtn || !totalLabel) return;
 
   listEl.innerHTML = "";
-  if (!pageItems.length){
-    listEl.innerHTML = '<div class="small-muted">No se encontraron profesores para tu búsqueda.</div>';
+  if (!state.pageItems.length){
+    listEl.innerHTML = '<div class="small-muted">No se encontraron profesores para tu búsqueda en esta página.</div>';
   }
 
-  pageItems.forEach((professor) => {
+  state.pageItems.forEach((professor) => {
     const card = document.createElement("article");
     card.className = "prof-card";
     card.innerHTML = `
-      <img class="prof-photo" src="${professor.photoUrl || "assets/fcefyn-logo.svg"}" alt="Foto de ${professor.name}">
-      <div>
-        <div class="prof-card-name">${professor.name}</div>
-        <div>${formatDecimal(professor.ratings.average)} ⭐</div>
-        <div class="prof-card-metrics">${professor.ratings.totalReviews} reseñas</div>
+      <img class="prof-photo" src="${escapeHTML(professor.photoURL || "assets/fcefyn-logo.svg")}" alt="Foto de ${escapeHTML(professor.name)}">
+      <div class="prof-card-content">
+        <div class="prof-card-name">${escapeHTML(professor.name)}</div>
+        <div class="prof-card-rating">${formatDecimal(professor.averageRating)} ⭐</div>
+        <div class="prof-card-metrics">${professor.totalReviews} reseñas</div>
         <div class="prof-subjects">
-          ${(professor.subjects || []).slice(0, 4).map(subject => `<span class="prof-subject-chip">${getSubjectName(subject)}</span>`).join("") || '<span class="prof-subject-chip">Sin materias</span>'}
+          ${(professor.subjects || []).slice(0, 4).map(subject => `<span class="prof-subject-chip">${escapeHTML(subject)}</span>`).join("") || '<span class="prof-subject-chip">Sin materias</span>'}
         </div>
       </div>
       <div class="prof-card-action">
@@ -274,16 +301,10 @@ function renderDirectory(){
     listEl.appendChild(card);
   });
 
-  pageLabel.textContent = `${state.page} de ${totalPages}`;
+  totalLabel.textContent = `${state.totalItems} profesores`;
+  pageLabel.textContent = `${state.page} de ${state.totalPages}`;
   prevBtn.disabled = state.page <= 1;
-  nextBtn.disabled = state.page >= totalPages;
-}
-
-function reviewAverage(review){
-  const quality = Number(review.quality || 0);
-  const difficulty = Number(review.difficulty || 0);
-  const treatment = Number(review.treatment || 0);
-  return Number(((quality + difficulty + treatment) / 3).toFixed(2));
+  nextBtn.disabled = state.page >= state.totalPages;
 }
 
 function getRatingDistribution(reviews){
@@ -304,7 +325,7 @@ function formatReviewDate(value){
 function renderProfessorDetail(){
   const box = document.getElementById("profDetailBox");
   if (!box) return;
-  const professor = state.professors.find(item => item.id === state.selectedProfessorId);
+  const professor = state.professorsById.get(state.selectedProfessorId);
   if (!professor){
     box.innerHTML = '<div class="small-muted">Seleccioná un profesor para ver su detalle.</div>';
     return;
@@ -317,13 +338,14 @@ function renderProfessorDetail(){
   box.innerHTML = `
     <div class="prof-detail-layout">
       <section class="prof-detail-main">
-        <h3>${professor.name}</h3>
-        <div class="prof-score-big">${formatDecimal(professor.ratings.average)} / 5</div>
-        <div class="small-muted">${professor.ratings.totalReviews} reseñas</div>
+        <h3>${escapeHTML(professor.name)}</h3>
+        <div class="prof-score-big">${formatDecimal(professor.averageRating)} / 5</div>
+        <div class="small-muted">${professor.totalReviews} reseñas</div>
 
         <div class="prof-metric-list">
           ${METRICS.map(metric => {
-            const value = Number(professor.ratings[`${metric.key}Avg`] || 0);
+            const key = `${metric.key}Avg`;
+            const value = Number(professor[key] || 0);
             return `<div class="prof-metric-item"><span>${metric.label}</span><strong>${formatDecimal(value)} · ${metric.descriptor(value)}</strong></div>`;
           }).join("")}
         </div>
@@ -341,24 +363,31 @@ function renderProfessorDetail(){
           `;
         }).join("")}
 
-        <button id="openProfRatingModal" class="btn-blue btn-small" type="button" style="margin-top:1rem;">Calificar Profesor</button>
+        <button id="openProfRatingModal" class="btn-blue btn-small" type="button" style="margin-top:1rem;">Calificar profesor</button>
       </section>
 
       <section class="prof-detail-reviews">
         <h3>Reseñas</h3>
-        ${reviews.length ? reviews.map(review => {
-          const avg = reviewAverage(review);
-          return `
-            <article class="prof-review-item">
-              <div class="prof-review-head">
-                <strong>${review.anonymous ? "Anónimo" : (review.authorName || "Estudiante")}</strong>
-                <span>${formatReviewDate(review.createdAt)}</span>
-              </div>
-              <div class="small-muted" style="margin-top:.25rem;">Promedio de reseña: ${formatDecimal(avg)} ⭐</div>
-              <p style="margin:.5rem 0 0;">${review.comment || "Sin opinión escrita."}</p>
-            </article>
-          `;
-        }).join("") : '<div class="small-muted">Todavía no hay reseñas para este profesor.</div>'}
+        <div class="prof-review-scroll">
+          ${reviews.length ? reviews.map(review => {
+            const avg = reviewAverage(review);
+            return `
+              <article class="prof-review-item">
+                <div class="prof-review-head">
+                  <strong>${review.anonymous ? "Anónimo" : escapeHTML(review.authorName || "Estudiante")}</strong>
+                  <span>${formatReviewDate(review.createdAt)}</span>
+                </div>
+                <div class="prof-review-criteria">
+                  <span>Enseñanza: ${formatDecimal(review.teachingQuality)}</span>
+                  <span>Parciales: ${formatDecimal(review.examDifficulty)}</span>
+                  <span>Trato: ${formatDecimal(review.studentTreatment)}</span>
+                </div>
+                <div class="small-muted" style="margin-top:.25rem;">Promedio de reseña: ${formatDecimal(avg)} ⭐</div>
+                <p style="margin:.5rem 0 0;">${escapeHTML(review.comment || "Sin opinión escrita.")}</p>
+              </article>
+            `;
+          }).join("") : '<div class="small-muted">Todavía no hay reseñas para este profesor.</div>'}
+        </div>
       </section>
     </div>
   `;
@@ -375,16 +404,16 @@ async function loadProfessorReviews(professorId){
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
       const rating = Number(data.rating || 0);
-      const quality = Number(data.quality ?? rating || 0);
-      const difficulty = Number(data.difficulty ?? rating || 0);
-      const treatment = Number(data.treatment ?? rating || 0);
+      const teachingQuality = Number(data.teachingQuality ?? data.quality ?? rating || 0);
+      const examDifficulty = Number(data.examDifficulty ?? data.difficulty ?? rating || 0);
+      const studentTreatment = Number(data.studentTreatment ?? data.treatment ?? rating || 0);
       reviews.push({
         id: reviewDoc.id,
         professorId,
         userId: data.userId || "",
-        quality,
-        difficulty,
-        treatment,
+        teachingQuality,
+        examDifficulty,
+        studentTreatment,
         comment: data.comment || "",
         createdAt: data.createdAt || data.updatedAt || null,
         anonymous: Boolean(data.anonymous),
@@ -410,7 +439,7 @@ function openRatingModal(professor){
   METRICS.forEach(metric => {
     const wrap = document.createElement("div");
     wrap.className = "prof-rating-group";
-    wrap.innerHTML = `<strong>${metric.label}</strong><div class="star-picker" data-metric="${metric.key}"></div><div class="small-muted" id="metricValue-${metric.key}">0/5</div>`;
+    wrap.innerHTML = `<strong>${metric.label}</strong><div class="star-picker" data-metric="${metric.key}"></div><div class="small-muted" id="metricValue-${metric.key}">0/5 · ${metric.descriptor(0)}</div>`;
     const picker = wrap.querySelector(".star-picker");
 
     for (let i = 1; i <= 5; i += 1){
@@ -471,15 +500,20 @@ async function submitRating(){
 
   const values = METRICS.map(metric => Number(state.ratingDraft[metric.key] || 0));
   if (values.some(value => value < 1 || value > 5)){
-    notifyWarn("Completá las 3 métricas con valores de 1 a 5 estrellas.");
+    notifyWarn("Completá los 3 criterios con valores de 1 a 5 estrellas.");
+    return;
+  }
+
+  if (!state.ratingDraft.comment){
+    notifyWarn("Agregá una opinión antes de enviar.");
     return;
   }
 
   const payload = {
     professorId,
-    quality: state.ratingDraft.quality,
-    difficulty: state.ratingDraft.difficulty,
-    treatment: state.ratingDraft.treatment,
+    teachingQuality: state.ratingDraft.teachingQuality,
+    examDifficulty: state.ratingDraft.examDifficulty,
+    studentTreatment: state.ratingDraft.studentTreatment,
     comment: state.ratingDraft.comment,
     anonymous: state.ratingDraft.anonymous
   };
@@ -494,6 +528,7 @@ async function submitRating(){
 
     await refreshSelectedProfessorStats(professorId);
     await loadProfessorReviews(professorId);
+    await loadDirectoryPage();
     renderDirectory();
     renderProfessorDetail();
     closeRatingModal();
@@ -507,39 +542,45 @@ async function submitRating(){
 }
 
 async function refreshSelectedProfessorStats(professorId){
-  const idx = state.professors.findIndex(professor => professor.id === professorId);
-  if (idx < 0) return;
-
   const snap = await getDoc(doc(CTX.db, "professors", professorId));
   if (!snap.exists()) return;
-  state.professors[idx] = parseProfessor(snap);
+  const parsed = parseProfessor(snap);
+  state.professorsById.set(parsed.id, parsed);
+  state.queryCache.clear();
+}
+
+async function refreshDirectoryAndRender(){
+  try{
+    await loadDirectoryPage();
+    renderDirectory();
+  }catch(error){
+    console.error("[Profesores] Error al renderizar directorio", error);
+    notifyError("No se pudo cargar el directorio de profesores.");
+  }
 }
 
 function bindEvents(){
-  document.getElementById("profSearchInput")?.addEventListener("input", (event) => {
+  document.getElementById("profSearchInput")?.addEventListener("input", async (event) => {
     state.filters.search = event.target.value || "";
     state.page = 1;
-    renderDirectory();
+    await refreshDirectoryAndRender();
   });
-  document.getElementById("profFilterSubject")?.addEventListener("change", (event) => {
-    state.filters.subject = event.target.value || "";
-    state.page = 1;
-    renderDirectory();
-  });
-  document.getElementById("profSortSelect")?.addEventListener("change", (event) => {
+  document.getElementById("profSortSelect")?.addEventListener("change", async (event) => {
     state.filters.sort = event.target.value || "rating_desc";
     state.page = 1;
-    renderDirectory();
+    await refreshDirectoryAndRender();
   });
-  document.getElementById("profPrevPage")?.addEventListener("click", () => {
+  document.getElementById("profPrevPage")?.addEventListener("click", async () => {
     if (state.page > 1){
       state.page -= 1;
-      renderDirectory();
+      await refreshDirectoryAndRender();
     }
   });
-  document.getElementById("profNextPage")?.addEventListener("click", () => {
-    state.page += 1;
-    renderDirectory();
+  document.getElementById("profNextPage")?.addEventListener("click", async () => {
+    if (state.page < state.totalPages){
+      state.page += 1;
+      await refreshDirectoryAndRender();
+    }
   });
   document.getElementById("volverListaProfesores")?.addEventListener("click", () => {
     document.getElementById("professorDetailSection")?.classList.add("hidden");
@@ -558,11 +599,6 @@ function bindEvents(){
   });
 }
 
-function renderProfessorsSection(){
-  renderSubjectFilter();
-  renderDirectory();
-}
-
 const Professors = {
   async init(ctx){
     CTX = ctx;
@@ -571,16 +607,16 @@ const Professors = {
 
     await ensurePublicUserProfile(CTX.db, currentUser, CTX?.AppState?.userProfile || null);
     await resolveUserCareer();
-    await loadSubjectsForCareer(state.userCareer);
-    await loadProfessors();
 
-    const careerLabel = document.getElementById("profCareerLabel");
-    if (careerLabel) careerLabel.textContent = state.userCareer ? `Carrera detectada: ${state.userCareer}` : "Completá tu carrera en Perfil para ver profesores.";
+    if (!state.userCareer){
+      notifyWarn("Completá tu carrera en perfil para ver profesores.");
+      return;
+    }
 
     bindEvents();
-    renderProfessorsSection();
+    await refreshDirectoryAndRender();
   },
-  renderProfessorsSection
+  renderProfessorsSection: refreshDirectoryAndRender
 };
 
 export default Professors;
