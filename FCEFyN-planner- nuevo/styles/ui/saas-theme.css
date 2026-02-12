@@ -586,15 +586,61 @@ body[data-theme="dark"] .quick-toggle-btn{
   font-weight: 500;
   line-height: 1.1;
   color: var(--info);
-  text-align: center;
+  text-align: left;
   letter-spacing: 0.04em;
+}
+
+.timer-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.timer-controls{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-btn{
+  border: none;
+  background: transparent;
+  color: var(--text);
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.icon-btn:hover{
+  transform: scale(1.1);
+  color: var(--info);
+  background-color: var(--accent-12);
+}
+
+.icon-btn:disabled{
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
 }
 
 .timer-actions{
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-end;
+}
+
+
+.is-hidden{
+  display: none !important;
 }
 
 .study-event-actions{

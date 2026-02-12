@@ -2887,3 +2887,9 @@ header{
     bottom: calc(1rem + env(safe-area-inset-bottom) + 3.75rem);
   }
 }
+.prof-list{
+ display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 3 columnas */
+  grid-template-rows: repeat(3, auto);   /* 2 filas */
+  gap: 0.5rem; /* espacio entre botones */
+}

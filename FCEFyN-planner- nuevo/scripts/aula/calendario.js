@@ -36,7 +36,6 @@ const studyTimerMateria = document.getElementById("studyTimerMateria");
 const studyTimerTema = document.getElementById("studyTimerTema");
 const studyTimerStart = document.getElementById("studyTimerStart");
 const studyTimerPause = document.getElementById("studyTimerPause");
-const studyTimerResume = document.getElementById("studyTimerResume");
 const studyTimerReset = document.getElementById("studyTimerReset");
 const studyTimerRegister = document.getElementById("studyTimerRegister");
 
@@ -677,14 +676,6 @@ function initStudyTimer(){
       updateStudyTimerButtons();
     });
   }
-  if (studyTimerResume){
-    studyTimerResume.addEventListener("click", ()=>{
-      if (studyTimerState !== "paused") return;
-      studyTimerState = "running";
-      startStudyTimerInterval();
-      updateStudyTimerButtons();
-    });
-  }
   if (studyTimerReset){
     studyTimerReset.addEventListener("click", ()=>{
       stopStudyTimerInterval();
@@ -721,6 +712,7 @@ function startStudyTimerInterval(){
   studyTimerInterval = setInterval(()=>{
     studyTimerSeconds += 1;
     updateStudyTimerDisplay();
+    updateStudyTimerButtons();
   }, 1000);
 }
 
@@ -740,9 +732,12 @@ function updateStudyTimerDisplay(){
 }
 
 function updateStudyTimerButtons(){
-  if (studyTimerStart) studyTimerStart.disabled = studyTimerState === "running";
-  if (studyTimerPause) studyTimerPause.style.display = studyTimerState === "running" ? "inline-flex" : "none";
-  if (studyTimerResume) studyTimerResume.style.display = studyTimerState === "paused" ? "inline-flex" : "none";
+  const isRunning = studyTimerState === "running";
+  const hasElapsedTime = studyTimerSeconds > 0;
+
+  if (studyTimerStart) studyTimerStart.classList.toggle("is-hidden", isRunning);
+  if (studyTimerPause) studyTimerPause.classList.toggle("is-hidden", !isRunning);
+  if (studyTimerReset) studyTimerReset.classList.toggle("is-hidden", !hasElapsedTime);
 }
 
 function initStudyModalUI(){

@@ -207,7 +207,14 @@
           <button class="btn-dark" id="studyNewEntry" type="button">Nuevo registro</button>
           <section id="studyTimerWidget" class="widget-card">
             <div class="widget-title">Timer de Estudio</div>
-            <div class="timer-display" id="studyTimerDisplay">00:00:00</div>
+            <div class="timer-header">
+              <div class="timer-display" id="studyTimerDisplay">00:00:00</div>
+              <div class="timer-controls" aria-label="Controles del temporizador">
+                <button class="icon-btn" id="studyTimerStart" type="button" aria-label="Iniciar">▶</button>
+                <button class="icon-btn" id="studyTimerPause" type="button" aria-label="Pausar">⏸</button>
+                <button class="icon-btn" id="studyTimerReset" type="button" aria-label="Reiniciar">⟲</button>
+              </div>
+            </div>
             <div class="widget-grid">
               <div class="widget-field">
                 <label for="studyTimerMateria">Materia</label>
@@ -219,10 +226,6 @@
               </div>
             </div>
             <div class="timer-actions">
-              <button class="btn-blue btn-small" id="studyTimerStart" type="button">Iniciar</button>
-              <button class="btn-outline btn-small" id="studyTimerPause" type="button">Pausar</button>
-              <button class="btn-outline btn-small" id="studyTimerResume" type="button" style="display:none;">Reanudar</button>
-              <button class="btn-gray btn-small" id="studyTimerReset" type="button">Reset</button>
               <button class="btn-dark btn-small" id="studyTimerRegister" type="button">Registrar</button>
             </div>
           </section>
