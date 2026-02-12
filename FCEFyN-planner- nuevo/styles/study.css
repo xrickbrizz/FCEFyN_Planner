@@ -1317,10 +1317,18 @@ body[data-theme="light"] .event{
       border-radius: var(--radius-lg);
       /*border:1px solid var(--border-85); */
       padding: .5rem;
-      overflow-x:auto;
-      overflow-y:visible;
+      overflow:visible !important;
       box-shadow:none;
-      height: 40rem;
+      height:auto !important;
+      max-height:none !important;
+    }
+
+    #tab-agenda{
+      overflow:visible !important;
+    }
+
+    .main-shell{
+      overflow:visible !important;
     }
     .agenda-grid{
       display:grid;
@@ -1743,6 +1751,7 @@ body[data-theme="light"] .event{
     }
     .planner-bottom-section{
       grid-column:1 / -1;
+      margin-top: 1.5rem;
     }
     .planner-head-row{
       display:flex;
@@ -2893,7 +2902,4 @@ header{
   grid-template-columns: repeat(2, 1fr); /* 3 columnas */
   grid-template-rows: repeat(3, auto);   /* 2 filas */
   gap: 0.5rem; /* espacio entre botones */
-}
-.agenda-shell {
-  outline: 2px solid red;
 }

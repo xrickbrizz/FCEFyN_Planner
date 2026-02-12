@@ -4,11 +4,9 @@ import {
   getDocs,
   getDoc,
   query,
-  where,
   orderBy,
   limit,
   startAfter,
-  getCountFromServer,
   getFunctions,
   httpsCallable,
   doc
@@ -16,7 +14,7 @@ import {
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
 
 let CTX = null;
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 9;
 
 const METRICS = [
   { key:"teachingQuality", label:"Calidad de enseñanza", descriptor: teachingDescriptor },
@@ -25,18 +23,12 @@ const METRICS = [
 ];
 
 const SORT_OPTIONS = {
-  rating_desc: { field:"ratingAvg", direction:"desc" },
-  rating_asc: { field:"ratingAvg", direction:"asc" },
-  reviews_desc: { field:"ratingCount", direction:"desc" },
-  reviews_asc: { field:"ratingCount", direction:"asc" },
   name_asc: { field:"name", direction:"asc" },
   name_desc: { field:"name", direction:"desc" }
 };
 
 const state = {
-  userCareer: "",
-  useCareerFilter: true,
-  filters: { search:"", sort:"rating_desc" },
+  filters: { search:"", sort:"name_asc" },
   page: 1,
   selectedProfessorId: null,
   pageItems: [],
@@ -44,6 +36,7 @@ const state = {
   totalItems: 0,
   professorsById: new Map(),
   queryCache: new Map(),
+  hasNextPage: false,
   reviewsByProfessor: new Map(),
   ratingDraft: { teachingQuality:0, examDifficulty:0, studentTreatment:0, comment:"", anonymous:false }
 };
@@ -124,54 +117,12 @@ function parseProfessor(docSnap){
   };
 }
 
-function professorBaseQuery({ forceWithoutCareer = false } = {}){
-  const professorsCollection = collection(CTX.db, "professors");
-  const shouldApplyCareerFilter = !forceWithoutCareer && state.useCareerFilter && state.userCareer;
-
-  if (shouldApplyCareerFilter){
-    return query(professorsCollection, where("career", "==", state.userCareer));
-  }
-
-  return query(professorsCollection);
-}
-
 function sortConfig(){
-  return SORT_OPTIONS[state.filters.sort] || SORT_OPTIONS.rating_desc;
+  return SORT_OPTIONS[state.filters.sort] || SORT_OPTIONS.name_asc;
 }
 
 function queryCacheKey(){
   return `${state.filters.sort}`;
-}
-
-async function resolveUserCareer(){
-  if (state.userCareer) return state.userCareer;
-  if (CTX?.socialState?.userCareer) {
-    state.userCareer = CTX.socialState.userCareer;
-    return state.userCareer;
-  }
-
-  const profile = CTX?.AppState?.userProfile || null;
-  const profileCareer = profile?.careerSlug || profile?.career || "";
-  if (profileCareer){
-    state.userCareer = profileCareer;
-    if (CTX?.socialState) CTX.socialState.userCareer = profileCareer;
-    return profileCareer;
-  }
-
-  const uid = CTX?.getCurrentUser?.()?.uid;
-  if (!uid) return "";
-
-  try{
-    const snap = await getDoc(doc(CTX.db, "users", uid));
-    const userData = snap.exists() ? snap.data() || {} : {};
-    const fromFirestore = userData.careerSlug || userData.career || "";
-    state.userCareer = fromFirestore;
-    if (CTX?.socialState) CTX.socialState.userCareer = fromFirestore;
-  }catch(error){
-    console.error("[Profesores] No se pudo resolver la carrera del usuario", error);
-  }
-
-  return state.userCareer;
 }
 
 function getFromCacheForPage(page){
@@ -190,46 +141,16 @@ function savePageToCache(page, records, lastVisible){
   bucket.cursors.set(page, lastVisible || null);
 }
 
-async function computeTotalForSort(){
-  const key = queryCacheKey();
-  if (!state.queryCache.has(key)){
-    state.queryCache.set(key, { pages:new Map(), cursors:new Map(), totalItems:0, totalPages:1 });
-  }
-  const bucket = state.queryCache.get(key);
-  if (bucket.totalItems > 0) return;
-
-  try{
-    const counter = await getCountFromServer(professorBaseQuery());
-    bucket.totalItems = counter.data().count || 0;
-    bucket.totalPages = Math.max(1, Math.ceil(bucket.totalItems / PAGE_SIZE));
-
-    if (state.useCareerFilter && state.userCareer && bucket.totalItems === 0){
-      console.warn("[Profesores] El filtro career no devolvió resultados. Se desactiva para diagnóstico.", {
-        career: state.userCareer,
-        collection: "professors"
-      });
-      state.useCareerFilter = false;
-      state.queryCache.clear();
-      await computeTotalForSort();
-      return;
-    }
-  }catch(error){
-    console.warn("[Profesores] No se pudo contar profesores", error);
-    bucket.totalItems = 0;
-    bucket.totalPages = 1;
-  }
-}
-
 async function fetchPage(page){
   const cached = getFromCacheForPage(page);
-  if (cached) return cached;
+  if (cached) {
+    state.hasNextPage = state.queryCache.get(queryCacheKey())?.cursors?.get(page) !== null;
+    return cached;
+  }
 
   const { field, direction } = sortConfig();
-  const orderSegments = field === "name"
-    ? [orderBy(field, direction)]
-    : [orderBy(field, direction), orderBy("name", "asc")];
-
-  let q = query(professorBaseQuery(), ...orderSegments, limit(PAGE_SIZE));
+  const professorsCollection = collection(CTX.db, "professors");
+  let q = query(professorsCollection, orderBy(field, direction), limit(PAGE_SIZE + 1));
 
   if (page > 1){
     const prevBucket = state.queryCache.get(queryCacheKey());
@@ -239,19 +160,17 @@ async function fetchPage(page){
     }
     const cursor = prevBucket?.cursors?.get(page - 1) || null;
     if (cursor){
-      q = query(professorBaseQuery(), ...orderSegments, startAfter(cursor), limit(PAGE_SIZE));
+      q = query(professorsCollection, orderBy(field, direction), startAfter(cursor), limit(PAGE_SIZE + 1));
     }
   }
 
   console.log("Iniciando carga de profesores...");
   console.log("[Profesores] Diagnóstico de query", {
     collection: "professors",
-    userCareer: state.userCareer,
-    useCareerFilter: state.useCareerFilter,
     sortField: field,
     sortDirection: direction,
-    includesNameSort: field !== "name",
-    page
+    page,
+    pageSize: PAGE_SIZE
   });
 
   try {
@@ -265,8 +184,11 @@ async function fetchPage(page){
       console.warn("[Profesores] Verificá si los documentos tienen los campos esperados: career, ratingAvg, name.");
     }
 
+    const docs = snap.docs;
+    const hasMore = docs.length > PAGE_SIZE;
+    const pageDocs = hasMore ? docs.slice(0, PAGE_SIZE) : docs;
     const rows = [];
-    snap.forEach((profDoc) => {
+    pageDocs.forEach((profDoc) => {
       console.log("Profesor encontrado:", profDoc.id, profDoc.data());
       const parsed = parseProfessor(profDoc);
 
@@ -281,62 +203,17 @@ async function fetchPage(page){
       state.professorsById.set(parsed.id, parsed);
     });
 
-    const lastVisible = snap.docs[snap.docs.length - 1] || null;
+    const lastVisible = pageDocs[pageDocs.length - 1] || null;
     savePageToCache(page, rows, lastVisible);
+    state.hasNextPage = hasMore;
     return rows;
   } catch (error) {
     console.error("Error al obtener profesores:", error);
     console.error("[Profesores] Posibles causas: reglas de Firestore, índice compuesto faltante, o conflicto where/orderBy.", {
       collection: "professors",
-      userCareer: state.userCareer,
-      useCareerFilter: state.useCareerFilter,
       sortField: field,
       sortDirection: direction
     });
-    throw error;
-  }
-}
-
-async function forceLoadProfessors(){
-  console.log("[Profesores] Forzando carga completa de profesores...");
-  console.log("[Profesores] Diagnóstico db", {
-    dbInitialized: Boolean(CTX?.db),
-    dbType: typeof CTX?.db,
-    collection: "professors"
-  });
-
-  if (!CTX?.db){
-    console.error("[Profesores] db no está inicializado correctamente. No se puede leer Firestore.");
-    return [];
-  }
-
-  try {
-    const professorsRef = collection(CTX.db, "professors");
-    console.log("[Profesores] Referencia de colección creada", professorsRef?.path || "professors");
-
-    const snapshot = await getDocs(professorsRef);
-
-    console.log("[Profesores] Cantidad total de profesores:", snapshot.size);
-    if (snapshot.empty) {
-      console.error("[Profesores] La colección 'professors' está vacía, no existe en este proyecto o no se está leyendo correctamente.");
-    } else {
-      console.log("[Profesores] La colección 'professors' responde lecturas correctamente.");
-    }
-
-    const rows = [];
-    snapshot.forEach((profDoc) => {
-      console.log("[Profesores] Profesor:", profDoc.id, profDoc.data());
-      const parsed = parseProfessor(profDoc);
-      rows.push(parsed);
-      state.professorsById.set(parsed.id, parsed);
-    });
-
-    return rows;
-  } catch (error) {
-    console.error("[Profesores] Error forzando carga de profesores:", error);
-    if (error?.code === "permission-denied") {
-      console.error("[Profesores] Error de permisos detectado (permission-denied). Revisá reglas de seguridad de Firestore.");
-    }
     throw error;
   }
 }
@@ -348,11 +225,10 @@ function applySearchFilter(items){
 }
 
 async function loadDirectoryPage(){
-  const serverItems = await forceLoadProfessors();
-  state.pageItems = serverItems;
-  state.totalItems = serverItems.length;
-  state.totalPages = 1;
-  state.page = 1;
+  const serverItems = await fetchPage(state.page);
+  state.pageItems = applySearchFilter(serverItems);
+  state.totalItems = state.pageItems.length;
+  state.totalPages = state.hasNextPage ? state.page + 1 : state.page;
 }
 
 function renderDirectory(){
@@ -397,9 +273,9 @@ function renderDirectory(){
   });
 
   totalLabel.textContent = `${state.totalItems} profesores`;
-  pageLabel.textContent = `${state.page} de ${state.totalPages}`;
+  pageLabel.textContent = state.hasNextPage ? `${state.page} de ${state.page + 1}+` : `${state.page} de ${state.page}`;
   prevBtn.disabled = state.page <= 1;
-  nextBtn.disabled = state.page >= state.totalPages;
+  nextBtn.disabled = !state.hasNextPage;
 }
 
 function getRatingDistribution(reviews){
@@ -661,7 +537,8 @@ function bindEvents(){
     await refreshDirectoryAndRender();
   });
   document.getElementById("profSortSelect")?.addEventListener("change", async (event) => {
-    state.filters.sort = event.target.value || "rating_desc";
+    state.filters.sort = event.target.value || "name_asc";
+    state.queryCache.clear();
     state.page = 1;
     await refreshDirectoryAndRender();
   });
@@ -672,7 +549,7 @@ function bindEvents(){
     }
   });
   document.getElementById("profNextPage")?.addEventListener("click", async () => {
-    if (state.page < state.totalPages){
+    if (state.hasNextPage){
       state.page += 1;
       await refreshDirectoryAndRender();
     }
@@ -701,11 +578,10 @@ const Professors = {
     if (!currentUser) return;
 
     await ensurePublicUserProfile(CTX.db, currentUser, CTX?.AppState?.userProfile || null);
-    await resolveUserCareer();
 
-    if (!state.userCareer){
-      notifyWarn("No hay carrera configurada en el perfil. Se continúa con diagnóstico forzado sin filtros.");
-    }
+    const sortSelect = document.getElementById("profSortSelect");
+    if (sortSelect && !SORT_OPTIONS[sortSelect.value]) sortSelect.value = "name_asc";
+    state.filters.sort = sortSelect?.value || "name_asc";
 
     bindEvents();
     await refreshDirectoryAndRender();
