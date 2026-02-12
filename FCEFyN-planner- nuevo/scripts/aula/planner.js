@@ -134,30 +134,6 @@ function populateSubjectFilter(filteredByCareer){
   subjectFilter.value = uniqueSubjects.includes(current) ? current : "";
 }
 
-function populateProfessorFilter(filteredByCareer){
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
-  if (!professorFilter) return;
-  const current = professorFilter.value || "";
-  const unique = [...new Set(filteredByCareer.flatMap(getSectionTeachers).filter(Boolean))].sort((a,b)=> a.localeCompare(b, "es"));
-  professorFilter.innerHTML = "";
-  const placeholderOpt = document.createElement("option");
-  placeholderOpt.value = "";
-  placeholderOpt.textContent = "Filtrar por profesor";
-  professorFilter.appendChild(placeholderOpt);
-  unique.forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    professorFilter.appendChild(opt);
-  });
-  if (!unique.length){
-    placeholderOpt.textContent = "Sin profesores";
-    professorFilter.value = "";
-    return;
-  }
-  professorFilter.value = unique.includes(current) ? current : "";
-}
-
 async function loadCourseSections(){
   CTX.aulaState.courseSections = [];
   try{
@@ -244,15 +220,12 @@ function renderPlannerPreview(){
 function renderSectionsList(){
   const list = document.getElementById("sectionsList");
   if (!list) return;
-  const q = CTX.normalizeStr(document.getElementById("sectionsSearch")?.value || "");
   const selectedSubject = document.getElementById("sectionsSubjectFilter")?.value || "";
-  const selectedProfessor = document.getElementById("sectionsProfessorFilter")?.value || "";
   list.innerHTML = "";
 
   const careerSlug = getStudentCareerSlug();
   const byCareer = getCareerFilteredSections();
   populateSubjectFilter(byCareer);
-  populateProfessorFilter(byCareer);
 
   if (!careerSlug){
     list.innerHTML = '<div class="small-muted">Completá tu carrera en Perfil para ver comisiones.</div>';
@@ -261,14 +234,6 @@ function renderSectionsList(){
 
   let filtered = byCareer.slice();
   if (selectedSubject) filtered = filtered.filter(sec => sec.subject === selectedSubject);
-  if (selectedProfessor) filtered = filtered.filter(sec => getSectionTeachers(sec).some(name => name.includes(selectedProfessor)));
-
-  if (q){
-    filtered = filtered.filter(sec => {
-      const hay = [sec.subject, sec.commission, sec.room, sec.campus, ...getSectionTeachers(sec), formatSchedule(sec)].join(" | ");
-      return CTX.normalizeStr(hay).includes(q);
-    });
-  }
 
   if (!filtered.length){
     list.innerHTML = '<div class="small-muted">No hay comisiones con los filtros actuales.</div>';
@@ -493,14 +458,10 @@ async function applyPlannerChanges(){
 }
 
 function initPlanificadorUI(){
-  const search = document.getElementById("sectionsSearch");
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
   const presetNameInput = document.getElementById("plannerPresetNameInput");
 
-  search?.addEventListener("input", renderSectionsList);
   subjectFilter?.addEventListener("change", renderSectionsList);
-  professorFilter?.addEventListener("change", renderSectionsList);
   document.getElementById("btnPresetSave")?.addEventListener("click", saveActivePreset);
   document.getElementById("btnPresetNew")?.addEventListener("click", newPreset);
   document.getElementById("btnPlannerPresetCancel")?.addEventListener("click", closePresetBubble);
@@ -520,7 +481,6 @@ function initPlanificadorUI(){
   document.getElementById("btnPlannerApplyToAgenda")?.addEventListener("click", () => applyPlannerChanges().catch(()=>{}));
   document.getElementById("plannerModalBg")?.addEventListener("click", (e) => { if (e.target.id === "plannerModalBg") closePlannerModal(); });
 
-  document.getElementById("btnPlannerAdvancedFilters")?.addEventListener("click", () => CTX?.notifyInfo?.("Próximamente: filtros por sede, día y franja horaria."));
 
   renderPlannerAll();
 }
