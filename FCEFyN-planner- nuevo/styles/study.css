@@ -1343,7 +1343,7 @@ body[data-theme="light"] .event{
     }
     .agenda-day-col{ border-left:1px solid var(--border-85); position:relative; }
     .agenda-day-header{
-      position: sticky;
+      /*position: sticky; */
       top: 0;
       background: var(--surface-98);
       text-align: center;
@@ -1470,7 +1470,7 @@ body[data-theme="light"] .event{
       margin-bottom:.7rem;
     }
     #tab-planestudios{
-      height: 101rem;
+      height: 150rem;
       overflow: hidden;
     }
     .plan-frame{
@@ -1945,6 +1945,8 @@ body[data-theme="light"] .event{
 .prof-list{
   display:flex;
   gap:.65rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
 }
 .prof-card{
   background:var(--surface-94);

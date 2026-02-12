@@ -101,15 +101,86 @@ async function rebuildRatings() {
 
   console.log("🔥 Rebuild finished");
 }
+/* =======================
+   IMPORT SUBJECTS + PROFESSORS
+======================= */
+async function importSubjectsAndProfessors() {
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "data",
+    "firestore_subjects_professors_import.json"
+  );
+
+  const raw = fs.readFileSync(filePath, "utf8");
+  const data = JSON.parse(raw);
+
+  const batch = db.batch();
+
+  /* ========= SUBJECTS ========= */
+  if (data.subjects) {
+    Object.entries(data.subjects).forEach(([id, subject]) => {
+      const ref = db.collection("subjects").doc(id);
+
+      batch.set(ref, {
+        ...subject,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    });
+
+    console.log("Subjects preparados:", Object.keys(data.subjects).length);
+  }
+
+  /* ========= PROFESSORS ========= */
+  if (data.professors) {
+    Object.entries(data.professors).forEach(([id, professor]) => {
+      const ref = db.collection("professors").doc(id);
+
+      batch.set(ref, {
+        ...professor,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    });
+
+    console.log("Professors preparados:", Object.keys(data.professors).length);
+  }
+
+  await batch.commit();
+  console.log("✅ Importación completa.");
+}
+
 
 /* =======================
-   RUN
+   RUN v1 no repetir las run por si las moscas 
+======================= 
+async function run() {
+  await importSubjects(); --> comento xq creo que afectaria igual es viejo esos archivos
+  await rebuildRatings();
+  process.exit(0);
+} */
+
+/* =======================
+   RUN v2
 ======================= */
 async function run() {
-  await importSubjects();
+  await importSubjectsAndProfessors();
   await rebuildRatings();
   process.exit(0);
 }
+/* =======================
+   RUN v3
+======================= */
+
+
+
+
+
+
+
+
+
 
 run().catch((e) => {
   console.error("❌ ERROR:", e);
