@@ -3,6 +3,38 @@ import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
 
+// Mock de datos para pruebas visuales/locales si todavía no existen comisiones en Firebase.
+const PLANNER_MOCK_SECTIONS = [
+  {
+    id: "mock_analisis_ii_a",
+    subject: "Análisis Matemático II",
+    commission: "A1",
+    degree: "ing_computacion",
+    room: "100",
+    campus: "Ciudad Universitaria",
+    titular: "Prof. Pérez",
+    docentes: [{ name: "Ayud. García", role: "Práctico" }],
+    days: [
+      { day: "Lunes", start: "08:00", end: "11:00", campus: "Ciudad Universitaria" },
+      { day: "Miércoles", start: "08:00", end: "11:00", campus: "Ciudad Universitaria" }
+    ]
+  },
+  {
+    id: "mock_fisica_i_b",
+    subject: "Física I",
+    commission: "B2",
+    degree: "ing_computacion",
+    room: "205",
+    campus: "Ciudad Universitaria",
+    titular: "Prof. López",
+    docentes: [],
+    days: [
+      { day: "Martes", start: "13:00", end: "16:00", campus: "Ciudad Universitaria" },
+      { day: "Jueves", start: "13:00", end: "16:00", campus: "Ciudad Universitaria" }
+    ]
+  }
+];
+
 function getStudentCareerSlug(){
   const profile = CTX?.getUserProfile?.() || {};
   return CTX.normalizeStr(profile.careerSlug || profile.career || "");
@@ -20,6 +52,402 @@ function sectionMatchesCareer(section, careerSlug){
   return sectionCareer.includes(careerSlug) || careerSlug.includes(sectionCareer);
 }
 
+function getCareerFilteredSections(){
+  const careerSlug = getStudentCareerSlug();
+  return CTX.aulaState.courseSections.filter(sec => sectionMatchesCareer(sec, careerSlug));
+}
+
+function updateCareerBadge(){
+  const badge = document.getElementById("plannerCareerBadge");
+  if (!badge) return;
+  badge.textContent = "Carrera: " + getStudentCareerLabel();
+}
+
+async function loadCourseSections(){
+  CTX.aulaState.courseSections = [];
+  try{
+    const snap = await getDocs(collection(CTX.db,"courseSections"));
+    snap.forEach(d => {
+      const data = d.data() || {};
+      CTX.aulaState.courseSections.push({
+        id: d.id,
+        subject: data.subject || "",
+        commission: data.commission || "",
+        degree: data.degree || "",
+        room: data.room || "",
+        campus: data.campus || "",
+        headEmail: data.headEmail || "",
+        titular: data.titular || "",
+        docentes: Array.isArray(data.docentes) ? data.docentes : [],
+        days: Array.isArray(data.days) ? data.days : [],
+      });
+    });
+
+    if (!CTX.aulaState.courseSections.length){
+      CTX.aulaState.courseSections = PLANNER_MOCK_SECTIONS.slice();
+    }
+  }catch(e){
+    CTX?.notifyError?.("Error al cargar horarios del admin: " + (e.message || e));
+    CTX.aulaState.courseSections = PLANNER_MOCK_SECTIONS.slice();
+  }
+}
+
+function initPlanificadorUI(){
+  const search = document.getElementById("sectionsSearch");
+  const subjectFilter = document.getElementById("sectionsSubjectFilter");
+  const btnReload = document.getElementById("btnReloadSections");
+  const btnSave = document.getElementById("btnPresetSave");
+  const btnNew = document.getElementById("btnPresetNew");
+  const btnDup = document.getElementById("btnPresetDuplicate");
+  const btnDel = document.getElementById("btnPresetDelete");
+  const btnLoad = document.getElementById("btnPresetLoad");
+  const btnToAgenda = document.getElementById("btnPresetToAgenda");
+  const btnAgendaFromPreset = document.getElementById("btnAgendaFromPreset");
+
+  if (search) search.addEventListener("input", ()=> renderSectionsList());
+  if (subjectFilter) subjectFilter.addEventListener("change", ()=> renderSectionsList());
+
+  if (btnReload){
+    btnReload.addEventListener("click", async ()=>{
+      await loadCourseSections();
+      renderPlannerAll();
+    });
+  }
+  if (btnSave) btnSave.addEventListener("click", saveActivePreset);
+  if (btnNew) btnNew.addEventListener("click", newPreset);
+  if (btnDup) btnDup.addEventListener("click", duplicatePreset);
+  if (btnDel) btnDel.addEventListener("click", deletePreset);
+  if (btnLoad) btnLoad.addEventListener("click", loadPresetFromSelector);
+
+  if (btnToAgenda) btnToAgenda.addEventListener("click", ()=> openPresetToAgendaModal(CTX.aulaState.activePresetId));
+  if (btnAgendaFromPreset) btnAgendaFromPreset.addEventListener("click", ()=> openPresetToAgendaModal(CTX.aulaState.activePresetId));
+
+  renderPlannerAll();
+}
+
+function renderPlannerAll(){
+  const countBadge = document.getElementById("sectionsCountBadge");
+  if (countBadge) countBadge.textContent = String(getCareerFilteredSections().length || 0);
+  updateCareerBadge();
+  renderPresetsList();
+  renderSectionsList();
+  renderSelectedSectionsList();
+  renderPlannerPreview();
+}
+
+function populateSubjectFilter(filteredByCareer){
+  const subjectFilter = document.getElementById("sectionsSubjectFilter");
+  if (!subjectFilter) return;
+  const current = subjectFilter.value || "";
+
+  const uniqueSubjects = [...new Set(filteredByCareer.map(s => s.subject).filter(Boolean))]
+    .sort((a,b)=> a.localeCompare(b, "es"));
+
+  subjectFilter.innerHTML = "";
+  const allOpt = document.createElement("option");
+  allOpt.value = "";
+  allOpt.textContent = "Todas las materias";
+  subjectFilter.appendChild(allOpt);
+
+  uniqueSubjects.forEach(subject => {
+    const opt = document.createElement("option");
+    opt.value = subject;
+    opt.textContent = subject;
+    subjectFilter.appendChild(opt);
+  });
+
+  subjectFilter.value = uniqueSubjects.includes(current) ? current : "";
+}
+
+function renderSectionsList(){
+  const list = document.getElementById("sectionsList");
+  const normalizeStr = CTX.normalizeStr;
+  const q = normalizeStr(document.getElementById("sectionsSearch")?.value || "");
+  const selectedSubject = document.getElementById("sectionsSubjectFilter")?.value || "";
+  list.innerHTML = "";
+
+  const careerSlug = getStudentCareerSlug();
+  const byCareer = getCareerFilteredSections();
+  populateSubjectFilter(byCareer);
+
+  if (!careerSlug){
+    const div = document.createElement("div");
+    div.className = "small-muted";
+    div.textContent = "Completá tu carrera en Perfil para ver clases disponibles.";
+    list.appendChild(div);
+    const countBadge = document.getElementById("sectionsCountBadge");
+    if (countBadge) countBadge.textContent = "0";
+    return;
+  }
+
+  let filtered = byCareer.slice();
+  if (selectedSubject){
+    filtered = filtered.filter(sec => sec.subject === selectedSubject);
+  }
+
+  if (q){
+    filtered = filtered.filter(sec => {
+      const hay = [
+        sec.subject, sec.commission, sec.degree, sec.room, sec.campus,
+        sec.headEmail, sec.titular,
+        (sec.days || []).map(d=> (d.day||"") + " " + (d.start||"") + " " + (d.end||"") + " " + (d.campus||"")).join(" ")
+      ].join(" | ");
+      return normalizeStr(hay).includes(q);
+    });
+  }
+
+  const countBadge = document.getElementById("sectionsCountBadge");
+  if (countBadge) countBadge.textContent = String(filtered.length);
+
+  if (!filtered.length){
+    const div = document.createElement("div");
+    div.className = "small-muted";
+    div.textContent = "No hay clases para mostrar con los filtros actuales.";
+    list.appendChild(div);
+    return;
+  }
+
+  filtered.sort((a,b)=>{
+    const sa = normalizeStr(a.subject), sb = normalizeStr(b.subject);
+    if (sa < sb) return -1;
+    if (sa > sb) return 1;
+    const ca = normalizeStr(a.commission), cb = normalizeStr(b.commission);
+    return ca < cb ? -1 : ca > cb ? 1 : 0;
+  });
+
+  filtered.forEach(sec => {
+    const card = document.createElement("div");
+    card.className = "section-card";
+
+    const top = document.createElement("div");
+    top.className = "section-card-top";
+
+    const left = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "section-title";
+    const subjectTxt = sec.subject || "(Sin materia)";
+    const commTxt = sec.commission ? (" — Comisión " + sec.commission) : "";
+    title.textContent = subjectTxt + commTxt;
+
+    const sub = document.createElement("div");
+    sub.className = "section-sub";
+    const roomLabel = sec.room ? ("Aula " + sec.room) : "Aula no definida";
+    const campusLabel = sec.campus ? ("Sede: " + sec.campus) : "Sede no definida";
+    sub.textContent = roomLabel + " · " + campusLabel;
+
+    left.appendChild(title);
+    left.appendChild(sub);
+
+    const actions = document.createElement("div");
+    actions.className = "section-actions";
+
+    const btn = document.createElement("button");
+    btn.className = CTX.aulaState.activeSelectedSectionIds.includes(sec.id) ? "btn-danger btn-small" : "btn-blue btn-small";
+    btn.textContent = CTX.aulaState.activeSelectedSectionIds.includes(sec.id) ? "Quitar" : "Agregar";
+    btn.addEventListener("click", ()=> toggleSectionInPreset(sec.id));
+
+    actions.appendChild(btn);
+
+    top.appendChild(left);
+    top.appendChild(actions);
+
+    const days = document.createElement("div");
+    days.className = "section-days";
+    const validDays = (sec.days || []).filter(d => dayNameToKey(d.day));
+    validDays.forEach(d=>{
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      const sedeDia = d.campus || sec.campus || "";
+      pill.textContent = (d.day || "—") + " " + (d.start || "??") + "–" + (d.end || "??") + (sedeDia ? (" · " + sedeDia) : "");
+      days.appendChild(pill);
+    });
+    if (!validDays.length){
+      const pill = document.createElement("span");
+      pill.className = "pill pill-muted";
+      pill.textContent = "Sin días cargados (Lun a Sáb)";
+      days.appendChild(pill);
+    }
+
+    card.appendChild(top);
+    card.appendChild(days);
+
+    const extra = [];
+    if (sec.titular) extra.push("Titular: " + sec.titular);
+    if (sec.headEmail) extra.push("Jefe cátedra: " + sec.headEmail);
+    if (sec.docentes && sec.docentes.length){
+      const x = sec.docentes.map(d0=>{
+        const n = d0.name || "";
+        const r = d0.role || "";
+        return r ? (n + " (" + r + ")") : n;
+      }).filter(Boolean).join(", ");
+      if (x) extra.push("Equipo: " + x);
+    }
+    if (extra.length){
+      const sub2 = document.createElement("div");
+      sub2.className = "section-sub";
+      sub2.style.marginTop = ".35rem";
+      sub2.textContent = extra.join(" · ");
+      card.appendChild(sub2);
+    }
+
+    list.appendChild(card);
+  });
+}
+
+function loadPresetFromSelector(){
+  const select = document.getElementById("presetQuickLoadSelect");
+  if (!select?.value){
+    CTX?.notifyWarn?.("Seleccioná un preset para cargar.");
+    return;
+  }
+  loadPreset(select.value);
+}
+
+function renderPresetsList(){
+  const list = document.getElementById("presetsList");
+  const label = document.getElementById("activePresetLabel");
+  const nameInput = document.getElementById("presetNameInput");
+  const quickLoadSelect = document.getElementById("presetQuickLoadSelect");
+
+  list.innerHTML = "";
+
+  if (CTX.aulaState.activePresetId){
+    label.textContent = "Activo: " + (CTX.aulaState.activePresetName || "—");
+  } else {
+    label.textContent = "Sin preset cargado";
+  }
+
+  if (quickLoadSelect){
+    quickLoadSelect.innerHTML = "";
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleccionar preset";
+    quickLoadSelect.appendChild(defaultOption);
+  }
+
+  if (!CTX.aulaState.presets.length){
+    const div = document.createElement("div");
+    div.className = "small-muted";
+    div.textContent = "Todavía no tenés presets. Creá uno y guardalo.";
+    list.appendChild(div);
+  } else {
+    CTX.aulaState.presets.forEach(p=>{
+      if (quickLoadSelect){
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = `${p.name || "Sin nombre"} (${(p.sectionIds || []).length})`;
+        quickLoadSelect.appendChild(opt);
+      }
+
+      const item = document.createElement("div");
+      item.className = "preset-item" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
+
+      const left = document.createElement("div");
+      const nm = document.createElement("div");
+      nm.className = "preset-name";
+      nm.textContent = p.name || "Sin nombre";
+
+      const meta = document.createElement("div");
+      meta.className = "preset-meta";
+      const c = Array.isArray(p.sectionIds) ? p.sectionIds.length : 0;
+      meta.textContent = c + " comisiones";
+
+      left.appendChild(nm);
+      left.appendChild(meta);
+
+      item.appendChild(left);
+      list.appendChild(item);
+    });
+  }
+
+  if (quickLoadSelect && CTX.aulaState.activePresetId){
+    quickLoadSelect.value = CTX.aulaState.activePresetId;
+  }
+  if (nameInput) nameInput.value = CTX.aulaState.activePresetName || "";
+}
+
+function renderSelectedSectionsList(){
+  const list = document.getElementById("selectedSectionsList");
+  const label = document.getElementById("selectedCountLabel");
+  list.innerHTML = "";
+
+  const selected = CTX.aulaState.activeSelectedSectionIds
+    .map(id => CTX.aulaState.courseSections.find(s => s.id === id))
+    .filter(Boolean);
+
+  label.textContent = selected.length + " comisiones";
+
+  if (!selected.length){
+    const div = document.createElement("div");
+    div.className = "small-muted";
+    div.textContent = "No seleccionaste ninguna comisión todavía.";
+    list.appendChild(div);
+    return;
+  }
+
+  selected.sort((a,b)=>{
+    const sa = CTX.normalizeStr(a.subject), sb = CTX.normalizeStr(b.subject);
+    if (sa < sb) return -1;
+    if (sa > sb) return 1;
+    const ca = CTX.normalizeStr(a.commission), cb = CTX.normalizeStr(b.commission);
+    return ca < cb ? -1 : ca > cb ? 1 : 0;
+  });
+
+  selected.forEach(sec=>{
+    const card = document.createElement("div");
+    card.className = "section-card";
+
+    const top = document.createElement("div");
+    top.className = "section-card-top";
+
+    const left = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = (sec.subject || "(Sin materia)") + (sec.commission ? (" — Comisión " + sec.commission) : "");
+
+    const sub = document.createElement("div");
+    sub.className = "section-sub";
+    sub.textContent = "Sede: " + (sec.campus || "—") + " · Aula: " + (sec.room || "—");
+
+    left.appendChild(title);
+    left.appendChild(sub);
+
+    const actions = document.createElement("div");
+    actions.className = "section-actions";
+
+    const btn = document.createElement("button");
+    btn.className = "btn-danger btn-small";
+    btn.textContent = "Quitar";
+    btn.addEventListener("click", ()=> toggleSectionInPreset(sec.id));
+    actions.appendChild(btn);
+
+    top.appendChild(left);
+    top.appendChild(actions);
+
+    const days = document.createElement("div");
+    days.className = "section-days";
+    const validDays = (sec.days || []).filter(d => dayNameToKey(d.day));
+    validDays.forEach(d=>{
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      const sedeDia = d.campus || sec.campus || "";
+      pill.textContent = (d.day || "—") + " " + (d.start || "??") + "–" + (d.end || "??") + (sedeDia ? (" · " + sedeDia) : "");
+      days.appendChild(pill);
+    });
+    if (!validDays.length){
+      const pill = document.createElement("span");
+      pill.className = "pill pill-muted";
+      pill.textContent = "Sin días cargados (Lun a Sáb)";
+      days.appendChild(pill);
+    }
+
+    card.appendChild(top);
+    card.appendChild(days);
+
+    list.appendChild(card);
+  });
+}
+
 function dayNameToKey(dayName){
   const n = CTX.normalizeStr(dayName);
   if (n.startsWith("lun")) return "lunes";
@@ -31,299 +459,124 @@ function dayNameToKey(dayName){
   return null;
 }
 
-function getCareerFilteredSections(){
-  const careerSlug = getStudentCareerSlug();
-  return CTX.aulaState.courseSections.filter(sec => sectionMatchesCareer(sec, careerSlug));
-}
-
-function getSectionById(id){
-  return CTX.aulaState.courseSections.find(s => s.id === id) || null;
-}
-
-function getSectionTeachers(section){
-  const names = [];
-  if (section.titular) names.push(section.titular);
-  (section.docentes || []).forEach(d => {
-    if (d?.name) names.push(d.role ? `${d.name} (${d.role})` : d.name);
-  });
-  return names;
-}
-
-function formatSchedule(section){
-  const validDays = (section.days || []).filter(d => dayNameToKey(d.day));
-  if (!validDays.length) return "Sin horario cargado";
-  const dayLabel = validDays.map(d => (d.day || "—").slice(0, 3)).join(" - ");
-  const first = validDays[0];
-  return `${dayLabel} | ${first.start || "??:??"} - ${first.end || "??:??"}`;
-}
-
-function calculateWeeklyHours(sectionIds){
-  let totalMinutes = 0;
-  (sectionIds || []).forEach(id => {
-    const sec = getSectionById(id);
-    if (!sec) return;
-    (sec.days || []).forEach(d => {
-      const start = timeToMinutes(d.start);
-      const end = timeToMinutes(d.end);
-      if (isNaN(start) || isNaN(end) || end <= start) return;
-      totalMinutes += (end - start);
-    });
-  });
-  return Math.round((totalMinutes / 60) * 10) / 10;
-}
-
 function buildWeeklyDataFromSectionIds(sectionIds){
   const data = {};
   dayKeys.forEach(k => data[k] = []);
 
-  (sectionIds || []).map(getSectionById).filter(Boolean).forEach(sec => {
-    const subject = sec.subject || "(Sin materia)";
-    const commission = sec.commission ? `Comisión ${sec.commission}` : "";
-    (sec.days || []).forEach(d => {
+  const selected = (sectionIds || [])
+    .map(id => CTX.aulaState.courseSections.find(s => s.id === id))
+    .filter(Boolean);
+
+  selected.forEach(sec=>{
+    const subjName = sec.subject || "(Sin materia)";
+    const room = sec.room || "";
+    const campusDefault = sec.campus || "";
+    const comm = sec.commission || "";
+
+    (sec.days || []).forEach(d=>{
       const k = dayNameToKey(d.day);
       if (!k) return;
-      const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" • ");
-      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "" });
+
+      const inicio = d.start || "";
+      const fin = d.end || "";
+      const sede = d.campus || campusDefault || "";
+      const aulaLabel = [room, sede].filter(Boolean).join(" • ");
+
+      data[k].push({
+        materia: subjName,
+        aula: aulaLabel ? (aulaLabel + (comm ? (" • " + comm) : "")) : (comm ? ("Com " + comm) : ""),
+        inicio, fin
+      });
     });
   });
 
-  dayKeys.forEach(k => data[k].sort((a, b) => timeToMinutes(a.inicio) - timeToMinutes(b.inicio)));
+  dayKeys.forEach(k=>{
+    data[k].sort((a,b)=> timeToMinutes(a.inicio) - timeToMinutes(b.inicio));
+  });
+
   return data;
 }
 
-function getConflictInfo(candidateSection){
-  const selected = CTX.aulaState.activeSelectedSectionIds.map(getSectionById).filter(Boolean);
+function buildWeeklyDataFromSelected(){
+  return buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
+}
+
+function renderPlannerPreview(){
+  const grid = document.getElementById("plannerPreviewGrid");
+  const data = buildWeeklyDataFromSelected();
+  renderAgendaGridInto(grid, data, false);
+}
+
+function hasOverlapWithSelected(candidateSection){
+  const selected = CTX.aulaState.activeSelectedSectionIds
+    .map(id => CTX.aulaState.courseSections.find(s => s.id === id))
+    .filter(Boolean);
+
   const candDays = Array.isArray(candidateSection.days) ? candidateSection.days : [];
-  for (const cd of candDays){
+
+  for (let i=0;i<candDays.length;i++){
+    const cd = candDays[i];
     const dayKey = dayNameToKey(cd.day);
     if (!dayKey) continue;
+
     const cStart = timeToMinutes(cd.start);
     const cEnd = timeToMinutes(cd.end);
     if (isNaN(cStart) || isNaN(cEnd) || cEnd <= cStart) continue;
 
-    for (const s of selected){
+    for (let j=0;j<selected.length;j++){
+      const s = selected[j];
       if (!s || s.id === candidateSection.id) continue;
-      if (candidateSection.subject && CTX.normalizeStr(s.subject) === CTX.normalizeStr(candidateSection.subject)){
-        return { blocked: true, reason: `Ya seleccionaste otra comisión de ${s.subject}.` };
-      }
-      for (const sd of (s.days || [])){
+
+      const sDays = Array.isArray(s.days) ? s.days : [];
+      for (let k=0;k<sDays.length;k++){
+        const sd = sDays[k];
         if (dayNameToKey(sd.day) !== dayKey) continue;
+
         const sStart = timeToMinutes(sd.start);
         const sEnd = timeToMinutes(sd.end);
         if (isNaN(sStart) || isNaN(sEnd) || sEnd <= sStart) continue;
-        if ((cStart < sEnd) && (cEnd > sStart)){
-          return { blocked: true, reason: `Conflicto de horario con ${s.subject}.` };
-        }
+
+        const overlap = (cStart < sEnd) && (cEnd > sStart);
+        if (overlap) return true;
       }
     }
   }
-  return { blocked: false, reason: "" };
+  return false;
 }
 
-function updateCareerBadge(){
-  const badge = document.getElementById("plannerCareerBadge");
-  if (badge) badge.textContent = "Carrera: " + getStudentCareerLabel();
-}
+function toggleSectionInPreset(sectionId){
+  const sec = CTX.aulaState.courseSections.find(s => s.id === sectionId);
+  if (!sec) return;
 
-function populateSubjectFilter(filteredByCareer){
-  const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  if (!subjectFilter) return;
-  const current = subjectFilter.value || "";
-  const uniqueSubjects = [...new Set(filteredByCareer.map(s => s.subject).filter(Boolean))].sort((a,b)=> a.localeCompare(b, "es"));
-  subjectFilter.innerHTML = "";
-  const allOpt = document.createElement("option");
-  allOpt.value = "";
-  allOpt.textContent = "Todas las materias";
-  subjectFilter.appendChild(allOpt);
-  uniqueSubjects.forEach(subject => {
-    const opt = document.createElement("option");
-    opt.value = subject;
-    opt.textContent = subject;
-    subjectFilter.appendChild(opt);
-  });
-  subjectFilter.value = uniqueSubjects.includes(current) ? current : "";
-}
-
-function populateProfessorFilter(filteredByCareer){
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
-  if (!professorFilter) return;
-  const current = professorFilter.value || "";
-  const unique = [...new Set(filteredByCareer.flatMap(getSectionTeachers).filter(Boolean))].sort((a,b)=> a.localeCompare(b, "es"));
-  professorFilter.innerHTML = "";
-  const allOpt = document.createElement("option");
-  allOpt.value = "";
-  allOpt.textContent = "Todos los profesores";
-  professorFilter.appendChild(allOpt);
-  unique.forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    professorFilter.appendChild(opt);
-  });
-  professorFilter.value = unique.includes(current) ? current : "";
-}
-
-async function loadCourseSections(){
-  CTX.aulaState.courseSections = [];
-  try{
-    const snap = await getDocs(collection(CTX.db, "courseSections"));
-    snap.forEach(d => {
-      const data = d.data() || {};
-      CTX.aulaState.courseSections.push({
-        id: d.id,
-        code: data.code || data.codigo || "",
-        subject: data.subject || "",
-        commission: data.commission || "",
-        degree: data.degree || "",
-        room: data.room || "",
-        campus: data.campus || "",
-        headEmail: data.headEmail || "",
-        titular: data.titular || "",
-        docentes: Array.isArray(data.docentes) ? data.docentes : [],
-        days: Array.isArray(data.days) ? data.days : []
-      });
-    });
-  }catch(e){
-    CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
-  }
-}
-
-function renderPresetsList(){
-  const list = document.getElementById("presetsList");
-  const outside = document.getElementById("agendaPresetChips");
-  if (list) list.innerHTML = "";
-  if (outside) outside.innerHTML = "";
-
-  const presets = CTX.aulaState.presets.slice().sort((a,b)=> (a.name || "").localeCompare(b.name || "", "es"));
-  presets.forEach(p => {
-    [list, outside].forEach(target => {
-      if (!target) return;
-      const wrap = document.createElement("div");
-      wrap.className = "preset-chip-wrap";
-      const btn = document.createElement("button");
-      btn.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
-      btn.textContent = p.name || "Sin nombre";
-      btn.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
-      wrap.appendChild(btn);
-
-      if (target === outside){
-        const edit = document.createElement("button");
-        edit.className = "preset-chip-edit";
-        edit.type = "button";
-        edit.textContent = "✎";
-        edit.setAttribute("aria-label", `Editar preset ${p.name || ""}`);
-        edit.addEventListener("click", () => { loadPreset(p.id); openPlannerModal(); });
-        wrap.appendChild(edit);
-      }
-      target.appendChild(wrap);
-    });
-  });
-
-  if (list){
-    const addChip = document.createElement("button");
-    addChip.className = "preset-chip add";
-    addChip.type = "button";
-    addChip.textContent = "+";
-    addChip.setAttribute("aria-label", "Crear preset nuevo");
-    addChip.addEventListener("click", newPreset);
-    list.appendChild(addChip);
-  }
-}
-
-function renderSelectedSectionsList(){
-  const count = document.getElementById("selectedCountLabel");
-  const hours = document.getElementById("selectedHoursLabel");
-  if (count) count.textContent = String(CTX.aulaState.activeSelectedSectionIds.length);
-  if (hours) hours.textContent = `${calculateWeeklyHours(CTX.aulaState.activeSelectedSectionIds)} hs/sem`;
-}
-
-function renderPlannerPreview(){
-  // Preview opcional: se mantiene para compatibilidad con llamadas existentes.
-  const grid = document.getElementById("plannerPreviewGrid");
-  if (!grid) return;
-  renderAgendaGridInto(grid, buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds), false);
-}
-
-function renderSectionsList(){
-  const list = document.getElementById("sectionsList");
-  if (!list) return;
-  const q = CTX.normalizeStr(document.getElementById("sectionsSearch")?.value || "");
-  const selectedSubject = document.getElementById("sectionsSubjectFilter")?.value || "";
-  const selectedProfessor = document.getElementById("sectionsProfessorFilter")?.value || "";
-  list.innerHTML = "";
-
-  const careerSlug = getStudentCareerSlug();
-  const byCareer = getCareerFilteredSections();
-  populateSubjectFilter(byCareer);
-  populateProfessorFilter(byCareer);
-  updateCareerBadge();
-
-  if (!careerSlug){
-    list.innerHTML = '<div class="small-muted">Completá tu carrera en Perfil para ver comisiones.</div>';
+  const idx = CTX.aulaState.activeSelectedSectionIds.indexOf(sectionId);
+  if (idx >= 0){
+    CTX.aulaState.activeSelectedSectionIds.splice(idx,1);
+    renderSelectedSectionsList();
+    renderSectionsList();
+    renderPlannerPreview();
     return;
   }
 
-  let filtered = byCareer.slice();
-  if (selectedSubject) filtered = filtered.filter(sec => sec.subject === selectedSubject);
-  if (selectedProfessor) filtered = filtered.filter(sec => getSectionTeachers(sec).some(name => name.includes(selectedProfessor)));
-
-  if (q){
-    filtered = filtered.filter(sec => {
-      const hay = [sec.subject, sec.commission, sec.room, sec.campus, ...getSectionTeachers(sec), formatSchedule(sec)].join(" | ");
-      return CTX.normalizeStr(hay).includes(q);
-    });
-  }
-
-  if (!filtered.length){
-    list.innerHTML = '<div class="small-muted">No hay comisiones con los filtros actuales.</div>';
-    return;
-  }
-
-  filtered.sort((a,b) => `${a.subject}${a.commission}`.localeCompare(`${b.subject}${b.commission}`, "es"));
-
-  filtered.forEach(sec => {
-    const selected = CTX.aulaState.activeSelectedSectionIds.includes(sec.id);
-    const conflict = selected ? { blocked: false, reason: "Añadida" } : getConflictInfo(sec);
-
-    const card = document.createElement("article");
-    card.className = "section-card" + (conflict.blocked ? " blocked" : "");
-    const teachers = getSectionTeachers(sec);
-    const codeLabel = sec.code || sec.id;
-
-    card.innerHTML = `
-      <div class="section-card-top">
-        <div>
-          <div class="section-code">CÓDIGO: ${codeLabel}</div>
-          <div class="section-title">${sec.subject || "(Sin materia)"}</div>
-          <div class="section-sub"><strong>Comisión:</strong> ${sec.commission || "—"}</div>
-          <div class="section-sub">${formatSchedule(sec)}</div>
-          <div class="section-sub"><strong>Sede/Aula:</strong> ${(sec.campus || "Sede no definida")} · ${(sec.room ? "Aula " + sec.room : "Aula no definida")}</div>
-          <div class="section-sub"><strong>Profesor(es):</strong> ${teachers.length ? teachers.join(", ") : "Sin asignar"}</div>
-          ${conflict.blocked ? `<div class="section-status warn">No disponible · ${conflict.reason}</div>` : ""}
-        </div>
-        <div class="section-actions"></div>
-      </div>`;
-
-    const btn = document.createElement("button");
-    btn.className = "btn-blue btn-small";
-    if (selected){
-      btn.textContent = "Quitar";
-      btn.className = "btn-outline btn-small";
-      btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
-    } else if (conflict.blocked){
-      btn.textContent = "No disponible";
-      btn.disabled = true;
-      btn.className = "btn-gray btn-small";
-    } else {
-      btn.textContent = "Añadir";
-      btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
+  if (sec.subject){
+    const alreadySameSubject = CTX.aulaState.activeSelectedSectionIds
+      .map(id => CTX.aulaState.courseSections.find(s => s.id === id))
+      .filter(Boolean)
+      .some(s => CTX.normalizeStr(s.subject) === CTX.normalizeStr(sec.subject));
+    if (alreadySameSubject){
+      CTX?.notifyWarn?.("Ya tenés una comisión seleccionada para esa materia. Quitala primero si querés cambiarla.");
+      return;
     }
+  }
 
-    card.querySelector(".section-actions")?.appendChild(btn);
-    list.appendChild(card);
-  });
+  if (hasOverlapWithSelected(sec)){
+    CTX?.notifyWarn?.("No se puede agregar: se superpone con una materia ya seleccionada en el mismo día/horario.");
+    return;
+  }
+
+  CTX.aulaState.activeSelectedSectionIds.push(sectionId);
+  renderSelectedSectionsList();
+  renderSectionsList();
+  renderPlannerPreview();
 }
 
 function makeId(){
@@ -333,184 +586,140 @@ function makeId(){
 async function persistPresetsToFirestore(){
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser) return;
+
   const ref = doc(CTX.db, "planner", currentUser.uid);
   const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
+  let data = snap.exists() ? snap.data() : {};
+
   data.schedulePresets = CTX.aulaState.presets;
   data.activePresetId = CTX.aulaState.activePresetId || "";
-  await setDoc(ref, data);
-}
 
-function loadPreset(id){
-  const p = CTX.aulaState.presets.find(x => x.id === id);
-  if (!p) return;
-  CTX.aulaState.activePresetId = p.id;
-  CTX.aulaState.activePresetName = p.name || "";
-  CTX.aulaState.activeSelectedSectionIds = Array.isArray(p.sectionIds) ? p.sectionIds.slice() : [];
-  renderPlannerAll();
+  await setDoc(ref, data);
 }
 
 function newPreset(){
   CTX.aulaState.activePresetId = null;
   CTX.aulaState.activePresetName = "";
   CTX.aulaState.activeSelectedSectionIds = [];
+
+  const input = document.getElementById("presetNameInput");
+  if (input) input.value = "";
+
   renderPlannerAll();
 }
 
+function loadPreset(id){
+  const p = CTX.aulaState.presets.find(x=> x.id === id);
+  if (!p) return;
 
-async function upsertActivePreset(silentName = ""){
-  const name = (silentName || CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`).trim();
-  CTX.aulaState.activePresetName = name;
-  if (!CTX.aulaState.activePresetId){
-    CTX.aulaState.activePresetId = makeId();
-    CTX.aulaState.presets.push({ id: CTX.aulaState.activePresetId, name, sectionIds: CTX.aulaState.activeSelectedSectionIds.slice(), createdAt: Date.now() });
-  } else {
-    const p = CTX.aulaState.presets.find(x => x.id === CTX.aulaState.activePresetId);
-    if (p){
-      p.name = name;
-      p.sectionIds = CTX.aulaState.activeSelectedSectionIds.slice();
-      p.updatedAt = Date.now();
-    }
-  }
-  await persistPresetsToFirestore();
+  CTX.aulaState.activePresetId = p.id;
+  CTX.aulaState.activePresetName = p.name || "";
+  CTX.aulaState.activeSelectedSectionIds = Array.isArray(p.sectionIds) ? p.sectionIds.slice() : [];
+
+  renderPlannerAll();
+  persistPresetsToFirestore().catch(()=>{});
 }
 
 async function saveActivePreset(){
-  const name = (CTX.aulaState.activePresetName || "").trim() || `Preset ${CTX.aulaState.presets.length + 1}`;
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser) return;
+
+  const name = (document.getElementById("presetNameInput")?.value || "").trim();
+  if (!name){
+    CTX?.notifyWarn?.("Poné un nombre al preset antes de guardarlo.");
+    return;
+  }
   if (!CTX.aulaState.activeSelectedSectionIds.length){
     CTX?.notifyWarn?.("Seleccioná al menos una comisión para guardar el preset.");
     return;
   }
-  await upsertActivePreset(name);
+
+  const validIds = CTX.aulaState.activeSelectedSectionIds.filter(id => CTX.aulaState.courseSections.some(s=> s.id === id));
+  CTX.aulaState.activeSelectedSectionIds = validIds;
+
+  if (!CTX.aulaState.activePresetId){
+    const id = makeId();
+    CTX.aulaState.activePresetId = id;
+    CTX.aulaState.activePresetName = name;
+    CTX.aulaState.presets.push({
+      id,
+      name,
+      sectionIds: CTX.aulaState.activeSelectedSectionIds.slice(),
+      createdAt: Date.now()
+    });
+  } else {
+    const p = CTX.aulaState.presets.find(x=> x.id === CTX.aulaState.activePresetId);
+    if (p){
+      p.name = name;
+      p.sectionIds = CTX.aulaState.activeSelectedSectionIds.slice();
+      p.updatedAt = Date.now();
+    } else {
+      CTX.aulaState.presets.push({
+        id: CTX.aulaState.activePresetId,
+        name,
+        sectionIds: CTX.aulaState.activeSelectedSectionIds.slice(),
+        createdAt: Date.now()
+      });
+    }
+    CTX.aulaState.activePresetName = name;
+  }
+
+  await persistPresetsToFirestore();
+
   renderPresetsList();
+  renderSelectedSectionsList();
+  renderPlannerPreview();
+
   CTX?.notifySuccess?.("Preset guardado.");
 }
 
 async function duplicatePreset(){
-  const current = CTX.aulaState.presets.find(x => x.id === CTX.aulaState.activePresetId);
-  if (!current){ CTX?.notifyWarn?.("No hay preset activo para duplicar."); return; }
+  if (!CTX.aulaState.activePresetId){
+    CTX?.notifyWarn?.("Primero cargá o guardá un preset para duplicarlo.");
+    return;
+  }
+  const p = CTX.aulaState.presets.find(x=> x.id === CTX.aulaState.activePresetId);
+  if (!p) return;
+
   const id = makeId();
-  CTX.aulaState.presets.push({ id, name: `${current.name || "Preset"} (copia)`, sectionIds: (current.sectionIds || []).slice(), createdAt: Date.now() });
-  loadPreset(id);
+  const newName = (p.name || "Preset") + " (copia)";
+  CTX.aulaState.presets.push({
+    id,
+    name: newName,
+    sectionIds: Array.isArray(p.sectionIds) ? p.sectionIds.slice() : [],
+    createdAt: Date.now()
+  });
+
+  CTX.aulaState.activePresetId = id;
+  CTX.aulaState.activePresetName = newName;
+  CTX.aulaState.activeSelectedSectionIds = Array.isArray(p.sectionIds) ? p.sectionIds.slice() : [];
+
   await persistPresetsToFirestore();
+  renderPlannerAll();
 }
 
 async function deletePreset(){
-  if (!CTX.aulaState.activePresetId){ CTX?.notifyWarn?.("No hay preset activo para eliminar."); return; }
-  CTX.aulaState.presets = CTX.aulaState.presets.filter(p => p.id !== CTX.aulaState.activePresetId);
-  newPreset();
+  if (!CTX.aulaState.activePresetId){
+    CTX?.notifyWarn?.("No hay un preset activo para eliminar.");
+    return;
+  }
+  const ok = await CTX.showConfirm?.({
+    title:"Eliminar preset",
+    message:"¿Seguro que querés eliminar este preset? (No borra tu Agenda)",
+    confirmText:"Eliminar",
+    cancelText:"Cancelar",
+    danger:true
+  });
+  if (!ok) return;
+
+  CTX.aulaState.presets = CTX.aulaState.presets.filter(x => x.id !== CTX.aulaState.activePresetId);
+  CTX.aulaState.activePresetId = null;
+  CTX.aulaState.activePresetName = "";
+  CTX.aulaState.activeSelectedSectionIds = [];
+
   await persistPresetsToFirestore();
-}
-
-function toggleSectionInPreset(sectionId){
-  const idx = CTX.aulaState.activeSelectedSectionIds.indexOf(sectionId);
-  if (idx >= 0){
-    CTX.aulaState.activeSelectedSectionIds.splice(idx, 1);
-  } else {
-    const sec = getSectionById(sectionId);
-    if (!sec) return;
-    const conflict = getConflictInfo(sec);
-    if (conflict.blocked){ CTX?.notifyWarn?.(conflict.reason); return; }
-    CTX.aulaState.activeSelectedSectionIds.push(sectionId);
-  }
-
-  const activePreset = CTX.aulaState.presets.find(p => p.id === CTX.aulaState.activePresetId);
-  if (activePreset){
-    activePreset.sectionIds = CTX.aulaState.activeSelectedSectionIds.slice();
-    activePreset.updatedAt = Date.now();
-  }
-
-  renderSectionsList();
-  renderSelectedSectionsList();
-  renderPlannerPreview();
-}
-
-async function applyPresetToAgendaDirect(presetId, notify = false){
-  const currentUser = CTX?.getCurrentUser?.();
-  if (!currentUser) return;
-  const p = CTX.aulaState.presets.find(x => x.id === presetId);
-  if (!p) return;
-  CTX.aulaState.activePresetId = p.id;
-  CTX.aulaState.activePresetName = p.name || "";
-  CTX.aulaState.activeSelectedSectionIds = (p.sectionIds || []).slice();
-
-  CTX.aulaState.agendaData = buildWeeklyDataFromSectionIds(p.sectionIds || []);
-  const ref = doc(CTX.db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
-  data.agenda = CTX.aulaState.agendaData;
-  data.activePresetId = p.id;
-  await setDoc(ref, data);
-
-  CTX.renderAgenda?.();
   renderPlannerAll();
-  if (notify) CTX?.notifySuccess?.(`Agenda actualizada con ${p.name || "preset"}.`);
-}
-
-function selectPresetAndRefreshAgenda(id){
-  applyPresetToAgendaDirect(id, true).catch(() => {});
-}
-
-function openPlannerModal(){
-  const bg = document.getElementById("plannerModalBg");
-  if (!bg) return;
-  bg.style.display = "flex";
-  requestAnimationFrame(() => bg.classList.add("is-open"));
-}
-
-function closePlannerModal(){
-  const bg = document.getElementById("plannerModalBg");
-  if (!bg) return;
-  bg.classList.remove("is-open");
-  window.setTimeout(() => {
-    if (!bg.classList.contains("is-open")) bg.style.display = "none";
-  }, 180);
-}
-
-async function applyPlannerChanges(){
-  if (!CTX.aulaState.activePresetId && CTX.aulaState.activeSelectedSectionIds.length){
-    CTX.aulaState.activePresetName = CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`;
-    await upsertActivePreset(CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`);
-  } else if (CTX.aulaState.activePresetId){
-    await upsertActivePreset(CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`);
-  }
-  if (CTX.aulaState.activePresetId){
-    await applyPresetToAgendaDirect(CTX.aulaState.activePresetId);
-  }
-  closePlannerModal();
-}
-
-function initPlanificadorUI(){
-  const search = document.getElementById("sectionsSearch");
-  const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  const professorFilter = document.getElementById("sectionsProfessorFilter");
-  const btnReload = document.getElementById("btnReloadSections");
-
-  search?.addEventListener("input", renderSectionsList);
-  subjectFilter?.addEventListener("change", renderSectionsList);
-  professorFilter?.addEventListener("change", renderSectionsList);
-  btnReload?.addEventListener("click", async () => { await loadCourseSections(); renderSectionsList(); });
-  document.getElementById("btnPresetSave")?.addEventListener("click", saveActivePreset);
-  document.getElementById("btnPresetNew")?.addEventListener("click", newPreset);
-  document.getElementById("btnPresetDuplicate")?.addEventListener("click", duplicatePreset);
-  document.getElementById("btnPresetDelete")?.addEventListener("click", deletePreset);
-  document.getElementById("btnOpenPlannerModal")?.addEventListener("click", openPlannerModal);
-  document.getElementById("btnPlanificadorAgenda")?.addEventListener("click", openPlannerModal);
-  document.getElementById("btnPlannerClose")?.addEventListener("click", closePlannerModal);
-  document.getElementById("btnPlannerCancel")?.addEventListener("click", closePlannerModal);
-  document.getElementById("btnPlannerApplyToAgenda")?.addEventListener("click", () => applyPlannerChanges().catch(()=>{}));
-  document.getElementById("plannerModalBg")?.addEventListener("click", (e) => { if (e.target.id === "plannerModalBg") closePlannerModal(); });
-
-  document.getElementById("btnPlannerAdvancedFilters")?.addEventListener("click", () => CTX?.notifyInfo?.("Próximamente: filtros por sede, día y franja horaria."));
-
-  renderPlannerAll();
-}
-
-function renderPlannerAll(){
-  renderPresetsList();
-  renderSectionsList();
-  renderSelectedSectionsList();
-  renderPlannerPreview();
+  CTX?.notifySuccess?.("Preset eliminado.");
 }
 
 const presetToAgendaModalBg = document.getElementById("presetToAgendaModalBg");
@@ -520,35 +729,143 @@ const btnPresetApplyCancel = document.getElementById("btnPresetApplyCancel");
 const btnPresetApplyConfirm = document.getElementById("btnPresetApplyConfirm");
 
 function initPresetToAgendaModalUI(){
-  btnPresetApplyCancel?.addEventListener("click", () => { if (presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none"; });
-  presetToAgendaModalBg?.addEventListener("click", (e) => { if (e.target === presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none"; });
-  presetApplySelect?.addEventListener("change", () => {
-    const p = CTX.aulaState.presets.find(x => x.id === presetApplySelect.value);
-    presetApplyInfo.textContent = p ? `Preset: ${p.name || "Sin nombre"} · ${(p.sectionIds || []).length} comisiones.` : "—";
+  if (btnPresetApplyCancel) btnPresetApplyCancel.addEventListener("click", closePresetToAgendaModal);
+  if (presetToAgendaModalBg) presetToAgendaModalBg.addEventListener("click", (e)=>{ if (e.target === presetToAgendaModalBg) closePresetToAgendaModal(); });
+  if (presetApplySelect) presetApplySelect.addEventListener("change", updatePresetApplyInfo);
+  document.querySelectorAll('input[name="applyMode"]').forEach(r=>{
+    r.addEventListener("change", updatePresetApplyInfo);
   });
-  btnPresetApplyConfirm?.addEventListener("click", async () => {
-    await applyPresetToAgendaDirect(presetApplySelect.value, true);
-    if (presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none";
-  });
-  document.getElementById("btnAgendaFromPreset")?.addEventListener("click", openPresetToAgendaModal);
+  if (btnPresetApplyConfirm) btnPresetApplyConfirm.addEventListener("click", applySelectedPresetToAgenda);
 }
 
-function openPresetToAgendaModal(){
+function openPresetToAgendaModal(preselectPresetId=null){
   if (!CTX.aulaState.presets.length){
-    CTX?.notifyWarn?.("Todavía no tenés presets guardados.");
+    CTX?.notifyWarn?.("Todavía no tenés presets guardados. Armá uno en Planificador y guardalo.");
     return;
   }
+
   presetApplySelect.innerHTML = "";
-  CTX.aulaState.presets.forEach(p => {
+  CTX.aulaState.presets.slice().sort((a,b)=> (a.name||"").localeCompare(b.name||"")).forEach(p=>{
     const opt = document.createElement("option");
     opt.value = p.id;
-    opt.textContent = `${p.name || "Sin nombre"} (${(p.sectionIds || []).length} comisiones)`;
+    opt.textContent = (p.name || "Sin nombre") + " (" + ((p.sectionIds||[]).length) + " comisiones)";
     presetApplySelect.appendChild(opt);
   });
-  presetApplySelect.value = CTX.aulaState.activePresetId || CTX.aulaState.presets[0].id;
-  const p = CTX.aulaState.presets.find(x => x.id === presetApplySelect.value);
-  presetApplyInfo.textContent = p ? `Preset: ${p.name || "Sin nombre"} · ${(p.sectionIds || []).length} comisiones.` : "—";
+
+  const idToSelect = preselectPresetId && CTX.aulaState.presets.some(p=>p.id===preselectPresetId)
+    ? preselectPresetId
+    : (CTX.aulaState.activePresetId && CTX.aulaState.presets.some(p=>p.id===CTX.aulaState.activePresetId) ? CTX.aulaState.activePresetId : CTX.aulaState.presets[0].id);
+
+  presetApplySelect.value = idToSelect;
+
+  const addRadio = document.querySelector('input[name="applyMode"][value="add"]');
+  if (addRadio) addRadio.checked = true;
+
+  updatePresetApplyInfo();
+
   presetToAgendaModalBg.style.display = "flex";
+}
+
+function closePresetToAgendaModal(){
+  presetToAgendaModalBg.style.display = "none";
+}
+
+function getApplyMode(){
+  const el = document.querySelector('input[name="applyMode"]:checked');
+  return el ? el.value : "add";
+}
+
+function updatePresetApplyInfo(){
+  const presetId = presetApplySelect.value;
+  const p = CTX.aulaState.presets.find(x=> x.id === presetId);
+  const mode = getApplyMode();
+  if (!p){
+    presetApplyInfo.textContent = "—";
+    return;
+  }
+
+  const count = Array.isArray(p.sectionIds) ? p.sectionIds.length : 0;
+  const note = mode === "replace"
+    ? "Reemplazar va a borrar tu agenda actual y poner solo el preset."
+    : "Agregar va a sumar el preset a tu agenda actual (si hay choque de horarios, no se aplica).";
+
+  presetApplyInfo.textContent =
+    "Preset: \"" + (p.name || "Sin nombre") + "\" · " + count + " comisiones. " + note;
+}
+
+function overlaps(aStart, aEnd, bStart, bEnd){
+  return (aStart < bEnd) && (aEnd > bStart);
+}
+
+function canMergeDay(existingArr, addArr){
+  for (let i=0;i<addArr.length;i++){
+    const a = addArr[i];
+    const as = timeToMinutes(a.inicio);
+    const ae = timeToMinutes(a.fin);
+    if (isNaN(as) || isNaN(ae) || ae <= as) return false;
+
+    for (let j=0;j<existingArr.length;j++){
+      const b = existingArr[j];
+      const bs = timeToMinutes(b.inicio);
+      const be = timeToMinutes(b.fin);
+      if (isNaN(bs) || isNaN(be) || be <= bs) continue;
+      if (overlaps(as, ae, bs, be)) return false;
+    }
+  }
+  return true;
+}
+
+async function applySelectedPresetToAgenda(){
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser) return;
+
+  const presetId = presetApplySelect.value;
+  const p = CTX.aulaState.presets.find(x=> x.id === presetId);
+  if (!p){
+    CTX?.notifyError?.("Preset inválido.");
+    return;
+  }
+
+  const telling = [];
+  const newWeek = buildWeeklyDataFromSectionIds(p.sectionIds || []);
+  const mode = getApplyMode();
+
+  CTX.ensureAgendaStructure?.();
+
+  if (mode === "replace"){
+    CTX.aulaState.agendaData = newWeek;
+  } else {
+    for (let i=0;i<dayKeys.length;i++){
+      const k = dayKeys[i];
+      const existingArr = Array.isArray(CTX.aulaState.agendaData[k]) ? CTX.aulaState.agendaData[k] : [];
+      const addArr = Array.isArray(newWeek[k]) ? newWeek[k] : [];
+      if (!addArr.length) continue;
+
+      if (!canMergeDay(existingArr, addArr)){
+        telling.push(dayLabels[i]);
+      }
+    }
+
+    if (telling.length){
+      CTX?.notifyWarn?.("No se aplicó porque hay choque de horarios en: " + telling.join(", ") + ". Elegí \"Reemplazar\" o ajustá tu agenda.");
+      return;
+    }
+
+    dayKeys.forEach(k=>{
+      const existingArr = Array.isArray(CTX.aulaState.agendaData[k]) ? CTX.aulaState.agendaData[k] : [];
+      const addArr = Array.isArray(newWeek[k]) ? newWeek[k] : [];
+      CTX.aulaState.agendaData[k] = existingArr.concat(addArr).sort((a,b)=> timeToMinutes(a.inicio) - timeToMinutes(b.inicio));
+    });
+  }
+
+  const ref = doc(CTX.db, "planner", currentUser.uid);
+  const snap = await getDoc(ref);
+  let data = snap.exists() ? snap.data() : {};
+  data.agenda = CTX.aulaState.agendaData;
+  await setDoc(ref, data);
+  closePresetToAgendaModal();
+  CTX.renderAgenda?.();
+  CTX?.notifySuccess?.("Agenda actualizada.");
 }
 
 const Planner = {

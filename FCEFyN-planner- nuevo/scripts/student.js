@@ -376,7 +376,7 @@ const helpContent = {
   inicio: {
     title: "Bienvenida a FCEFyN Planner",
     bullets: [
-      "Desde la barra izquierda podés abrir Estudio, Académico, Agenda, Profesores y Mensajería.",
+      "Desde la barra izquierda podés abrir Estudio, Académico, Agenda, Planificador, Profesores y Mensajería.",
       "Los datos que cargues se guardan en tu cuenta de Firebase y se sincronizan al instante.",
       "Usá este inicio para orientarte antes de abrir un calendario o una agenda."
     ]
@@ -402,7 +402,7 @@ const helpContent = {
   agenda: {
     title: "Cómo usar Agenda",
     bullets: [
-      "Añadí clases desde el botón principal o editá presets desde el modal de Agenda.",
+      "Añadí clases desde el botón principal o importá un preset creado en Planificador.",
       "Los bloques se muestran entre 08:00 y 23:00 y validan que fin sea mayor que inicio.",
       "Podés editar o borrar una clase haciendo click en el bloque dentro de la grilla.",
       "Descargá la vista semanal en PNG o PDF para compartir tu horario."
@@ -422,6 +422,15 @@ const helpContent = {
       "El plan se carga automáticamente según tu carrera en Perfil.",
       "Podés marcar materias como promocionadas, regulares o libres para ver tu avance.",
       "Si cambiás la carrera en Perfil, el plan se actualizará al volver a esta pestaña."
+    ]
+  },
+  planificador: {
+    title: "Cómo usar Planificador",
+    bullets: [
+      "Buscá comisiones del administrador y agregalas a un preset evitando superposiciones.",
+      "Guardá, duplicá o eliminá presets para comparar escenarios sin tocar tu Agenda real.",
+      "Pasá el preset a Agenda eligiendo entre agregar encima o reemplazar la agenda actual.",
+      "La vista previa semanal te deja ver choques antes de aplicar cambios."
     ]
   },
   profesores: {
@@ -574,6 +583,7 @@ window.showTab = function(name){
   console.log("Tab activa:", name);
 
   if (name === "agenda") Aula.open("agenda");
+  if (name === "planificador") Aula.open("planificador");
   if (name === "estudio") renderStudyCalendar();
   if (name === "academico") renderAcadCalendar();
   if (name === "materias") appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
