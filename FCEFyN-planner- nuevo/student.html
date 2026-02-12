@@ -482,61 +482,62 @@
     <!------------------------- PROFESORES ------------------------------->
     
     <div id="tab-profesores" class="tab-card" style="display:none;">
-      <div class="prof-layout" id="filtersSection">
-        <div class="prof-list-panel">
-          <div class="prof-header" >
-            <div>
-              <strong>Profesores</strong>
-              <div class="small-muted">Ordenados por mejor promedio general.</div>
-            </div>
-            <div class="prof-filters">
-            <div>
-                <label>Materia</label>
-                <select id="profFilterSubject"></select>
-              </div>
-            </div>
+      <div id="filtersSection" class="prof-directory-view">
+        <header class="prof-directory-header">
+          <div>
+            <h2>Directorio de Profesores</h2>
+            <div id="profCareerLabel" class="small-muted">Carrera detectada automáticamente</div>
           </div>
-          <div id="professorsList" class="prof-list"></div>
+          <div class="prof-filters">
+            <input id="profSearchInput" type="search" placeholder="Buscar profesor por nombre" aria-label="Buscar profesor por nombre">
+            <select id="profFilterSubject" aria-label="Filtrar por materia"></select>
+            <select id="profSortSelect" aria-label="Ordenar profesores">
+              <option value="rating_desc">Mejor calificación</option>
+              <option value="rating_asc">Peor calificación</option>
+              <option value="reviews_desc">Más reseñas</option>
+              <option value="reviews_asc">Menos reseñas</option>
+              <option value="name_asc">A-Z</option>
+              <option value="name_desc">Z-A</option>
+            </select>
+          </div>
+        </header>
+
+        <div id="professorsList" class="prof-grid"></div>
+
+        <footer class="prof-pagination">
+          <button id="profPrevPage" class="btn-outline btn-small" type="button">Anterior</button>
+          <span id="profPageIndicator">1 de 1</span>
+          <button id="profNextPage" class="btn-outline btn-small" type="button">Siguiente</button>
+        </footer>
+      </div>
+
+      <div id="professorDetailSection" class="prof-detail-view hidden">
+        <button id="volverListaProfesores" class="btn-outline btn-small" type="button">← Volver</button>
+        <div id="profDetailBox"></div>
+      </div>
+
+      <div id="profRatingModal" class="prof-modal hidden" role="dialog" aria-modal="true" aria-labelledby="profModalTitle">
+        <div class="prof-modal-backdrop" data-close="true"></div>
+        <div class="prof-modal-content">
+          <div class="prof-modal-header">
+            <h3 id="profModalTitle">Calificar Profesor</h3>
+            <button id="closeProfRatingModal" class="btn-icon" type="button" aria-label="Cerrar modal">✕</button>
+          </div>
+          <div id="profModalProfessorName" class="prof-modal-professor"></div>
+          <div id="profRatingGroups"></div>
+          <label class="prof-modal-label" for="rateComment">Tu opinión (máx. 500 caracteres)</label>
+          <textarea id="rateComment" maxlength="500" placeholder="Escribe tu comentario aquí..."></textarea>
+          <div id="rateCommentCount" class="small-muted">0 / 500</div>
+          <label class="prof-rate-check">
+            <input type="checkbox" id="rateAnonymous">
+            <span>Publicar anónimamente</span>
+          </label>
+          <div class="prof-modal-actions">
+            <button class="btn-blue btn-small" id="btnSubmitRating" type="button">Enviar</button>
+            <button class="btn-outline btn-small" id="btnCancelRatingModal" type="button">Cancelar</button>
+          </div>
         </div>
       </div>
-
-       <div class="profDetail hidden" id="professorDetailSection">
-        <button id="volverListaProfesores" type="button" >← Volver</button>
-                      <div id="profDetailBox" class="prof-detail-card" >
-            <div class="small-muted">Seleccioná un profesor para ver detalles y valorar.</div>
-          </div>
-          <div class="prof-rate-card">
-            <h3 class="prof-rate-title">Tu valoración</h3>
-            <div class="prof-rate-grid">
-              <div class="prof-rate-field">
-                <label>Calidad de enseñanza</label>
-                <input type="range" min="1" max="5" step="1" id="rateTeaching" value="1">
-                <div class="prof-rate-value" id="labelRateTeaching">1 ★</div>
-              </div>
-              <div class="prof-rate-field">
-                <label>Dificultad de parciales</label>
-                <input type="range" min="1" max="5" step="1" id="rateExams" value="1">
-                <div class="prof-rate-value" id="labelRateExams">1 ★</div>
-              </div>
-              <div class="prof-rate-field">
-                <label>Trato con estudiantes</label>
-                <input type="range" min="1" max="5" step="1" id="rateTreatment" value="1">
-                <div class="prof-rate-value" id="labelRateTreatment">1 ★</div>
-              </div>
-            </div>
-            <label>Comentario (opcional)</label>
-            <textarea id="rateComment" placeholder="Impresiones, tips, qué mejorar"></textarea>
-            <label class="prof-rate-check">
-              <input type="checkbox" id="rateAnonymous">
-              <span>Publicar comentario como anónimo</span>
-            </label>
-            <button class="btn-blue btn-small" id="btnSubmitRating" type="button" style="margin-top:.6rem;">Enviar valoración</button>
-            <div class="small-muted" style="margin-top:.3rem;">
-              Podés valorar sin comentar. Las reseñas se guardan por profesor y se actualizan si volvés a enviar.
-            </div>
-          </div>
-      </div>
-
     </div>
 
     <div id="tab-comunidad" class="tab-card" style="display:none;">

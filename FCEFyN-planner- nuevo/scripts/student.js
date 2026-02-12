@@ -436,10 +436,10 @@ const helpContent = {
   profesores: {
     title: "Cómo usar Profesores",
     bullets: [
-      "Filtrá por materia para encontrar al docente correcto dentro de tu carrera.",
-      "Al seleccionar un profesor, mirá sus promedios por criterio y los comentarios recientes.",
-      "Valorá con 0 a 5 estrellas cada criterio y opcionalmente dejá un comentario anónimo.",
-      "Tus valoraciones actualizan los promedios y quedan ligadas a tu usuario."
+      "La carrera se detecta automáticamente desde tu perfil y solo vas a ver docentes de esa carrera.",
+      "Usá el buscador, el filtro de materia y el ordenamiento para encontrar el perfil indicado.",
+      "Desde Ver Perfil podés revisar estadísticas, distribución de calificaciones y reseñas recientes.",
+      "Calificá con tres métricas (calidad, dificultad y trato) y opcionalmente publicá tu opinión en anónimo."
     ]
   },
   mensajes: {
