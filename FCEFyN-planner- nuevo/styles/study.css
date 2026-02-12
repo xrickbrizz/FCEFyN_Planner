@@ -3085,6 +3085,19 @@ body[data-theme="light"] .planner-modal{
 .planner-summary{ color:var(--text-soft); font-size:.9rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
 .planner-footer-actions{ display:flex; gap:.5rem; }
 
+
+.subject-modal-form-box{
+  margin-top:.85rem;
+  border-radius:var(--radius-md);
+  border:1px solid var(--border-85);
+  background:var(--card-bg, var(--surface-94));
+  padding:1rem;
+}
+.subject-modal-form-box .subject-color-row{
+  background:var(--surface-95);
+}
+
+
 @media (max-width:780px){
   .planner-modal{ width:min(94vw,1120px); height:min(90vh,920px); }
   .planner-modal-title{ font-size:1.45rem; }

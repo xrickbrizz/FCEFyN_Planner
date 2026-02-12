@@ -589,6 +589,7 @@ const Materias = {
     CTX.themeColor = themeColor;
     CTX.subjectColor = subjectColor;
     CTX.defaultSubjectColor = defaultSubjectColor;
+    CTX.renderSubjectsList = renderSubjectsList;
     CTX.renderSubjectsOptions = renderSubjectsOptions;
     CTX.getCareerPlans = () => CTX.aulaState.careerPlans || [];
     CTX.findPlanByName = findPlanByName;

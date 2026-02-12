@@ -843,8 +843,47 @@
 
       <div class="planner-list" id="subjectsModalList" aria-live="polite"></div>
 
+      <section class="subject-modal-form-box" aria-labelledby="subjectsModalCreateTitle">
+        <div class="subject-form-header">
+          <div>
+            <strong id="subjectsModalCreateTitle">Nueva materia</strong>
+            <div class="small-muted">Completá los datos y guardá los cambios.</div>
+          </div>
+        </div>
+
+        <div class="subject-form-field">
+          <label for="subjectsModalNameSelect">Materia</label>
+          <select id="subjectsModalNameSelect" aria-label="Seleccioná una materia"></select>
+          <div class="small-muted" id="subjectsModalPlanHint">Seleccioná una materia</div>
+        </div>
+
+        <div class="subject-form-field">
+          <label>Color identificatorio</label>
+          <div class="subject-color-row">
+            <div class="subject-color-palette" id="subjectsModalColorPalette">
+              <button class="subject-color-swatch" type="button" data-color="#E6D98C" aria-label="Color dorado suave"></button>
+              <button class="subject-color-swatch" type="button" data-color="#F2A65A" aria-label="Color ámbar"></button>
+              <button class="subject-color-swatch" type="button" data-color="#EF6F6C" aria-label="Color coral"></button>
+              <button class="subject-color-swatch" type="button" data-color="#E377C2" aria-label="Color magenta"></button>
+              <button class="subject-color-swatch" type="button" data-color="#8A7FF0" aria-label="Color violeta"></button>
+              <button class="subject-color-swatch" type="button" data-color="#4C7DFF" aria-label="Color azul"></button>
+              <button class="subject-color-swatch" type="button" data-color="#2EC4B6" aria-label="Color turquesa"></button>
+              <button class="subject-color-swatch" type="button" data-color="#34C759" aria-label="Color verde"></button>
+              <button class="subject-color-swatch" type="button" data-color="#A0AEC0" aria-label="Color gris"></button>
+            </div>
+            <input id="subjectsModalColor" type="color" value="#E6D98C" class="subject-color-input" aria-label="Selector de color manual" />
+            <button class="btn-outline btn-small" id="subjectsModalColorManualBtn" type="button">Agregar color manual</button>
+          </div>
+        </div>
+
+        <div class="subject-form-actions">
+          <button class="btn-gray btn-small" id="btnSubjectsModalReset" type="button">Limpiar</button>
+          <button class="btn-blue btn-small" id="btnSubjectsModalSave" type="button">Guardar</button>
+        </div>
+      </section>
+
       <div class="planner-modal-footer">
-        <div class="small-muted">Podés gestionar tus materias completas desde la sección Materias.</div>
+        <div class="small-muted">Los cambios se reflejan automáticamente en Materias, Agenda y Académico.</div>
         <div class="planner-footer-actions">
           <button class="btn-outline btn-small" id="btnSubjectsCancel" type="button">Cerrar</button>
         </div>

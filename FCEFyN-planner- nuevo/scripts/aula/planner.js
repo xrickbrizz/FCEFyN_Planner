@@ -3,6 +3,10 @@ import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
 
+const subjectColorCanvas = document.createElement("canvas");
+const subjectColorCtx = subjectColorCanvas.getContext("2d");
+let didBindSubjectsModalForm = false;
+
 function getStudentCareerSlug(){
   const profile = CTX?.getUserProfile?.() || {};
   return CTX.normalizeStr(profile.careerSlug || profile.career || "");
@@ -449,6 +453,158 @@ function closePlannerModal(){
   togglePlannerStyleModal("plannerModalBg", false);
 }
 
+
+function cssColorToHex(color){
+  if (!subjectColorCtx || !color) return "";
+  subjectColorCtx.fillStyle = "#000";
+  subjectColorCtx.fillStyle = color;
+  const computed = subjectColorCtx.fillStyle;
+  if (computed.startsWith("#")) return computed.toUpperCase();
+  const match = computed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+  if (!match) return "";
+  const toHex = (val) => Number.parseInt(val, 10).toString(16).padStart(2, "0");
+  return ("#" + toHex(match[1]) + toHex(match[2]) + toHex(match[3])).toUpperCase();
+}
+
+function updateSubjectsModalColorUI(color){
+  const colorInput = document.getElementById("subjectsModalColor");
+  const palette = document.getElementById("subjectsModalColorPalette");
+  if (!colorInput || !palette) return;
+  const hex = cssColorToHex(color) || "#E6D98C";
+  colorInput.value = hex;
+  const swatches = Array.from(palette.querySelectorAll(".subject-color-swatch"));
+  swatches.forEach((swatch) => {
+    swatch.classList.toggle("is-selected", swatch.getAttribute("data-color") === hex);
+  });
+}
+
+function populateSubjectsModalNameOptions(selectedName = ""){
+  const select = document.getElementById("subjectsModalNameSelect");
+  const hint = document.getElementById("subjectsModalPlanHint");
+  if (!select) return;
+  select.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Seleccioná una materia";
+  placeholder.disabled = true;
+  select.appendChild(placeholder);
+
+  const planSubjects = Array.isArray(CTX?.aulaState?.careerSubjects)
+    ? CTX.aulaState.careerSubjects.map((subject) => ({
+      name: subject?.nombre || subject?.name || subject?.id || "Materia",
+      rawSem: Number(subject?.semestre ?? subject?.semester ?? 0)
+    }))
+    : [];
+
+  if (planSubjects.length){
+    const group = document.createElement("optgroup");
+    group.label = "Materias disponibles según tu Perfil";
+    planSubjects
+      .sort((a, b) => {
+        const aSem = Number.isFinite(a.rawSem) ? a.rawSem : 0;
+        const bSem = Number.isFinite(b.rawSem) ? b.rawSem : 0;
+        if (aSem !== bSem) return aSem - bSem;
+        return (a.name || "").localeCompare(b.name || "", "es");
+      })
+      .forEach((item) => {
+        const opt = document.createElement("option");
+        opt.value = item.name;
+        opt.textContent = item.name;
+        group.appendChild(opt);
+      });
+    select.appendChild(group);
+  }
+
+  const existing = (CTX?.aulaState?.subjects || [])
+    .map((subject) => subject?.name)
+    .filter(Boolean)
+    .filter((name) => !planSubjects.some((planSubject) => CTX.normalizeStr(planSubject.name) === CTX.normalizeStr(name)));
+
+  if (existing.length){
+    const group = document.createElement("optgroup");
+    group.label = "Materias existentes";
+    existing
+      .sort((a, b) => a.localeCompare(b, "es"))
+      .forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        group.appendChild(opt);
+      });
+    select.appendChild(group);
+  }
+
+  if (selectedName){
+    select.value = selectedName;
+  } else {
+    placeholder.selected = true;
+  }
+
+  if (hint){
+    hint.textContent = planSubjects.length
+      ? "Materias disponibles según tu Perfil"
+      : "No hay materias disponibles en tu Perfil todavía.";
+  }
+}
+
+function resetSubjectsModalForm(){
+  populateSubjectsModalNameOptions();
+  updateSubjectsModalColorUI("#E6D98C");
+}
+
+async function saveSubjectFromModal(){
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser) return;
+  const name = (document.getElementById("subjectsModalNameSelect")?.value || "").trim();
+  const color = document.getElementById("subjectsModalColor")?.value || "#E6D98C";
+
+  if (!name){
+    CTX?.notifyWarn?.("Seleccioná una materia.");
+    return;
+  }
+
+  const exists = (CTX?.aulaState?.subjects || []).some((subject) => CTX.normalizeStr(subject?.name || "") === CTX.normalizeStr(name));
+  if (exists){
+    CTX?.notifyWarn?.("Ya existe una materia con ese nombre.");
+    return;
+  }
+
+  CTX.aulaState.subjects.push({ name, color });
+  const ref = doc(CTX.db, "planner", currentUser.uid);
+  await setDoc(ref, { subjects: CTX.aulaState.subjects }, { merge:true });
+
+  renderSubjectsModalList();
+  resetSubjectsModalForm();
+  CTX.renderSubjectsList?.();
+  CTX.renderSubjectsOptions?.();
+  CTX.paintStudyEvents?.();
+  CTX.renderAgenda?.();
+  CTX.renderAcadCalendar?.();
+  CTX?.notifySuccess?.("Materia guardada.");
+}
+
+function initSubjectsModalForm(){
+  if (didBindSubjectsModalForm) return;
+  const saveBtn = document.getElementById("btnSubjectsModalSave");
+  const resetBtn = document.getElementById("btnSubjectsModalReset");
+  const manualBtn = document.getElementById("subjectsModalColorManualBtn");
+  const colorInput = document.getElementById("subjectsModalColor");
+  const palette = document.getElementById("subjectsModalColorPalette");
+  if (!saveBtn || !resetBtn || !manualBtn || !colorInput || !palette) return;
+  didBindSubjectsModalForm = true;
+
+  Array.from(palette.querySelectorAll(".subject-color-swatch")).forEach((swatch) => {
+    swatch.style.background = swatch.getAttribute("data-color") || "transparent";
+    swatch.addEventListener("click", () => updateSubjectsModalColorUI(swatch.getAttribute("data-color") || "#E6D98C"));
+  });
+
+  colorInput.addEventListener("input", (event) => updateSubjectsModalColorUI(event.target.value));
+  manualBtn.addEventListener("click", () => colorInput.click());
+  resetBtn.addEventListener("click", resetSubjectsModalForm);
+  saveBtn.addEventListener("click", () => saveSubjectFromModal().catch(() => {}));
+}
+
 function renderSubjectsModalList(){
   const list = document.getElementById("subjectsModalList");
   if (!list) return;
@@ -479,7 +635,9 @@ function renderSubjectsModalList(){
 }
 
 function openSubjectsModal(){
+  initSubjectsModalForm();
   renderSubjectsModalList();
+  resetSubjectsModalForm();
   togglePlannerStyleModal("subjectsModalBg", true);
 }
 
