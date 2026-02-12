@@ -297,6 +297,50 @@ async function fetchPage(page){
   }
 }
 
+async function forceLoadProfessors(){
+  console.log("[Profesores] Forzando carga completa de profesores...");
+  console.log("[Profesores] Diagnóstico db", {
+    dbInitialized: Boolean(CTX?.db),
+    dbType: typeof CTX?.db,
+    collection: "professors"
+  });
+
+  if (!CTX?.db){
+    console.error("[Profesores] db no está inicializado correctamente. No se puede leer Firestore.");
+    return [];
+  }
+
+  try {
+    const professorsRef = collection(CTX.db, "professors");
+    console.log("[Profesores] Referencia de colección creada", professorsRef?.path || "professors");
+
+    const snapshot = await getDocs(professorsRef);
+
+    console.log("[Profesores] Cantidad total de profesores:", snapshot.size);
+    if (snapshot.empty) {
+      console.error("[Profesores] La colección 'professors' está vacía, no existe en este proyecto o no se está leyendo correctamente.");
+    } else {
+      console.log("[Profesores] La colección 'professors' responde lecturas correctamente.");
+    }
+
+    const rows = [];
+    snapshot.forEach((profDoc) => {
+      console.log("[Profesores] Profesor:", profDoc.id, profDoc.data());
+      const parsed = parseProfessor(profDoc);
+      rows.push(parsed);
+      state.professorsById.set(parsed.id, parsed);
+    });
+
+    return rows;
+  } catch (error) {
+    console.error("[Profesores] Error forzando carga de profesores:", error);
+    if (error?.code === "permission-denied") {
+      console.error("[Profesores] Error de permisos detectado (permission-denied). Revisá reglas de seguridad de Firestore.");
+    }
+    throw error;
+  }
+}
+
 function applySearchFilter(items){
   const search = normalize(state.filters.search);
   if (!search) return items;
@@ -304,20 +348,11 @@ function applySearchFilter(items){
 }
 
 async function loadDirectoryPage(){
-  await computeTotalForSort();
-  const bucket = state.queryCache.get(queryCacheKey());
-  state.totalItems = bucket?.totalItems || 0;
-  state.totalPages = bucket?.totalPages || 1;
-  if (state.page > state.totalPages) state.page = state.totalPages;
-
-  const serverItems = await fetchPage(state.page);
-  state.pageItems = applySearchFilter(serverItems);
-
-  if (normalize(state.filters.search)) {
-    state.totalItems = state.pageItems.length;
-    state.totalPages = 1;
-    state.page = 1;
-  }
+  const serverItems = await forceLoadProfessors();
+  state.pageItems = serverItems;
+  state.totalItems = serverItems.length;
+  state.totalPages = 1;
+  state.page = 1;
 }
 
 function renderDirectory(){
@@ -669,8 +704,7 @@ const Professors = {
     await resolveUserCareer();
 
     if (!state.userCareer){
-      notifyWarn("Completá tu carrera en perfil para ver profesores.");
-      return;
+      notifyWarn("No hay carrera configurada en el perfil. Se continúa con diagnóstico forzado sin filtros.");
     }
 
     bindEvents();

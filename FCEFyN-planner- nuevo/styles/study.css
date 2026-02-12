@@ -1317,7 +1317,8 @@ body[data-theme="light"] .event{
       border-radius: var(--radius-lg);
       /*border:1px solid var(--border-85); */
       padding: .5rem;
-      overflow:auto;
+      overflow-x:auto;
+      overflow-y:visible;
       box-shadow:none;
       height: 40rem;
     }
@@ -2892,4 +2893,7 @@ header{
   grid-template-columns: repeat(2, 1fr); /* 3 columnas */
   grid-template-rows: repeat(3, auto);   /* 2 filas */
   gap: 0.5rem; /* espacio entre botones */
+}
+.agenda-shell {
+  outline: 2px solid red;
 }
