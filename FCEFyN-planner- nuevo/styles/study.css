@@ -316,7 +316,7 @@ body[data-theme="dark"] .help-btn{
 .help-btn:hover{ filter:brightness(1.05); }
 
 .page-layout{
-  --sidebar-expanded:190px;
+  --sidebar-expanded:150px;
   --sidebar-collapsed:96px;
   display:grid;
   grid-template-columns:var(--sidebar-expanded) minmax(0,1fr);
