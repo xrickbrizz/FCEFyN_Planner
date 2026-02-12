@@ -580,8 +580,7 @@ body[data-theme="dark"] .theme-toggle{
   padding: 0.9rem;
   padding-left: 0;
   /*box-shadow: var(--ui-shadow); */
-  position: sticky;
-  top: 1.125rem;
+  position: static;
   color: var(--ui-text);
   transition: width .2s ease, padding .2s ease, box-shadow .2s ease, transform .2s ease;
   overflow:hidden;
@@ -630,8 +629,8 @@ body[data-theme="dark"] .theme-toggle{
 .quick-sidebar .qs-item{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap: .6rem;
+  justify-content:flex-start;
+  gap: .5rem;
   padding: .6rem .75rem;
   border-radius: var(--radius-md);
   background:var(--glass-strong);
@@ -707,8 +706,7 @@ body[data-theme="dark"] .theme-toggle{
 }
 
 .quick-sidebar-wrap{
-  position:sticky;
-  top: 1.125rem;
+  position:static;
 }
 
 .quick-sidebar-backdrop{
@@ -820,25 +818,25 @@ body[data-theme="light"] .quick-toggle-btn{
 
 @media(max-width:1024px){
   .quick-sidebar{
-    position:fixed;
-    left: -17.5rem;
-    top: 1rem;
+    position:static;
+    left: auto;
+    top: auto;
     width: 16.25rem;
     max-height: calc(100vh - 2rem);
     overflow:auto;
     z-index:1202;
     transition:transform .22s ease, opacity .22s ease;
-    transform:translateX(-18px);
-    opacity:0;
-    pointer-events:none;
+    transform:none;
+    opacity:1;
+    pointer-events:auto;
   }
   .quick-sidebar.collapsed{
     width: 16.25rem;
     padding: 0.9rem;
   }
   .quick-sidebar.open{
-    left: 1rem;
-    transform:translateX(0);
+    left:auto;
+    transform:none;
     opacity:1;
     pointer-events:auto;
   }

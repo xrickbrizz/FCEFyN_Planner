@@ -273,7 +273,7 @@ function renderDirectory(){
   });
 
   totalLabel.textContent = `${state.totalItems} profesores`;
-  pageLabel.textContent = state.hasNextPage ? `${state.page} de ${state.page + 1}+` : `${state.page} de ${state.page}`;
+  pageLabel.textContent = state.hasNextPage ? `${state.page} de ${state.page + 1}` : `${state.page} de ${state.page}`;
   prevBtn.disabled = state.page <= 1;
   nextBtn.disabled = !state.hasNextPage;
 }
