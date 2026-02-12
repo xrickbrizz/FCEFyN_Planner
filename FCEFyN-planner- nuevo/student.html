@@ -10,8 +10,7 @@
   <link rel="stylesheet" href="assets/css/mobile.css">
   <link rel="stylesheet" href="assets/css/mobile-home.css">
   <script src="scripts/ui/theme-toggle.js" defer></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" defer></script>
-  <script src="scripts/ui/user-panel.js" defer></script>
+    <script src="scripts/ui/user-panel.js" defer></script>
 </head>
 
 <body>
@@ -32,7 +31,7 @@
       <button class="header-msg-btn" type="button" data-section="mensajes" aria-label="Abrir mensajería" onclick="window.showTab && window.showTab('mensajes')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <div id="vue-user-panel"></div>
+      <div id="user-panel"></div>
     </div>
   </header>
   <div class="mobile-topbar" aria-label="Navegación móvil">
@@ -47,7 +46,7 @@
       <button class="mobile-icon-btn" type="button" data-section="mensajes" aria-label="Avisos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
       </button>
-      <div class="mobile-avatar" id="vue-user-panel-mobile"></div>
+      <div class="mobile-avatar" id="user-panel-mobile"></div>
     </div>
   </div>
   <div class="page-layout sidebar-collapsed" id="pageLayout">
@@ -56,17 +55,19 @@
       <div class="content-header mobile-quickbar">
         <div class="top-actions">
           <button class="quick-toggle-btn" id="sidebarToggle" type="button" aria-label="Abrir accesos rápidos">☰</button>
-          <button class="quick-toggle-btn heart-toggle-btn" id="friendRequestsBtn" type="button" aria-label="Ver solicitudes de amistad">❤️</button>
+          <div class="requests-anchor">
+            <button class="quick-toggle-btn heart-toggle-btn" id="friendRequestsBtn" type="button" aria-label="Ver solicitudes de amistad">❤️</button>
+            <div id="friendRequestsPanel" class="dropdown-panel" aria-hidden="true">
+              <h4>Solicitudes recibidas</h4>
+              <div id="incomingRequests" class="requests-box friend-list dropdown-requests-list"></div>
+
+              <h4>Solicitudes enviadas</h4>
+              <div id="outgoingRequests" class="requests-box friend-list dropdown-requests-list"></div>
+            </div>
+          </div>
         </div>
         <div class="section-label mqb-home" id="currentSectionLabel"><span>Inicio</span></div>
         <button class="help-btn mqb-help" id="helpButton" type="button" aria-label="Ayuda contextual">?</button>
-        <div id="friendRequestsPanel" class="dropdown-panel" aria-hidden="true">
-          <h4>Solicitudes recibidas</h4>
-          <div id="incomingRequests" class="requests-box friend-list dropdown-requests-list"></div>
-
-          <h4>Solicitudes enviadas</h4>
-          <div id="outgoingRequests" class="requests-box friend-list dropdown-requests-list"></div>
-        </div>
       </div>
       <!-- MAIN -->
       <main class="main-shell">
@@ -685,7 +686,10 @@
           </header>
 
           <div class="profile-avatar profile-avatar-centered">
-            <img id="profileAvatarImg" alt="Foto de perfil" />
+            <div class="profile-header">
+              <img id="profileAvatarImg" alt="Foto de perfil" />
+              <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
+            </div>
             <div class="profile-email" id="profileEmail">—</div>
             <div class="profile-avatar-actions">
               <label class="profile-avatar-input" for="inpAvatar">
@@ -754,6 +758,7 @@
               Al confirmar, te enviaremos un correo para cambiar tu contraseña de forma segura.
             </div>
             <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
+            <button class="btn-logout btn-small" id="btnProfileLogout" type="button">Cerrar sesión</button>
             <div class="profile-status" id="passwordStatus"></div>
           </div>
         </section>

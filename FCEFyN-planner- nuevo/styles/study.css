@@ -230,10 +230,16 @@ body[data-theme="dark"] .section-label{
   font-size:1rem;
   line-height:1;
 }
+.requests-anchor{
+  position:relative;
+  display:inline-flex;
+}
 .dropdown-panel{
   position:absolute;
-  top:calc(100% + .55rem);
-  left:0;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%);
+  margin-top:.45rem;
   width:280px;
   max-height:360px;
   overflow:auto;
@@ -275,6 +281,7 @@ body[data-theme="dark"] .section-label{
 @media (max-width: 768px){
   .dropdown-panel{
     left:0;
+    transform:none;
     width:min(86vw, 280px);
     max-height:60vh;
   }
@@ -1453,7 +1460,8 @@ body[data-theme="light"] .event{
       color:var(--text);
       font-size: .75rem;
       box-shadow:0 4px 10px color-mix(in srgb, var(--materia-color, var(--accent)) 16%, transparent);
-      border:2px solid var(--materia-color, var(--accent));
+      border:none;
+      border-left:6px solid var(--materia-color, var(--accent));
       cursor:pointer;
       overflow:hidden;
       background-color:color-mix(in srgb, var(--materia-color, var(--accent)) 18%, white);
@@ -2608,6 +2616,25 @@ body[data-theme="light"] .event{
   background:var(--surface-6);
 }
 
+#tab-perfil.profile-page .profile-avatar .profile-header{
+  position:relative;
+  width:8.25rem;
+  min-height:8.25rem;
+  margin:0 auto;
+}
+
+#tab-perfil.profile-page #btnProfileLogout{
+  position:absolute;
+  top:50%;
+  left:calc(100% + 2rem);
+  transform:translateY(-50%);
+  font-size:.78rem;
+  line-height:1.2;
+  padding:.4rem .7rem;
+  min-height:auto;
+  white-space:nowrap;
+}
+
 #tab-perfil.profile-page .profile-email{
   background:var(--accent-bg);
   border:1px solid var(--accent-30);
@@ -2725,7 +2752,8 @@ body[data-theme="light"] .event{
 
 #tab-perfil.profile-page #btnPasswordReset,
 #tab-perfil.profile-page #btnUploadAvatar,
-#tab-perfil.profile-page #btnRemoveAvatar{
+#tab-perfil.profile-page #btnRemoveAvatar,
+#tab-perfil.profile-page #btnProfileLogout{
   min-height: 2.75rem;
   border-radius: 0.625rem;
   font-weight:600;
@@ -2736,9 +2764,21 @@ body[data-theme="light"] .event{
 
 #tab-perfil.profile-page #btnPasswordReset:hover,
 #tab-perfil.profile-page #btnUploadAvatar:hover,
-#tab-perfil.profile-page #btnRemoveAvatar:hover{
+#tab-perfil.profile-page #btnRemoveAvatar:hover,
+#tab-perfil.profile-page #btnProfileLogout:hover{
   background:var(--btn-soft-bg);
   border-color:var(--btn-soft-border);
+}
+
+#tab-perfil.profile-page #btnProfileLogout{
+  background:#ff4d4d;
+  border-color:#ff4d4d;
+  color:#fff;
+}
+
+#tab-perfil.profile-page #btnProfileLogout:hover{
+  background:#e60000;
+  border-color:#e60000;
 }
 
 /* Desktop */

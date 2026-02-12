@@ -29,6 +29,7 @@ const profileStatusEl = document.getElementById("profileStatus");
 const passwordStatusEl = document.getElementById("passwordStatus");
 const btnProfileSave = document.getElementById("btnProfileSave");
 const btnPasswordReset = document.getElementById("btnPasswordReset");
+const btnProfileLogout = document.getElementById("btnProfileLogout");
 const profileAvatarImg = document.getElementById("profileAvatarImg");
 const headerAvatarImg = document.getElementById("headerAvatarImg");
 const sidebarAvatarImg = document.getElementById("sidebarAvatarImg");
@@ -357,6 +358,15 @@ function bindProfileHandlers(){
       }catch(e){
         notifyError?.("No se pudo guardar el perfil.");
         setProfileStatus(profileStatusEl, "No se pudo guardar. Intentá nuevamente.");
+      }
+    });
+  }
+
+  if (btnProfileLogout){
+    btnProfileLogout.addEventListener("click", async (event)=>{
+      event?.preventDefault?.();
+      if (typeof window.logout === "function") {
+        await window.logout();
       }
     });
   }

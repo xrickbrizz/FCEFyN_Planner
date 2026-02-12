@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const mountEls = document.querySelectorAll("#vue-user-panel, #vue-user-panel-mobile");
-  if (!mountEls.length || !window.Vue) return;
+  const mountEls = document.querySelectorAll("#user-panel, #user-panel-mobile");
+  if (!mountEls.length) return;
 
   const svgFallback = encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -17,80 +17,33 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const fallbackAvatar = `data:image/svg+xml;utf8,${svgFallback}`;
 
-  const createPanelApp = () => Vue.createApp({
-    data() {
-      return {
-        isOpen: false,
-        avatarUrl: window.userPanelAvatar || fallbackAvatar
-      };
-    },
-    mounted() {
-      this.handleOutsideClick = (event) => {
-        if (!this.$el.contains(event.target)) {
-          this.isOpen = false;
-        }
-      };
-      this.handleAvatarUpdate = (event) => {
-        const url = event?.detail?.url;
-        this.avatarUrl = url || fallbackAvatar;
-      };
-      document.addEventListener("click", this.handleOutsideClick);
-      window.addEventListener("user-panel-avatar", this.handleAvatarUpdate);
-    },
-    beforeUnmount() {
-      document.removeEventListener("click", this.handleOutsideClick);
-      window.removeEventListener("user-panel-avatar", this.handleAvatarUpdate);
-    },
-    methods: {
-      open() {
-        this.isOpen = true;
-      },
-      close() {
-        this.isOpen = false;
-      },
-      toggle() {
-        this.isOpen = !this.isOpen;
-      },
-      goToSection(section) {
-        if (typeof window.showTab === "function") {
-          window.showTab(section);
-        } else {
-          window.location.hash = section;
-        }
-        this.close();
-      },
-      doLogout() {
-        if (typeof window.logout === "function") {
-          window.logout();
-        }
-        this.close();
-      }
-    },
-    template: `
-      <div class="user-panel" :class="{ open: isOpen }">
-        <button class="user-avatar" type="button" aria-haspopup="true" :aria-expanded="isOpen.toString()" @click.stop="toggle">
-          <img :src="avatarUrl" alt="Foto de perfil" />
-        </button>
-        <div class="user-menu" role="menu" @click.stop>
-          <button type="button" role="menuitem" @click="goToSection('mensajes')">
-            <span class="menu-icon">💬</span>
-            Mensajes
-          </button>
-          <button type="button" role="menuitem" @click="goToSection('perfil')">
-            <span class="menu-icon">👤</span>
-            Perfil
-          </button>
-          <button type="button" role="menuitem" @click="doLogout">
-            <span class="menu-icon">⏻</span>
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
-    `
-  });
+  const renderUserAvatar = (mountEl) => {
+    mountEl.innerHTML = `
+      <a class="user-avatar" href="#perfil" aria-label="Ir al perfil">
+        <img src="${window.userPanelAvatar || fallbackAvatar}" alt="Foto de perfil" />
+      </a>
+    `;
 
-  mountEls.forEach((mountEl) => {
-    const app = createPanelApp();
-    app.mount(mountEl);
+    const avatarLink = mountEl.querySelector(".user-avatar");
+    if (!avatarLink) return;
+
+    avatarLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (typeof window.showTab === "function") {
+        window.showTab("perfil");
+      } else {
+        window.location.hash = "perfil";
+      }
+    });
+  };
+
+  mountEls.forEach(renderUserAvatar);
+
+  window.addEventListener("user-panel-avatar", (event) => {
+    const url = event?.detail?.url || fallbackAvatar;
+    mountEls.forEach((mountEl) => {
+      const avatarImg = mountEl.querySelector(".user-avatar img");
+      if (avatarImg) avatarImg.src = url;
+    });
   });
 });
