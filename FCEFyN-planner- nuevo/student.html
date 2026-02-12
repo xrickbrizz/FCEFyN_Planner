@@ -136,8 +136,8 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>
               </div>
               <div>
-                <div class="home-card-title">Planificador</div>
-                <div class="home-card-desc">Probar combinaciones de comisiones/horarios (simulador).</div>
+                <div class="home-card-title">Presets de Agenda</div>
+                <div class="home-card-desc">Gestionar variantes de comisiones desde Agenda en un solo flujo.</div>
               </div>
             </article>
           </div>
@@ -314,6 +314,13 @@
     </div>
 
     <div id="tab-agenda" class="tab-card" style="display:none;">
+      <div class="agenda-presets-bar" aria-label="Presets guardados">
+        <div class="agenda-presets-head">
+          <strong>Presets guardados</strong>
+          <button class="btn-outline btn-small" id="btnOpenPlannerModal" type="button">Abrir planificador</button>
+        </div>
+        <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
+      </div>
       <div class="agenda-header">
         <div><strong>Agenda semanal</strong> (08:00 – 22:00)</div>
         <div class="agenda-actions">
@@ -323,6 +330,7 @@
           </div>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn-outline btn-small" id="btnAgendaFromPreset">Pasar preset a agenda</button>
+            <button class="btn-outline btn-small" id="btnPlanificadorAgenda">Planificador de Agenda</button>
             <button class="btn-blue" id="btnAddClass">Añadir clase</button>
           </div>
         </div>
@@ -422,77 +430,6 @@
       </div>
     </div>
   <!--------------------- PLANIFICAR  ------------------------------------------------>
-    <div id="tab-planificador" class="tab-card" style="display:none;">
-      <div class="planner-layout">
-        <!-- PresetsPanel + SelectedCoursesList -->
-        <section class="planner-box planner-panel-left" data-component="PresetsPanel">
-          <div class="planner-head-row">
-            <strong>Gestión de presets</strong>
-            <div class="small-muted" id="activePresetLabel">Sin preset cargado</div>
-          </div>
-
-          <label class="small-muted" for="presetNameInput" style="display:block;margin-top:.55rem;">Nombre del preset</label>
-          <div class="preset-row" style="margin-top:.4rem;">
-            <input class="input-mini" id="presetNameInput" placeholder="Ej: Cursado sin choques" />
-          </div>
-
-          <div class="preset-row preset-actions-row" style="margin-top:.45rem;">
-            <button class="btn-outline btn-small" id="btnPresetNew">Nuevo</button>
-            <button class="btn-blue btn-small" id="btnPresetSave">Guardar</button>
-            <button class="btn-outline btn-small" id="btnPresetDuplicate">Duplicar</button>
-            <button class="btn-danger btn-small" id="btnPresetDelete">Eliminar</button>
-            <button class="btn-outline btn-small" id="btnPresetToAgenda">Pasar a Agenda</button>
-          </div>
-
-          <div class="preset-row" style="margin-top:.45rem;">
-            <select class="input-mini" id="presetQuickLoadSelect" aria-label="Seleccionar preset para cargar"></select>
-            <button class="btn-outline btn-small" id="btnPresetLoad">Cargar</button>
-          </div>
-
-          <div class="preset-list" style="margin-top:.45rem;" id="presetsList"></div>
-
-          <hr class="hr-soft">
-
-          <div class="planner-head-row" data-component="SelectedCoursesList">
-            <strong>Materias seleccionadas</strong>
-            <span class="small-muted" id="selectedCountLabel">0 comisiones</span>
-          </div>
-          <div class="planner-list" id="selectedSectionsList" style="margin-top:.6rem;"></div>
-        </section>
-
-        <!-- WeeklyCalendar -->
-        <section class="planner-box planner-panel-right" data-component="WeeklyCalendar">
-          <div class="agenda-header" style="margin-bottom:.4rem;">
-            <div><strong>Calendario semanal (08:00 a 22:00)</strong></div>
-            <div class="small-muted">Vista previa del preset activo. No modifica tu agenda final hasta confirmar.</div>
-          </div>
-          <div class="agenda-shell">
-            <div class="agenda-grid" id="plannerPreviewGrid"></div>
-          </div>
-                  <!-- AvailableClassesSection + Filters -->
-        <section class="planner-box planner-bottom-section" data-component="AvailableClassesSection">
-          <div class="planner-toolbar">
-            <div>
-              <strong>Clases disponibles</strong>
-              <span class="badge" id="sectionsCountBadge">0</span>
-            </div>
-            <button class="btn-outline btn-small" id="btnReloadSections">Recargar</button>
-          </div>
-
-          <div class="planner-filters" data-component="Filters">
-            <input class="input-mini" id="sectionsSearch" placeholder="Buscar por materia, comisión, docente o sede..." />
-            <select class="input-mini" id="sectionsSubjectFilter" aria-label="Filtrar por materia"></select>
-            <div class="small-muted planner-career-badge" id="plannerCareerBadge">Carrera: —</div>
-          </div>
-
-          <div class="small-muted" style="margin-bottom:.6rem;">
-            Se muestran solo clases asociadas a la carrera registrada en tu perfil.
-          </div>
-          <div class="planner-list" id="sectionsList"></div>
-        </section>
-        </section>
-      </div>
-    </div>
     <!------------------------- PROFESORES ------------------------------->
     
     <div id="tab-profesores" class="tab-card" style="display:none;">
@@ -839,6 +776,56 @@
     </div>
   </div>
 
+  <div class="modal-bg planner-modal-bg" id="plannerModalBg" aria-hidden="true">
+    <div class="planner-modal" role="dialog" aria-modal="true" aria-labelledby="plannerModalTitle">
+      <div class="planner-modal-header">
+        <div>
+          <h2 class="planner-modal-title" id="plannerModalTitle">Planificador de Agenda</h2>
+          <p class="small-muted">Selecciona y organiza tus comisiones para el ciclo actual.</p>
+        </div>
+        <button class="modal-close" id="btnPlannerClose" aria-label="Cerrar planificador">✕</button>
+      </div>
+
+      <div class="planner-modal-presets">
+        <span class="small-muted" style="font-weight:800;">PRESETS:</span>
+        <div class="preset-chips-row" id="presetsList" role="tablist" aria-label="Presets del planificador"></div>
+      </div>
+
+      <div class="preset-row planner-preset-actions">
+        <button class="btn-outline btn-small" id="btnPresetNew" type="button">Nuevo</button>
+        <button class="btn-outline btn-small" id="btnPresetSave" type="button">Guardar</button>
+        <button class="btn-outline btn-small" id="btnPresetDuplicate" type="button">Duplicar</button>
+        <button class="btn-danger btn-small" id="btnPresetDelete" type="button">Eliminar</button>
+      </div>
+
+      <div class="planner-filters" data-component="Filters">
+        <input class="input-mini" id="sectionsSearch" placeholder="Buscar materia..." aria-label="Buscar materia" />
+        <select class="input-mini" id="sectionsProfessorFilter" aria-label="Filtrar por profesor"></select>
+        <button class="btn-outline btn-small" id="btnPlannerAdvancedFilters" type="button">Filtros avanzados</button>
+      </div>
+
+      <div class="planner-filters planner-filters-secondary">
+        <select class="input-mini" id="sectionsSubjectFilter" aria-label="Filtrar por materia"></select>
+        <div class="small-muted planner-career-badge" id="plannerCareerBadge">Carrera: —</div>
+        <button class="btn-outline btn-small" id="btnReloadSections" type="button">Recargar</button>
+      </div>
+
+      <div class="planner-list" id="sectionsList" aria-live="polite"></div>
+
+      <div class="planner-modal-footer">
+        <div class="planner-summary">
+          Materias seleccionadas: <strong id="selectedCountLabel">0</strong>
+          <span aria-hidden="true">|</span>
+          Carga horaria: <strong id="selectedHoursLabel">0 hs/sem</strong>
+        </div>
+        <div class="planner-footer-actions">
+          <button class="btn-outline btn-small" id="btnPlannerCancel" type="button">Cancelar</button>
+          <button class="btn-plan-apply" id="btnPlannerApplyToAgenda" type="button">Aplicar cambios a la Agenda</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-bg" id="presetToAgendaModalBg">
     <div class="modal modal-wide">
       <h3 class="modal-title">Pasar preset a Agenda</h3>
@@ -997,12 +984,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9a4 4 0 0 1 4 4v8"/><path d="M20 18H7a3 3 0 0 1-3-3V6"/><path d="M7 11h7"/></svg>
           </span>
           <span>Correlativas</span>
-        </button>
-        <button class="mobile-more-item" type="button" data-section="planificador">
-          <span class="mobile-more-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>
-          </span>
-          <span>Planificador</span>
         </button>
         <button class="mobile-more-item" type="button" data-section="profesores">
           <span class="mobile-more-icon" aria-hidden="true">

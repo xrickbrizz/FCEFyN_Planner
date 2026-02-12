@@ -117,7 +117,6 @@ const Aula = {
   },
   open(tabName){
     if (tabName === "agenda") Horarios.renderAgenda();
-    if (tabName === "planificador") Planner.renderPlannerAll();
   },
   getSubjects(){
     return CTX?.aulaState?.subjects || [];
