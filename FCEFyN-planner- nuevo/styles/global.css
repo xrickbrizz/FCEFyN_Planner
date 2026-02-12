@@ -1,5 +1,8 @@
 html {
     font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /*
@@ -474,18 +477,30 @@ body{
   margin: 0;
   min-height: 100vh;
   font-family: var(--font-base);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
   background: var(--page-bg);
   color: var(--color-text);
   transition: background-color .25s ease, color .25s ease, background .25s ease;
 }
+h1,
+h2,
+h3{
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+h1{ font-weight: 700; }
+h2{ font-weight: 650; }
+h3{ font-weight: 600; }
 body.dark-mode h1,
 body.dark-mode h2,
 body.dark-mode h3,
 body[data-theme="dark"] h1,
 body[data-theme="dark"] h2,
 body[data-theme="dark"] h3{
-  letter-spacing: -0.02em;
-  font-weight:800;
+  letter-spacing: -0.015em;
+  font-weight:700;
 }
 body.light-mode input,
 body.light-mode select,
