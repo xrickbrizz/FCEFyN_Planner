@@ -404,9 +404,9 @@ async function loadProfessorReviews(professorId){
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
       const rating = Number(data.rating || 0);
-      const teachingQuality = Number(data.teachingQuality ?? data.quality ?? rating || 0);
-      const examDifficulty = Number(data.examDifficulty ?? data.difficulty ?? rating || 0);
-      const studentTreatment = Number(data.studentTreatment ?? data.treatment ?? rating || 0);
+      const teachingQuality = Number((data.teachingQuality ?? data.quality ?? rating) || 0);
+      const examDifficulty = Number((data.examDifficulty ?? data.difficulty ?? rating) || 0);
+      const studentTreatment = Number((data.studentTreatment ?? data.treatment ?? rating) || 0);
       reviews.push({
         id: reviewDoc.id,
         professorId,
