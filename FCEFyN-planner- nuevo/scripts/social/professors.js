@@ -5,8 +5,6 @@ import {
   getDoc,
   query,
   orderBy,
-  limit,
-  startAfter,
   getFunctions,
   httpsCallable,
   doc
@@ -31,11 +29,11 @@ const state = {
   filters: { search:"", sort:"name_asc" },
   page: 1,
   selectedProfessorId: null,
+  allProfessors: [],
   pageItems: [],
   totalPages: 1,
   totalItems: 0,
   professorsById: new Map(),
-  queryCache: new Map(),
   hasNextPage: false,
   reviewsByProfessor: new Map(),
   ratingDraft: { teachingQuality:0, examDifficulty:0, studentTreatment:0, comment:"", anonymous:false }
@@ -121,101 +119,31 @@ function sortConfig(){
   return SORT_OPTIONS[state.filters.sort] || SORT_OPTIONS.name_asc;
 }
 
-function queryCacheKey(){
-  return `${state.filters.sort}`;
-}
-
-function getFromCacheForPage(page){
-  const bucket = state.queryCache.get(queryCacheKey());
-  if (!bucket) return null;
-  return bucket.pages.get(page) || null;
-}
-
-function savePageToCache(page, records, lastVisible){
-  const key = queryCacheKey();
-  if (!state.queryCache.has(key)){
-    state.queryCache.set(key, { pages:new Map(), cursors:new Map(), totalItems:0, totalPages:1 });
-  }
-  const bucket = state.queryCache.get(key);
-  bucket.pages.set(page, records);
-  bucket.cursors.set(page, lastVisible || null);
-}
-
-async function fetchPage(page){
-  const cached = getFromCacheForPage(page);
-  if (cached) {
-    state.hasNextPage = state.queryCache.get(queryCacheKey())?.cursors?.get(page) !== null;
-    return cached;
-  }
-
+function compareProfessors(a, b){
   const { field, direction } = sortConfig();
+  const factor = direction === "desc" ? -1 : 1;
+  const left = normalize(a?.[field] || "");
+  const right = normalize(b?.[field] || "");
+  if (left < right) return -1 * factor;
+  if (left > right) return 1 * factor;
+  return 0;
+}
+
+async function loadAllProfessors(){
+  if (state.allProfessors.length) return;
+
+  console.log("Iniciando carga completa de profesores...");
   const professorsCollection = collection(CTX.db, "professors");
-  let q = query(professorsCollection, orderBy(field, direction), limit(PAGE_SIZE + 1));
+  const snap = await getDocs(professorsCollection);
 
-  if (page > 1){
-    const prevBucket = state.queryCache.get(queryCacheKey());
-    const previousCursor = prevBucket?.cursors?.get(page - 1) || null;
-    if (!previousCursor){
-      await fetchPage(page - 1);
-    }
-    const cursor = prevBucket?.cursors?.get(page - 1) || null;
-    if (cursor){
-      q = query(professorsCollection, orderBy(field, direction), startAfter(cursor), limit(PAGE_SIZE + 1));
-    }
-  }
-
-  console.log("Iniciando carga de profesores...");
-  console.log("[Profesores] Diagnóstico de query", {
-    collection: "professors",
-    sortField: field,
-    sortDirection: direction,
-    page,
-    pageSize: PAGE_SIZE
+  const rows = [];
+  snap.forEach((profDoc) => {
+    const parsed = parseProfessor(profDoc);
+    rows.push(parsed);
+    state.professorsById.set(parsed.id, parsed);
   });
 
-  try {
-    const snap = await getDocs(q);
-
-    console.log("Snapshot obtenido:", snap);
-    console.log("Cantidad de documentos:", snap.size);
-
-    if (snap.empty) {
-      console.warn("La consulta no devolvió documentos.");
-      console.warn("[Profesores] Verificá si los documentos tienen los campos esperados: career, ratingAvg, name.");
-    }
-
-    const docs = snap.docs;
-    const hasMore = docs.length > PAGE_SIZE;
-    const pageDocs = hasMore ? docs.slice(0, PAGE_SIZE) : docs;
-    const rows = [];
-    pageDocs.forEach((profDoc) => {
-      console.log("Profesor encontrado:", profDoc.id, profDoc.data());
-      const parsed = parseProfessor(profDoc);
-
-      if (!("ratingAvg" in (profDoc.data() || {}))){
-        console.warn("[Profesores] Documento sin ratingAvg (usando fallback en UI):", profDoc.id);
-      }
-      if (!("name" in (profDoc.data() || {}))){
-        console.warn("[Profesores] Documento sin name (usando fallback en UI):", profDoc.id);
-      }
-
-      rows.push(parsed);
-      state.professorsById.set(parsed.id, parsed);
-    });
-
-    const lastVisible = pageDocs[pageDocs.length - 1] || null;
-    savePageToCache(page, rows, lastVisible);
-    state.hasNextPage = hasMore;
-    return rows;
-  } catch (error) {
-    console.error("Error al obtener profesores:", error);
-    console.error("[Profesores] Posibles causas: reglas de Firestore, índice compuesto faltante, o conflicto where/orderBy.", {
-      collection: "professors",
-      sortField: field,
-      sortDirection: direction
-    });
-    throw error;
-  }
+  state.allProfessors = rows;
 }
 
 function applySearchFilter(items){
@@ -224,11 +152,28 @@ function applySearchFilter(items){
   return items.filter((professor) => normalize(professor.name).includes(search));
 }
 
+function paginate(items){
+  const searchActive = Boolean(normalize(state.filters.search));
+  if (searchActive){
+    state.totalPages = 1;
+    state.hasNextPage = false;
+    return items;
+  }
+
+  state.totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  if (state.page > state.totalPages) state.page = state.totalPages;
+  const start = (state.page - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  state.hasNextPage = state.page < state.totalPages;
+  return items.slice(start, end);
+}
+
 async function loadDirectoryPage(){
-  const serverItems = await fetchPage(state.page);
-  state.pageItems = applySearchFilter(serverItems);
-  state.totalItems = state.pageItems.length;
-  state.totalPages = state.hasNextPage ? state.page + 1 : state.page;
+  await loadAllProfessors();
+  const sorted = [...state.allProfessors].sort(compareProfessors);
+  const filtered = applySearchFilter(sorted);
+  state.totalItems = filtered.length;
+  state.pageItems = paginate(filtered);
 }
 
 function renderDirectory(){
@@ -241,7 +186,7 @@ function renderDirectory(){
 
   listEl.innerHTML = "";
   if (!state.pageItems.length){
-    listEl.innerHTML = '<div class="small-muted">No se encontraron profesores para tu búsqueda en esta página.</div>';
+    listEl.innerHTML = '<div class="small-muted">No se encontraron profesores</div>';
   }
 
   state.pageItems.forEach((professor) => {
@@ -273,7 +218,7 @@ function renderDirectory(){
   });
 
   totalLabel.textContent = `${state.totalItems} profesores`;
-  pageLabel.textContent = state.hasNextPage ? `${state.page} de ${state.page + 1}` : `${state.page} de ${state.page}`;
+  pageLabel.textContent = `${Math.min(state.page, state.totalPages)} de ${state.totalPages}`;
   prevBtn.disabled = state.page <= 1;
   nextBtn.disabled = !state.hasNextPage;
 }
@@ -517,7 +462,8 @@ async function refreshSelectedProfessorStats(professorId){
   if (!snap.exists()) return;
   const parsed = parseProfessor(snap);
   state.professorsById.set(parsed.id, parsed);
-  state.queryCache.clear();
+  const index = state.allProfessors.findIndex((item) => item.id === parsed.id);
+  if (index >= 0) state.allProfessors[index] = parsed;
 }
 
 async function refreshDirectoryAndRender(){
@@ -538,7 +484,6 @@ function bindEvents(){
   });
   document.getElementById("profSortSelect")?.addEventListener("change", async (event) => {
     state.filters.sort = event.target.value || "name_asc";
-    state.queryCache.clear();
     state.page = 1;
     await refreshDirectoryAndRender();
   });
