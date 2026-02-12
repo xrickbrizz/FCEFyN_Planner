@@ -62,10 +62,10 @@
         <button class="help-btn mqb-help" id="helpButton" type="button" aria-label="Ayuda contextual">?</button>
         <div id="friendRequestsPanel" class="dropdown-panel" aria-hidden="true">
           <h4>Solicitudes recibidas</h4>
-          <div id="receivedRequests" class="dropdown-requests-list"></div>
+          <div id="incomingRequests" class="requests-box friend-list dropdown-requests-list"></div>
 
           <h4>Solicitudes enviadas</h4>
-          <div id="sentRequests" class="dropdown-requests-list"></div>
+          <div id="outgoingRequests" class="requests-box friend-list dropdown-requests-list"></div>
         </div>
       </div>
       <!-- MAIN -->
@@ -639,16 +639,6 @@
               <input id="friendEmailInput" type="email" placeholder="correo@mi.unc.edu.ar" aria-label="Correo para agregar amigo" />
               <button class="btn-blue btn-small" id="btnSendFriendRequest" type="button">Enviar solicitud</button>
             </div>
-          </article>
-
-          <article class="card-block mensajeria-card requests-block">
-            <div class="block-title">Recibidas</div>
-            <div id="incomingRequests" class="requests-box friend-list"></div>
-          </article>
-
-          <article class="card-block mensajeria-card requests-block">
-            <div class="block-title">Enviadas</div>
-            <div id="outgoingRequests" class="requests-box friend-list"></div>
           </article>
 
           <article class="card-block mensajeria-card friends-block">

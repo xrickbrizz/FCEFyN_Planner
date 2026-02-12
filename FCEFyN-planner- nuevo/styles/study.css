@@ -1452,12 +1452,11 @@ body[data-theme="light"] .event{
       padding: 0.375rem 0.5rem;
       color:var(--text);
       font-size: .75rem;
-      box-shadow:0 4px 10px color-mix(in srgb, var(--accent) 16%, transparent);
-      border:1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-      border-left:5px solid var(--accent);
+      box-shadow:0 4px 10px color-mix(in srgb, var(--materia-color, var(--accent)) 16%, transparent);
+      border:2px solid var(--materia-color, var(--accent));
       cursor:pointer;
       overflow:hidden;
-      background-color:color-mix(in srgb, var(--accent) 18%, var(--surface-98));
+      background-color:color-mix(in srgb, var(--materia-color, var(--accent)) 18%, white);
       font-weight:600;
     }
     .class-block strong{

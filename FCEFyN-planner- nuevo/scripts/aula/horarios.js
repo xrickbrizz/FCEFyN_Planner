@@ -107,7 +107,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
       const block = document.createElement("div");
       block.className = "class-block";
       const color = CTX.subjectColor?.(item.materia);
-      if (color) block.style.backgroundColor = color;
+      if (color) block.style.setProperty("--materia-color", color);
       block.style.top = ((startM - minutesStart) * pxPerMinute) + "px";
       block.style.height = ((endM - startM) * pxPerMinute) + "px";
 
