@@ -278,8 +278,32 @@ async function loadFriendsList(){
 function renderFriendRequestsUI(){
   const incomingBox = document.getElementById("incomingRequests");
   const outgoingBox = document.getElementById("outgoingRequests");
+  const receivedDropdownBox = document.getElementById("receivedRequests");
+  const sentDropdownBox = document.getElementById("sentRequests");
   const state = CTX.socialState;
   if (!incomingBox || !outgoingBox) return;
+
+  const renderDropdownList = (box, requests, emptyText, emailField) => {
+    if (!box) return;
+    box.innerHTML = "";
+    if (state.requestsLoading){
+      box.innerHTML = "<div class='dropdown-request-item'>Cargando...</div>";
+      return;
+    }
+    if (!requests.length){
+      box.innerHTML = `<div class='dropdown-request-item'>${emptyText}</div>`;
+      return;
+    }
+    requests.forEach((req) => {
+      const item = document.createElement("div");
+      item.className = "dropdown-request-item";
+      item.innerHTML = `
+        <strong>${req[emailField] || "Correo desconocido"}</strong>
+        <span>Estado: ${req.status || "pendiente"}</span>
+      `;
+      box.appendChild(item);
+    });
+  };
 
   incomingBox.innerHTML = "";
   outgoingBox.innerHTML = "";
@@ -287,6 +311,8 @@ function renderFriendRequestsUI(){
   if (state.requestsLoading){
     incomingBox.innerHTML = "<div class='muted'>Cargando...</div>";
     outgoingBox.innerHTML = "<div class='muted'>Cargando...</div>";
+    renderDropdownList(receivedDropdownBox, [], "Cargando...", "fromEmail");
+    renderDropdownList(sentDropdownBox, [], "Cargando...", "toEmail");
     return;
   }
 
@@ -329,6 +355,9 @@ function renderFriendRequestsUI(){
       outgoingBox.appendChild(div);
     });
   }
+
+  renderDropdownList(receivedDropdownBox, state.friendRequests.incoming, "Sin solicitudes pendientes.", "fromEmail");
+  renderDropdownList(sentDropdownBox, state.friendRequests.outgoing, "No enviaste solicitudes.", "toEmail");
 }
 
 function renderFriendsList(){

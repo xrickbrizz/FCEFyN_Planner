@@ -535,6 +535,27 @@ if (helpButton) helpButton.addEventListener("click", ()=> openHelpModal(navState
 if (btnHelpClose) btnHelpClose.addEventListener("click", closeHelpModal);
 if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === helpModalBg) closeHelpModal(); });
 
+const friendRequestsBtn = document.getElementById("friendRequestsBtn");
+const friendRequestsPanel = document.getElementById("friendRequestsPanel");
+
+friendRequestsBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  if (!friendRequestsPanel) return;
+  const shouldOpen = !friendRequestsPanel.classList.contains("is-open");
+  friendRequestsPanel.classList.toggle("is-open", shouldOpen);
+  friendRequestsPanel.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
+});
+
+document.addEventListener("click", (event) => {
+  if (!friendRequestsPanel || !friendRequestsBtn) return;
+  const insidePanel = friendRequestsPanel.contains(event.target);
+  const onButton = friendRequestsBtn.contains(event.target);
+  if (!insidePanel && !onButton){
+    friendRequestsPanel.classList.remove("is-open");
+    friendRequestsPanel.setAttribute("aria-hidden", "true");
+  }
+});
+
 let sidebarCtrl = null;
 
 window.showTab = function(name){
@@ -551,36 +572,15 @@ window.showTab = function(name){
   name = targetSection;
   if (name !== "mensajes") navState.lastNonMessagesSection = name;
   navState.activeSection = name;
-  const tabInicio           = document.getElementById("tab-inicio");
-  const tabEstudio          = document.getElementById("tab-estudio");
-  const tabAcademico        = document.getElementById("tab-academico");
-  const tabAgenda           = document.getElementById("tab-agenda");
-  const tabMaterias         = document.getElementById("tab-materias");
-  const tabPlanEstudios     = document.getElementById("tab-planestudios");
-  const tabPlanificador     = document.getElementById("tab-planificador");
-  const tabProfesores       = document.getElementById("tab-profesores");
-  const tabComunidad        = document.getElementById("tab-comunidad");
-  const tabRecreo           = document.getElementById("tab-recreo");
-  const tabBiblioteca       = document.getElementById("tab-biblioteca");
-  const tabTransporte       = document.getElementById("tab-transporte");
-  const tabMensajes         = document.getElementById("tab-mensajes");
-  const tabPerfil           = document.getElementById("tab-perfil");
-  const toggleTab = (el, visible)=>{ if (el) el.style.display = visible ? "block" : "none"; };
-
-  toggleTab(tabInicio, name === "inicio");
-  toggleTab(tabEstudio, name === "estudio");
-  toggleTab(tabAcademico, name === "academico");
-  toggleTab(tabAgenda, name === "agenda");
-  toggleTab(tabMaterias, name === "materias");
-  toggleTab(tabPlanEstudios, name === "planestudios");
-  toggleTab(tabPlanificador, name === "planificador");
-  toggleTab(tabProfesores, name === "profesores");
-  toggleTab(tabComunidad, name === "comunidad");
-  toggleTab(tabRecreo, name === "recreo");
-  toggleTab(tabBiblioteca, name === "biblioteca");
-  toggleTab(tabTransporte, name === "transporte");
-  toggleTab(tabMensajes, name === "mensajes");
-  toggleTab(tabPerfil, name === "perfil");
+  const tabs = document.querySelectorAll(".main-shell > .tab-card");
+  tabs.forEach((tab) => {
+    tab.style.display = "none";
+  });
+  const activeTab = document.getElementById(`tab-${name}`);
+  if (activeTab) {
+    activeTab.style.display = "block";
+  }
+  console.log("Tab activa:", name);
 
   if (name === "agenda") Aula.open("agenda");
   if (name === "planificador") Aula.open("planificador");
@@ -600,6 +600,9 @@ window.showTab = function(name){
     const iconHtml = nav.icon ? `<span class="section-icon" aria-hidden="true">${nav.icon}</span>` : "";
     label.innerHTML = `${iconHtml}<span>${nav.label || ""}</span>`;
   }
+
+  document.getElementById("friendRequestsPanel")?.classList.remove("is-open");
+  document.getElementById("friendRequestsPanel")?.setAttribute("aria-hidden", "true");
 };
 
 function isBlockedByClientError(error){
