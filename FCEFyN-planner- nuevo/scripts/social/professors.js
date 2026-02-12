@@ -35,6 +35,7 @@ const SORT_OPTIONS = {
 
 const state = {
   userCareer: "",
+  useCareerFilter: true,
   filters: { search:"", sort:"rating_desc" },
   page: 1,
   selectedProfessorId: null,
@@ -123,8 +124,15 @@ function parseProfessor(docSnap){
   };
 }
 
-function professorBaseQuery(){
-  return query(collection(CTX.db, "professors"), where("career", "==", state.userCareer));
+function professorBaseQuery({ forceWithoutCareer = false } = {}){
+  const professorsCollection = collection(CTX.db, "professors");
+  const shouldApplyCareerFilter = !forceWithoutCareer && state.useCareerFilter && state.userCareer;
+
+  if (shouldApplyCareerFilter){
+    return query(professorsCollection, where("career", "==", state.userCareer));
+  }
+
+  return query(professorsCollection);
 }
 
 function sortConfig(){
@@ -194,6 +202,17 @@ async function computeTotalForSort(){
     const counter = await getCountFromServer(professorBaseQuery());
     bucket.totalItems = counter.data().count || 0;
     bucket.totalPages = Math.max(1, Math.ceil(bucket.totalItems / PAGE_SIZE));
+
+    if (state.useCareerFilter && state.userCareer && bucket.totalItems === 0){
+      console.warn("[Profesores] El filtro career no devolvió resultados. Se desactiva para diagnóstico.", {
+        career: state.userCareer,
+        collection: "professors"
+      });
+      state.useCareerFilter = false;
+      state.queryCache.clear();
+      await computeTotalForSort();
+      return;
+    }
   }catch(error){
     console.warn("[Profesores] No se pudo contar profesores", error);
     bucket.totalItems = 0;
@@ -224,17 +243,58 @@ async function fetchPage(page){
     }
   }
 
-  const snap = await getDocs(q);
-  const rows = [];
-  snap.forEach((profDoc) => {
-    const parsed = parseProfessor(profDoc);
-    rows.push(parsed);
-    state.professorsById.set(parsed.id, parsed);
+  console.log("Iniciando carga de profesores...");
+  console.log("[Profesores] Diagnóstico de query", {
+    collection: "professors",
+    userCareer: state.userCareer,
+    useCareerFilter: state.useCareerFilter,
+    sortField: field,
+    sortDirection: direction,
+    includesNameSort: field !== "name",
+    page
   });
 
-  const lastVisible = snap.docs[snap.docs.length - 1] || null;
-  savePageToCache(page, rows, lastVisible);
-  return rows;
+  try {
+    const snap = await getDocs(q);
+
+    console.log("Snapshot obtenido:", snap);
+    console.log("Cantidad de documentos:", snap.size);
+
+    if (snap.empty) {
+      console.warn("La consulta no devolvió documentos.");
+      console.warn("[Profesores] Verificá si los documentos tienen los campos esperados: career, ratingAvg, name.");
+    }
+
+    const rows = [];
+    snap.forEach((profDoc) => {
+      console.log("Profesor encontrado:", profDoc.id, profDoc.data());
+      const parsed = parseProfessor(profDoc);
+
+      if (!("ratingAvg" in (profDoc.data() || {}))){
+        console.warn("[Profesores] Documento sin ratingAvg (usando fallback en UI):", profDoc.id);
+      }
+      if (!("name" in (profDoc.data() || {}))){
+        console.warn("[Profesores] Documento sin name (usando fallback en UI):", profDoc.id);
+      }
+
+      rows.push(parsed);
+      state.professorsById.set(parsed.id, parsed);
+    });
+
+    const lastVisible = snap.docs[snap.docs.length - 1] || null;
+    savePageToCache(page, rows, lastVisible);
+    return rows;
+  } catch (error) {
+    console.error("Error al obtener profesores:", error);
+    console.error("[Profesores] Posibles causas: reglas de Firestore, índice compuesto faltante, o conflicto where/orderBy.", {
+      collection: "professors",
+      userCareer: state.userCareer,
+      useCareerFilter: state.useCareerFilter,
+      sortField: field,
+      sortDirection: direction
+    });
+    throw error;
+  }
 }
 
 function applySearchFilter(items){
