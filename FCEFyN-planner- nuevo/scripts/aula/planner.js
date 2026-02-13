@@ -14,9 +14,32 @@ function getStudentCareerSlug(){
 
 function sectionMatchesCareer(section, careerSlug){
   if (!careerSlug) return false;
+  if (Array.isArray(section.careerSlugs) && section.careerSlugs.length){
+    return section.careerSlugs.includes(careerSlug);
+  }
   const sectionCareer = CTX.normalizeStr(section.degree || "");
   if (!sectionCareer) return false;
   return sectionCareer.includes(careerSlug) || careerSlug.includes(sectionCareer);
+}
+
+function getSectionSubjectSlug(section){
+  const rawSlug = section?.subjectSlug || section?.subject || "";
+  return CTX.normalizeStr(rawSlug);
+}
+
+function getSubjectNameFromSection(section){
+  if (section.subject) return section.subject;
+  const slug = section.subjectSlug;
+  if (!slug) return "";
+  const normalize = CTX.normalizeStr;
+
+  const careerMatch = (CTX.aulaState.careerSubjects || []).find((item) => normalize(item?.id || item?.slug || "") === slug);
+  if (careerMatch) return careerMatch.nombre || careerMatch.name || slug;
+
+  const customMatch = (CTX.aulaState.subjects || []).find((item) => normalize(item?.slug || "") === slug);
+  if (customMatch) return customMatch.name || slug;
+
+  return slug;
 }
 
 function dayNameToKey(dayName){
@@ -76,7 +99,7 @@ function buildWeeklyDataFromSectionIds(sectionIds){
   dayKeys.forEach(k => data[k] = []);
 
   (sectionIds || []).map(getSectionById).filter(Boolean).forEach(sec => {
-    const subject = sec.subject || "(Sin materia)";
+    const subject = getSubjectNameFromSection(sec) || "(Sin materia)";
     const commission = sec.commission ? `Comisión ${sec.commission}` : "";
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
@@ -102,8 +125,10 @@ function getConflictInfo(candidateSection){
 
     for (const s of selected){
       if (!s || s.id === candidateSection.id) continue;
-      if (candidateSection.subject && CTX.normalizeStr(s.subject) === CTX.normalizeStr(candidateSection.subject)){
-        return { blocked: true, reason: `Ya seleccionaste otra comisión de ${s.subject}.` };
+      const candidateSubject = getSubjectNameFromSection(candidateSection);
+      const selectedSubject = getSubjectNameFromSection(s);
+      if (candidateSubject && CTX.normalizeStr(selectedSubject) === CTX.normalizeStr(candidateSubject)){
+        return { blocked: true, reason: `Ya seleccionaste otra comisión de ${selectedSubject}.` };
       }
       for (const sd of (s.days || [])){
         if (dayNameToKey(sd.day) !== dayKey) continue;
@@ -111,7 +136,7 @@ function getConflictInfo(candidateSection){
         const sEnd = timeToMinutes(sd.end);
         if (isNaN(sStart) || isNaN(sEnd) || sEnd <= sStart) continue;
         if ((cStart < sEnd) && (cEnd > sStart)){
-          return { blocked: true, reason: `Conflicto de horario con ${s.subject}.` };
+          return { blocked: true, reason: `Conflicto de horario con ${getSubjectNameFromSection(s)}.` };
         }
       }
     }
@@ -119,23 +144,38 @@ function getConflictInfo(candidateSection){
   return { blocked: false, reason: "" };
 }
 
-function populateSubjectFilter(filteredByCareer){
+function updateSectionsSubjectFilter(activeCareer){
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  if (!subjectFilter) return;
+  if (!subjectFilter) return new Set();
   const current = subjectFilter.value || "";
-  const uniqueSubjects = [...new Set(filteredByCareer.map(s => s.subject).filter(Boolean))].sort((a,b)=> a.localeCompare(b, "es"));
+  const availableSubjectSlugs = new Set();
+  const subjectsBySlug = new Map();
+
+  CTX.aulaState.courseSections.forEach((section) => {
+    if (!sectionMatchesCareer(section, activeCareer)) return;
+    const slug = getSectionSubjectSlug(section);
+    if (!slug) return;
+    availableSubjectSlugs.add(slug);
+    if (!subjectsBySlug.has(slug)) subjectsBySlug.set(slug, getSubjectNameFromSection(section));
+  });
+
+  const availableSubjects = [...availableSubjectSlugs]
+    .map((slug) => ({ slug, name: subjectsBySlug.get(slug) || slug }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
   subjectFilter.innerHTML = "";
   const allOpt = document.createElement("option");
   allOpt.value = "";
   allOpt.textContent = "Todas las materias";
   subjectFilter.appendChild(allOpt);
-  uniqueSubjects.forEach(subject => {
+  availableSubjects.forEach(({ slug, name }) => {
     const opt = document.createElement("option");
-    opt.value = subject;
-    opt.textContent = subject;
+    opt.value = slug;
+    opt.textContent = name;
     subjectFilter.appendChild(opt);
   });
-  subjectFilter.value = uniqueSubjects.includes(current) ? current : "";
+  subjectFilter.value = availableSubjectSlugs.has(current) ? current : "";
+  return availableSubjectSlugs;
 }
 
 async function loadCourseSections(){
@@ -147,15 +187,23 @@ async function loadCourseSections(){
       CTX.aulaState.courseSections.push({
         id: d.id,
         code: data.code || data.codigo || "",
-        subject: data.subject || "",
+        subject: data.subject || data.subjectName || "",
+        subjectSlug: CTX.normalizeStr(data.subjectSlug || data.subject || data.subjectName || ""),
+        careerSlugs: Array.isArray(data.careerSlugs) ? data.careerSlugs.map((slug) => CTX.normalizeStr(slug)).filter(Boolean) : [],
+        year: data.anio || data.year || "",
+        type: data.tipo || data.type || "",
         commission: data.commission || "",
         degree: data.degree || "",
         room: data.room || "",
-        campus: data.campus || "",
+        campus: data.campus || data.sede || "",
         headEmail: data.headEmail || "",
         titular: data.titular || "",
         docentes: Array.isArray(data.docentes) ? data.docentes : [],
-        days: Array.isArray(data.days) ? data.days : []
+        days: Array.isArray(data.days)
+          ? data.days
+          : Array.isArray(data.horarios)
+            ? data.horarios.map((slot) => ({ day: slot?.dia || slot?.day || "", start: slot?.inicio || slot?.start || "", end: slot?.fin || slot?.end || "" }))
+            : []
       });
     });
   }catch(e){
@@ -224,12 +272,12 @@ function renderPlannerPreview(){
 function renderSectionsList(){
   const list = document.getElementById("sectionsList");
   if (!list) return;
-  const selectedSubject = document.getElementById("sectionsSubjectFilter")?.value || "";
+  const selectedSubjectSlug = document.getElementById("sectionsSubjectFilter")?.value || "";
   list.innerHTML = "";
 
   const careerSlug = getStudentCareerSlug();
   const byCareer = getCareerFilteredSections();
-  populateSubjectFilter(byCareer);
+  const availableSubjectSlugs = updateSectionsSubjectFilter(careerSlug);
 
   if (!careerSlug){
     list.innerHTML = '<div class="small-muted">Completá tu carrera en Perfil para ver comisiones.</div>';
@@ -237,14 +285,19 @@ function renderSectionsList(){
   }
 
   let filtered = byCareer.slice();
-  if (selectedSubject) filtered = filtered.filter(sec => sec.subject === selectedSubject);
+  if (selectedSubjectSlug && availableSubjectSlugs.has(selectedSubjectSlug)) filtered = filtered.filter(sec => getSectionSubjectSlug(sec) === selectedSubjectSlug);
+
+  if (!byCareer.length){
+    list.innerHTML = '<div class="small-muted">No hay comisiones cargadas para la ingeniería activa.</div>';
+    return;
+  }
 
   if (!filtered.length){
     list.innerHTML = '<div class="small-muted">No hay comisiones con los filtros actuales.</div>';
     return;
   }
 
-  filtered.sort((a,b) => `${a.subject}${a.commission}`.localeCompare(`${b.subject}${b.commission}`, "es"));
+  filtered.sort((a,b) => `${getSubjectNameFromSection(a)}${a.commission}`.localeCompare(`${getSubjectNameFromSection(b)}${b.commission}`, "es"));
 
   filtered.forEach(sec => {
     const selected = CTX.aulaState.activeSelectedSectionIds.includes(sec.id);
@@ -256,7 +309,7 @@ function renderSectionsList(){
     card.innerHTML = `
       <div class="section-card-top">
         <div>
-          <div class="section-title">${sec.subject || "(Sin materia)"}</div>
+          <div class="section-title">${getSubjectNameFromSection(sec) || "(Sin materia)"}</div>
           <div class="section-sub"><strong>Comisión:</strong> ${sec.commission || "—"}</div>
           <div class="section-sub">${formatSchedule(sec)}</div>
           <div class="section-sub"><strong>Sede/Aula:</strong> ${(sec.campus || "Sede no definida")} · ${(sec.room ? "Aula " + sec.room : "Aula no definida")}</div>

@@ -510,6 +510,113 @@ function getStudyEventsForDate(dateKey){
   return estudiosCache[normalizedKey] || [];
 }
 
+function getStudyDurationMinutes(entry){
+  if (!entry) return 0;
+  const hours = parseInt(entry.horas, 10) || 0;
+  const mins = parseInt(entry.mins, 10) || 0;
+  return Math.max(0, hours) * 60 + Math.max(0, mins);
+}
+
+function getTotalStudyMinutesForDay(dateKey){
+  const events = getStudyEventsForDate(dateKey);
+  return events.reduce((acc, entry) => acc + getStudyDurationMinutes(entry), 0);
+}
+
+function formatHoursValue(totalMinutes){
+  const safeMinutes = Math.max(0, totalMinutes || 0);
+  const totalHours = safeMinutes / 60;
+  return Number.isInteger(totalHours)
+    ? `${totalHours}h`
+    : `${totalHours.toFixed(1)}h`;
+}
+
+function renderStudyStats(){
+  const todayKey = getTodayKey();
+  const todayMinutes = getTotalStudyMinutesForDay(todayKey);
+
+  if (studyTodayHoursValue){
+    studyTodayHoursValue.textContent = formatHoursValue(todayMinutes);
+  }
+
+  const todayDate = new Date();
+  const dayIndex = (todayDate.getDay() + 6) % 7;
+  const weekStart = new Date(todayDate);
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(todayDate.getDate() - dayIndex);
+
+  let weeklyMinutes = 0;
+  for (let i = 0; i < 7; i++){
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + i);
+    const dateKey = dateKeyFromYMD(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    weeklyMinutes += getTotalStudyMinutesForDay(dateKey);
+  }
+
+  if (studyWeeklyGoalValue){
+    const WEEKLY_GOAL_MINUTES = 600; // 10 horas
+    const percentage = Math.min(100, Math.round((weeklyMinutes / WEEKLY_GOAL_MINUTES) * 100));
+    studyWeeklyGoalValue.textContent = `${percentage}%`;
+  }
+
+  if (studyStreakValue){
+    let streak = 0;
+    const cursor = new Date(todayDate);
+    cursor.setHours(0, 0, 0, 0);
+
+    while (true){
+      const key = dateKeyFromYMD(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
+      if (getTotalStudyMinutesForDay(key) <= 0) break;
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    studyStreakValue.textContent = `${streak} días`;
+  }
+}
+
+function renderStudyUpcomingWidget(){
+  if (!studyUpcomingWidget) return;
+
+  const now = new Date();
+  const upcoming = [];
+
+  Object.keys(estudiosCache || {}).forEach((dateKey) => {
+    const parts = ymdFromDateKey(dateKey);
+    if (!parts) return;
+    const dayDate = new Date(parts.y, parts.m - 1, parts.d, 23, 59, 59);
+    if (dayDate < now) return;
+
+    const items = getStudyEventsForDate(dateKey);
+    if (!items.length) return;
+
+    upcoming.push({
+      dateKey,
+      count: items.length,
+      totalMinutes: items.reduce((acc, item) => acc + getStudyDurationMinutes(item), 0)
+    });
+  });
+
+  upcoming.sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+
+  if (!upcoming.length){
+    studyUpcomingWidget.innerHTML = '<div class="small-muted">No hay sesiones próximas.</div>';
+    return;
+  }
+
+  const next = upcoming[0];
+  const parts = ymdFromDateKey(next.dateKey);
+  const label = parts
+    ? new Date(parts.y, parts.m - 1, parts.d).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })
+    : next.dateKey;
+
+  studyUpcomingWidget.innerHTML = `
+    <div class="study-upcoming-item">
+      <strong>${escapeHtml(label)}</strong>
+      <div class="small-muted">${next.count} registro(s) · ${formatHoursValue(next.totalMinutes)}</div>
+    </div>
+  `;
+}
+
 function renderStudyDetailPanel(dateKey){
   if (!studyDetailTitle || !studyDetailDate || !studyDetailTime || !studyDetailList) return;
   const normalizedKey = getDayKey(dateKey) || getTodayKey();
