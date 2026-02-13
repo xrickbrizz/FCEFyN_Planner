@@ -14,12 +14,18 @@ function getStudentCareerSlug(){
 
 function sectionMatchesCareer(section, careerSlug){
   if (!careerSlug) return false;
+  const normalizedCareer = CTX.normalizeStr(careerSlug);
   if (Array.isArray(section.careerSlugs) && section.careerSlugs.length){
-    return section.careerSlugs.includes(careerSlug);
+    return section.careerSlugs.some((slug) => {
+      const normalizedSlug = CTX.normalizeStr(slug);
+      return normalizedSlug === normalizedCareer
+        || normalizedSlug.endsWith(normalizedCareer)
+        || normalizedCareer.endsWith(normalizedSlug);
+    });
   }
   const sectionCareer = CTX.normalizeStr(section.degree || "");
   if (!sectionCareer) return false;
-  return sectionCareer.includes(careerSlug) || careerSlug.includes(sectionCareer);
+  return sectionCareer.includes(normalizedCareer) || normalizedCareer.includes(sectionCareer);
 }
 
 function getSectionSubjectSlug(section){
@@ -179,6 +185,9 @@ function updateSectionsSubjectFilter(activeCareer){
 }
 
 async function loadCourseSections(){
+  const campusMap = {
+    "c univ": "Ciudad Universitaria"
+  };
   const dayMap = {
     1: "Lunes",
     2: "Martes",
@@ -203,8 +212,12 @@ async function loadCourseSections(){
   };
   const extractCommissionFromId = (value) => {
     const text = String(value || "");
-    const match = text.match(/-(\d+(?:\.\d+)?)-\d{4}$/);
+    const match = text.match(/-(\d+(?:\.\d+)?)(?:-|$)/);
     return match?.[1] || "";
+  };
+  const mapCampus = (value) => {
+    const normalized = CTX.normalizeStr(value || "");
+    return campusMap[normalized] || String(value || "");
   };
 
   CTX.aulaState.courseSections = [];
@@ -213,7 +226,10 @@ async function loadCourseSections(){
     snap.forEach(d => {
       const data = d.data() || {};
       const subjectSlug = CTX.normalizeStr(data.subjectSlug || "");
-      const degreeSlug = CTX.normalizeStr((Array.isArray(data.careerSlugs) ? data.careerSlugs[0] : "") || "");
+      const careerSlugs = Array.isArray(data.careerSlugs)
+        ? data.careerSlugs.map((slug) => CTX.normalizeStr(slug || "")).filter(Boolean)
+        : [];
+      const degreeSlug = careerSlugs[0] || "";
       CTX.aulaState.courseSections.push({
         id: d.id,
         code: subjectSlug,
@@ -222,11 +238,11 @@ async function loadCourseSections(){
         commission: extractCommissionFromId(d.id),
         degreeSlug,
         degree: formatDegreeLabel(degreeSlug),
-        careerSlugs: degreeSlug ? [degreeSlug] : [],
+        careerSlugs,
         year: data.anio || data.year || "",
         type: data.tipo || data.type || "",
         room: "",
-        campus: data.sede === "C univ" ? "Ciudad Universitaria" : (data.sede || ""),
+        campus: mapCampus(data.sede),
         headEmail: "",
         titular: "",
         docentes: [],
