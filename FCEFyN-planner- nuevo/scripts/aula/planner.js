@@ -7,29 +7,8 @@ const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
 
-function getStudentCareerSlug(){
-  const profile = CTX?.getUserProfile?.() || {};
-  return CTX.normalizeStr(profile.careerSlug || profile.career || "");
-}
-
-function sectionMatchesCareer(section, careerSlug){
-  if (!careerSlug) return false;
-  const normalizedCareer = CTX.normalizeStr(careerSlug);
-  if (Array.isArray(section.careerSlugs) && section.careerSlugs.length){
-    return section.careerSlugs.some((slug) => {
-      const normalizedSlug = CTX.normalizeStr(slug);
-      return normalizedSlug === normalizedCareer
-        || normalizedSlug.endsWith(normalizedCareer)
-        || normalizedCareer.endsWith(normalizedSlug);
-    });
-  }
-  const sectionCareer = CTX.normalizeStr(section.degree || "");
-  if (!sectionCareer) return false;
-  return sectionCareer.includes(normalizedCareer) || normalizedCareer.includes(sectionCareer);
-}
-
 function getSectionSubjectSlug(section){
-  const rawSlug = section?.subjectSlug || section?.subject || "";
+  const rawSlug = section?.subjectSlug || section?.code || section?.subject || "";
   return CTX.normalizeStr(rawSlug);
 }
 
@@ -57,11 +36,6 @@ function dayNameToKey(dayName){
   if (n.startsWith("vie")) return "viernes";
   if (n.startsWith("sáb") || n.startsWith("sab")) return "sabado";
   return null;
-}
-
-function getCareerFilteredSections(){
-  const careerSlug = getStudentCareerSlug();
-  return CTX.aulaState.courseSections.filter(sec => sectionMatchesCareer(sec, careerSlug));
 }
 
 function getSectionById(id){
@@ -150,7 +124,7 @@ function getConflictInfo(candidateSection){
   return { blocked: false, reason: "" };
 }
 
-function updateSectionsSubjectFilter(activeCareer){
+function updateSectionsSubjectFilter(){
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
   if (!subjectFilter) return new Set();
   const current = subjectFilter.value || "";
@@ -158,7 +132,6 @@ function updateSectionsSubjectFilter(activeCareer){
   const subjectsBySlug = new Map();
 
   CTX.aulaState.courseSections.forEach((section) => {
-    if (!sectionMatchesCareer(section, activeCareer)) return;
     const slug = getSectionSubjectSlug(section);
     if (!slug) return;
     availableSubjectSlugs.add(slug);
@@ -185,9 +158,6 @@ function updateSectionsSubjectFilter(activeCareer){
 }
 
 async function loadCourseSections(){
-  const campusMap = {
-    "c univ": "Ciudad Universitaria"
-  };
   const dayMap = {
     1: "Lunes",
     2: "Martes",
@@ -210,16 +180,6 @@ async function loadCourseSections(){
       .replace(/Ingenieria/g, "Ingeniería")
       .replace(/Quimica/g, "Química");
   };
-  const extractCommissionFromId = (value) => {
-    const text = String(value || "");
-    const match = text.match(/-(\d+(?:\.\d+)?)(?:-|$)/);
-    return match?.[1] || "";
-  };
-  const mapCampus = (value) => {
-    const normalized = CTX.normalizeStr(value || "");
-    return campusMap[normalized] || String(value || "");
-  };
-
   CTX.aulaState.courseSections = [];
   try{
     const snap = await getDocs(collection(CTX.db, "comisiones"));
@@ -234,15 +194,11 @@ async function loadCourseSections(){
         id: d.id,
         code: subjectSlug,
         subject: formatSlugLabel(subjectSlug),
-        subjectSlug,
-        commission: extractCommissionFromId(d.id),
+        commission: d.id || "",
         degreeSlug,
         degree: formatDegreeLabel(degreeSlug),
-        careerSlugs,
-        year: data.anio || data.year || "",
-        type: data.tipo || data.type || "",
         room: "",
-        campus: mapCampus(data.sede),
+        campus: String(data.sede || ""),
         headEmail: "",
         titular: "",
         docentes: [],
@@ -324,20 +280,14 @@ function renderSectionsList(){
   const selectedSubjectSlug = document.getElementById("sectionsSubjectFilter")?.value || "";
   list.innerHTML = "";
 
-  const careerSlug = getStudentCareerSlug();
-  const byCareer = getCareerFilteredSections();
-  const availableSubjectSlugs = updateSectionsSubjectFilter(careerSlug);
+  const allSections = CTX.aulaState.courseSections.slice();
+  const availableSubjectSlugs = updateSectionsSubjectFilter();
 
-  if (!careerSlug){
-    list.innerHTML = '<div class="small-muted">Completá tu carrera en Perfil para ver comisiones.</div>';
-    return;
-  }
-
-  let filtered = byCareer.slice();
+  let filtered = allSections.slice();
   if (selectedSubjectSlug && availableSubjectSlugs.has(selectedSubjectSlug)) filtered = filtered.filter(sec => getSectionSubjectSlug(sec) === selectedSubjectSlug);
 
-  if (!byCareer.length){
-    list.innerHTML = '<div class="small-muted">No hay comisiones cargadas para la ingeniería activa.</div>';
+  if (!allSections.length){
+    list.innerHTML = '<div class="small-muted">No hay comisiones cargadas.</div>';
     return;
   }
 
