@@ -179,31 +179,64 @@ function updateSectionsSubjectFilter(activeCareer){
 }
 
 async function loadCourseSections(){
+  const dayMap = {
+    1: "Lunes",
+    2: "Martes",
+    3: "Miércoles",
+    4: "Jueves",
+    5: "Viernes"
+  };
+  const formatSlugLabel = (value) => {
+    const normalized = String(value || "").trim();
+    if (!normalized) return "";
+    return normalized
+      .split("-")
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+  const formatDegreeLabel = (value) => {
+    const base = formatSlugLabel(value);
+    return base
+      .replace(/Ingenieria/g, "Ingeniería")
+      .replace(/Quimica/g, "Química");
+  };
+  const extractCommissionFromId = (value) => {
+    const text = String(value || "");
+    const match = text.match(/-(\d+(?:\.\d+)?)-\d{4}$/);
+    return match?.[1] || "";
+  };
+
   CTX.aulaState.courseSections = [];
   try{
-    const snap = await getDocs(collection(CTX.db, "courseSections"));
+    const snap = await getDocs(collection(CTX.db, "comisiones"));
     snap.forEach(d => {
       const data = d.data() || {};
+      const subjectSlug = CTX.normalizeStr(data.subjectSlug || "");
+      const degreeSlug = CTX.normalizeStr((Array.isArray(data.careerSlugs) ? data.careerSlugs[0] : "") || "");
       CTX.aulaState.courseSections.push({
         id: d.id,
-        code: data.code || data.codigo || "",
-        subject: data.subject || data.subjectName || "",
-        subjectSlug: CTX.normalizeStr(data.subjectSlug || data.subject || data.subjectName || ""),
-        careerSlugs: Array.isArray(data.careerSlugs) ? data.careerSlugs.map((slug) => CTX.normalizeStr(slug)).filter(Boolean) : [],
+        code: subjectSlug,
+        subject: formatSlugLabel(subjectSlug),
+        subjectSlug,
+        commission: extractCommissionFromId(d.id),
+        degreeSlug,
+        degree: formatDegreeLabel(degreeSlug),
+        careerSlugs: degreeSlug ? [degreeSlug] : [],
         year: data.anio || data.year || "",
         type: data.tipo || data.type || "",
-        commission: data.commission || "",
-        degree: data.degree || "",
-        room: data.room || "",
-        campus: data.campus || data.sede || "",
-        headEmail: data.headEmail || "",
-        titular: data.titular || "",
-        docentes: Array.isArray(data.docentes) ? data.docentes : [],
-        days: Array.isArray(data.days)
-          ? data.days
-          : Array.isArray(data.horarios)
-            ? data.horarios.map((slot) => ({ day: slot?.dia || slot?.day || "", start: slot?.inicio || slot?.start || "", end: slot?.fin || slot?.end || "" }))
-            : []
+        room: "",
+        campus: data.sede === "C univ" ? "Ciudad Universitaria" : (data.sede || ""),
+        headEmail: "",
+        titular: "",
+        docentes: [],
+        days: Array.isArray(data.horarios)
+          ? data.horarios.map((slot) => ({
+              day: dayMap[Number(slot?.dia)] || "",
+              start: slot?.inicio || "",
+              end: slot?.fin || ""
+            })).filter((slot) => slot.day && slot.start && slot.end)
+          : []
       });
     });
   }catch(e){
