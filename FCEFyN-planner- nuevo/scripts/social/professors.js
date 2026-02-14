@@ -36,7 +36,7 @@ const state = {
   professorsById: new Map(),
   hasNextPage: false,
   reviewsByProfessor: new Map(),
-  ratingDraft: { teachingQuality:0, examDifficulty:0, studentTreatment:0, comment:"", anonymous:false }
+  ratingDraft: { teachingQuality:null, examDifficulty:null, studentTreatment:null, comment:"", anonymous:false }
 };
 
 const notifySuccess = (message) => CTX?.notifySuccess?.(message);
@@ -64,6 +64,10 @@ function formatDecimal(value){
 
 function validateRating(value){
   return Number.isInteger(value) && value >= 1 && value <= 5;
+}
+
+function sanitizeRatingValue(value){
+  return Number.parseInt(value, 10);
 }
 
 function teachingDescriptor(value){
@@ -356,6 +360,10 @@ function openRatingModal(professor){
   modalName.textContent = professor.name;
   groups.innerHTML = "";
 
+  if (!Number.isInteger(state.ratingDraft.teachingQuality)) state.ratingDraft.teachingQuality = null;
+  if (!Number.isInteger(state.ratingDraft.examDifficulty)) state.ratingDraft.examDifficulty = null;
+  if (!Number.isInteger(state.ratingDraft.studentTreatment)) state.ratingDraft.studentTreatment = null;
+
   METRICS.forEach(metric => {
     const wrap = document.createElement("div");
     wrap.className = "prof-rating-group";
@@ -377,7 +385,8 @@ function openRatingModal(professor){
     }
 
     groups.appendChild(wrap);
-    paintMetricStars(metric.key, state.ratingDraft[metric.key] || 0);
+    const selected = Number.isInteger(state.ratingDraft[metric.key]) ? state.ratingDraft[metric.key] : 0;
+    paintMetricStars(metric.key, selected);
   });
 
   const comment = document.getElementById("rateComment");
@@ -419,32 +428,32 @@ async function submitRating(){
   state.ratingDraft.comment = (commentEl?.value || "").trim();
   state.ratingDraft.anonymous = Boolean(anonymousEl?.checked);
 
-  const teachingQuality = Number(state.ratingDraft.teachingQuality);
-  const examDifficulty = Number(state.ratingDraft.examDifficulty);
-  const studentTreatment = Number(state.ratingDraft.studentTreatment);
+  const teachingQuality = sanitizeRatingValue(state.ratingDraft.teachingQuality);
+  const examDifficulty = sanitizeRatingValue(state.ratingDraft.examDifficulty);
+  const studentTreatment = sanitizeRatingValue(state.ratingDraft.studentTreatment);
 
   console.log("Valores enviados:", {
     calidad: teachingQuality,
     dificultad: examDifficulty,
-    trato: studentTreatment
+    trato: studentTreatment,
+    tipos: {
+      calidad: typeof teachingQuality,
+      dificultad: typeof examDifficulty,
+      trato: typeof studentTreatment
+    }
   });
-
-  if (!teachingQuality || !examDifficulty || !studentTreatment){
-    notifyWarn("Debes completar todas las valoraciones.");
-    return;
-  }
 
   if (
     !validateRating(teachingQuality) ||
     !validateRating(examDifficulty) ||
     !validateRating(studentTreatment)
   ){
-    console.error("Valoración inválida:", {
+    console.error("Valoración inválida detectada:", {
       calidad: teachingQuality,
       dificultad: examDifficulty,
       trato: studentTreatment
     });
-    notifyWarn("Completá los 3 criterios con valores de 1 a 5 estrellas.");
+    notifyWarn("Todas las valoraciones deben estar entre 1 y 5.");
     return;
   }
 
@@ -478,7 +487,7 @@ async function submitRating(){
     closeRatingModal();
     notifySuccess("Reseña enviada correctamente.");
   }catch(error){
-    console.error("[Profesores] Error al enviar reseña", error);
+    console.error("Error controlado al enviar reseña:", error?.message || error);
     notifyError("No se pudo guardar la calificación.");
   }finally{
     if (submitBtn) submitBtn.disabled = false;
