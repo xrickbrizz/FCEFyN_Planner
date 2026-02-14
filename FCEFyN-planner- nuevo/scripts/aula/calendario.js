@@ -96,6 +96,24 @@ const warnMissing = (label, el) => {
   if (!el) console.warn(`[calendario] falta elemento: ${label}`);
 };
 
+function normalizeStr(str){
+  if (typeof CTX?.normalizeStr === "function") return CTX.normalizeStr(str);
+  return str
+    ?.toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase() || "";
+}
+
+function isAcadItemCompleted(item){
+  if (typeof item?.completed === "boolean") return item.completed;
+  return item?.estado === "done";
+}
+
+function toAcadStatus(completed){
+  return completed ? "done" : "pending";
+}
+
 export function initCalendario(ctx){
   CTX = ctx;
   console.log("[calendario] init");
@@ -1158,8 +1176,32 @@ export function renderAcadCalendar(){
   }
 
   highlightAcadSelection(acadSelectedDateKey);
+  updateMonthlyPendingCount();
   renderRightPanel(acadSelectedDateKey || todayKey);
   renderAcadUpcomingWidget();
+}
+
+function updateMonthlyPendingCount(){
+  const target = document.getElementById("monthlyPendingCount");
+  if (!target) return;
+  const pending = countPendingForVisibleMonth();
+  target.textContent = String(pending);
+}
+
+function countPendingForVisibleMonth(){
+  if (acadViewYear === null || acadViewMonth === null || !academicoCache) return 0;
+  let total = 0;
+  Object.keys(academicoCache).forEach((storageKey)=>{
+    const normalizedKey = getDayKey(storageKey);
+    const parts = ymdFromDateKey(normalizedKey);
+    if (!parts) return;
+    if (parts.y !== acadViewYear || (parts.m - 1) !== acadViewMonth) return;
+    const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
+    entries.forEach((item)=>{
+      if (!isAcadItemCompleted(item)) total += 1;
+    });
+  });
+  return total;
 }
 
 function highlightAcadSelection(dateKey){
@@ -1204,13 +1246,23 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
   acadDetailBox.style.display = "block";
 
   items.forEach(({ item, index })=>{
+    const completed = isAcadItemCompleted(item);
     const row = document.createElement("div");
-    row.className = "acad-detail-row";
+    row.className = `acad-detail-row activity-item${completed ? " completed" : ""}`;
     const accent = getSubjectAccentColor(item.materia);
     if (accent) row.style.setProperty("--accent", accent);
 
+    const checkBtn = document.createElement("button");
+    checkBtn.type = "button";
+    checkBtn.className = `activity-check${completed ? " completed" : ""}`;
+    checkBtn.setAttribute("aria-label", completed ? "Marcar como pendiente" : "Marcar como completada");
+    checkBtn.addEventListener("click", async (e)=>{
+      e.stopPropagation();
+      await toggleAcadCompleted(normalizedKey, index);
+    });
+
     const left = document.createElement("div");
-    left.className = "acad-detail-text";
+    left.className = "acad-detail-text activity-content";
     const durationLabel = getAcadDurationLabel(item);
     left.innerHTML = `
       <strong>${escapeHtml(item.materia || "Materia")}</strong>
@@ -1218,6 +1270,7 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
       <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
     `;
 
+    row.appendChild(checkBtn);
     row.appendChild(left);
 
     const actions = document.createElement("div");
@@ -1291,10 +1344,20 @@ function openAcadDayModal(dateKey, focusIndex = -1){
   } else {
     items.forEach(({ item, index })=>{
       const row = document.createElement("div");
-      row.className = "acad-detail-row";
+      const completed = isAcadItemCompleted(item);
+      row.className = `acad-detail-row activity-item${completed ? " completed" : ""}`;
+
+      const checkBtn = document.createElement("button");
+      checkBtn.type = "button";
+      checkBtn.className = `activity-check${completed ? " completed" : ""}`;
+      checkBtn.setAttribute("aria-label", completed ? "Marcar como pendiente" : "Marcar como completada");
+      checkBtn.addEventListener("click", async (e)=>{
+        e.stopPropagation();
+        await toggleAcadCompleted(normalizedKey, index);
+      });
 
       const left = document.createElement("div");
-      left.className = "acad-detail-text";
+      left.className = "acad-detail-text activity-content";
       left.innerHTML = `
         <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
         <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
@@ -1327,6 +1390,7 @@ function openAcadDayModal(dateKey, focusIndex = -1){
       right.appendChild(btnEdit);
       right.appendChild(btnDelete);
 
+      row.appendChild(checkBtn);
       row.appendChild(left);
       row.appendChild(right);
       acadDayModalList.appendChild(row);
@@ -1392,6 +1456,43 @@ async function deleteAcadItem(dateKey, index){
     console.log("[calendario] delete academico", { dateKey, index });
   }catch(e){
     CTX?.notifyError?.("No se pudo eliminar: " + (e.message || e));
+  }
+}
+
+async function toggleAcadCompleted(dateKey, index){
+  const user = getCurrentUser();
+  if (!user || index < 0) return;
+  const normalizedKey = getDayKey(dateKey);
+  if (!normalizedKey) return;
+
+  try{
+    const { db, doc, getDoc, setDoc } = CTX || {};
+    if (!db || !doc || !getDoc || !setDoc) return;
+    const ref = doc(db, "planner", user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+
+    const data = snap.data() || {};
+    const storageKey = resolveAcadStorageKey(normalizedKey, data.academico);
+    if (!storageKey || !Array.isArray(data.academico?.[storageKey])) return;
+
+    const current = data.academico[storageKey][index];
+    if (!current) return;
+    const completed = !isAcadItemCompleted(current);
+    data.academico[storageKey][index] = {
+      ...current,
+      completed,
+      estado: toAcadStatus(completed)
+    };
+
+    await setDoc(ref, data);
+    academicoCache = data.academico || {};
+    renderAcadCalendar();
+    renderRightPanel(normalizedKey);
+    if (acadDayModalBg && acadDayModalBg.style.display === "flex") openAcadDayModal(normalizedKey, index);
+    renderAcadUpcomingWidget();
+  }catch(e){
+    console.warn("[calendario] toggleAcadCompleted", e);
   }
 }
 
@@ -1513,7 +1614,8 @@ editingIndex = -1;
       const storageKey = legacyKey || resolveAcadStorageKey(normalizedKey);
       const currentItems = storageKey && Array.isArray(academicoCache?.[storageKey]) ? academicoCache[storageKey] : [];
       const previousItem = index >= 0 ? currentItems[index] : null;
-      const estado = index >= 0 ? (previousItem?.estado || "pending") : "pending";
+      const completed = index >= 0 ? isAcadItemCompleted(previousItem) : false;
+      const estado = index >= 0 ? (previousItem?.estado || toAcadStatus(completed)) : "pending";
 
       const item = {
         tipo: getAcadTypeSelection(),
@@ -1521,6 +1623,7 @@ editingIndex = -1;
         titulo: titleInp.value.trim(),
         minutos,
         notas: notesTxt?.value,
+        completed,
         estado
       };
 
@@ -1544,10 +1647,14 @@ editingIndex = -1;
         await setDoc(ref, data);
         academicoCache = data.academico || {};
         acadSelectedDateKey = normalizedKey;
-        renderAcadCalendar();
-        renderRightPanel(normalizedKey);
-        renderAcadUpcomingWidget();
-        if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
+        try{
+          renderAcadCalendar();
+          renderRightPanel(normalizedKey);
+          renderAcadUpcomingWidget();
+          if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
+        }catch(renderErr){
+          console.warn("[calendario] post-save render", renderErr);
+        }
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Académico guardado.");
         console.log("[calendario] save academico", { dateKey: normalizedKey, index });
@@ -1654,7 +1761,7 @@ function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false } = {}){
 
     const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
     entries.forEach((item, index)=>{
-      if (!includeDone && item?.estado === "done") return;
+      if (!includeDone && isAcadItemCompleted(item)) return;
       const minutes = getAcadItemMinutes(item);
       items.push({ dateKey: normalizedKey, item, index, minutes, storageKey, priority: getAcadPriority(item) });
     });
@@ -1687,7 +1794,7 @@ function renderAcadPendingWidget(items){
 
   const link = acadPendingWidget.querySelector("#acadCompletedLink");
   link?.addEventListener("click", ()=>{
-    const doneItems = buildUpcomingAcadItems({ daysAhead: 45, includeDone: true }).filter(({ item })=> item?.estado === "done");
+    const doneItems = buildUpcomingAcadItems({ daysAhead: 45, includeDone: true }).filter(({ item })=> isAcadItemCompleted(item));
     CTX?.notifySuccess?.(`Tareas completadas en vista rápida: ${doneItems.length}`);
   });
 

@@ -1424,6 +1424,33 @@ body[data-theme="light"] .event{
       -webkit-box-orient:vertical;
       white-space:pre-wrap;
     }
+
+    .activity-item{
+      display:flex;
+      align-items:flex-start;
+      gap:.6rem;
+    }
+    .activity-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border-soft);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 0 0 18px;
+      margin-top: .2rem;
+    }
+    .activity-check.completed {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .activity-item.completed {
+      opacity: 0.6;
+    }
+    .activity-item.completed .activity-content {
+      text-decoration: line-through;
+    }
     .acad-detail-actions{
       display:flex;
       gap: .35rem;
