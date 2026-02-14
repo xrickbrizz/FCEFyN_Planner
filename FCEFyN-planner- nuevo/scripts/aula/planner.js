@@ -7,6 +7,7 @@ const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
 let plannerSearchQuery = "";
+const PRESET_PENCIL_ICON = "✎";
 
 function getSectionSubjectSlug(section){
   const rawSlug = section?.subjectSlug || section?.code || section?.subject || "";
@@ -276,13 +277,17 @@ function renderPresetsList(){
       wrap.appendChild(btn);
 
       if (target === outside){
-        const edit = document.createElement("button");
-        edit.className = "preset-chip-edit";
-        edit.type = "button";
-        edit.textContent = "✎";
-        edit.setAttribute("aria-label", `Editar preset ${p.name || ""}`);
-        edit.addEventListener("click", () => { loadPreset(p.id); openPlannerModal(); });
-        wrap.appendChild(edit);
+        const remove = document.createElement("button");
+        remove.className = "preset-delete-btn";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", `Eliminar preset ${p.name || ""}`);
+        remove.addEventListener("click", async () => {
+          loadPreset(p.id);
+          await deletePreset();
+          renderPresetsList();
+        });
+        wrap.appendChild(remove);
       }
       target.appendChild(wrap);
     });
@@ -297,6 +302,9 @@ function renderPresetsList(){
     addChip.addEventListener("click", newPreset);
     list.appendChild(addChip);
   }
+
+  const openPlannerBtn = document.getElementById("btnOpenPlannerModal");
+  if (openPlannerBtn) openPlannerBtn.innerHTML = `<span aria-hidden="true">${PRESET_PENCIL_ICON}</span>`;
 }
 
 function renderSelectedSectionsList(){

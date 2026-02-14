@@ -62,6 +62,10 @@ function formatDecimal(value){
   return (Number.isFinite(Number(value)) ? Number(value) : 0).toFixed(1);
 }
 
+function validateRating(value){
+  return Number.isInteger(value) && value >= 1 && value <= 5;
+}
+
 function teachingDescriptor(value){
   if (value <= 1) return "Muy mala";
   if (value <= 2) return "Mala";
@@ -365,8 +369,9 @@ function openRatingModal(professor){
       btn.textContent = "★";
       btn.dataset.value = String(i);
       btn.addEventListener("click", () => {
-        state.ratingDraft[metric.key] = i;
-        paintMetricStars(metric.key, i);
+        const selectedValue = Number(i);
+        state.ratingDraft[metric.key] = selectedValue;
+        paintMetricStars(metric.key, selectedValue);
       });
       picker?.appendChild(btn);
     }
@@ -414,8 +419,31 @@ async function submitRating(){
   state.ratingDraft.comment = (commentEl?.value || "").trim();
   state.ratingDraft.anonymous = Boolean(anonymousEl?.checked);
 
-  const values = METRICS.map(metric => Number(state.ratingDraft[metric.key] || 0));
-  if (values.some(value => value < 1 || value > 5)){
+  const teachingQuality = Number(state.ratingDraft.teachingQuality);
+  const examDifficulty = Number(state.ratingDraft.examDifficulty);
+  const studentTreatment = Number(state.ratingDraft.studentTreatment);
+
+  console.log("Valores enviados:", {
+    calidad: teachingQuality,
+    dificultad: examDifficulty,
+    trato: studentTreatment
+  });
+
+  if (!teachingQuality || !examDifficulty || !studentTreatment){
+    notifyWarn("Debes completar todas las valoraciones.");
+    return;
+  }
+
+  if (
+    !validateRating(teachingQuality) ||
+    !validateRating(examDifficulty) ||
+    !validateRating(studentTreatment)
+  ){
+    console.error("Valoración inválida:", {
+      calidad: teachingQuality,
+      dificultad: examDifficulty,
+      trato: studentTreatment
+    });
     notifyWarn("Completá los 3 criterios con valores de 1 a 5 estrellas.");
     return;
   }
@@ -427,9 +455,9 @@ async function submitRating(){
 
   const payload = {
     professorId,
-    teachingQuality: state.ratingDraft.teachingQuality,
-    examDifficulty: state.ratingDraft.examDifficulty,
-    studentTreatment: state.ratingDraft.studentTreatment,
+    teachingQuality,
+    examDifficulty,
+    studentTreatment,
     comment: state.ratingDraft.comment,
     anonymous: state.ratingDraft.anonymous
   };

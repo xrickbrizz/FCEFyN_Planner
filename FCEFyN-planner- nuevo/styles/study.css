@@ -3227,6 +3227,17 @@ header{
 .preset-chip.active{ background:var(--accent-15); border-color:var(--accent-60); }
 .preset-chip.add{ width:2rem; padding:.36rem 0; text-align:center; }
 .preset-chip-edit{ border:1px solid var(--border-60); background:transparent; color:var(--text-soft); border-radius:999px; padding:.2rem .45rem; }
+.preset-delete-btn{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+  transition: all 0.2s ease;
+}
+.preset-delete-btn:hover{
+  transform: scale(1.1);
+  opacity: 0.85;
+}
 
 .planner-modal-bg{ z-index:130; backdrop-filter:none; background:rgba(0, 0, 0, .5); animation: plannerFadeIn .2s ease; }
 .planner-modal{
