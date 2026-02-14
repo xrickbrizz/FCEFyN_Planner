@@ -338,13 +338,13 @@
     </div>
 
     <div id="tab-agenda" class="tab-card" style="display:none;">
+        <div style="margin-bottom: 1.5rem;">
+          <button class="btn-outline btn-small" id="btnOpenSubjectsModal" type="button">Materias</button>
+          <button class="btn-outline btn-small" id="btnOpenPlannerModal" type="button">Abrir planificador</button>
+          </div>
       <div class="agenda-presets-bar" aria-label="Presets guardados">
         <div class="agenda-presets-head">
           <strong>Presets guardados</strong>
-          <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;">
-          <button class="btn-outline btn-small" id="btnOpenPlannerModal" type="button">Abrir planificador</button>
-          <button class="btn-outline btn-small" id="btnOpenSubjectsModal" type="button">Materias</button>
-          </div>
         </div>
         <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
       </div>
@@ -723,7 +723,6 @@
               Al confirmar, te enviaremos un correo para cambiar tu contraseña de forma segura.
             </div>
             <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
-            <button class="btn-logout btn-small" id="btnProfileLogout" type="button">Cerrar sesión</button>
             <div class="profile-status" id="passwordStatus"></div>
           </div>
         </section>
@@ -862,7 +861,7 @@
 
 
   <div class="modal-bg planner-modal-bg" id="subjectsModalBg" aria-hidden="true">
-    <div class="planner-modal" role="dialog" aria-modal="true" aria-labelledby="subjectsModalTitle">
+    <div class="planner-modal" style="margin-top: 5rem;" role="dialog" aria-modal="true" aria-labelledby="subjectsModalTitle">
       <div class="planner-modal-header">
         <div>
           <h2 class="planner-modal-title" id="subjectsModalTitle">Materias</h2>

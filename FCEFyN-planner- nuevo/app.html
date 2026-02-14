@@ -24,9 +24,7 @@
       </a>  -->
       <button class="theme-toggle" id="themeToggleBtn" data-theme-toggle type="button">
         <span class="ico"></span>
-      </button>
-      <div class="pill" id="pillFirebase"><span class="dot warn" id="dotFirebase"></span><span id="firebaseLabel">Estado del servicio</span></div>
-      <div class="pill" id="pillClock">—</div>
+      </button>      
     </div>
   </header>
 
@@ -267,19 +265,6 @@
       msgBox.style.display = "none";
       msgBox.innerHTML = "";
     }
-
-    function tickClock(){
-      const d = new Date();
-      const dd = String(d.getDate()).padStart(2,"0");
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const yy = d.getFullYear();
-      const hh = String(d.getHours()).padStart(2,"0");
-      const mi = String(d.getMinutes()).padStart(2,"0");
-      const ss = String(d.getSeconds()).padStart(2,"0");
-      pillClock.textContent = dd + "/" + mm + "/" + yy + " " + hh + ":" + mi + ":" + ss;
-    }
-    tickClock();
-    setInterval(tickClock, 1000);
 
     // --------- MODO LOGIN / SIGNUP ----------
     let mode = "login";
