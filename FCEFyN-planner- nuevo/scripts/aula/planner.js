@@ -158,6 +158,7 @@ function updateSectionsSubjectFilter(){
 }
 
 async function loadCourseSections(){
+  console.log("🚀 loadCourseSections ejecutándose");
   const dayMap = {
     1: "Lunes",
     2: "Martes",
@@ -182,9 +183,19 @@ async function loadCourseSections(){
   };
   CTX.aulaState.courseSections = [];
   try{
+    console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
+    console.log("🧭 Consultando colección Firestore: comisiones");
     const snap = await getDocs(collection(CTX.db, "comisiones"));
+    console.log("📦 Snapshot recibido:", snap);
+    console.log("📊 Cantidad de documentos:", snap.size);
     snap.forEach(d => {
+      console.log("📄 Documento encontrado:", d.id, d.data());
       const data = d.data() || {};
+      const hasValidStructure =
+        typeof data.subjectSlug === "string" &&
+        Array.isArray(data.horarios) &&
+        data.horarios.every((slot) => slot && (slot.dia != null) && slot.inicio && slot.fin);
+      console.log("🧪 Estructura válida:", hasValidStructure, { id: d.id, subjectSlug: data.subjectSlug, horarios: data.horarios });
       const subjectSlug = CTX.normalizeStr(data.subjectSlug || "");
       const careerSlugs = Array.isArray(data.careerSlugs)
         ? data.careerSlugs.map((slug) => CTX.normalizeStr(slug || "")).filter(Boolean)
@@ -212,6 +223,7 @@ async function loadCourseSections(){
       });
     });
   }catch(e){
+    console.error("❌ Error Firestore:", e);
     CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
   }
 }
@@ -275,6 +287,9 @@ function renderPlannerPreview(){
 }
 
 function renderSectionsList(){
+  console.log("🧩 renderSectionsList ejecutándose", {
+    totalComisiones: CTX?.aulaState?.courseSections?.length || 0
+  });
   const list = document.getElementById("sectionsList");
   if (!list) return;
   const selectedSubjectSlug = document.getElementById("sectionsSubjectFilter")?.value || "";
@@ -791,6 +806,7 @@ function openPresetToAgendaModal(){
 const Planner = {
   init(ctx){
     CTX = ctx;
+    console.log("🛠️ Planner.init ejecutándose");
     initPresetToAgendaModalUI();
   },
   loadCourseSections,
