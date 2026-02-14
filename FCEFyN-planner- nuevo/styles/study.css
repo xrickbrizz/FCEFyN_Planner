@@ -765,10 +765,13 @@ body[data-theme="light"] .tab-card{
 
     .tab-estudio-layout{
       display:grid;
-      grid-template-columns: minmax(0,1.55fr) minmax(18.75rem,.95fr);
+      grid-template-columns: minmax(0,1.55fr) minmax(18.75rem,5.95fr);
       gap: 1rem;
       position: relative;
       z-index: 0;
+    }
+    .study-main-column{
+      width: 20rem;
     }
     .study-main-column,
     .study-side-column{
@@ -830,7 +833,11 @@ body[data-theme="light"] .tab-card{
       display:flex;
       flex-direction:column;
       gap:.35rem;
+      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
     }
+
     .study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
     .study-stat-value{ color:var(--text); font-size:1.15rem; font-weight:700; }
 
