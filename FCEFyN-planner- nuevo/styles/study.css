@@ -759,7 +759,7 @@ body[data-theme="light"] .tab-card{
 
     .tab-estudio-layout{
       display:grid;
-      grid-template-columns: minmax(0,1.55fr) minmax(18.75rem,5.95fr);
+      grid-template-columns: minmax(0,1.55fr) minmax(18.75rem,5.55fr);
       gap: 1rem;
       position: relative;
       z-index: 0;
@@ -778,6 +778,16 @@ body[data-theme="light"] .tab-card{
       display:flex;
       flex-direction:column;
       gap:.9rem;
+      padding:1.25rem;
+      border-radius: 1.125rem;
+      background: color-mix(in srgb, var(--surface) 62%, var(--card) 38%);
+      border:1px solid color-mix(in srgb, var(--border) 74%, transparent);
+      box-shadow: 0 0.375rem 1.25rem rgba(15, 23, 42, 0.06);
+      transition: box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
+    }
+    .study-timer-card.running{
+      box-shadow: 0 .55rem 1.35rem rgba(59, 130, 246, 0.16);
+      border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
     }
     .study-timer-status{
       display:inline-flex;
@@ -792,22 +802,71 @@ body[data-theme="light"] .tab-card{
       background:var(--surface);
       border:1px solid var(--border);
     }
+    .study-timer-status::before{
+      content:"•";
+      font-size:1rem;
+      line-height:1;
+    }
     .study-timer-status[data-state="running"]{ color:var(--ui-success); border-color:var(--ui-success); }
     .study-timer-status[data-state="paused"]{ color:var(--ui-warn); border-color:var(--ui-warn); }
     .study-timer-status[data-state="finished"]{ color:var(--info); border-color:var(--info-40); }
     .timer-header-dashboard{
       flex-direction:column;
       align-items:center;
-      gap:.75rem;
+      gap:1rem;
     }
     .timer-display-dashboard{
-      font-size: clamp(2rem, 6vw, 3.25rem);
+      font-size: clamp(2.45rem, 6vw, 3.45rem);
+      font-family: inherit;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .16rem;
+      color: var(--primary);
       text-align:center;
+      line-height: 1;
+      transition: color .25s ease, text-shadow .25s ease, transform .25s ease;
+      animation: timer-display-pop .3s ease;
+    }
+    .timer-display-dashboard.running{
+      text-shadow: 0 0 1.125rem color-mix(in srgb, var(--primary) 25%, transparent);
+      transform: translateY(-1px);
+    }
+    .timer-display-dashboard.paused{
+      color: var(--text-soft);
+      text-shadow: none;
     }
     .timer-controls-dashboard{
       justify-content:center;
       width:100%;
       gap:.75rem;
+    }
+    .timer-controls-dashboard .icon-btn{
+      width:2.75rem;
+      height:2.75rem;
+      border-radius:50%;
+      border:1px solid color-mix(in srgb, var(--border) 76%, transparent);
+      background: var(--surface);
+      box-shadow: 0 .25rem .75rem rgba(15,23,42,.08);
+      transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .timer-controls-dashboard .icon-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 .5rem .95rem rgba(15,23,42,.15);
+      background: color-mix(in srgb, var(--surface) 55%, var(--card));
+    }
+    #studyTimerStart{
+      background: var(--primary);
+      color: #fff;
+      border-color: color-mix(in srgb, var(--primary) 65%, transparent);
+      box-shadow: 0 .35rem .85rem color-mix(in srgb, var(--primary) 32%, transparent);
+    }
+    #studyTimerStart:hover{
+      background: color-mix(in srgb, var(--primary) 88%, #fff);
+      color:#fff;
+    }
+    @keyframes timer-display-pop{
+      from{ opacity:.85; transform: scale(.985); }
+      to{ opacity:1; transform: scale(1); }
     }
     .timer-actions-dashboard{
       justify-content:center;

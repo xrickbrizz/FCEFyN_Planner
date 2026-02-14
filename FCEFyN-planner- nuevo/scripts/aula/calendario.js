@@ -940,6 +940,16 @@ function updateStudyTimerStatus(){
   studyTimerStatus.textContent = labels[studyTimerState] || labels.idle;
   const stateAttr = ["running", "paused", "finished"].includes(studyTimerState) ? studyTimerState : "idle";
   studyTimerStatus.dataset.state = stateAttr;
+
+  if (studyTimerDisplay){
+    studyTimerDisplay.classList.toggle("running", stateAttr === "running");
+    studyTimerDisplay.classList.toggle("paused", stateAttr === "paused");
+  }
+  const timerWidget = document.getElementById("studyTimerWidget");
+  if (timerWidget){
+    timerWidget.classList.toggle("running", stateAttr === "running");
+    timerWidget.classList.toggle("paused", stateAttr === "paused");
+  }
 }
 
 function initStudyModalUI(){
