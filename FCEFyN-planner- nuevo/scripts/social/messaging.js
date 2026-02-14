@@ -255,7 +255,7 @@ function renderMessaging(){
     textEl.textContent = m.text || "";
     const meta = document.createElement("div");
     meta.className = "msg-meta";
-    meta.textContent = `${me ? "Yo" : "Ellx"} · ${date}`;
+    meta.textContent = `${me ? "Yo" : " "} · ${date}`;
     bubble.appendChild(textEl);
     bubble.appendChild(meta);
     wrap.appendChild(bubble);
