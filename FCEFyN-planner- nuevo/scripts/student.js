@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, storage, collection, query, where, orderBy, getCountFromServer } from "./core/firebase.js";
+import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, storage, collection, query, orderBy } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
 import { initNav, navItems } from "./core/nav.js";
@@ -239,29 +239,6 @@ onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
 }
 
 
-async function initCommunityCommissionsCount(){
-  const countEl = document.getElementById("communityCommissionsCount");
-  if (!countEl) return;
-
-  const userCareerSlug = (AppState.userProfile?.careerSlug || "").trim();
-  if (!userCareerSlug){
-    countEl.textContent = "Carrera no definida";
-    return;
-  }
-
-  try {
-    const commissionsQuery = query(
-      collection(db, "comisiones"),
-      where("careerSlugs", "array-contains", userCareerSlug)
-    );
-    const countSnapshot = await getCountFromServer(commissionsQuery);
-    countEl.textContent = `${countSnapshot.data().count} comisiones en la base de datos`;
-  } catch (err) {
-    console.error("[community-comisiones]", err);
-    countEl.textContent = "No se pudo cargar la cantidad de comisiones";
-  }
-}
-
 const navState = {
   activeSection: "inicio",
   lastNonMessagesSection: "inicio"
@@ -377,7 +354,6 @@ onSessionReady(async (user) => {
   Social.open("perfil");
   bindProfileShortcuts();
   initHomeNotices();
-  initCommunityCommissionsCount();
   restoreLastSection();
 });
 
@@ -601,7 +577,10 @@ window.showTab = function(name){
   if (name === "agenda") Aula.open("agenda");
   if (name === "estudio") renderStudyCalendar();
   if (name === "academico") renderAcadCalendar();
-  if (name === "materias") appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
+  if (name === "materias") {
+    Aula.open("materias");
+    appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
+  }
   if (name === "planestudios") updatePlanTab();
   if (name === "profesores") Social.open("profesores");
   if (name === "mensajes") Social.open("mensajes");

@@ -488,6 +488,7 @@
 
       <div id="professorDetailSection" class=" hidden">
         <button id="volverListaProfesores" class="btn-outline btn-small" type="button">← Volver</button>
+    
         <div id="profDetailBox"></div>
       </div>
 
@@ -531,7 +532,6 @@
           </svg>
         </div>
         <h2 id="coming-comunidad-title">Comunidad</h2>
-        <div id="communityCommissionsCount" class="community-commissions-count" aria-live="polite">Cargando comisiones…</div>
         <p>Conectate con estudiantes, compartí recursos y participá en espacios colaborativos.</p>
       </section>
     </div>
@@ -806,9 +806,14 @@
   <div class="modal-bg planner-modal-bg" id="plannerModalBg" aria-hidden="true">
     <div class="planner-modal" role="dialog" aria-modal="true" aria-labelledby="plannerModalTitle">
       <div class="planner-modal-header">
-        <div>
-          <h2 class="planner-modal-title" id="plannerModalTitle">Planificador de Agenda</h2>
-          <p class="small-muted">Selecciona y organiza tus comisiones para el ciclo actual.</p>
+        <div class="planner-header">
+          <div class="planner-title">
+            <h2 class="planner-modal-title" id="plannerModalTitle">Planificador de Agenda</h2>
+            <p class="small-muted">Selecciona y organiza tus comisiones para el ciclo actual.</p>
+          </div>
+          <div class="planner-search">
+            <input type="text" id="plannerSearchInput" placeholder="Buscar en el planificador..." />
+          </div>
         </div>
         <button class="modal-close" id="btnPlannerClose" aria-label="Cerrar planificador">✕</button>
       </div>

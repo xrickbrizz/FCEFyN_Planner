@@ -447,12 +447,6 @@ body[data-theme="light"] .tab-card{
   line-height: 1.12;
   color:var(--color-primary-strong);
 }
-.community-commissions-count{
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-soft);
-  line-height: 1.35;
-}
 .coming-view p{
   margin: 0;
   max-width: 38.75rem;
@@ -2227,6 +2221,8 @@ body[data-theme="light"] .event{
   border:1px solid var(--border-35);
   border-radius:var(--radius-lg);
   padding:1rem;
+  margin-top: 6rem;
+
 }
 .prof-modal-header{ display:flex; justify-content:space-between; align-items:center; gap:.5rem; }
 .btn-icon{ border:0; background:transparent; color:var(--color-text); font-size:1rem; cursor:pointer; }
@@ -3169,6 +3165,24 @@ body[data-theme="light"] .planner-modal{
 }
 
 .planner-modal-header{ display:flex; justify-content:space-between; gap:.75rem; align-items:flex-start; }
+.planner-header{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; flex:1; }
+.planner-title{ min-width:0; }
+.planner-search{ display:flex; justify-content:flex-end; }
+.planner-search input{
+  width:260px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--border-soft, var(--border-85));
+  background:var(--surface-soft, var(--surface-95));
+  color:var(--color-text);
+  font-size:14px;
+  transition:all .2s ease;
+}
+.planner-search input:focus{
+  outline:none;
+  border-color:var(--primary, var(--accent-805));
+  box-shadow:0 0 0 3px rgba(0, 0, 0, 0.05);
+}
 .planner-modal-title{ margin:0 0 .1rem; font-size:1.65rem; font-weight:900; color:var(--text-strong); }
 .planner-modal-presets{ display:flex; align-items:center; gap:.55rem; margin:.55rem 0 .45rem; }
 .planner-preset-actions{ margin-bottom:.4rem; }
@@ -3224,6 +3238,9 @@ body[data-theme="light"] .planner-modal{
 @media (max-width:780px){
   .planner-modal{ width:min(94vw,1120px); max-height:90vh; }
   .planner-modal-title{ font-size:1.45rem; }
+  .planner-header{ flex-direction:column; align-items:flex-start; }
+  .planner-search{ width:100%; }
+  .planner-search input{ width:100%; }
   .planner-modal-presets{ flex-direction:column; align-items:flex-start; }
   .section-card-layout{ grid-template-columns:1fr; }
   .section-actions{ justify-content:flex-start; }
@@ -3288,3 +3305,6 @@ body[data-theme="light"] .planner-modal{
 .upcoming-date-block{ min-width:3rem; text-align:center; display:flex; flex-direction:column; }
 .upcoming-date-month{ font-size:.72rem; color:var(--text-soft); text-transform:uppercase; letter-spacing:.05em; }
 .upcoming-date-day{ font-size:1.3rem; color:var(--color-text); }
+#volverListaProfesores{
+  margin-bottom: 1rem;
+}

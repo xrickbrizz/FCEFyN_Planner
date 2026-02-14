@@ -390,6 +390,9 @@ function updateCareerFallbackUI(hasProfileCareer){
 
 async function syncCareerFromProfile({ forceReload = false } = {}){
   resolveSubjectsUI();
+  if (!Array.isArray(CTX.aulaState.careerPlans) || !CTX.aulaState.careerPlans.length){
+    await loadCareerPlans();
+  }
   const profileCareer = getProfileCareer();
   const hasProfileCareer = !!profileCareer?.slug;
   updateCareerFallbackUI(hasProfileCareer);

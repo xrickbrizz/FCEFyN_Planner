@@ -6,6 +6,7 @@ let CTX = null;
 const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
+let plannerSearchQuery = "";
 
 function getSectionSubjectSlug(section){
   const rawSlug = section?.subjectSlug || section?.code || section?.subject || "";
@@ -310,6 +311,17 @@ function renderPlannerPreview(){
   const grid = document.getElementById("plannerPreviewGrid");
   if (!grid) return;
   renderAgendaGridInto(grid, buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds), false);
+  filterPlannerItems(plannerSearchQuery);
+}
+
+function filterPlannerItems(query){
+  const normalizedQuery = String(query || "").toLowerCase();
+  const items = document.querySelectorAll("#plannerModalBg .planner-item");
+
+  items.forEach((item) => {
+    const text = (item.textContent || "").toLowerCase();
+    item.style.display = text.includes(normalizedQuery) ? "" : "none";
+  });
 }
 
 function renderSectionsList(){
@@ -344,7 +356,7 @@ function renderSectionsList(){
     const conflict = selected ? { blocked: false, reason: "Añadida" } : getConflictInfo(sec);
 
     const card = document.createElement("article");
-    card.className = "section-card" + (conflict.blocked ? " blocked" : "");
+    card.className = "section-card planner-item" + (conflict.blocked ? " blocked" : "");
     const teachers = getSectionTeachers(sec);
     const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
     card.innerHTML = `
@@ -390,7 +402,10 @@ function renderSectionsList(){
     card.querySelector(".section-actions")?.appendChild(btn);
     list.appendChild(card);
   });
+
+  filterPlannerItems(plannerSearchQuery);
 }
+
 
 function makeId(){
   return "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7);
@@ -727,7 +742,7 @@ function renderSubjectsModalList(){
       const color = subject?.color || "#dbeafe";
       const name = subject?.name || "(Sin nombre)";
       return `
-      <article class="section-card">
+      <article class="section-card planner-item">
         <div class="section-card-top">
           <div>
             <div class="section-title" style="display:flex;align-items:center;gap:.5rem;">
@@ -767,8 +782,13 @@ async function applyPlannerChanges(){
 function initPlanificadorUI(){
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
   const presetNameInput = document.getElementById("plannerPresetNameInput");
+  const plannerSearchInput = document.getElementById("plannerSearchInput");
 
   subjectFilter?.addEventListener("change", renderSectionsList);
+  plannerSearchInput?.addEventListener("input", (e) => {
+    plannerSearchQuery = e.target.value.toLowerCase();
+    filterPlannerItems(plannerSearchQuery);
+  });
   document.getElementById("btnPresetSave")?.addEventListener("click", saveActivePreset);
   document.getElementById("btnPresetNew")?.addEventListener("click", newPreset);
   document.getElementById("btnPlannerPresetCancel")?.addEventListener("click", closePresetBubble);
@@ -802,6 +822,7 @@ function renderPlannerAll(){
   renderSectionsList();
   renderSelectedSectionsList();
   renderPlannerPreview();
+  filterPlannerItems(plannerSearchQuery);
 }
 
 const presetToAgendaModalBg = document.getElementById("presetToAgendaModalBg");

@@ -105,7 +105,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
       if (isNaN(startM) || isNaN(endM) || endM <= startM) return;
 
       const block = document.createElement("div");
-      block.className = "class-block";
+      block.className = "class-block planner-item";
       const color = CTX.subjectColor?.(item.materia);
       if (color) block.style.setProperty("--materia-color", color);
       block.style.top = ((startM - minutesStart) * pxPerMinute) + "px";

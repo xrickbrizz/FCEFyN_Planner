@@ -5,6 +5,18 @@ import Horarios from "./horarios.js";
 import Planner from "./planner.js";
 
 let CTX = null;
+let didInitMateriasPanel = false;
+
+async function ensureMateriasPanelReady(){
+  if (didInitMateriasPanel) return;
+  await Materias.loadCareerPlans();
+  Materias.renderSubjectsList();
+  Materias.renderSubjectsOptions();
+  await Materias.initSubjectsCareerUI();
+  Materias.initSubjectColorPalette();
+  Materias.updateSubjectColorUI(CTX.defaultSubjectColor?.());
+  didInitMateriasPanel = true;
+}
 
 async function loadPlannerData(ctx){
   console.log("ando");
@@ -105,18 +117,12 @@ const Aula = {
 
     await loadPlannerData(ctx);
     await Planner.loadCourseSections();
-    await Materias.loadCareerPlans();
-
-    Materias.renderSubjectsList();
-    Materias.renderSubjectsOptions();
-    await Materias.initSubjectsCareerUI();
-    Materias.initSubjectColorPalette();
-    Materias.updateSubjectColorUI(ctx.defaultSubjectColor?.());
 
     Planner.initPlanificadorUI();
   },
-  open(tabName){
+  async open(tabName){
     if (tabName === "agenda") Horarios.renderAgenda();
+    if (tabName === "materias") await ensureMateriasPanelReady();
   },
   getSubjects(){
     return CTX?.aulaState?.subjects || [];
