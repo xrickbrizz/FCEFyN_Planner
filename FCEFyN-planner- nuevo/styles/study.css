@@ -447,6 +447,12 @@ body[data-theme="light"] .tab-card{
   line-height: 1.12;
   color:var(--color-primary-strong);
 }
+.community-commissions-count{
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-soft);
+  line-height: 1.35;
+}
 .coming-view p{
   margin: 0;
   max-width: 38.75rem;
