@@ -43,10 +43,11 @@ async function importComisiones() {
     for (const item of data) {
       const ref = db.collection("comisiones").doc(item.id);
 
-      batch.set(ref, {
-        ...item,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true });
+    batch.set(ref, {
+    ...item,
+  careerSlugs: admin.firestore.FieldValue.arrayUnion(...item.careerSlugs),
+  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
 
       operationCount++;
       totalDocs++;
