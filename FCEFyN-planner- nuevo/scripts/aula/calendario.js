@@ -1176,32 +1176,79 @@ export function renderAcadCalendar(){
   }
 
   highlightAcadSelection(acadSelectedDateKey);
-  updateMonthlyPendingCount();
+  updateMonthPanels();
   renderRightPanel(acadSelectedDateKey || todayKey);
-  renderAcadUpcomingWidget();
 }
 
-function updateMonthlyPendingCount(){
-  const target = document.getElementById("monthlyPendingCount");
-  if (!target) return;
-  const pending = countPendingForVisibleMonth();
-  target.textContent = String(pending);
+function getCurrentMonthRange(){
+  if (acadViewYear === null || acadViewMonth === null) return { firstDay: null, lastDay: null };
+  const firstDay = new Date(acadViewYear, acadViewMonth, 1, 0, 0, 0, 0);
+  const lastDay = new Date(acadViewYear, acadViewMonth + 1, 0, 23, 59, 59, 999);
+  return { firstDay, lastDay };
 }
 
-function countPendingForVisibleMonth(){
-  if (acadViewYear === null || acadViewMonth === null || !academicoCache) return 0;
-  let total = 0;
-  Object.keys(academicoCache).forEach((storageKey)=>{
+function getVisibleMonthPendingItems(firstDay, lastDay){
+  if (!firstDay || !lastDay || !academicoCache) return [];
+
+  const items = [];
+  Object.keys(academicoCache).forEach(storageKey => {
     const normalizedKey = getDayKey(storageKey);
     const parts = ymdFromDateKey(normalizedKey);
     if (!parts) return;
-    if (parts.y !== acadViewYear || (parts.m - 1) !== acadViewMonth) return;
+
+    const date = new Date(parts.y, parts.m - 1, parts.d, 0, 0, 0, 0);
+    if (date < firstDay || date > lastDay) return;
+
     const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
-    entries.forEach((item)=>{
-      if (!isAcadItemCompleted(item)) total += 1;
+    entries.forEach((item, index)=>{
+      if (isAcadItemCompleted(item)) return;
+      items.push({
+        dateKey: normalizedKey,
+        item,
+        index,
+        minutes: getAcadItemMinutes(item),
+        storageKey,
+        priority: getAcadPriority(item)
+      });
     });
   });
-  return total;
+
+  items.sort((a,b)=>{
+    if (a.dateKey !== b.dateKey) return a.dateKey.localeCompare(b.dateKey);
+    const am = a.minutes ?? 9999;
+    const bm = b.minutes ?? 9999;
+    return am - bm;
+  });
+
+  return items;
+}
+
+async function updateMonthPanels(){
+  const { firstDay, lastDay } = getCurrentMonthRange();
+  await updateMonthlyPendingCount(firstDay, lastDay);
+  await updateMonthlyPendingList(firstDay, lastDay);
+  await updateUpcomingDeadlines(firstDay, lastDay);
+}
+
+async function updateMonthlyPendingCount(firstDay, lastDay){
+  const target = document.getElementById("monthlyPendingCount");
+  if (!target) return;
+  const pending = countPendingForVisibleMonth(firstDay, lastDay);
+  target.textContent = String(pending);
+}
+
+function countPendingForVisibleMonth(firstDay, lastDay){
+  return getVisibleMonthPendingItems(firstDay, lastDay).length;
+}
+
+async function updateMonthlyPendingList(firstDay, lastDay){
+  const items = getVisibleMonthPendingItems(firstDay, lastDay);
+  renderAcadPendingWidget(items);
+}
+
+async function updateUpcomingDeadlines(firstDay, lastDay){
+  const items = getVisibleMonthPendingItems(firstDay, lastDay);
+  renderAcadUpcomingWidget(items);
 }
 
 function highlightAcadSelection(dateKey){
@@ -1451,7 +1498,6 @@ async function deleteAcadItem(dateKey, index){
     academicoCache = data.academico || {};
     renderAcadCalendar();
     renderRightPanel(normalizedKey);
-    renderAcadUpcomingWidget();
     CTX?.notifySuccess?.("Item eliminado.");
     console.log("[calendario] delete academico", { dateKey, index });
   }catch(e){
@@ -1490,7 +1536,6 @@ async function toggleAcadCompleted(dateKey, index){
     renderAcadCalendar();
     renderRightPanel(normalizedKey);
     if (acadDayModalBg && acadDayModalBg.style.display === "flex") openAcadDayModal(normalizedKey, index);
-    renderAcadUpcomingWidget();
   }catch(e){
     console.warn("[calendario] toggleAcadCompleted", e);
   }
@@ -1650,7 +1695,6 @@ editingIndex = -1;
         try{
           renderAcadCalendar();
           renderRightPanel(normalizedKey);
-          renderAcadUpcomingWidget();
           if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         }catch(renderErr){
           console.warn("[calendario] post-save render", renderErr);
@@ -1702,7 +1746,6 @@ editingIndex = -1;
         acadSelectedDateKey = normalizedKey;
         renderAcadCalendar();
         renderRightPanel(normalizedKey);
-        renderAcadUpcomingWidget();
         if (shouldRefreshDayModal) openAcadDayModal(normalizedKey);
         if (modalBg) modalBg.style.display = "none";
         CTX?.notifySuccess?.("Item eliminado.");
@@ -1818,11 +1861,8 @@ function renderAcadPendingWidget(items){
   });
 }
 
-function renderAcadUpcomingWidget(){
+function renderAcadUpcomingWidget(items = []){
   if (!acadUpcomingWidget) return;
-  const items = buildUpcomingAcadItems({ daysAhead: 14 });
-
-  renderAcadPendingWidget(items);
 
   const monthFmt = new Intl.DateTimeFormat("es-AR", { month: "short" });
   const visibleItems = items.slice(0, 4);

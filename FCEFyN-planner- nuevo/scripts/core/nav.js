@@ -15,9 +15,9 @@ export const ICONS = {
 
 export const navItems = [
   { id:"inicio", label:"Inicio", icon:ICONS.home },
+  { id:"agenda", label:"Agenda", icon:ICONS.agenda },
   { id:"estudio", label:"Estudio", icon:ICONS.study },
   { id:"academico", label:"Académico", icon:ICONS.academic },
-  { id:"agenda", label:"Agenda", icon:ICONS.agenda },
   //{ id:"materias", label:"Materias", icon:ICONS.materias },
   { id:"planestudios", label:"Correlativas", icon:ICONS.plan },
   { id:"profesores", label:"Profesores", icon:ICONS.profesores },
