@@ -51,12 +51,38 @@ function getSectionTeachers(section){
   return names;
 }
 
-function formatSchedule(section){
-  const validDays = (section.days || []).filter(d => dayNameToKey(d.day));
-  if (!validDays.length) return "Sin horario cargado";
-  const dayLabel = validDays.map(d => (d.day || "—").slice(0, 3)).join(" - ");
-  const first = validDays[0];
-  return `${dayLabel} | ${first.start || "??:??"} - ${first.end || "??:??"}`;
+function escapeHtml(value){
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function formatAcademicTitle(section){
+  const subjectName = getSubjectNameFromSection(section) || "Comisión";
+  const normalizedSubject = subjectName.toUpperCase();
+  const commissionRaw = String(section?.commission || "").trim();
+  const hasReadableCommission = commissionRaw.length <= 12 && !commissionRaw.includes("-");
+  if (!hasReadableCommission) return normalizedSubject;
+  return `${normalizedSubject} - ${commissionRaw.toUpperCase()}`;
+}
+
+function buildScheduleTableRows(section){
+  const validDays = (section.days || []).filter((d) => dayNameToKey(d.day));
+  if (!validDays.length){
+    return '<tr><td colspan="4" class="section-schedule-empty">Sin horarios cargados</td></tr>';
+  }
+  return validDays
+    .map((d) => `
+      <tr>
+        <td>${escapeHtml(d.day || "—")}</td>
+        <td>${escapeHtml(d.start || "--:--")}</td>
+        <td>${escapeHtml(d.end || "--:--")}</td>
+        <td>${escapeHtml(section.campus || "Sede no definida")}</td>
+      </tr>`)
+    .join("");
 }
 
 function calculateWeeklyHours(sectionIds){
@@ -320,15 +346,28 @@ function renderSectionsList(){
     const card = document.createElement("article");
     card.className = "section-card" + (conflict.blocked ? " blocked" : "");
     const teachers = getSectionTeachers(sec);
+    const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
     card.innerHTML = `
-      <div class="section-card-top">
-        <div>
-          <div class="section-title">${getSubjectNameFromSection(sec) || "(Sin materia)"}</div>
-          <div class="section-sub"><strong>Comisión:</strong> ${sec.commission || "—"}</div>
-          <div class="section-sub">${formatSchedule(sec)}</div>
-          <div class="section-sub"><strong>Sede/Aula:</strong> ${(sec.campus || "Sede no definida")} · ${(sec.room ? "Aula " + sec.room : "Aula no definida")}</div>
-          <div class="section-sub"><strong>Profesor(es):</strong> ${teachers.length ? teachers.join(", ") : "Sin asignar"}</div>
-          ${conflict.blocked ? `<div class="section-status warn">No disponible · ${conflict.reason}</div>` : ""}
+      <div class="section-card-layout">
+        <div class="section-academic-info">
+          <div class="section-title">${escapeHtml(formatAcademicTitle(sec))}</div>
+          <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
+          <div class="section-schedule-wrap">
+            <table class="section-schedule-table" aria-label="Horarios de ${escapeHtml(getSubjectNameFromSection(sec) || "Comisión")}">
+              <thead>
+                <tr>
+                  <th>Día</th>
+                  <th>Inicia</th>
+                  <th>Finaliza</th>
+                  <th>Sede</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${buildScheduleTableRows(sec)}
+              </tbody>
+            </table>
+          </div>
+          ${conflict.blocked ? `<div class="section-status warn">${escapeHtml(conflict.reason)}</div>` : ""}
         </div>
         <div class="section-actions"></div>
       </div>`;
@@ -340,7 +379,7 @@ function renderSectionsList(){
       btn.className = "btn-outline btn-small";
       btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
     } else if (conflict.blocked){
-      btn.textContent = "No disponible";
+      btn.textContent = "Con conflicto";
       btn.disabled = true;
       btn.className = "btn-gray btn-small";
     } else {
