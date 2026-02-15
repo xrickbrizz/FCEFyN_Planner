@@ -1,62 +1,49 @@
 const fs = require("fs");
 const path = require("path");
-const { db, admin } = require("./initAdmin");
+const { db } = require("./initAdmin");
+const { normalizeStr, normalizeCareerSlug } = require("./slug-map");
 
-/* =======================
-   CONFIG
-======================= */
+const PLANS_DIR = path.join(__dirname, "..", "..", "plans");
+const PLANS_INDEX_PATH = path.join(PLANS_DIR, "plans_index.json");
 
-const DATA_FOLDER = path.join(__dirname, "..", "data", "comisiones");
+const normalizeSubject = (subject = {}) => ({
+  ...subject,
+  id: normalizeStr(subject.id || subject.slug || subject.nombre || ""),
+  nombre: String(subject.nombre || "").trim()
+});
 
-const CAREER_SLUG_EQUIVALENCES = {
-  "ingenieria-aeroespacial": "aeroespacial",
-  "ingenieria-en-agrimensura": "agrimensura",
-  "ingenieria-ambiental": "ambiental",
-  "ingenieria-biomedica": "biomedica",
-  "ingenieria-civil": "civil",
-  "ingenieria-en-computacion": "computacion",
-  "ingenieria-electromecanica": "electromecanica",
-  "ingenieria-electronica": "electronica",
-  "ingenieria-industrial": "industrial",
-  "ingenieria-mecanica": "mecanica",
-  "ingenieria-quimica": "quimica"
-};
+function readPlansIndex(){
+  const raw = fs.readFileSync(PLANS_INDEX_PATH, "utf8");
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed?.plans) ? parsed.plans : [];
+}
 
-const normalizeStr = (value) => String(value || "")
-  .toLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .trim();
-
-const normalizeCareerSlug = (value) => {
-  const normalized = normalizeStr(value);
-  return CAREER_SLUG_EQUIVALENCES[normalized] || normalized;
-};
-// corregir // 
 async function main(){
-  if (!admin.apps.length) admin.initializeApp();
-  const db = admin.firestore();
+  const plansIndex = readPlansIndex();
 
-  const files = (await fs.readdir(PLANS_DIR))
-    .filter((file) => file.endsWith(".json") && file !== "plans_index.json")
-    .sort();
-
-  if (!files.length) {
-    console.log("No se encontraron archivos de planes para importar.");
+  if (!plansIndex.length) {
+    console.log("No se encontraron planes en plans_index.json.");
     return;
   }
 
-  for (const file of files){
-    const raw = await fs.readFile(path.join(PLANS_DIR, file), "utf8");
+  for (const entry of plansIndex) {
+    const jsonPath = path.resolve(path.dirname(PLANS_INDEX_PATH), entry.json);
+    const raw = fs.readFileSync(jsonPath, "utf8");
     const data = JSON.parse(raw);
-    const careerSlug = slugify(data?.slug || data?.nombre || file.replace(/\.json$/i, ""));
+
+    const careerSlug = normalizeCareerSlug(data?.slug || entry.slug || "");
+    if (!careerSlug) {
+      console.log(`⚠ Plan omitido por slug vacío: ${entry?.nombre || entry?.json || "desconocido"}`);
+      continue;
+    }
+
     const materias = Array.isArray(data?.materias)
       ? data.materias.map(normalizeSubject).filter((m) => m.id && m.nombre)
       : [];
 
     await db.collection("plans").doc(careerSlug).set({
       slug: careerSlug,
-      nombre: String(data?.nombre || careerSlug),
+      nombre: String(data?.nombre || entry?.nombre || careerSlug),
       version: Number(data?.version || 1),
       materias
     }, { merge: true });

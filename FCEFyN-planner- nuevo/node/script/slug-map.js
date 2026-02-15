@@ -1,4 +1,4 @@
-export const SLUG_MAP = {
+const SLUG_MAP = {
   "ingenieria-mecanica": "mecanica",
   "ingenieria-ambiental": "ambiental",
   "ingenieria-biomedica": "biomedica",
@@ -12,21 +12,19 @@ export const SLUG_MAP = {
   "ingenieria-aeroespacial": "aeroespacial"
 };
 
-export function normalizeCareerSlug(value){
-  const normalized = String(value || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+const normalizeStr = (value) => String(value || "")
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .trim();
 
+const normalizeCareerSlug = (value) => {
+  const normalized = normalizeStr(value);
   return SLUG_MAP[normalized] || normalized;
-}
+};
 
-export function toCanonicalCareerSlug(value){
-  return normalizeCareerSlug(value);
-}
-
-export function expandCareerSlugAliases(value){
-  const canonical = normalizeCareerSlug(value);
-  return canonical ? [canonical] : [];
-}
+module.exports = {
+  SLUG_MAP,
+  normalizeStr,
+  normalizeCareerSlug
+};

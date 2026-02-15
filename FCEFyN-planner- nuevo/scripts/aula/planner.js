@@ -1,6 +1,5 @@
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
-import { expandCareerSlugAliases } from "../core/career-slugs.js";
 
 let CTX = null;
 

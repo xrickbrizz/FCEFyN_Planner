@@ -2,44 +2,12 @@
 const fs = require("fs");
 const path = require("path");
 const { db, admin } = require("./initAdmin");
-
-/* =======================
-   CONFIG
-======================= */
+const { normalizeStr, normalizeCareerSlug } = require("./slug-map");
 
 const DATA_FOLDER = path.join(__dirname, "..", "data", "comisiones");
 
-const CAREER_SLUG_EQUIVALENCES = {
-  "ingenieria-aeroespacial": "aeroespacial",
-  "ingenieria-en-agrimensura": "agrimensura",
-  "ingenieria-ambiental": "ambiental",
-  "ingenieria-biomedica": "biomedica",
-  "ingenieria-civil": "civil",
-  "ingenieria-en-computacion": "computacion",
-  "ingenieria-electromecanica": "electromecanica",
-  "ingenieria-electronica": "electronica",
-  "ingenieria-industrial": "industrial",
-  "ingenieria-mecanica": "mecanica",
-  "ingenieria-quimica": "quimica"
-};
-
-const normalizeStr = (value) => String(value || "")
-  .toLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .trim();
-
-const normalizeCareerSlug = (value) => {
-  const normalized = normalizeStr(value);
-  return CAREER_SLUG_EQUIVALENCES[normalized] || normalized;
-};
-
-/* =======================
-   IMPORT COMISIONES
-======================= */
-
 async function importComisiones() {
-  const files = fs.readdirSync(DATA_FOLDER).filter(f => f.endsWith(".json"));
+  const files = fs.readdirSync(DATA_FOLDER).filter((f) => f.endsWith(".json")).sort();
 
   if (!files.length) {
     console.log("No hay archivos JSON de comisiones.");
@@ -79,10 +47,9 @@ async function importComisiones() {
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       }, { merge: true });
 
-      operationCount++;
-      totalDocs++;
+      operationCount += 1;
+      totalDocs += 1;
 
-      // Firestore permite máximo 500 operaciones por batch
       if (operationCount === 500) {
         await batch.commit();
         batch = db.batch();
@@ -97,10 +64,6 @@ async function importComisiones() {
 
   console.log(`✅ Importación completada. Total comisiones: ${totalDocs}`);
 }
-
-/* =======================
-   RUN
-======================= */
 
 async function run() {
   await importComisiones();
