@@ -10,6 +10,8 @@ import Aula from "./aula/index.js";
 let html2canvasLib = null;
 let jsPDFLib = null;
 let appCtx = null;
+let unsubscribeHomeNotices = null;
+let pendingCareerChangeSlug = "";
 
 const AppState = {
   currentUser: null,
@@ -366,10 +368,22 @@ const announcementsQuery = query(
   announcementsRef,
   orderBy("publishAt", "desc")
 );
-onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
+  if (typeof unsubscribeHomeNotices === "function") {
+    unsubscribeHomeNotices();
+  }
+  unsubscribeHomeNotices = onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
 
   setMode("list");
   renderList();
+}
+
+function syncCareerDependentViews({ forceReload = false, source = "unknown" } = {}){
+  const slug = getProfileCareerSlug();
+  appCtx?.syncSubjectsCareerFromProfile?.({ forceReload });
+  updatePlanTab();
+  if (source) {
+    console.log("[career-sync]", { source, slug, forceReload });
+  }
 }
 
 
@@ -421,15 +435,22 @@ const handleProfileUpdate = (profile) => {
   if (select && !select.value && profile?.careerSlug){
     select.value = profile.careerSlug;
   }
-  appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
-  updatePlanTab();
+
+  const profileCareerSlug = (profile?.careerSlug || "").trim();
+  if (pendingCareerChangeSlug && profileCareerSlug === pendingCareerChangeSlug){
+    pendingCareerChangeSlug = "";
+    updatePlanTab();
+    return;
+  }
+
+  syncCareerDependentViews({ forceReload:false, source:"profile-updated" });
 };
 
 onProfileUpdated(handleProfileUpdate);
 
 window.addEventListener("careerChanged", () => {
-  appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:true });
-  updatePlanTab();
+  pendingCareerChangeSlug = getProfileCareerSlug();
+  syncCareerDependentViews({ forceReload:true, source:"career-changed" });
 });
 
 onSessionReady(async (user) => {
@@ -504,6 +525,10 @@ onSessionReady(async (user) => {
 
 window.logout = async function(){
   try{
+    if (typeof unsubscribeHomeNotices === "function") {
+      unsubscribeHomeNotices();
+      unsubscribeHomeNotices = null;
+    }
     await appCtx?.socialModules?.Messaging?.updatePresence?.(false);
     await signOut(auth);
     window.location.href = "app.html";
