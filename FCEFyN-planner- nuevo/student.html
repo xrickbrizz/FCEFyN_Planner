@@ -308,12 +308,8 @@
           </div>
 
           <div class="subject-form-field">
-            <label for="catalogCareerSelect">Carrera</label>
-            <select id="catalogCareerSelect">
-              <option value="">Seleccionar carrera</option>
-              <option value="AUTO_PROFILE">Mi carrera actual</option>
-              <option value="SECOND_CAREER">Segunda carrera</option>
-            </select>
+            <label for="catalogCareerLabel">Carrera activa</label>
+            <p id="catalogCareerLabel" class="small-muted">Seleccioná tu carrera en Perfil.</p>
           </div>
 
           <div class="subject-catalog-search-wrap">
@@ -643,7 +639,7 @@
               </div>
               <div class="profile-field">
                 <label>Carrera</label>
-                <select id="profileCareer"></select>
+                <select id="inpCareer"></select>
               </div>
               <div class="profile-field">
                 <label>Año de ingreso</label>
@@ -772,33 +768,13 @@
             <h2 class="planner-modal-title" id="plannerModalTitle">Planificador de Agenda</h2>
             <p class="small-muted">Selecciona y organiza tus comisiones para el ciclo actual.</p>
           </div>
-          <div class="planner-search">
-            <input type="text" id="plannerSearchInput" placeholder="Buscar en el planificador..." />
-          </div>
         </div>
         <button class="modal-close" id="btnPlannerClose" aria-label="Cerrar planificador">✕</button>
       </div>
 
-      <div class="planner-modal-presets">
-        <span class="small-muted" style="font-weight:800;">PRESETS:</span>
-        <div class="preset-chips-row" id="presetsList" role="tablist" aria-label="Presets del planificador"></div>
-      </div>
-
-      <div class="preset-row planner-preset-actions">
-        <button class="btn-danger btn-small" id="btnPresetDelete" type="button">Eliminar</button>
-      </div>
-
-      <div class="planner-filters" data-component="Filters">
+      <div class="planner-filters-row" data-component="Filters">
         <select class="input-mini" id="sectionsSubjectFilter" aria-label="Filtrar por materia"></select>
-      </div>
-
-      <div class="planner-preset-bubble" id="plannerPresetBubble" aria-hidden="true">
-        <label for="plannerPresetNameInput">Nombre del preset</label>
-        <input class="input-mini" id="plannerPresetNameInput" type="text" maxlength="60" placeholder="Ej: Cursado mañana" />
-        <div class="planner-preset-bubble-actions">
-          <button class="btn-outline btn-small" id="btnPlannerPresetCancel" type="button">Cancelar</button>
-          <button class="btn-plan-add" id="btnPlannerPresetConfirm" type="button">Confirmar</button>
-        </div>
+        <input type="text" id="plannerSearch" placeholder="Buscar en el planificador..." />
       </div>
 
       <div class="planner-list" id="sectionsList" aria-live="polite"></div>

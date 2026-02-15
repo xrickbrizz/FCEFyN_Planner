@@ -155,7 +155,7 @@ button{
   border:1px solid var(--border-90);
   box-shadow:var(--shadow-btn);
 }
-.btn-outline:hover{ border-color:var(--accent-805); }
+.btn-outline:hover{ border-color:var(--accent-805); background:var(--surface-95); }
 .btn-danger{ background:var(--color-danger); color:var(--color-text-contrast);}
 .btn-small{ padding:.24rem .68rem; font-size:.8rem; border-radius:var(--radius-sm);box-shadow: none; }
 
@@ -2133,18 +2133,37 @@ body[data-theme="light"] .event{
       grid-template-columns:1fr;
       align-content:start;
     }
-    .planner-filters{
-      margin-top:.65rem;
-      margin-bottom:.55rem;
-      display:grid;
-      grid-template-columns:minmax(260px, 1fr);
-      gap: .5rem;
+    .planner-filters-row{
+      display:flex;
+      gap:.6rem;
       align-items:center;
-      justify-items:start;
+      margin: .65rem 0 1rem;
+    }
+    .planner-filters-row select{
+      flex:1;
+    }
+    .planner-filters-row input{
+      flex:1.2;
+      min-width:0;
+      padding:.5rem .75rem;
+      border-radius:10px;
+      border:1px solid var(--border-soft, var(--border-85));
+      background:var(--surface-soft, var(--surface-95));
+      color:var(--color-text);
+    }
+    .planner-filters-row input:focus{
+      outline:none;
+      border-color:var(--primary, var(--accent-805));
+      box-shadow:0 0 0 3px rgba(0, 0, 0, 0.05);
     }
     @media (max-width:880px){
-      .planner-filters{
-        grid-template-columns:1fr;
+      .planner-filters-row{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .planner-filters-row select,
+      .planner-filters-row input{
+        width:100%;
       }
     }
     .preset-actions-row .btn-small{
@@ -3545,47 +3564,12 @@ body[data-theme="light"] .planner-modal{
 .planner-modal-header{ display:flex; justify-content:space-between; gap:.75rem; align-items:flex-start; }
 .planner-header{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; flex:1; }
 .planner-title{ min-width:0; }
-.planner-search{ display:flex; justify-content:flex-end; }
-.planner-search input{
-  width:260px;
-  padding:8px 12px;
-  border-radius:999px;
-  border:1px solid var(--border-soft, var(--border-85));
-  background:var(--surface-soft, var(--surface-95));
-  color:var(--color-text);
-  font-size:14px;
-  transition:all .2s ease;
-}
-.planner-search input:focus{
-  outline:none;
-  border-color:var(--primary, var(--accent-805));
-  box-shadow:0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-.planner-modal-title{ margin:0 0 .1rem; font-size:1.65rem; font-weight:900; color:var(--text-strong); }
-.planner-modal-presets{ display:flex; align-items:center; gap:.55rem; margin:.55rem 0 .45rem; }
-.planner-preset-actions{ margin-bottom:.4rem; }
+.planner-modal-title{ margin:0 0 .1rem; font-size:1.65rem; font-weight:900; color:var(--text-strong);margin-top: 4.5rem; }
 
 .section-status{ margin-top:.3rem; font-size:.78rem; font-weight:700; }
 .section-status.warn{ color:#b36d00; }
 .section-card.blocked{ opacity:.86; }
 
-.planner-preset-bubble{
-  position:absolute;
-  inset:0;
-  margin:auto;
-  width:min(92%, 360px);
-  height:max-content;
-  border:1px solid var(--border-70);
-  background:var(--color-surface-2);
-  border-radius:14px;
-  box-shadow:var(--shadow-lg);
-  padding:.8rem;
-  display:none;
-  z-index:3;
-}
-.planner-preset-bubble.is-open{ display:flex; flex-direction:column; gap:.55rem; }
-.planner-preset-bubble label{ font-size:.84rem; font-weight:700; }
-.planner-preset-bubble-actions{ display:flex; justify-content:flex-end; gap:.45rem; }
 
 .planner-modal-footer{
   border-top:1px solid var(--color-border);
@@ -3623,10 +3607,7 @@ body[data-theme="light"] .planner-modal{
   .planner-modal{ width:min(94vw,1120px); max-height:90vh; }
   .planner-modal-title{ font-size:1.45rem; }
   .planner-header{ flex-direction:column; align-items:flex-start; }
-  .planner-search{ width:100%; }
-  .planner-search input{ width:100%; }
-  .planner-modal-presets{ flex-direction:column; align-items:flex-start; }
-  .section-card-layout{ grid-template-columns:1fr; }
+    .section-card-layout{ grid-template-columns:1fr; }
   .section-actions{ justify-content:flex-start; }
   .planner-list{ max-height:calc(90vh - 23rem); }
 }

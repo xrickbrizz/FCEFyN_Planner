@@ -6,7 +6,7 @@ let didBindSubjectsUI = false;
 
 let subjectsListEl = document.getElementById("subjectsList");
 let subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
-let catalogCareerSelect = document.getElementById("catalogCareerSelect");
+let catalogCareerLabel = document.getElementById("catalogCareerLabel");
 let subjectCatalogSearch = document.getElementById("subjectCatalogSearch");
 let subjectCatalogList = document.getElementById("subjectCatalogList");
 let subjectPlanHint = document.getElementById("subjectPlanHint");
@@ -41,7 +41,7 @@ function subjectColor(materiaName){
 function resolveSubjectsUI(){
   subjectsListEl = document.getElementById("subjectsList");
   subjectsEmptyMsg = document.getElementById("subjectsEmptyMsg");
-  catalogCareerSelect = document.getElementById("catalogCareerSelect");
+  catalogCareerLabel = document.getElementById("catalogCareerLabel");
   subjectCatalogSearch = document.getElementById("subjectCatalogSearch");
   subjectCatalogList = document.getElementById("subjectCatalogList");
   subjectPlanHint = document.getElementById("subjectPlanHint");
@@ -75,42 +75,11 @@ function initSubjectColorPalette(){
 }
 
 function getProfileCareer(){
-  const userProfile = CTX?.AppState?.userProfile || null;
-  if (userProfile && userProfile.careerSlug){
-    return { slug: userProfile.careerSlug, name: userProfile.career || userProfile.careerSlug };
-  }
-  return null;
-}
-
-function getActiveCareer(){
-  const profileSelect = document.getElementById("profileCareer");
-  if (profileSelect?.value) {
-    const careerPlans = CTX?.aulaState?.careerPlans || [];
-    const plan = careerPlans.find((item) => item.slug === profileSelect.value);
-    return {
-      slug: profileSelect.value,
-      name: plan?.nombre || profileSelect.value
-    };
-  }
-  return getProfileCareer();
-}
-
-function resolveCatalogCareer(){
-  const profileCareer = getActiveCareer();
-  if (!catalogCareerSelect) return profileCareer;
-
-  if (catalogCareerSelect.value === "AUTO_PROFILE") return profileCareer;
-  if (catalogCareerSelect.value === "SECOND_CAREER") {
-    if (!window.secondCareerId) return null;
-    const careerPlans = CTX?.aulaState?.careerPlans || [];
-    const plan = careerPlans.find((item) => item.slug === window.secondCareerId);
-    return {
-      slug: window.secondCareerId,
-      name: plan?.nombre || window.secondCareerId
-    };
-  }
-
-  return profileCareer;
+  const slug = CTX?.getCurrentCareer?.() || "";
+  if (!slug) return null;
+  const careerPlans = CTX?.aulaState?.careerPlans || [];
+  const plan = careerPlans.find((item) => item.slug === slug);
+  return { slug, name: plan?.nombre || slug };
 }
 
 function updateSubjectPlanHint(){
@@ -128,6 +97,10 @@ function updateSubjectPlanHint(){
 
 function updateCareerFallbackUI(hasProfileCareer){
   if (subjectCareerNotice) subjectCareerNotice.style.display = hasProfileCareer ? "none" : "block";
+  if (catalogCareerLabel){
+    const profileCareer = getProfileCareer();
+    catalogCareerLabel.textContent = profileCareer?.name || "Seleccioná tu carrera en Perfil.";
+  }
 }
 
 function getCatalogSubjects(){
@@ -415,27 +388,6 @@ function clearStagedSelection(){
   renderSubjectsList();
 }
 
-function renderSubjectCareerOptions(){
-  if (!catalogCareerSelect) return;
-  const currentValue = catalogCareerSelect.value || "AUTO_PROFILE";
-  catalogCareerSelect.innerHTML = "";
-
-  const options = [
-    { value: "", text: "Seleccionar carrera" },
-    { value: "AUTO_PROFILE", text: "Mi carrera actual" },
-    { value: "SECOND_CAREER", text: "Segunda carrera" }
-  ];
-
-  options.forEach((item) => {
-    const option = document.createElement("option");
-    option.value = item.value;
-    option.textContent = item.text;
-    catalogCareerSelect.appendChild(option);
-  });
-
-  catalogCareerSelect.value = currentValue;
-}
-
 async function setActiveCareer(slug, persist){
   if (!slug){
     CTX.aulaState.plannerCareer = { slug: "", name: "" };
@@ -473,13 +425,10 @@ async function syncCareerFromProfile({ forceReload = false } = {}){
     await loadCareerPlans();
   }
 
-  const profileCareer = getActiveCareer();
+  const profileCareer = getProfileCareer();
   const hasProfileCareer = !!profileCareer?.slug;
   updateCareerFallbackUI(hasProfileCareer);
-  renderSubjectCareerOptions();
-
-  const resolvedCareer = resolveCatalogCareer();
-  const resolvedSlug = resolvedCareer?.slug || "";
+  const resolvedSlug = profileCareer?.slug || "";
   const changed = CTX.aulaState.plannerCareer?.slug !== resolvedSlug;
   if (resolvedSlug && (changed || forceReload)) {
     await setActiveCareer(resolvedSlug, false);
@@ -511,15 +460,7 @@ function bindSubjectsFormHandlers(){
   if (didBindSubjectsUI) return;
   didBindSubjectsUI = true;
 
-  if (window.secondCareerId === undefined) {
-    window.secondCareerId = null;
-  }
-
-  document.getElementById("profileCareer")?.addEventListener("change", async () => {
-    await syncCareerFromProfile({ forceReload: true });
-  });
-
-  document.getElementById("catalogCareerSelect")?.addEventListener("change", async () => {
+  window.addEventListener("careerChanged", async () => {
     await syncCareerFromProfile({ forceReload: true });
   });
 

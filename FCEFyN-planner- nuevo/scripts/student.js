@@ -16,6 +16,12 @@ const AppState = {
   userProfile: getUserProfile()
 };
 
+
+function getCurrentCareer(){
+  const select = document.getElementById("inpCareer");
+  return select ? (select.value || "").trim() : "";
+}
+
 const notify = (message, type="info") => showToast({ message, type });
 const notifySuccess = (message) => showToast({ message, type:"success" });
 const notifyError = (message) => showToast({ message, type:"error" });
@@ -411,11 +417,20 @@ initSession({
 
 const handleProfileUpdate = (profile) => {
   AppState.userProfile = profile;
+  const select = document.getElementById("inpCareer");
+  if (select && !select.value && profile?.careerSlug){
+    select.value = profile.careerSlug;
+  }
   appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:false });
   updatePlanTab();
 };
 
 onProfileUpdated(handleProfileUpdate);
+
+window.addEventListener("careerChanged", () => {
+  appCtx?.syncSubjectsCareerFromProfile?.({ forceReload:true });
+  updatePlanTab();
+});
 
 onSessionReady(async (user) => {
   AppState.currentUser = user;
@@ -446,6 +461,7 @@ onSessionReady(async (user) => {
     getCurrentUser,
     onSessionReady,
     AppState,
+    getCurrentCareer,
     setCalendarioCaches,
     getCalendarioCaches,
     paintStudyEvents,
@@ -584,7 +600,7 @@ const helpContent = {
 };
 
 function getProfileCareerSlug(){
-  return AppState?.userProfile?.careerSlug || "";
+  return getCurrentCareer() || AppState?.userProfile?.careerSlug || "";
 }
 
 // plan de estudio 
@@ -678,6 +694,8 @@ document.addEventListener("click", (event) => {
 });
 
 let sidebarCtrl = null;
+
+window.getCurrentCareer = getCurrentCareer;
 
 window.showTab = function(name){
   const targetSection = resolveSectionId(name);

@@ -7,7 +7,6 @@ const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
 let plannerSearchQuery = "";
-const PRESET_PENCIL_ICON = "✎";
 
 function getSectionSubjectSlug(section){
   const rawSlug = section?.subjectSlug || section?.code || section?.subject || "";
@@ -257,74 +256,34 @@ async function loadCourseSections(){
 }
 
 function renderPresetsList(){
-  const list = document.getElementById("presetsList");
   const outside = document.getElementById("agendaPresetChips");
-  if (list) list.innerHTML = "";
   if (outside) outside.innerHTML = "";
 
   const presets = CTX.aulaState.presets.slice().sort((a,b)=> (a.name || "").localeCompare(b.name || "", "es"));
   presets.forEach(p => {
-    [list, outside].forEach(target => {
-      if (!target) return;
-      if (target === outside){
-        const chip = document.createElement("div");
-        chip.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
-        chip.dataset.id = p.id;
-        chip.setAttribute("role", "tab");
-        chip.setAttribute("tabindex", "0");
-        chip.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
+    if (!outside) return;
+    const chip = document.createElement("div");
+    chip.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
+    chip.dataset.id = p.id;
+    chip.setAttribute("role", "tab");
+    chip.setAttribute("tabindex", "0");
+    chip.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
 
-        const name = document.createElement("span");
-        name.className = "preset-name";
-        name.textContent = p.name || "Sin nombre";
-        chip.appendChild(name);
+    const name = document.createElement("span");
+    name.className = "preset-name";
+    name.textContent = p.name || "Sin nombre";
+    chip.appendChild(name);
 
-        chip.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
-        chip.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " "){
-            e.preventDefault();
-            selectPresetAndRefreshAgenda(p.id);
-          }
-        });
-
-        const remove = document.createElement("button");
-        remove.className = "preset-delete";
-        remove.type = "button";
-        remove.textContent = "✕";
-        remove.setAttribute("aria-label", `Eliminar preset ${p.name || ""}`);
-        remove.addEventListener("click", async (event) => {
-          event.stopPropagation();
-          loadPreset(p.id);
-          await deletePreset();
-          renderPresetsList();
-        });
-        chip.appendChild(remove);
-        target.appendChild(chip);
-        return;
+    chip.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
+    chip.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        selectPresetAndRefreshAgenda(p.id);
       }
-
-      const btn = document.createElement("button");
-      btn.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
-      btn.textContent = p.name || "Sin nombre";
-      btn.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
-      target.appendChild(btn);
     });
+
+    outside.appendChild(chip);
   });
-
-  if (list){
-    const addChip = document.createElement("button");
-    addChip.className = "preset-chip add";
-    addChip.type = "button";
-    addChip.textContent = "+";
-    addChip.setAttribute("aria-label", "Crear preset nuevo");
-    addChip.addEventListener("click", newPreset);
-    list.appendChild(addChip);
-  }
-
-  const openPlannerBtn = document.getElementById("btnOpenPlannerModal");
-  if (openPlannerBtn) openPlannerBtn.innerHTML = `<span aria-hidden="true">${PRESET_PENCIL_ICON}</span>`;
 }
 
 function renderSelectedSectionsList(){
@@ -458,40 +417,6 @@ function loadPreset(id){
   renderPlannerAll();
 }
 
-function newPreset(){
-  const input = document.getElementById("plannerPresetNameInput");
-  const bubble = document.getElementById("plannerPresetBubble");
-  if (!input || !bubble) return;
-  input.value = "";
-  bubble.classList.add("is-open");
-  bubble.setAttribute("aria-hidden", "false");
-  input.focus();
-}
-
-function closePresetBubble(){
-  const bubble = document.getElementById("plannerPresetBubble");
-  if (!bubble) return;
-  bubble.classList.remove("is-open");
-  bubble.setAttribute("aria-hidden", "true");
-}
-
-async function confirmNewPreset(){
-  const input = document.getElementById("plannerPresetNameInput");
-  const name = (input?.value || "").trim();
-  if (!name){
-    CTX?.notifyWarn?.("Ingresá un nombre para el preset.");
-    input?.focus();
-    return;
-  }
-  CTX.aulaState.activePresetId = null;
-  CTX.aulaState.activePresetName = name;
-  CTX.aulaState.activeSelectedSectionIds = [];
-  await upsertActivePreset(name);
-  closePresetBubble();
-  renderPlannerAll();
-}
-
-
 async function upsertActivePreset(silentName = ""){
   const name = (silentName || CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`).trim();
   CTX.aulaState.activePresetName = name;
@@ -532,8 +457,11 @@ async function duplicatePreset(){
 async function deletePreset(){
   if (!CTX.aulaState.activePresetId){ CTX?.notifyWarn?.("No hay preset activo para eliminar."); return; }
   CTX.aulaState.presets = CTX.aulaState.presets.filter(p => p.id !== CTX.aulaState.activePresetId);
-  newPreset();
+  CTX.aulaState.activePresetId = null;
+  CTX.aulaState.activePresetName = "";
+  CTX.aulaState.activeSelectedSectionIds = [];
   await persistPresetsToFirestore();
+  renderPlannerAll();
 }
 
 function toggleSectionInPreset(sectionId){
@@ -597,7 +525,6 @@ function openPlannerModal(){
 }
 
 function closePlannerModal(){
-  closePresetBubble();
   togglePlannerStyleModal("plannerModalBg", false);
 }
 
@@ -808,26 +735,13 @@ async function applyPlannerChanges(){
 
 function initPlanificadorUI(){
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  const presetNameInput = document.getElementById("plannerPresetNameInput");
-  const plannerSearchInput = document.getElementById("plannerSearchInput");
+  const plannerSearchInput = document.getElementById("plannerSearch");
 
   subjectFilter?.addEventListener("change", renderSectionsList);
   plannerSearchInput?.addEventListener("input", (e) => {
     plannerSearchQuery = e.target.value.toLowerCase();
     filterPlannerItems(plannerSearchQuery);
   });
-  document.getElementById("btnPresetSave")?.addEventListener("click", saveActivePreset);
-  document.getElementById("btnPresetNew")?.addEventListener("click", newPreset);
-  document.getElementById("btnPlannerPresetCancel")?.addEventListener("click", closePresetBubble);
-  document.getElementById("btnPlannerPresetConfirm")?.addEventListener("click", () => confirmNewPreset().catch(()=>{}));
-  presetNameInput?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter"){
-      e.preventDefault();
-      confirmNewPreset().catch(()=>{});
-    }
-  });
-  document.getElementById("btnPresetDuplicate")?.addEventListener("click", duplicatePreset);
-  document.getElementById("btnPresetDelete")?.addEventListener("click", deletePreset);
   document.getElementById("btnOpenPlannerModal")?.addEventListener("click", openPlannerModal);
   document.getElementById("btnGoMateriasFromAgenda")?.addEventListener("click", () => CTX.showTab?.("materias"));
   document.getElementById("btnPlanificadorAgenda")?.addEventListener("click", openPlannerModal);

@@ -24,7 +24,7 @@ let profileHandlersBound = false;
 const profileEmailEl = document.getElementById("profileEmail");
 const profileFirstNameInput = document.getElementById("profileFirstName");
 const profileLastNameInput = document.getElementById("profileLastName");
-const profileCareerSelect = document.getElementById("profileCareer");
+const careerSelect = document.getElementById("inpCareer");
 const profileYearInInput = document.getElementById("profileYearIn");
 const profileDocumentInput = document.getElementById("profileDocument");
 const profileStatusEl = document.getElementById("profileStatus");
@@ -266,14 +266,13 @@ function renderProfileSection(){
   if (!currentUser) return;
   if (profileEmailEl) profileEmailEl.textContent = currentUser.email || userProfile?.email || "—";
 
-  const persistedCareerSlug = profileCareerSelect?.dataset?.persistedCareerSlug || "";
-  const candidateCareerSlug = persistedCareerSlug || userProfile?.careerSlug || "";
+  const candidateCareerSlug = CTX?.getCurrentCareer?.() || userProfile?.careerSlug || "";
   const plan = candidateCareerSlug
     ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === candidateCareerSlug)
     : (userProfile?.career ? CTX?.findPlanByName?.(userProfile.career) : null);
   const selectedSlug = plan?.slug || candidateCareerSlug || "";
 
-  renderCareerOptions(profileCareerSelect, selectedSlug);
+  renderCareerOptions(careerSelect, selectedSlug);
 
   if (profileFirstNameInput) profileFirstNameInput.value = userProfile?.firstName || "";
   if (profileLastNameInput) profileLastNameInput.value = userProfile?.lastName || "";
@@ -287,22 +286,22 @@ function renderProfileSection(){
   renderProfileAvatar();
 }
 
-async function loadPersistedCareerSelection(){
+async function loadUserCareer(uid){
   const ready = getReadyProfileContext("Cargar carrera de perfil", { requireDB: true });
   if (!ready) return;
-  const { currentUser, db } = ready;
-  if (!profileCareerSelect) return;
+  const { db } = ready;
+  if (!careerSelect || !uid) return;
   try{
-    const publicUserSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
+    const publicUserSnap = await getDoc(doc(db, "publicUsers", uid));
     if (!publicUserSnap.exists()) return;
     const publicUserData = publicUserSnap.data() || {};
     const careerSlug = (publicUserData.careerSlug || "").trim();
     if (!careerSlug) return;
-    const optionExists = Array.from(profileCareerSelect.options || []).some(opt => opt.value === careerSlug);
+    const optionExists = Array.from(careerSelect.options || []).some(opt => opt.value === careerSlug);
     if (!optionExists) return;
-    profileCareerSelect.dataset.persistedCareerSlug = careerSlug;
-    profileCareerSelect.value = careerSlug;
+    careerSelect.value = careerSlug;
     updateUserProfileCache({ careerSlug });
+    window.dispatchEvent(new CustomEvent("careerChanged", { detail: { careerSlug } }));
   }catch(error){
     console.warn("[Perfil] No se pudo cargar la carrera persistida en publicUsers", error);
   }
@@ -312,16 +311,16 @@ async function syncCareerSlugFromSelect(){
   const ready = getReadyProfileContext("Actualizar carrera", { requireDB: true, profileStatus: true });
   if (!ready) return;
   const { currentUser, db, notifyError } = ready;
-  if (!profileCareerSelect) return;
-  const careerSlug = (profileCareerSelect.value || "").trim();
+  if (!careerSelect) return;
+  const careerSlug = (careerSelect.value || "").trim();
   if (!careerSlug) return;
   try{
     await updateDoc(doc(db, "publicUsers", currentUser.uid), {
       careerSlug,
       updatedAt: serverTimestamp()
     });
-    profileCareerSelect.dataset.persistedCareerSlug = careerSlug;
     updateUserProfileCache({ careerSlug });
+    window.dispatchEvent(new CustomEvent("careerChanged", { detail: { careerSlug } }));
     setProfileStatus(profileStatusEl, "Carrera actualizada automáticamente.");
   }catch(error){
     console.error("[Perfil] Error actualizando careerSlug en publicUsers", error);
@@ -343,7 +342,7 @@ function bindProfileHandlers(){
       const firstName = profileFirstNameInput?.value.trim() || "";
       const lastName = profileLastNameInput?.value.trim() || "";
       const name = `${firstName} ${lastName}`.trim();
-      const careerSlug = profileCareerSelect?.value || "";
+      const careerSlug = CTX?.getCurrentCareer?.() || "";
       const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
       const cachedProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
       const careerName = plan?.nombre || (careerSlug ? (cachedProfile?.career || careerSlug) : "");
@@ -409,8 +408,8 @@ function bindProfileHandlers(){
     });
   }
 
-  if (profileCareerSelect){
-    profileCareerSelect.addEventListener("change", async () => {
+  if (careerSelect){
+    careerSelect.addEventListener("change", async () => {
       await syncCareerSlugFromSelect();
     });
   }
@@ -546,7 +545,7 @@ const Profile = {
     profileUnsubscribe = onProfileUpdated((profile) => {
       handleProfileUpdate(profile);
     });
-    await loadPersistedCareerSelection();
+    await loadUserCareer(currentUser.uid);
   },
   renderProfileSection,
   resolveAvatarUrl,
