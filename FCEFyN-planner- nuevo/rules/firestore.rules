@@ -23,6 +23,15 @@ service cloud.firestore {
         && (!('currentSubjects' in data) || validSubjectIds(data.currentSubjects));
     }
 
+    function validPublicUserData(data) {
+      return data.uid is string
+        && data.email is string
+        && data.emailLower is string
+        && data.name is string
+        && data.photoURL is string
+        && (!('careerSlug' in data) || data.careerSlug is string);
+    }
+
     // ---- users (privado) ----
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
@@ -48,7 +57,20 @@ service cloud.firestore {
     // ---- publicUsers (directorio) ----
     match /publicUsers/{uid} {
       allow read: if signedIn();
-      allow create, update: if isOwner(uid) || isAdmin();
+      allow create: if (isOwner(uid) || isAdmin())
+        && validPublicUserData(request.resource.data)
+        && request.resource.data.uid == uid;
+      allow update: if (isOwner(uid) || isAdmin())
+        && validPublicUserData(request.resource.data)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "email",
+          "emailLower",
+          "name",
+          "photoURL",
+          "careerSlug",
+          "updatedAt"
+        ]);
       allow delete: if isOwner(uid) || isAdmin();
     }
 
