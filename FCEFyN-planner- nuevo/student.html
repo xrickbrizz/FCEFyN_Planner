@@ -269,15 +269,11 @@
     </div>
 
     <div id="tab-agenda" class="tab-card" style="display:none;">
-        <div style="margin-bottom: 1.5rem;">
-          <button class="btn-outline btn-small" id="btnOpenSubjectsModal" type="button">Materias</button>
-          <button class="btn-outline btn-small icon-btn" id="btnOpenPlannerModal" type="button" aria-label="Abrir planificador">
-            <span aria-hidden="true">✎</span>
-          </button>
-          </div>
       <div class="agenda-presets-bar" aria-label="Presets guardados">
         <div class="agenda-presets-head">
-          <strong>Presets guardados</strong>
+          <strong>Presets guardados</strong><button class="btn-outline btn-small icon-btn" id="btnOpenPlannerModal" type="button" aria-label="Abrir planificador">
+            <span aria-hidden="true">✎</span>
+          </button>
         </div>
         <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
       </div>
@@ -299,77 +295,65 @@
     </div>
 
     <div id="tab-materias" class="tab-card" style="display:none;">
-      <div class="subjects-layout">
-        <div class="subjects-list-box">
-          <div class="subjects-list-header">
-            <div>
-              <strong>Materias creadas</strong>
-              <div class="small-muted">Organizá tus materias con color para identificarlas rápido.</div>
-            </div>
-          </div>
-          <div id="subjectsList" class="subjects-list"></div>
-          <div id="subjectsEmptyMsg" class="subjects-empty-msg" style="display:none;">
-            Todavía no tenés materias. Creá tu primera materia desde el formulario.
-          </div>
-        </div>
-        <div class="subject-form-box">
-          <div class="subject-form-header">
-            <div>
-              <strong id="subjectFormTitle">Nueva materia</strong>
-              <div class="small-muted">Completá los datos y guardá los cambios.</div>
-            </div>
-          </div>
+      <div class="subjects-modern-layout">
+        <section class="subjects-catalog-panel">
+          <header class="subjects-modern-header">
+            <h3>Catálogo de Materias</h3>
+            <p class="small-muted">Explorá y agregá materias a tu plan.</p>
+          </header>
+
           <div class="notice" id="subjectCareerNotice" style="display:none;">
             Necesitás elegir tu carrera en Perfil para habilitar materias automáticamente.
             <button class="link" type="button" id="subjectCareerGoProfile">Ir a Perfil</button>
           </div>
+
           <div class="subject-form-field">
-            <label>Carrera</label>
+            <label for="subjectCareer">Carrera</label>
             <select id="subjectCareer"></select>
           </div>
-          <div class="subject-form-field">
-            <label>Materia</label>
-            <select id="subjectNameSelect"></select>
-            <div class="small-muted" id="subjectPlanHint">Seleccioná una carrera para ver sus materias.</div>
+
+          <div class="subject-catalog-search-wrap">
+            <input id="subjectCatalogSearch" type="search" placeholder="Buscar materia..." aria-label="Buscar materia en catálogo" />
           </div>
-          <div class="subject-form-field">
-            <label>Color identificatorio</label>
-            <div class="subject-color-row">
-              <div class="subject-color-palette" id="subjectColorPalette">
-                <button class="subject-color-swatch" type="button" data-color="#E6D98C" aria-label="Color dorado suave"></button>
-                <button class="subject-color-swatch" type="button" data-color="#F2A65A" aria-label="Color ámbar"></button>
-                <button class="subject-color-swatch" type="button" data-color="#EF6F6C" aria-label="Color coral"></button>
-                <button class="subject-color-swatch" type="button" data-color="#E377C2" aria-label="Color magenta"></button>
-                <button class="subject-color-swatch" type="button" data-color="#8A7FF0" aria-label="Color violeta"></button>
-                <button class="subject-color-swatch" type="button" data-color="#4C7DFF" aria-label="Color azul"></button>
-                <button class="subject-color-swatch" type="button" data-color="#2EC4B6" aria-label="Color turquesa"></button>
-                <button class="subject-color-swatch" type="button" data-color="#34C759" aria-label="Color verde"></button>
-                <button class="subject-color-swatch" type="button" data-color="#A0AEC0" aria-label="Color gris"></button>
-                <button class="subject-color-swatch subject-color-swatch--custom" type="button" id="subjectColorCustomBtn" aria-label="Elegir un color personalizado">
-                  <span class="subject-color-swatch__custom" id="subjectColorCustomPreview" aria-hidden="true"></span>
-                </button>
-              </div>
-              <input id="subjectColor" type="color" value="#E6D98C" class="subject-color-input" aria-label="Selector de color personalizado" />
-              <span class="small-muted">Se usará en Agenda, Estudio y Académico.</span>
+
+          <div id="subjectPlanHint" class="small-muted subject-plan-inline-hint">Seleccioná una carrera para ver sus materias.</div>
+          <div id="subjectCatalogList" class="subject-catalog-list" aria-live="polite"></div>
+        </section>
+
+        <section class="subjects-active-panel">
+          <header class="subjects-modern-header subjects-modern-header--row">
+            <div>
+              <h3>Mis Materias</h3>
+              <p class="small-muted">Configurá los colores de tus cursadas actuales.</p>
             </div>
-            <!-- agregar boton de color manual -->
-             <button id="agregarColorManual">Agregar color Manual</button>
-            <div class="subject-color-manual hidden" id="inputColorManual">
-               <button id="backMostrar" class="hidden" >Volver</button>
-              <input id="subjectColorText" type="text" class="subject-color-text" placeholder="#AABBCC o rgb(34, 123, 200)" autocomplete="off" />
-             <!-- <small class="subject-color-hint" id="subjectColorHint">Podés pegar un color manualmente si lo preferís.</small>
-             --> 
-            </div>
+            <div class="subjects-active-total"><strong id="subjectsActiveCount">0</strong><span>Total activas</span></div>
+          </header>
+
+          <div id="subjectsList" class="subjects-active-list"></div>
+          <div id="subjectsEmptyMsg" class="subjects-empty-msg" style="display:none;">Todavía no agregaste materias activas.</div>
+
+          <div class="subjects-apply-hint">
+            Los cambios en el color se aplicarán automáticamente a <strong>Agenda</strong>, <strong>Plan de Estudio</strong> y <strong>Historial Académico</strong>.
           </div>
-          <div class="subject-form-actions">
-            <button class="btn-gray btn-small" id="btnSubjectReset">Limpiar</button>
-            <button class="btn-blue btn-small" id="btnSubjectSave">Guardar</button>
-          </div>
-          <p class="subject-form-note">
-            Al editar una materia se actualizará su nombre también en el calendario de estudio y en la agenda.
-            Al borrar una materia podés elegir si se eliminan también sus clases y registros de estudio.
-          </p>
-        </div>
+
+          <footer class="subjects-modern-footer">
+            <button class="btn-outline btn-small" id="btnSubjectReset" type="button">Limpiar selección</button>
+            <button class="btn-blue btn-small" id="btnSubjectSave" type="button">Guardar configuración</button>
+          </footer>
+        </section>
+      </div>
+
+      <input id="subjectColor" type="color" value="#E6D98C" class="subject-color-input" aria-hidden="true" />
+      <div id="subjectColorPalette" class="hidden" aria-hidden="true">
+        <button class="subject-color-swatch" type="button" data-color="#E6D98C"></button>
+        <button class="subject-color-swatch" type="button" data-color="#F2A65A"></button>
+        <button class="subject-color-swatch" type="button" data-color="#EF6F6C"></button>
+        <button class="subject-color-swatch" type="button" data-color="#E377C2"></button>
+        <button class="subject-color-swatch" type="button" data-color="#8A7FF0"></button>
+        <button class="subject-color-swatch" type="button" data-color="#4C7DFF"></button>
+        <button class="subject-color-swatch" type="button" data-color="#2EC4B6"></button>
+        <button class="subject-color-swatch" type="button" data-color="#34C759"></button>
+        <button class="subject-color-swatch" type="button" data-color="#A0AEC0"></button>
       </div>
     </div>
 
