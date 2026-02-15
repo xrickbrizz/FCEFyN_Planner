@@ -951,7 +951,27 @@ body[data-theme="light"] .tab-card{
       align-items: center;
     }
 
-    .study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
+    
+.study-stat-card-clickable{
+  cursor:pointer;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.study-stat-card-clickable:hover,
+.study-stat-card-clickable:focus-visible{
+  border-color:var(--info-45);
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--info-45) 28%, transparent);
+}
+
+.streak-day{
+  color:#ff7a00;
+  text-shadow:0 0 8px rgba(255,122,0,.6);
+  font-weight:700;
+}
+.streak-day-cell{
+  border:2px solid #ff7a00;
+  box-shadow:0 0 6px rgba(255,122,0,.5);
+}
+.study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
     .study-stat-value{ color:var(--text); font-size:1.15rem; font-weight:700; }
 
     @media(max-width:900px){

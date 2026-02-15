@@ -128,7 +128,7 @@
               <div class="study-stat-label">⏱ Horas hoy</div>
               <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
             </article>
-            <article class="study-stat-card">
+            <article class="study-stat-card study-stat-card-clickable" id="studyWeeklyGoalCard" role="button" tabindex="0" aria-label="Editar meta semanal">
               <div class="study-stat-label">🎯 Meta semanal</div>
               <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
             </article>
@@ -180,21 +180,17 @@
               </div>
               <div class="cal-controls">
                 <div class="cal-controls-group">
+                  <button class="cal-nav-btn" id="btnStudyReturn" type="button" title="Volver al mes actual" hidden>
+                    <span>Volver a hoy</span>
+                  </button>
                   <button class="cal-nav-btn" id="btnStudyPrev" type="button" title="Mes anterior">
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     <span>Mes anterior</span>
-                  </button>
-                  <button class="cal-nav-btn" id="btnStudyToday" type="button" title="Volver a la fecha actual">
-                    <span>Ir a hoy</span>
-                    <span class="cal-today-date" id="studyTodayLabel">—</span>
                   </button>
                   <button class="cal-nav-btn" id="btnStudyNext" type="button" title="Mes siguiente">
                     <span>Mes siguiente</span>
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
                   </button>
-                </div>
-                <div class="cal-status" id="studyMonthStatus" hidden>
-                  <button type="button" id="btnStudyReturn">Volver a hoy</button>
                 </div>
               </div>
             </div>
@@ -206,7 +202,6 @@
             <div class="grid" id="calendarGrid"></div>
           </div>
 
-          <section id="studyUpcomingWidget" class="widget-card"></section>
         </aside>
       </div>
     </div>
@@ -980,6 +975,25 @@
         <button class="modal-close" id="btnStudyDayClose" type="button" aria-label="Cerrar">✕</button>
       </div>
       <div class="acad-day-modal-list" id="studyDayModalList"></div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="studyWeeklyGoalModalBg">
+    <div class="modal modal-planner">
+      <div class="modal-header">
+        <h3 class="modal-title">Editar meta semanal</h3>
+        <button class="modal-close" id="btnStudyWeeklyGoalClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label for="studyWeeklyGoalHoursInput">Horas por semana</label>
+          <input id="studyWeeklyGoalHoursInput" type="number" min="1" step="1" placeholder="Ej: 10" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" id="btnStudyWeeklyGoalCancel" type="button">Cancelar</button>
+        <button class="btn-blue btn-large" id="btnStudyWeeklyGoalSave" type="button">Guardar</button>
+      </div>
     </div>
   </div>
 
