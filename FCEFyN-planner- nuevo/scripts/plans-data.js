@@ -1,4 +1,4 @@
-import { functions, httpsCallable } from "./core/firebase.js";
+import { db, collection, getDocs, doc, getDoc } from "./core/firebase.js";
 
 const normalizeStr = (s) => (s || "")
   .toString()
@@ -10,20 +10,23 @@ const normalizeStr = (s) => (s || "")
 let cachedIndex = null; // [{slug,nombre,version}]
 const cachedSubjects = new Map(); // slug -> {subjects, rawPlan}
 
-const listPlansCallable = httpsCallable(functions, "listPlansCallable");
-const getPlanByCareerSlugCallable = httpsCallable(functions, "getPlanByCareerSlugCallable");
+function mapPlanDocument(docSnap){
+  const data = docSnap.data() || {};
+  return {
+    slug: docSnap.id,
+    nombre: data?.nombre || docSnap.id || "Carrera",
+    version: Number(data?.version || 1)
+  };
+}
 
 export async function getPlansIndex(){
   if (cachedIndex) return cachedIndex;
-  const result = await listPlansCallable();
-  const plans = Array.isArray(result?.data?.plans) ? result.data.plans : [];
-  cachedIndex = plans
-    .map((p) => ({
-      slug: p?.slug || "",
-      nombre: p?.nombre || p?.slug || "Carrera",
-      version: Number(p?.version || 1)
-    }))
-    .filter((p) => p.slug);
+  const snapshot = await getDocs(collection(db, "plans"));
+  const plans = snapshot.docs
+    .map((docSnap) => mapPlanDocument(docSnap))
+    .filter((plan) => !!plan.slug)
+    .sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es"));
+  cachedIndex = plans;
   return cachedIndex;
 }
 
@@ -34,17 +37,23 @@ export function findPlanByName(name){
 }
 
 export async function getPlanWithSubjects(slug){
+  if (!slug) return { plan:null, subjects:[], raw:{} };
+
   const index = await getPlansIndex();
   const plan = index.find(p => (p.slug || "") === slug);
-  if(!plan) return { plan:null, subjects:[], raw:{} };
-  if(cachedSubjects.has(slug)) return { plan, ...cachedSubjects.get(slug) };
+  if(cachedSubjects.has(slug)) return { plan: plan || null, ...cachedSubjects.get(slug) };
 
-  const result = await getPlanByCareerSlugCallable({ careerSlug: slug });
-  const rawPlan = result?.data?.plan || {};
+  const planRef = doc(db, "plans", slug);
+  const snap = await getDoc(planRef);
+  if (!snap.exists()){
+    return { plan: plan || null, subjects: [], raw: {} };
+  }
+
+  const rawPlan = snap.data() || {};
   const subjects = Array.isArray(rawPlan.materias) ? rawPlan.materias : [];
   const payload = { subjects, raw: rawPlan };
   cachedSubjects.set(slug, payload);
-  return { plan, ...payload };
+  return { plan: plan || { slug, nombre: rawPlan.nombre || slug, version: Number(rawPlan.version || 1) }, ...payload };
 }
 
 export function mapCareersToPlans(careers){

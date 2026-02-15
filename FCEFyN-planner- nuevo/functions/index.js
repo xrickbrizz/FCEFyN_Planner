@@ -129,8 +129,6 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 });
 
 
-const normalizeCareerSlug = (value) => String(value || "").trim();
-
 const sanitizeSubjectIds = (value, fieldName) => {
   if (!Array.isArray(value)) {
     throw new HttpsError("invalid-argument", `${fieldName} debe ser un arreglo.`);
@@ -140,39 +138,6 @@ const sanitizeSubjectIds = (value, fieldName) => {
     .filter(Boolean);
   return [...new Set(cleaned)];
 };
-
-exports.listPlansCallable = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
-  const snap = await db.collection("plans").orderBy("nombre").get();
-  const plans = snap.docs.map((docSnap) => {
-    const data = docSnap.data() || {};
-    return {
-      slug: docSnap.id,
-      nombre: String(data.nombre || docSnap.id),
-      version: Number(data.version || 1)
-    };
-  });
-  return { plans };
-});
-
-exports.getPlanByCareerSlugCallable = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
-  const careerSlug = normalizeCareerSlug(request.data?.careerSlug);
-  if (!careerSlug) throw new HttpsError("invalid-argument", "careerSlug es obligatorio.");
-
-  const planSnap = await db.collection("plans").doc(careerSlug).get();
-  if (!planSnap.exists) throw new HttpsError("not-found", "Plan no encontrado.");
-
-  const data = planSnap.data() || {};
-  return {
-    plan: {
-      slug: planSnap.id,
-      nombre: String(data.nombre || planSnap.id),
-      version: Number(data.version || 1),
-      materias: Array.isArray(data.materias) ? data.materias : []
-    }
-  };
-});
 
 exports.updateApprovedSubjectsCallable = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
