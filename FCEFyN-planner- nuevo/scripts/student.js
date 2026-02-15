@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, storage, collection, query, orderBy } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
-import { initNav, navItems } from "./core/nav.js";
+import { initNav, navItems, ICONS } from "./core/nav.js";
 import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } 
 from "./aula/calendario.js";
 import Social from "./social/index.js";
@@ -84,10 +84,10 @@ const homeModules = [
     comingSoon: false
   },
   {
-    title: "Variantes de Agenda",
-    description: "Guardá distintas configuraciones de cursada y alterná entre ellas fácilmente.",
-    icon: "sliders",
-    route: "/agenda/variantes",
+    title: "Materias",
+    description: "Definí y editá las materias activas de tu cursada.",
+    icon: "materias",
+    route: "/materias",
     comingSoon: false
   },
   {
@@ -117,15 +117,15 @@ const homeModules = [
 ];
 
 const moduleIconMap = {
-  "book": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h12a3 3 0 0 1 3 3V19H7a3 3 0 0 0-3 3V5.5z"/><path d="M4 5.5v13.5a3 3 0 0 1 3-3h12"/></svg>',
-  "graduation-cap": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10.5v5.5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5.5"/></svg>',
-  "calendar": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 3v3M16 3v3"/><path d="M3 9h18"/></svg>',
-  "link": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5l3-3"/><path d="M7 17a3.5 3.5 0 0 1 0-5l2.5-2.5a3.5 3.5 0 0 1 5 5L14 15"/><path d="M10 9l.5-.5a3.5 3.5 0 0 1 5 5L13 16a3.5 3.5 0 0 1-5-5L9 10"/></svg>',
-  "sliders": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>',
-  "users": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  "gamepad": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><path d="M8 13h4"/><path d="M10 11v4"/><circle cx="16.5" cy="12" r="1"/><circle cx="18.5" cy="14" r="1"/></svg>',
-  "library": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6v13H4z"/><path d="M10 5.5h6v13h-6z"/><path d="M16 8.5h4v10h-4z"/></svg>',
-  "bus": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="14" rx="2.5"/><path d="M4 12h16"/><path d="M7 20h.01"/><path d="M17 20h.01"/><path d="M7 17.5v2"/><path d="M17 17.5v2"/></svg>'
+  "book": ICONS.study,
+  "graduation-cap": ICONS.academic,
+  "calendar": ICONS.agenda,
+  "link": ICONS.plan,
+  "materias": ICONS.materias,
+  "users": ICONS.comunidad,
+  "gamepad": ICONS.recreo,
+  "library": ICONS.biblioteca,
+  "bus": ICONS.transporte
 };
 
 function navigateToModule(route){
@@ -135,7 +135,7 @@ function navigateToModule(route){
     "/academico": "academico",
     "/agenda": "agenda",
     "/correlativas": "planestudios",
-    "/agenda/variantes": "planner"
+    "/materias": "materias"
   };
   const sectionId = sectionRouteMap[route];
   if (sectionId) {
