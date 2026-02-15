@@ -2113,7 +2113,7 @@ body[data-theme="light"] .event{
       flex-wrap:wrap;
     }
     .planner-list{
-      display:flex;
+      display:grid;
       flex-direction:column;
       gap:.7rem;
       margin-top:.65rem;
@@ -2121,6 +2121,8 @@ body[data-theme="light"] .event{
       min-height:12rem;
       overflow:auto;
       padding-right:.2rem;
+      grid-template-columns: repeat(3, 1fr);
+
     }
     .planner-filters{
       margin-top:.65rem;
@@ -2149,6 +2151,7 @@ body[data-theme="light"] .event{
       border:1px solid #d9e2ec;
       box-shadow:0 5px 14px rgba(15,23,42,.07);
       padding:.75rem .9rem;
+      width: 25rem;
     }
     .section-card-layout{
       display:grid;
