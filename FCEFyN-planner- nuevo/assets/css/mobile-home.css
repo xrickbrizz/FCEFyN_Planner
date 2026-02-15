@@ -104,14 +104,8 @@
   }
 
   .home-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 0.625rem;
-  }
-
-  @media (max-width: 360px) {
-    .home-cards {
-      grid-template-columns: 1fr;
-    }
   }
 
   .home-card {
@@ -120,7 +114,7 @@
     overflow: hidden;
   }
 
-  .home-card > div:not(.home-card-icon) {
+  .home-card-body {
     min-width: 0;
     display: flex;
     flex-direction: column;

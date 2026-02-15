@@ -53,6 +53,134 @@ const formatNoticeDate = (value) => {
   }).format(date);
 };
 
+
+const homeModules = [
+  {
+    title: "Estudio",
+    description: "Seguimiento de horas, sesiones y progreso por materia.",
+    icon: "book",
+    route: "/estudio",
+    comingSoon: false
+  },
+  {
+    title: "Académico",
+    description: "Gestión de parciales, trabajos prácticos, notas y fechas clave.",
+    icon: "graduation-cap",
+    route: "/academico",
+    comingSoon: false
+  },
+  {
+    title: "Agenda",
+    description: "Organizá tu semana, comisiones y bloques horarios en un solo lugar.",
+    icon: "calendar",
+    route: "/agenda",
+    comingSoon: false
+  },
+  {
+    title: "Correlativas",
+    description: "Visualizá correlativas y tu avance real en la carrera.",
+    icon: "link",
+    route: "/correlativas",
+    comingSoon: false
+  },
+  {
+    title: "Variantes de Agenda",
+    description: "Guardá distintas configuraciones de cursada y alterná entre ellas fácilmente.",
+    icon: "sliders",
+    route: "/agenda/variantes",
+    comingSoon: false
+  },
+  {
+    title: "Comunidad",
+    description: "Espacio para publicar consultas, compartir experiencias e interactuar con otros estudiantes.",
+    icon: "users",
+    comingSoon: true
+  },
+  {
+    title: "Recreo",
+    description: "Juegos y distracción en tus tiempos libres.",
+    icon: "gamepad",
+    comingSoon: true
+  },
+  {
+    title: "Biblioteca",
+    description: "Materiales y recursos académicos centralizados.",
+    icon: "library",
+    comingSoon: true
+  },
+  {
+    title: "Transporte",
+    description: "Información de transporte cercana a la facultad.",
+    icon: "bus",
+    comingSoon: true
+  }
+];
+
+const moduleIconMap = {
+  "book": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h12a3 3 0 0 1 3 3V19H7a3 3 0 0 0-3 3V5.5z"/><path d="M4 5.5v13.5a3 3 0 0 1 3-3h12"/></svg>',
+  "graduation-cap": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10.5v5.5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5.5"/></svg>',
+  "calendar": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 3v3M16 3v3"/><path d="M3 9h18"/></svg>',
+  "link": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5l3-3"/><path d="M7 17a3.5 3.5 0 0 1 0-5l2.5-2.5a3.5 3.5 0 0 1 5 5L14 15"/><path d="M10 9l.5-.5a3.5 3.5 0 0 1 5 5L13 16a3.5 3.5 0 0 1-5-5L9 10"/></svg>',
+  "sliders": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 6v12"/><path d="M17 10v8"/><circle cx="7" cy="10" r="2.2"/><circle cx="17" cy="14" r="2.2"/></svg>',
+  "users": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  "gamepad": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><path d="M8 13h4"/><path d="M10 11v4"/><circle cx="16.5" cy="12" r="1"/><circle cx="18.5" cy="14" r="1"/></svg>',
+  "library": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6v13H4z"/><path d="M10 5.5h6v13h-6z"/><path d="M16 8.5h4v10h-4z"/></svg>',
+  "bus": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="14" rx="2.5"/><path d="M4 12h16"/><path d="M7 20h.01"/><path d="M17 20h.01"/><path d="M7 17.5v2"/><path d="M17 17.5v2"/></svg>'
+};
+
+function navigateToModule(route){
+  if (!route) return;
+  const sectionRouteMap = {
+    "/estudio": "estudio",
+    "/academico": "academico",
+    "/agenda": "agenda",
+    "/correlativas": "planestudios",
+    "/agenda/variantes": "planner"
+  };
+  const sectionId = sectionRouteMap[route];
+  if (sectionId) {
+    window.showTab?.(sectionId);
+    return;
+  }
+  window.location.href = route;
+}
+
+function ModuleCard(module){
+  const card = document.createElement(module.comingSoon ? "article" : "button");
+  card.className = "home-card";
+  card.dataset.comingSoon = module.comingSoon ? "true" : "false";
+
+  if (!module.comingSoon) {
+    card.type = "button";
+    card.addEventListener("click", () => navigateToModule(module.route));
+    card.setAttribute("aria-label", `${module.title}: ${module.description}`);
+  } else {
+    card.setAttribute("title", "Próximamente disponible");
+    card.setAttribute("aria-label", `${module.title}: próximamente disponible`);
+  }
+
+  const iconMarkup = moduleIconMap[module.icon] || moduleIconMap.book;
+  card.innerHTML = `
+    ${module.comingSoon ? '<span class="home-card-badge">Próx.</span>' : ""}
+    <div class="home-card-icon" aria-hidden="true">${iconMarkup}</div>
+    <div class="home-card-body">
+      <div class="home-card-title">${module.title}</div>
+      <div class="home-card-desc">${module.description}</div>
+    </div>
+  `;
+
+  return card;
+}
+
+function initHomeModules(){
+  const grid = document.getElementById("homeModulesGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  homeModules.forEach((module) => {
+    grid.appendChild(ModuleCard(module));
+  });
+}
+
 function initHomeNotices(){
   const panel = document.getElementById("homeNoticesPanel");
   if (!panel) return;
@@ -353,6 +481,7 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
   bindProfileShortcuts();
+  initHomeModules();
   initHomeNotices();
   restoreLastSection();
 });
