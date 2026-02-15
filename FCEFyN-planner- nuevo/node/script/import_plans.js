@@ -1,35 +1,47 @@
-#!/usr/bin/env node
-const fs = require("fs/promises");
+const fs = require("fs");
 const path = require("path");
-const admin = require("firebase-admin");
+const { db, admin } = require("./initAdmin");
 
-const ROOT_DIR = path.resolve(__dirname, "..");
-const PLANS_DIR = path.join(ROOT_DIR, "plans");
+/* =======================
+   CONFIG
+======================= */
 
-const slugify = (value) => String(value || "")
+const DATA_FOLDER = path.join(__dirname, "..", "data", "comisiones");
+
+const CAREER_SLUG_EQUIVALENCES = {
+  "ingenieria-aeroespacial": "aeroespacial",
+  "ingenieria-en-agrimensura": "agrimensura",
+  "ingenieria-ambiental": "ambiental",
+  "ingenieria-biomedica": "biomedica",
+  "ingenieria-civil": "civil",
+  "ingenieria-en-computacion": "computacion",
+  "ingenieria-electromecanica": "electromecanica",
+  "ingenieria-electronica": "electronica",
+  "ingenieria-industrial": "industrial",
+  "ingenieria-mecanica": "mecanica",
+  "ingenieria-quimica": "quimica"
+};
+
+const normalizeStr = (value) => String(value || "")
   .toLowerCase()
   .normalize("NFD")
   .replace(/[\u0300-\u036f]/g, "")
-  .replace(/[^a-z0-9]+/g, "-")
-  .replace(/^-+|-+$/g, "")
   .trim();
 
-const normalizeSubject = (subject) => {
-  const nombre = String(subject?.nombre || subject?.name || subject?.id || "").trim();
-  const id = String(subject?.id || "").trim();
-  const slug = slugify(subject?.slug || subject?.subjectSlug || nombre || id);
-  return {
-    id: id || slug,
-    slug,
-    nombre,
-    semester: Number(subject?.semester || subject?.semestre || 1),
-    correlativas: Array.isArray(subject?.correlativas)
-      ? subject.correlativas.map((item) => String(item || "").trim()).filter(Boolean)
-      : Array.isArray(subject?.requisitos)
-        ? subject.requisitos.map((item) => String(item || "").trim()).filter(Boolean)
-        : undefined
-  };
+const normalizeCareerSlug = (value) => {
+  const normalized = normalizeStr(value);
+  return CAREER_SLUG_EQUIVALENCES[normalized] || normalized;
 };
+
+
+
+
+
+
+
+
+
+
 
 async function main(){
   if (!admin.apps.length) admin.initializeApp();

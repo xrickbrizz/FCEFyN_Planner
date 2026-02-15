@@ -20,3 +20,4 @@ firebase-debug.log
 .env
 firestore-debug.log
 .env
+/serviceAccountKey.json
