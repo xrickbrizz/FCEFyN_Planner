@@ -38,7 +38,7 @@
 
 <script type="module">
 import { showConfirm } from "./scripts/ui/notifications.js";
-import { getPlansIndex, getPlanWithSubjects } from "./scripts/plans-data.js";
+import { db, collection, getDocs, doc, getDoc } from "./scripts/core/firebase.js";
 (function(){
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
   const params = new URLSearchParams(window.location.search);
@@ -374,9 +374,29 @@ function revalidateEstados() {
     return [];
   }
 
+  async function loadPlans(){
+    const snapshot = await getDocs(collection(db, "plans"));
+    return snapshot.docs.map((snap) => ({
+      id: snap.id,
+      ...snap.data()
+    }));
+  }
+
+  async function loadPlan(slug){
+    const snap = await getDoc(doc(db, "plans", slug));
+    if (!snap.exists()) {
+      throw new Error("Plan no encontrado");
+    }
+    return { id: snap.id, ...snap.data() };
+  }
+
   async function loadIndex(){
-    const plans = await getPlansIndex();
-    indexPlans = (Array.isArray(plans) ? plans : []).slice().sort((a,b)=>{
+    const plans = await loadPlans();
+    indexPlans = (Array.isArray(plans) ? plans : []).map((plan) => ({
+      slug: plan.slug || plan.id || "",
+      nombre: plan.nombre || plan.slug || plan.id || "Sin nombre",
+      version: Number(plan.version || 1)
+    })).filter((plan) => !!plan.slug).sort((a,b)=>{
       return normalize(a.nombre).localeCompare(normalize(b.nombre), "es");
     });
 
@@ -399,17 +419,18 @@ function revalidateEstados() {
 
     hideMsg();
 
-    const data = await getPlanWithSubjects(plan.slug || slug);
-    storageKey = `${STORAGE_KEY_DEFAULT}_${plan.slug || slug}`;
+    const planData = await loadPlan(plan.slug || slug);
+    const planSlug = planData.slug || plan.slug || slug;
+    storageKey = `${STORAGE_KEY_DEFAULT}_${planSlug}`;
 
-    materias = detectMaterias(data.raw || { materias: data.subjects || [] });
+    materias = detectMaterias(planData);
     if(!materias.length){
       gridWrap.style.display = "none";
       showMsg("El plan en Firestore no tiene materias cargadas.");
       return;
     }
 
-    title.textContent = plan.nombre || "Plan de Estudios";
+    title.textContent = planData.nombre || plan.nombre || "Plan de Estudios";
     gridWrap.style.display = "grid";
 
     buildGrid();
@@ -418,9 +439,9 @@ function revalidateEstados() {
     updateUI();
 
     // guardo selección para que no se vea query string
-    sessionStorage.setItem("selectedPlanSlug", plan.slug || "");
-    sessionStorage.setItem("selectedPlanNombre", plan.nombre || "");
-    planSelect.value = plan.slug || "";
+    sessionStorage.setItem("selectedPlanSlug", planSlug || "");
+    sessionStorage.setItem("selectedPlanNombre", planData.nombre || plan.nombre || "");
+    planSelect.value = planSlug || "";
   }
 
   btnBack.addEventListener("click", ()=> window.location.href = getBackUrl());
@@ -455,7 +476,7 @@ function revalidateEstados() {
 
   window.addEventListener("storage", (e)=>{ if(e.key === storageKey) updateUI(); });
 
-  (async function init(){
+  async function initPlansPage(){
     try{
       await loadIndex();
 
@@ -480,7 +501,11 @@ function revalidateEstados() {
       gridWrap.style.display = "none";
       showMsg("Error al cargar el índice desde Firestore: " + (e && e.message ? e.message : e));
     }
-  })();
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await initPlansPage();
+  });
 })();
 </script>
 </body>
