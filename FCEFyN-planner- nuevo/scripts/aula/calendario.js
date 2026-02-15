@@ -51,8 +51,6 @@ const btnStudyWeeklyGoalSave = document.getElementById("btnStudyWeeklyGoalSave")
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
-const acadTodayLabel = document.getElementById("acadTodayLabel");
-const acadMonthStatus = document.getElementById("acadMonthStatus");
 const btnAcadReturn = document.getElementById("btnAcadReturn");
 const acadAddActivity = document.getElementById("acadAddActivity");
 const acadNewEntry = document.getElementById("acadNewEntry");
@@ -1028,12 +1026,15 @@ function initStudyModalUI(){
 function initAcademicoNav(){
   const prevBtn = document.getElementById("btnAcadPrev");
   const nextBtn = document.getElementById("btnAcadNext");
-  const todayBtn = document.getElementById("btnAcadToday");
   const openAcadToday = () => {
     const now = new Date();
     acadViewYear = now.getFullYear();
     acadViewMonth = now.getMonth();
+    const todayKey = dateKeyFromYMD(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    acadSelectedDateKey = todayKey;
     renderAcadCalendar();
+    renderRightPanel(todayKey);
+    highlightAcadSelection(todayKey);
   };
   if (prevBtn){
     prevBtn.addEventListener("click", ()=>{
@@ -1052,11 +1053,6 @@ function initAcademicoNav(){
     });
   } else {
     warnMissing("btnAcadNext", nextBtn);
-  }
-  if (todayBtn){
-    todayBtn.addEventListener("click", openAcadToday);
-  } else {
-    warnMissing("btnAcadToday", todayBtn);
   }
   if (btnAcadReturn){
     btnAcadReturn.addEventListener("click", openAcadToday);
@@ -1112,11 +1108,8 @@ export function renderAcadCalendar(){
   acadSelectedDateKey = selectedKey;
 
   acadMonthTitle.textContent = firstDay.toLocaleString("es-ES", { month:"long", year:"numeric" });
-  if (acadTodayLabel) acadTodayLabel.textContent = now.toLocaleDateString("es-ES");
-  if (acadMonthStatus){
-    const isCurrent = acadViewYear === now.getFullYear() && acadViewMonth === now.getMonth();
-    acadMonthStatus.hidden = isCurrent;
-  }
+  const isCurrentMonth = acadViewYear === now.getFullYear() && acadViewMonth === now.getMonth();
+  if (btnAcadReturn) btnAcadReturn.hidden = isCurrentMonth;
 
   acadGrid.innerHTML = "";
 

@@ -215,28 +215,19 @@
           </div>
             <div class="cal-controls">
               <div class="cal-controls-group">
+                <button class="cal-nav-btn" id="btnAcadReturn" type="button" title="Volver al mes actual" hidden>
+                  <span>Volver a hoy</span>
+                </button>
                 <button class="cal-nav-btn" id="btnAcadPrev" type="button" title="Mes anterior">
                   <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                   <span>Mes anterior</span>
-                </button>
-                <button class="cal-nav-btn" id="btnAcadToday" type="button" title="Volver a la fecha actual">
-                  <span>Ir a hoy</span>
-                  <span class="cal-today-date" id="acadTodayLabel">—</span>
                 </button>
                 <button class="cal-nav-btn" id="btnAcadNext" type="button" title="Mes siguiente">
                   <span>Mes siguiente</span>
                   <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
                 </button>
               </div>
-            <div class="cal-status" id="acadMonthStatus" hidden>
-              <button type="button" id="btnAcadReturn">Volver a hoy</button>
             </div>
-            </div>
-          </div>
-
-          <div class="acad-help">
-            Parciales, TPs, Tareas, Informes y Recordatorios (se guardan en tu planner de Firebase).
-            <br/>Tip: tocá un día para ver el detalle en el panel derecho y agregá registros desde ahí.
           </div>
 
           <div class="grid" id="acadDow">
