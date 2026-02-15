@@ -32,17 +32,7 @@ const normalizeCareerSlug = (value) => {
   const normalized = normalizeStr(value);
   return CAREER_SLUG_EQUIVALENCES[normalized] || normalized;
 };
-
-
-
-
-
-
-
-
-
-
-
+// corregir // 
 async function main(){
   if (!admin.apps.length) admin.initializeApp();
   const db = admin.firestore();
