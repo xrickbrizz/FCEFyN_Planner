@@ -1,6 +1,8 @@
 import {
   doc,
+  getDoc,
   setDoc,
+  updateDoc,
   serverTimestamp,
   storageRef,
   uploadBytes,
@@ -264,10 +266,12 @@ function renderProfileSection(){
   if (!currentUser) return;
   if (profileEmailEl) profileEmailEl.textContent = currentUser.email || userProfile?.email || "—";
 
-  const plan = userProfile?.careerSlug
-    ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === userProfile.careerSlug)
+  const persistedCareerSlug = profileCareerSelect?.dataset?.persistedCareerSlug || "";
+  const candidateCareerSlug = persistedCareerSlug || userProfile?.careerSlug || "";
+  const plan = candidateCareerSlug
+    ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === candidateCareerSlug)
     : (userProfile?.career ? CTX?.findPlanByName?.(userProfile.career) : null);
-  const selectedSlug = plan?.slug || userProfile?.careerSlug || "";
+  const selectedSlug = plan?.slug || candidateCareerSlug || "";
 
   renderCareerOptions(profileCareerSelect, selectedSlug);
 
@@ -281,6 +285,49 @@ function renderProfileSection(){
   setProfileStatus(passwordStatusEl, "");
   setProfileAvatarStatus("");
   renderProfileAvatar();
+}
+
+async function loadPersistedCareerSelection(){
+  const ready = getReadyProfileContext("Cargar carrera de perfil", { requireDB: true });
+  if (!ready) return;
+  const { currentUser, db } = ready;
+  if (!profileCareerSelect) return;
+  try{
+    const publicUserSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
+    if (!publicUserSnap.exists()) return;
+    const publicUserData = publicUserSnap.data() || {};
+    const careerSlug = (publicUserData.careerSlug || "").trim();
+    if (!careerSlug) return;
+    const optionExists = Array.from(profileCareerSelect.options || []).some(opt => opt.value === careerSlug);
+    if (!optionExists) return;
+    profileCareerSelect.dataset.persistedCareerSlug = careerSlug;
+    profileCareerSelect.value = careerSlug;
+    updateUserProfileCache({ careerSlug });
+  }catch(error){
+    console.warn("[Perfil] No se pudo cargar la carrera persistida en publicUsers", error);
+  }
+}
+
+async function syncCareerSlugFromSelect(){
+  const ready = getReadyProfileContext("Actualizar carrera", { requireDB: true, profileStatus: true });
+  if (!ready) return;
+  const { currentUser, db, notifyError } = ready;
+  if (!profileCareerSelect) return;
+  const careerSlug = (profileCareerSelect.value || "").trim();
+  if (!careerSlug) return;
+  try{
+    await updateDoc(doc(db, "publicUsers", currentUser.uid), {
+      careerSlug,
+      updatedAt: serverTimestamp()
+    });
+    profileCareerSelect.dataset.persistedCareerSlug = careerSlug;
+    updateUserProfileCache({ careerSlug });
+    setProfileStatus(profileStatusEl, "Carrera actualizada automáticamente.");
+  }catch(error){
+    console.error("[Perfil] Error actualizando careerSlug en publicUsers", error);
+    notifyError?.("No se pudo actualizar la carrera.");
+    setProfileStatus(profileStatusEl, "No se pudo actualizar la carrera automáticamente.");
+  }
 }
 
 function bindProfileHandlers(){
@@ -359,6 +406,12 @@ function bindProfileHandlers(){
         notifyError?.("No se pudo guardar el perfil.");
         setProfileStatus(profileStatusEl, "No se pudo guardar. Intentá nuevamente.");
       }
+    });
+  }
+
+  if (profileCareerSelect){
+    profileCareerSelect.addEventListener("change", async () => {
+      await syncCareerSlugFromSelect();
     });
   }
 
@@ -493,6 +546,7 @@ const Profile = {
     profileUnsubscribe = onProfileUpdated((profile) => {
       handleProfileUpdate(profile);
     });
+    await loadPersistedCareerSelection();
   },
   renderProfileSection,
   resolveAvatarUrl,
