@@ -9,6 +9,10 @@ let editingIndex = -1;
 let studyViewYear = null;
 let studyViewMonth = null;
 let studyFocusDateKey = null;
+let studyWeeklyGoalHours = 10;
+let studyWeeklyMinutes = 0;
+let studyWeeklyPercent = 0;
+let studyWeeklyKey = "";
 
 // ---- ACADEMICO
 let academicoCache = {};
@@ -20,7 +24,6 @@ let acadSelectedDateKey = null;
 const monthTitle = document.getElementById("monthTitle");
 const gridStudy = document.getElementById("calendarGrid");
 const studyTodayLabel = document.getElementById("studyTodayLabel");
-const studyMonthStatus = document.getElementById("studyMonthStatus");
 const btnStudyReturn = document.getElementById("btnStudyReturn");
 const studyDetailTitle = document.getElementById("studyDetailTitle");
 const studyDetailDate = document.getElementById("studyDetailDate");
@@ -47,6 +50,10 @@ const studyTimerStatus = document.getElementById("studyTimerStatus");
 const studyStreakValue = document.getElementById("studyStreakValue");
 const studyTodayHoursValue = document.getElementById("studyTodayHoursValue");
 const studyWeeklyGoalValue = document.getElementById("studyWeeklyGoalValue");
+const studyWeeklyGoalEdit = document.getElementById("studyWeeklyGoalEdit");
+const studyWeeklyGoalEditRow = document.getElementById("studyWeeklyGoalEditRow");
+const studyWeeklyGoalInput = document.getElementById("studyWeeklyGoalInput");
+const studyDetailPanel = document.getElementById("studyDetailPanel");
 const studyUpcomingWidget = document.getElementById("studyUpcomingWidget");
 
 const acadGrid = document.getElementById("acadGrid");
@@ -133,6 +140,7 @@ export function initCalendario(ctx){
   initStudyModalUI();
   initStudyDayModalUI();
   initStudyTimer();
+  initStudyWeeklyGoalEditor();
   initAcademicoModalUI();
 
   if (studyViewYear === null || studyViewMonth === null){
@@ -155,13 +163,16 @@ export function initCalendario(ctx){
   renderAcadCalendar();
 }
 
-export function setCalendarioCaches({ estudios, academico } = {}){
+export function setCalendarioCaches({ estudios, academico, metaSemanal } = {}){
   if (estudios && typeof estudios === "object") estudiosCache = estudios;
   if (academico && typeof academico === "object") academicoCache = academico;
+  if (Number.isFinite(metaSemanal) && metaSemanal > 0) studyWeeklyGoalHours = Math.round(metaSemanal);
+  refreshStudyWeeklyProgress({ force:true });
+  updateStudyWeeklyGoalUI();
 }
 
 export function getCalendarioCaches(){
-  return { estudiosCache, academicoCache };
+  return { estudiosCache, academicoCache, metaSemanal: studyWeeklyGoalHours };
 }
 
 function pad2(n){ return String(n).padStart(2,"0"); }
@@ -353,9 +364,13 @@ function initStudyNav(){
   const todayBtn = document.getElementById("btnStudyToday");
   const openStudyToday = () => {
     const now = new Date();
+    const todayKey = dateKeyFromYMD(now.getFullYear(), now.getMonth() + 1, now.getDate());
     studyViewYear = now.getFullYear();
     studyViewMonth = now.getMonth();
+    studyFocusDateKey = todayKey;
+    selectedDate = todayKey;
     renderStudyCalendar();
+    renderStudyDetailPanel(todayKey);
   };
   if (prevBtn){
     prevBtn.addEventListener("click", ()=>{
@@ -418,11 +433,14 @@ export function renderStudyCalendar(){
 
   const todayParts = getTodayParts();
   if (studyTodayLabel) studyTodayLabel.textContent = todayParts.date.toLocaleDateString("es-ES");
-  const isCurrentMonth = studyViewYear === todayParts.y && studyViewMonth === (todayParts.m - 1);
-  if (studyMonthStatus){
-    studyMonthStatus.hidden = isCurrentMonth;
+  const currentYear = todayParts.y;
+  const currentMonth = todayParts.m - 1;
+  const isCurrentMonth = studyViewYear === currentYear && studyViewMonth === currentMonth;
+  if (btnStudyReturn){
+    btnStudyReturn.hidden = (studyViewYear === currentYear && studyViewMonth === currentMonth);
   }
 
+  const streakInfo = calculateCurrentStudyStreak();
   gridStudy.innerHTML = "";
 
   for (let i=0;i<offset;i++){
@@ -447,7 +465,9 @@ export function renderStudyCalendar(){
     const head = document.createElement("div");
     head.className = "day-number";
     const left = document.createElement("span");
+    left.className = "day-number-label";
     left.textContent = String(d);
+    if (streakInfo.keys.has(dateKey)) left.classList.add("streak-day");
     const dot = document.createElement("span");
     dot.className = "today-dot";
     head.appendChild(left);
@@ -461,9 +481,11 @@ export function renderStudyCalendar(){
     box.onclick = () => {
       console.log("[calendario] click study day", { day:d, month: studyViewMonth+1, year: studyViewYear });
       studyFocusDateKey = dateKey;
+      selectedDate = dateKey;
       renderStudyDetailPanel(dateKey);
-      highlightStudySelection(dateKey);
-      openStudyDayModal(dateKey);
+      if (studyDetailPanel){
+        studyDetailPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
     };
     gridStudy.appendChild(box);
   }
@@ -478,6 +500,17 @@ export function renderStudyCalendar(){
   renderStudyUpcomingWidget();
 }
 
+function applyStudyStreakClasses(){
+  if (!gridStudy) return;
+  const streakInfo = calculateCurrentStudyStreak();
+  gridStudy.querySelectorAll(".day").forEach((box) => {
+    const key = box.dataset.dateKey;
+    const label = box.querySelector(".day-number-label");
+    if (!key || !label) return;
+    label.classList.toggle("streak-day", streakInfo.keys.has(key));
+  });
+}
+
 export function paintStudyEvents(){
   if (!gridStudy) return;
   const boxes = gridStudy.querySelectorAll(".day");
@@ -486,7 +519,11 @@ export function paintStudyEvents(){
     if (dots) dots.innerHTML = "";
   });
 
-  if (!estudiosCache) return;
+  if (!estudiosCache) {
+    applyStudyStreakClasses();
+    renderStudyDetailPanel(studyFocusDateKey || getTodayKey());
+    return;
+  }
 
   Object.keys(estudiosCache).forEach(dateKey => {
     const parts = ymdFromDateKey(dateKey);
@@ -510,6 +547,7 @@ export function paintStudyEvents(){
       dots.appendChild(dot);
     });
   });
+  applyStudyStreakClasses();
   renderStudyDetailPanel(studyFocusDateKey || getTodayKey());
 }
 
@@ -548,6 +586,62 @@ function formatHoursValue(totalMinutes){
     : `${totalHours.toFixed(1)}h`;
 }
 
+function getStudyWeekStart(date = new Date()){
+  const base = new Date(date);
+  base.setHours(0, 0, 0, 0);
+  const dayIndex = (base.getDay() + 6) % 7;
+  base.setDate(base.getDate() - dayIndex);
+  return base;
+}
+
+function getStudyWeekKey(date = new Date()){
+  const weekStart = getStudyWeekStart(date);
+  return dateKeyFromYMD(weekStart.getFullYear(), weekStart.getMonth() + 1, weekStart.getDate());
+}
+
+function calculateCurrentStudyStreak(){
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const keys = [];
+  const cursor = new Date(today);
+
+  while (true){
+    const key = dateKeyFromYMD(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
+    if (getTotalStudyMinutesForDay(key) < 30) break;
+    keys.push(key);
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return { count: keys.length, keys: new Set(keys) };
+}
+
+function refreshStudyWeeklyProgress({ force = false, referenceDate = new Date() } = {}){
+  const nextWeekKey = getStudyWeekKey(referenceDate);
+  if (!force && studyWeeklyKey === nextWeekKey) return;
+
+  const weekStart = getStudyWeekStart(referenceDate);
+  let totalMinutes = 0;
+  for (let i = 0; i < 7; i++){
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + i);
+    const dateKey = dateKeyFromYMD(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    totalMinutes += getTotalStudyMinutesForDay(dateKey);
+  }
+
+  studyWeeklyMinutes = totalMinutes;
+  studyWeeklyPercent = Math.min(100, Math.round(((studyWeeklyMinutes / 60) / studyWeeklyGoalHours) * 100));
+  studyWeeklyKey = nextWeekKey;
+}
+
+function updateStudyWeeklyGoalUI(){
+  if (studyWeeklyGoalValue){
+    studyWeeklyGoalValue.textContent = `${studyWeeklyPercent}%`;
+  }
+  if (studyWeeklyGoalInput && !studyWeeklyGoalEditRow?.hidden){
+    studyWeeklyGoalInput.value = String(studyWeeklyGoalHours);
+  }
+}
+
 function renderStudyStats(){
   const todayKey = getTodayKey();
   const todayMinutes = getTotalStudyMinutesForDay(todayKey);
@@ -556,39 +650,12 @@ function renderStudyStats(){
     studyTodayHoursValue.textContent = formatHoursValue(todayMinutes);
   }
 
-  const todayDate = new Date();
-  const dayIndex = (todayDate.getDay() + 6) % 7;
-  const weekStart = new Date(todayDate);
-  weekStart.setHours(0, 0, 0, 0);
-  weekStart.setDate(todayDate.getDate() - dayIndex);
-
-  let weeklyMinutes = 0;
-  for (let i = 0; i < 7; i++){
-    const date = new Date(weekStart);
-    date.setDate(weekStart.getDate() + i);
-    const dateKey = dateKeyFromYMD(date.getFullYear(), date.getMonth() + 1, date.getDate());
-    weeklyMinutes += getTotalStudyMinutesForDay(dateKey);
-  }
-
-  if (studyWeeklyGoalValue){
-    const WEEKLY_GOAL_MINUTES = 600; // 10 horas
-    const percentage = Math.min(100, Math.round((weeklyMinutes / WEEKLY_GOAL_MINUTES) * 100));
-    studyWeeklyGoalValue.textContent = `${percentage}%`;
-  }
+  refreshStudyWeeklyProgress();
+  updateStudyWeeklyGoalUI();
 
   if (studyStreakValue){
-    let streak = 0;
-    const cursor = new Date(todayDate);
-    cursor.setHours(0, 0, 0, 0);
-
-    while (true){
-      const key = dateKeyFromYMD(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
-      if (getTotalStudyMinutesForDay(key) <= 0) break;
-      streak += 1;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-
-    studyStreakValue.textContent = `${streak} días`;
+    const streak = calculateCurrentStudyStreak();
+    studyStreakValue.textContent = `${streak.count} días`;
   }
 }
 
@@ -813,6 +880,7 @@ async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
 
   await setDoc(ref, data);
   estudiosCache = data.estudios || {};
+  refreshStudyWeeklyProgress({ force:true });
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
   renderStudyStats();
@@ -850,6 +918,7 @@ async function deleteStudyItem(dateKey, index){
 
   await setDoc(ref, data);
   estudiosCache = data.estudios || {};
+  refreshStudyWeeklyProgress({ force:true });
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
   renderStudyStats();
@@ -968,6 +1037,54 @@ function updateStudyTimerStatus(){
     timerWidget.classList.toggle("running", stateAttr === "running");
     timerWidget.classList.toggle("paused", stateAttr === "paused");
   }
+}
+
+async function saveStudyWeeklyGoal(hours){
+  const user = getCurrentUser();
+  if (!user) return;
+  const { db, doc, setDoc } = CTX || {};
+  if (!db || !doc || !setDoc) return;
+  await setDoc(doc(db, "planner", user.uid), { metaSemanal: hours }, { merge: true });
+}
+
+function initStudyWeeklyGoalEditor(){
+  if (!studyWeeklyGoalEdit || !studyWeeklyGoalEditRow || !studyWeeklyGoalInput) return;
+
+  const commitGoal = async () => {
+    const parsed = parseInt(studyWeeklyGoalInput.value, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0){
+      CTX?.notifyWarn?.("Ingresá una meta semanal válida en horas.");
+      studyWeeklyGoalInput.value = String(studyWeeklyGoalHours);
+      return;
+    }
+    if (parsed === studyWeeklyGoalHours){
+      studyWeeklyGoalEditRow.hidden = true;
+      return;
+    }
+    studyWeeklyGoalHours = parsed;
+    await saveStudyWeeklyGoal(studyWeeklyGoalHours);
+    refreshStudyWeeklyProgress({ force: true });
+    updateStudyWeeklyGoalUI();
+    studyWeeklyGoalEditRow.hidden = true;
+  };
+
+  studyWeeklyGoalEdit.addEventListener("click", () => {
+    studyWeeklyGoalEditRow.hidden = !studyWeeklyGoalEditRow.hidden;
+    if (!studyWeeklyGoalEditRow.hidden){
+      studyWeeklyGoalInput.value = String(studyWeeklyGoalHours);
+      studyWeeklyGoalInput.focus();
+      studyWeeklyGoalInput.select();
+    }
+  });
+
+  studyWeeklyGoalInput.addEventListener("keydown", async (e) => {
+    if (e.key === "Enter") await commitGoal();
+    if (e.key === "Escape") studyWeeklyGoalEditRow.hidden = true;
+  });
+
+  studyWeeklyGoalInput.addEventListener("blur", async () => {
+    if (!studyWeeklyGoalEditRow.hidden) await commitGoal();
+  });
 }
 
 function initStudyModalUI(){
