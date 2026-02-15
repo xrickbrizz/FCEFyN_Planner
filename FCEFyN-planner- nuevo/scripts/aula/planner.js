@@ -185,8 +185,39 @@ function updateSectionsSubjectFilter(){
   return availableSubjectSlugs;
 }
 
-async function loadCourseSections(){
+function diagnoseCareerSlug(){
+  const selectedCareerSlug = CTX.normalizeStr(CTX.getCurrentCareer?.() || "");
+  const profileCareerSlug = CTX.normalizeStr(CTX.getUserProfile?.()?.careerSlug || "");
+  const resolvedCareerSlug = selectedCareerSlug || profileCareerSlug;
+  return {
+    selectedCareerSlug,
+    profileCareerSlug,
+    resolvedCareerSlug,
+    activeCareerSlug: resolvedCareerSlug
+  };
+}
+
+async function refreshPlannerSections(){
+  const slugDiagnostic = diagnoseCareerSlug();
+  console.log("careerSlug diagnóstico", slugDiagnostic);
+  const slug = slugDiagnostic.resolvedCareerSlug;
+  if (!slug){
+    console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
+    CTX.aulaState.courseSections = [];
+    renderSectionsList();
+    renderSelectedSectionsList();
+    renderPlannerPreview();
+    return;
+  }
+  await loadCourseSections(slug);
+}
+
+async function loadCourseSections(slug){
   console.log("🚀 loadCourseSections ejecutándose");
+  if (!slug || typeof slug !== "string"){
+    console.error("Slug inválido:", slug);
+    return;
+  }
   const dayMap = {
     1: "Lunes",
     2: "Martes",
@@ -212,7 +243,7 @@ async function loadCourseSections(){
   CTX.aulaState.courseSections = [];
   try{
     console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
-    const activeCareerSlug = CTX.normalizeStr(CTX.getCurrentCareer?.() || "");
+    const activeCareerSlug = CTX.normalizeStr(slug);
     const activeCareerAliases = expandCareerSlugAliases(activeCareerSlug);
     if (!activeCareerSlug){
       console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
@@ -821,6 +852,7 @@ const Planner = {
     console.log("🛠️ Planner.init ejecutándose");
     initPresetToAgendaModalUI();
   },
+  refreshPlannerSections,
   loadCourseSections,
   initPlanificadorUI,
   renderPlannerAll,

@@ -116,7 +116,7 @@ const Aula = {
     Planner.init(ctx);
 
     await loadPlannerData(ctx);
-    await Planner.loadCourseSections();
+    await Planner.refreshPlannerSections();
 
     Planner.initPlanificadorUI();
   },
