@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, getDoc, doc } from "../core/firebase.js";
+import { collection, getDocs, getDoc, doc } from "../core/firebase.js";
 
 let CTX = null;
 
@@ -14,15 +14,26 @@ function buildExcludedUserSet(){
   (state?.friendsList || []).forEach(friend => {
     if (friend.otherUid) excluded.add(friend.otherUid);
   });
-  (state?.friendRequests?.incoming || []).forEach(req =>{
+  (state?.friendRequests?.incoming || []).forEach(req => {
     const from = req?.fromUid || req?.senderUid || req?.senderId || "";
     if (req.status === "pending" && from) excluded.add(from);
   });
-  (state?.friendRequests?.outgoing || []).forEach(req =>{
+  (state?.friendRequests?.outgoing || []).forEach(req => {
     const to = req?.receiverUid || req?.toUid || req?.recipientUid || "";
     if (req.status === "pending" && to) excluded.add(to);
   });
   return excluded;
+}
+
+function toggleSearchOverlay(isOpen){
+  const state = CTX?.socialState;
+  if (!state?.friendSearchOverlay) return;
+  state.friendSearchOverlay.classList.toggle("hidden", !isOpen);
+  state.friendSearchOverlay.setAttribute("aria-hidden", String(!isOpen));
+  if (isOpen){
+    renderUsersSearchList();
+    state.usersSearchInput?.focus();
+  }
 }
 
 function renderUsersSearchList(){
@@ -32,7 +43,7 @@ function renderUsersSearchList(){
 
   const queryText = normalizeText(state.usersSearchInput.value);
   const excluded = buildExcludedUserSet();
-  const matches = (state.allUsersCache || []).filter(user =>{
+  const matches = (state.allUsersCache || []).filter(user => {
     if (!user?.uid || excluded.has(user.uid)) return false;
     const name = normalizeText(user.name || user.fullName || user.firstName);
     const email = normalizeText(user.email);
@@ -45,35 +56,55 @@ function renderUsersSearchList(){
     return;
   }
 
-  matches.forEach(user =>{
+  matches.forEach(user => {
     const item = document.createElement("div");
-    item.className = "user-item";
+    item.className = "friend-search-item";
     const labelName = user.name || user.fullName || user.firstName || "Usuario";
-    item.textContent = `${labelName} · ${user.email || "-"}`;
-    item.addEventListener("click", () => {
-      state.usersSearchInput.value = user.email || "";
-      state.usersSearchList.innerHTML = "";
+    item.innerHTML = `
+      <div class="friend-search-user">
+        <div class="friend-search-name">${labelName}</div>
+        <div class="friend-search-email">${user.email || "-"}</div>
+      </div>
+      <button class="btn-blue btn-small" type="button">Enviar solicitud</button>
+    `;
+
+    const sendButton = item.querySelector("button");
+    sendButton?.addEventListener("click", async () => {
+      const hiddenEmailInput = document.getElementById("friendEmailInput");
+      if (!hiddenEmailInput) return;
+      hiddenEmailInput.value = user.email || "";
+      await CTX.socialModules.Friends?.sendFriendRequest?.();
+      renderUsersSearchList();
     });
+
     state.usersSearchList.appendChild(item);
   });
 }
 
 function ensureUsersSearchUI(){
   const state = CTX?.socialState;
-  if (!state || (state.usersSearchList && state.usersSearchInput)) return;
-  const form = document.querySelector(".friend-form");
-  if (!form) return;
+  if (!state) return;
 
-  state.usersSearchInput = document.getElementById("friendEmailInput");
-  state.usersSearchList = document.createElement("div");
-  state.usersSearchList.className = "users-list";
-  form.appendChild(state.usersSearchList);
+  state.usersSearchInput = document.getElementById("friendSearchInput");
+  state.usersSearchList = document.getElementById("friendSearchResults");
+  state.friendSearchOverlay = document.getElementById("friendSearchOverlay");
 
-  if (state.usersSearchInput){
-    state.usersSearchInput.addEventListener("input", () => {
-      renderUsersSearchList();
-    });
-  }
+  if (!state.usersSearchInput || !state.usersSearchList || !state.friendSearchOverlay) return;
+  if (state.friendSearchEventsBound) return;
+
+  document.getElementById("openFriendSearch")?.addEventListener("click", () => {
+    toggleSearchOverlay(true);
+  });
+
+  document.getElementById("closeFriendSearch")?.addEventListener("click", () => {
+    toggleSearchOverlay(false);
+  });
+
+  state.usersSearchInput.addEventListener("input", () => {
+    renderUsersSearchList();
+  });
+
+  state.friendSearchEventsBound = true;
 }
 
 async function loadUsersDirectory(){
@@ -85,7 +116,7 @@ async function loadUsersDirectory(){
   try{
     const snap = await getDocs(collection(CTX.db, "publicUsers"));
     const users = [];
-    snap.forEach(docSnap =>{
+    snap.forEach(docSnap => {
       const data = docSnap.data() || {};
       const profile = { uid: docSnap.id, ...data };
       users.push(profile);

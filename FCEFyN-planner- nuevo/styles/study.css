@@ -2720,6 +2720,10 @@ body[data-theme="light"] .event{
   gap: .85rem;
 }
 
+.panel-chat{
+  position:relative;
+}
+
 .add-amigo-form input{
   min-width: 0;
 }
@@ -2783,6 +2787,92 @@ body[data-theme="light"] .event{
 
 .panel-chat .chat-card{
   min-height: 33.75rem;
+}
+
+.friend-search-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.98);
+  z-index:100;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:2rem;
+  overflow-y:auto;
+  opacity:1;
+  transform:scale(1);
+  transition:opacity .2s ease, transform .2s ease;
+}
+
+.friend-search-overlay.hidden{
+  display:none;
+}
+
+.friend-search-modal{
+  width:100%;
+  max-width:37.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+
+.friend-search-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+}
+
+.friend-search-header h3{
+  margin:0;
+}
+
+#closeFriendSearch{
+  border:1px solid var(--border-30);
+  background:var(--surface-1);
+  width:2rem;
+  height:2rem;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+#friendSearchInput{
+  width:100%;
+  padding:.65rem .75rem;
+  border-radius:.75rem;
+  border:1px solid var(--border-50);
+  background:var(--color-surface-3);
+  color:var(--color-text);
+}
+
+.friend-search-results{
+  display:flex;
+  flex-direction:column;
+  gap:.55rem;
+}
+
+.friend-search-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  border:1px solid var(--border-18);
+  padding:.55rem .7rem;
+  border-radius:.75rem;
+  background:var(--glass-faint);
+}
+
+.friend-search-item .friend-search-user{
+  min-width:0;
+}
+
+.friend-search-item .friend-search-name{
+  font-weight:700;
+}
+
+.friend-search-item .friend-search-email{
+  color:var(--text-soft);
+  font-size:.85rem;
 }
 
 .chat-placeholder{

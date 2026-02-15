@@ -325,14 +325,6 @@ function initMessagingUI(){
   CTX.socialModules.Directory?.ensureUsersSearchUI?.();
   CTX.socialModules.Directory?.loadUsersDirectory?.();
 
-  const btnSendReq = document.getElementById("btnSendFriendRequest");
-  console.log("[Mensajeria] initMessagingUI ok", { btnSendReq: !!btnSendReq });
-  if (!btnSendReq){
-    console.warn("[Mensajeria] btnSendFriendRequest no encontrado (id esperado: btnSendFriendRequest).");
-  } else {
-    btnSendReq.addEventListener("click", CTX.socialModules.Friends?.sendFriendRequest);
-  }
-
   const btnSendMsg = document.getElementById("btnSendMessage");
   if (btnSendMsg) btnSendMsg.addEventListener("click", sendMessage);
 

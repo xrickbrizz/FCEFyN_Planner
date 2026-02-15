@@ -550,10 +550,9 @@
         <aside class="mensajeria-sidebar messages-left sidebar-mensajes">
           <article class="card-block mensajeria-card add-amigo">
             <div class="block-title">Agregar amigo</div>
-            <div class="small-muted">Buscá por correo institucional y enviá la solicitud.</div>
+            <div class="small-muted">Abrí el buscador para encontrar estudiantes y enviar solicitudes.</div>
             <div class="friend-form add-amigo-form">
-              <input id="friendEmailInput" type="email" placeholder="correo@mi.unc.edu.ar" aria-label="Correo para agregar amigo" />
-              <button class="btn-blue btn-small" id="btnSendFriendRequest" type="button">Enviar solicitud</button>
+              <button class="btn-blue btn-small" id="openFriendSearch" type="button">Buscar amigo</button>
             </div>
           </article>
 
@@ -568,6 +567,18 @@
         </aside>
 
         <section class="mensajeria-chat messages-right panel-chat">
+          <div id="friendSearchOverlay" class="friend-search-overlay hidden" aria-hidden="true">
+            <div class="friend-search-modal">
+              <div class="friend-search-header">
+                <h3>Buscar amigos</h3>
+                <button id="closeFriendSearch" type="button" aria-label="Cerrar buscador de amigos">×</button>
+              </div>
+              <input type="text" id="friendSearchInput" placeholder="Buscar por correo..." aria-label="Buscar usuario por correo" />
+              <div id="friendSearchResults" class="friend-search-results" aria-live="polite"></div>
+              <input id="friendEmailInput" type="email" hidden aria-hidden="true" tabindex="-1" />
+            </div>
+          </div>
+
           <article class="card-block mensajeria-card mensajeria-chat-card chat-card">
             <div class="chat-header">
               <div>
