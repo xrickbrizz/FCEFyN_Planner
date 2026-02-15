@@ -197,25 +197,27 @@ function diagnoseCareerSlug(){
   };
 }
 
-async function refreshPlannerSections(){
+async function refreshPlannerSections(options = {}){
   const slugDiagnostic = diagnoseCareerSlug();
   console.log("careerSlug diagnóstico", slugDiagnostic);
   const slug = slugDiagnostic.resolvedCareerSlug;
-  if (!slug){
-    console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
+  if (!slug || typeof slug !== "string"){
+    console.warn("Slug inválido:", slug);
     CTX.aulaState.courseSections = [];
     renderSectionsList();
     renderSelectedSectionsList();
     renderPlannerPreview();
     return;
   }
-  await loadCourseSections(slug);
+  await loadCourseSections(slug, options);
 }
 
-async function loadCourseSections(slug){
+async function loadCourseSections(slug, options = {}){
+  void options;
   console.log("🚀 loadCourseSections ejecutándose");
+  console.log("Slug recibido en loadCourseSections:", slug);
   if (!slug || typeof slug !== "string"){
-    console.error("Slug inválido:", slug);
+    console.error("Slug indefinido en loadCourseSections");
     return;
   }
   const dayMap = {
@@ -244,7 +246,6 @@ async function loadCourseSections(slug){
   try{
     console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
     const activeCareerSlug = CTX.normalizeStr(slug);
-    const activeCareerAliases = expandCareerSlugAliases(activeCareerSlug);
     if (!activeCareerSlug){
       console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
       return;
@@ -252,7 +253,7 @@ async function loadCourseSections(slug){
     console.log("🧭 Consultando colección Firestore: comisiones (filtrada por carrera)");
     const comisionesQuery = query(
       collection(CTX.db, "comisiones"),
-      where("careerSlugs", "array-contains-any", activeCareerAliases)
+      where("careerSlugs", "array-contains", activeCareerSlug)
     );
     const snap = await getDocs(comisionesQuery);
     console.log("📦 Snapshot recibido:", snap);
