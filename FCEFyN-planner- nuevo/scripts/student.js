@@ -6,12 +6,10 @@ import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioC
 from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
-import { createHomeWeatherWidget } from "./ui/home-weather-widget.js";
 
 let html2canvasLib = null;
 let jsPDFLib = null;
 let appCtx = null;
-let homeWeatherWidget = null;
 
 const AppState = {
   currentUser: null,
@@ -356,14 +354,6 @@ onSessionReady(async (user) => {
   Social.open("perfil");
   bindProfileShortcuts();
   initHomeNotices();
-
-  const homeWeatherRoot = document.getElementById("homeWeatherWidget");
-  homeWeatherWidget = createHomeWeatherWidget({
-    root: homeWeatherRoot,
-    isVisible: () => navState.activeSection === "inicio"
-  });
-  homeWeatherWidget?.mount();
-
   restoreLastSection();
 });
 
@@ -607,8 +597,6 @@ window.showTab = function(name){
 
   document.getElementById("friendRequestsPanel")?.classList.remove("is-open");
   document.getElementById("friendRequestsPanel")?.setAttribute("aria-hidden", "true");
-
-  homeWeatherWidget?.onSectionChange(name);
 };
 
 function isBlockedByClientError(error){
