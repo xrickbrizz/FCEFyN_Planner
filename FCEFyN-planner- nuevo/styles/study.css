@@ -2162,6 +2162,17 @@ body[data-theme="light"] .event{
       padding:.75rem .9rem;
       width: 25rem;
     }
+    .planner-card-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:.5rem;
+    }
+    .planner-card-title{
+      font-size:.95rem;
+      font-weight:600;
+      margin:0;
+    }
     .section-card-layout{
       display:grid;
       grid-template-columns:minmax(0, 1fr) auto;
@@ -2182,8 +2193,11 @@ body[data-theme="light"] .event{
       margin-top:.2rem;
     }
     .section-schedule-wrap{
-      margin-top:.5rem;
+      margin-top:.4rem;
       overflow-x:auto;
+    }
+    .planner-card table{
+      margin-top:.4rem;
     }
     .section-schedule-table{
       width:100%;
@@ -2216,6 +2230,20 @@ body[data-theme="light"] .event{
       gap:.4rem;
       justify-content:flex-end;
       align-items:center;
+    }
+    .planner-remove-btn{
+      background:transparent;
+      border:1px solid var(--color-border);
+      padding:.25rem .6rem;
+      border-radius:8px;
+      font-size:.75rem;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+    .planner-remove-btn:hover{
+      background:#ffeaea;
+      border-color:#e53935;
+      color:#e53935;
     }
     .section-days{
       display:flex;
@@ -3476,8 +3504,8 @@ header{
   position:fixed;
   top:0;
   right:0;
-  width:20rem;
-  max-width:20rem;
+  width:29rem;
+  max-width:29rem;
   height:100vh;
   max-height:100vh;
   background:var(--color-surface);

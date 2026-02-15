@@ -384,39 +384,38 @@ function renderSectionsList(){
     const conflict = selected ? { blocked: false, reason: "Añadida" } : getConflictInfo(sec);
 
     const card = document.createElement("article");
-    card.className = "section-card planner-item" + (conflict.blocked ? " blocked" : "");
+    card.className = "section-card planner-card planner-item" + (conflict.blocked ? " blocked" : "");
     const teachers = getSectionTeachers(sec);
     const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
     card.innerHTML = `
-      <div class="section-card-layout">
-        <div class="section-academic-info">
-          <div class="section-title">${escapeHtml(formatAcademicTitle(sec))}</div>
-          <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
-          <div class="section-schedule-wrap">
-            <table class="section-schedule-table" aria-label="Horarios de ${escapeHtml(getSubjectNameFromSection(sec) || "Comisión")}">
-              <thead>
-                <tr>
-                  <th>Día</th>
-                  <th>Inicia</th>
-                  <th>Finaliza</th>
-                  <th>Sede</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${buildScheduleTableRows(sec)}
-              </tbody>
-            </table>
-          </div>
-          ${conflict.blocked ? `<div class="section-status warn">${escapeHtml(conflict.reason)}</div>` : ""}
+      <div class="section-academic-info">
+        <div class="section-card-header planner-card-header">
+          <h4 class="section-title planner-card-title">${escapeHtml(formatAcademicTitle(sec))}</h4>
         </div>
-        <div class="section-actions"></div>
+        <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
+        <div class="section-schedule-wrap planner-card-body">
+          <table class="section-schedule-table" aria-label="Horarios de ${escapeHtml(getSubjectNameFromSection(sec) || "Comisión")}">
+            <thead>
+              <tr>
+                <th>Día</th>
+                <th>Inicia</th>
+                <th>Finaliza</th>
+                <th>Sede</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${buildScheduleTableRows(sec)}
+            </tbody>
+          </table>
+        </div>
+        ${conflict.blocked ? `<div class="section-status warn">${escapeHtml(conflict.reason)}</div>` : ""}
       </div>`;
 
     const btn = document.createElement("button");
     btn.className = "btn-plan-add btn-small";
     if (selected){
       btn.textContent = "Quitar";
-      btn.className = "btn-outline btn-small";
+      btn.className = "btn-outline btn-small planner-remove-btn";
       btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
     } else if (conflict.blocked){
       btn.textContent = "Con conflicto";
@@ -427,7 +426,7 @@ function renderSectionsList(){
       btn.addEventListener("click", () => toggleSectionInPreset(sec.id));
     }
 
-    card.querySelector(".section-actions")?.appendChild(btn);
+    card.querySelector(".section-card-header")?.appendChild(btn);
     list.appendChild(card);
   });
 
