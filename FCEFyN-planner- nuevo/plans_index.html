@@ -35,9 +35,10 @@
     <div>FCEFyN • UNC</div>
   </footer>
 
-<script>
+<script type="module">
+import { db, collection, getDocs } from "./scripts/core/firebase.js";
+
 (function(){
-  const INDEX_URL = "./plans/plans_index.json";
   const msg = document.getElementById("msg");
   const grid = document.getElementById("grid");
   const q = document.getElementById("q");
@@ -66,38 +67,44 @@
   }
 
   function openPlan(plan){
-    // guardo selección sin query string visible
-    sessionStorage.setItem("selectedPlanSlug", plan.slug || "");
-    sessionStorage.setItem("selectedPlanJson", plan.json || "");
+    const careerSlug = plan.slug || plan.id || "";
+    sessionStorage.setItem("selectedPlanSlug", careerSlug);
     sessionStorage.setItem("selectedPlanNombre", plan.nombre || "");
-    window.location.href = "plans.html";
+    window.location.href = `plans.html?career=${encodeURIComponent(careerSlug)}`;
   }
 
   let allPlans = [];
 
-  async function loadIndex(){
-    try{
-      const res = await fetch(INDEX_URL, { cache: "no-store" });
-      if(!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
+  async function loadPlansIndex(){
+    const snapshot = await getDocs(collection(db, "plans"));
+    return snapshot.docs.map((planDoc) => ({
+      id: planDoc.id,
+      ...planDoc.data()
+    }));
+  }
 
-      const arr = Array.isArray(data.plans) ? data.plans
-                : Array.isArray(data.carreras) ? data.carreras
-                : Array.isArray(data) ? data
-                : [];
+  async function initPlansIndex(){
+    try {
+      const plans = await loadPlansIndex();
 
-      if(!arr.length){
-        showMsg('El índice no tiene planes. Revisá "plans/plans_index.json".');
+      allPlans = (Array.isArray(plans) ? plans : [])
+        .map((plan) => ({
+          ...plan,
+          slug: plan.slug || plan.id || "",
+          nombre: plan.nombre || plan.slug || plan.id || "Sin nombre"
+        }))
+        .filter((plan) => !!plan.slug)
+        .sort((a, b) => normalize(a.nombre).localeCompare(normalize(b.nombre), "es"));
+
+      if(!allPlans.length){
+        showMsg("No hay planes disponibles en Firestore.");
         return;
       }
 
-      allPlans = arr.slice().sort((a,b)=>{
-        return normalize(a.nombre).localeCompare(normalize(b.nombre), "es");
-      });
-
       render();
-    }catch(e){
-      showMsg("No se pudo cargar carreras. Revisá que exista: " + INDEX_URL);
+    } catch (e) {
+      console.error("Error cargando planes:", e);
+      showMsg("No se pudieron cargar los planes desde Firestore.");
     }
   }
 
@@ -137,7 +144,9 @@
   btnClear.addEventListener("click", ()=>{ q.value=""; render(); q.focus(); });
   btnBack.addEventListener("click", ()=>{ window.location.href = getBackUrl(); });
 
-  loadIndex();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await initPlansIndex();
+  });
 })();
 </script>
 </body>

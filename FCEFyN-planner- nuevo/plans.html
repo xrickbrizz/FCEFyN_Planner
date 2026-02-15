@@ -44,7 +44,7 @@ import { db, collection, getDocs, doc, getDoc } from "./scripts/core/firebase.js
   const params = new URLSearchParams(window.location.search);
   const embed = params.get("embed") === "1";
   const lock = params.get("lock") === "1";
-  const slugParam = params.get("slug") || "";
+  const slugParam = params.get("career") || params.get("slug") || "";
 
   if (embed) document.body.classList.add("plans-embed");
 
