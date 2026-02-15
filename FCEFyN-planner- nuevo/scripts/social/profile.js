@@ -20,8 +20,6 @@ let profileUnsubscribe = null;
 let didRenderProfile = false;
 let didEnsurePublicProfile = false;
 let profileHandlersBound = false;
-let careerSyncInFlight = false;
-let pendingCareerSlug = "";
 
 const profileEmailEl = document.getElementById("profileEmail");
 const profileFirstNameInput = document.getElementById("profileFirstName");
@@ -316,35 +314,20 @@ async function syncCareerSlugFromSelect(){
   if (!careerSelect) return;
   const careerSlug = (careerSelect.value || "").trim();
   if (!careerSlug) return;
-
-  const cachedProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
-  const currentCareerSlug = (cachedProfile?.careerSlug || "").trim();
-  if (currentCareerSlug === careerSlug){
-    setProfileStatus(profileStatusEl, "La carrera ya estaba actualizada.");
-    return;
-  }
-
-  if (careerSyncInFlight && pendingCareerSlug === careerSlug){
-    return;
-  }
-
-  careerSyncInFlight = true;
-  pendingCareerSlug = careerSlug;
-
   try{
     const plan = (CTX?.getCareerPlans?.() || []).find((item) => item.slug === careerSlug);
     const planVersion = Number(plan?.version || 1);
-    await Promise.all([
-      updateDoc(doc(db, "users", currentUser.uid), {
-        careerSlug,
-        planVersion,
-        updatedAt: serverTimestamp()
-      }),
-      updateDoc(doc(db, "publicUsers", currentUser.uid), {
-        careerSlug,
-        updatedAt: serverTimestamp()
-      })
-    ]);
+    await updateDoc(doc(db, "publicUsers", currentUser.uid), {
+      careerSlug,
+      updatedAt: serverTimestamp()
+    });
+    await setDoc(doc(db, "users", currentUser.uid), {
+      careerSlug,
+      planVersion,
+      approvedSubjects: Array.isArray(getSessionUserProfile()?.approvedSubjects) ? getSessionUserProfile().approvedSubjects : [],
+      currentSubjects: Array.isArray(getSessionUserProfile()?.currentSubjects) ? getSessionUserProfile().currentSubjects : [],
+      updatedAt: serverTimestamp()
+    }, { merge: true });
     updateUserProfileCache({ careerSlug, planVersion });
     window.dispatchEvent(new CustomEvent("careerChanged", { detail: { careerSlug } }));
     setProfileStatus(profileStatusEl, "Carrera actualizada automáticamente.");
@@ -352,11 +335,6 @@ async function syncCareerSlugFromSelect(){
     console.error("[Perfil] Error actualizando careerSlug en publicUsers", error);
     notifyError?.("No se pudo actualizar la carrera.");
     setProfileStatus(profileStatusEl, "No se pudo actualizar la carrera automáticamente.");
-  }finally{
-    if (pendingCareerSlug === careerSlug){
-      careerSyncInFlight = false;
-      pendingCareerSlug = "";
-    }
   }
 }
 

@@ -2,15 +2,20 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // --- FUNCIONES DE UTILIDAD ---
     function signedIn() { return request.auth != null; }
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    
     function isAdmin() {
-      return signedIn() && (
-        request.auth.token.admin == true ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
-      );
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (
+          request.auth.token.admin == true ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
+        );
     }
 
+    // --- VALIDACIONES NUEVAS ---
     function validSubjectIds(listValue) {
       return listValue is list && listValue.size() <= 500;
     }
@@ -32,7 +37,7 @@ service cloud.firestore {
         && (!('careerSlug' in data) || data.careerSlug is string);
     }
 
-    // ---- users (privado) ----
+    // --- USERS (Privado) ---
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
       allow create: if (isOwner(uid) || isAdmin()) && validUserAcademicState(request.resource.data);
@@ -40,21 +45,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // ---- plans (estructura académica global) ----
-    match /plans/{careerSlug} {
-      allow read: if signedIn();
-      allow create, update, delete: if isAdmin();
-    }
-
-    // ---- comisiones (oferta académica) ----
-    match /comisiones/{id} {
-      allow read: if signedIn() && (resource.data.careerSlugs is list);
-      allow create, update, delete: if isAdmin()
-        && (request.resource.data.careerSlugs is list)
-        && request.resource.data.careerSlugs.size() > 0;
-    }
-
-    // ---- publicUsers (directorio) ----
+    // --- PUBLIC USERS (Directorio) ---
     match /publicUsers/{uid} {
       allow read: if signedIn();
       allow create: if (isOwner(uid) || isAdmin())
@@ -64,149 +55,149 @@ service cloud.firestore {
         && validPublicUserData(request.resource.data)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          "email",
-          "emailLower",
-          "name",
-          "photoURL",
-          "careerSlug",
-          "updatedAt"
+          "email", "emailLower", "name", "photoURL", "careerSlug", "updatedAt"
         ]);
       allow delete: if isOwner(uid) || isAdmin();
     }
 
-    // ---- planner ----
+    // --- PLANNER ---
     match /planner/{uid} {
       allow read, create, update: if isOwner(uid) || isAdmin();
       allow delete: if isAdmin();
     }
 
-    // ---- courseSections (admin) ----
+    // --- ACADEMIC GLOBAL (Plans, Comisiones, Sections) ---
+    match /plans/{careerSlug} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /comisiones/{id} {
+      allow read: if signedIn() && (resource.data.careerSlugs is list);
+      allow create, update, delete: if isAdmin()
+        && (request.resource.data.careerSlugs is list)
+        && request.resource.data.careerSlugs.size() > 0;
+    }
+
     match /courseSections/{id} {
       allow read: if signedIn();
       allow create, update, delete: if isAdmin();
     }
 
-    // ---- professors (lectura pública autenticada) ----
+    // --- PROFESSORS & REVIEWS ---
     match /professors/{professorId} {
       allow read: if signedIn();
-      // Seguridad: los agregados se actualizan solo desde Cloud Functions.
       allow create, update, delete: if isAdmin();
 
       match /reviews/{uid} {
         allow read: if signedIn();
-        // Solo Cloud Functions (Admin SDK) puede escribir reviews.
-        allow create, update, delete: if false;
+        // Según tu segundo código: Solo Cloud Functions (Admin SDK) puede escribir.
+        allow write: if false; 
       }
     }
 
-    // ---- professorReviews (lectura autenticada) ----
-    match /professorReviews/{reviewId} {
+    // --- ANNOUNCEMENTS ---
+    match /announcements/{id} {
       allow read: if signedIn();
-      allow write: if false;
+      allow create, update, delete: if isAdmin();
     }
 
-    // ---- status / presencia ----
+    // --- SOCIAL: FRIEND REQUESTS ---
+    match /friendRequests/{requestId} {
+      function nonEmptyStr(x) { return x is string && x.size() > 0; }
+      function reqFrom(d) {
+        return nonEmptyStr(d.fromUid) ? d.fromUid :
+               nonEmptyStr(d.senderUid) ? d.senderUid :
+               nonEmptyStr(d.senderId) ? d.senderId : "";
+      }
+      function reqTo(d) {
+        return nonEmptyStr(d.receiverUid) ? d.receiverUid :
+               nonEmptyStr(d.toUid) ? d.toUid :
+               nonEmptyStr(d.recipientUid) ? d.recipientUid : "";
+      }
+      function frIsSender(d) { return signedIn() && reqFrom(d) == request.auth.uid; }
+      function frIsReceiver(d) { return signedIn() && reqTo(d) == request.auth.uid; }
+
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.status == "pending"
+        && reqFrom(request.resource.data) == request.auth.uid
+        && reqTo(request.resource.data) != "";
+
+      allow update: if isAdmin() || (signedIn() && (
+        (
+          frIsReceiver(resource.data)
+          && resource.data.status == "pending"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status","updatedAt","decisionBy"])
+          && request.resource.data.status in ["accepted","rejected"]
+          && reqFrom(request.resource.data) == reqFrom(resource.data)
+          && reqTo(request.resource.data) == reqTo(resource.data)
+        ) || (
+          frIsSender(resource.data)
+          && resource.data.status == "pending"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status","updatedAt","canceledBy"])
+          && request.resource.data.status == "canceled"
+          && reqFrom(request.resource.data) == reqFrom(resource.data)
+          && reqTo(request.resource.data) == reqTo(resource.data)
+        )
+      ));
+      allow delete: if isAdmin();
+    }
+
+    // --- SOCIAL: FRIENDS & CHATS ---
+    match /friends/{friendshipId} {
+      allow read: if signedIn() && (request.auth.uid in resource.data.uids);
+      allow create: if signedIn()
+        && (request.auth.uid in request.resource.data.uids)
+        && request.resource.data.uids.size() == 2;
+      allow update, delete: if false;
+    }
+
+    match /friends/{uid}/items/{itemId} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /chats/{chatId} {
+      function isMember(data) {
+        return signedIn() && (
+          (data.uids is list && request.auth.uid in data.uids) ||
+          (data.users is list && request.auth.uid in data.users)
+        );
+      }
+      allow read: if signedIn();
+      allow create: if signedIn() && (
+        (request.resource.data.uids is list && request.resource.data.uids.size() == 2 && request.auth.uid in request.resource.data.uids) ||
+        (request.resource.data.users is list && request.resource.data.users.size() == 2 && request.auth.uid in request.resource.data.users)
+      );
+      allow update: if isMember(resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["lastMessage","updatedAt"]);
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        function chatMember() {
+          let chat = get(/databases/$(database)/documents/chats/$(chatId));
+          return signedIn() && chat.data != null && (
+            (chat.data.uids is list && request.auth.uid in chat.data.uids) ||
+            (chat.data.users is list && request.auth.uid in chat.data.users)
+          );
+        }
+        allow read: if chatMember();
+        allow create: if chatMember()
+          && (request.resource.data.text is string)
+          && (request.resource.data.text.size() <= 2000)
+          && (
+            (request.resource.data.senderUid is string && request.resource.data.senderUid == request.auth.uid) ||
+            (request.resource.data.senderId is string && request.resource.data.senderId == request.auth.uid)
+          );
+        allow update, delete: if false;
+      }
+    }
+
+    // --- STATUS ---
     match /userStatus/{uid} {
       allow read: if signedIn();
       allow create, update: if isOwner(uid);
       allow delete: if false;
-    }
-
-    // ---- solicitudes ----
-    match /friendRequests/{id} {
-      function reqFrom(data) {
-        return data.fromUid is string ? data.fromUid :
-               data.senderUid is string ? data.senderUid :
-               data.senderId is string ? data.senderId : "";
-      }
-      function reqTo(data) {
-        return data.toUid is string ? data.toUid :
-               data.receiverUid is string ? data.receiverUid :
-               data.recipientUid is string ? data.recipientUid : "";
-      }
-
-      allow read: if signedIn() && (
-        request.auth.uid == reqFrom(resource.data) ||
-        request.auth.uid == reqTo(resource.data) ||
-        isAdmin()
-      );
-
-      allow create: if signedIn()
-        && reqFrom(request.resource.data) == request.auth.uid
-        && reqTo(request.resource.data) is string
-        && request.resource.data.status == "pending";
-
-      allow update: if signedIn() && (
-        // receiver acepta/rechaza
-        (
-          request.auth.uid == reqTo(resource.data) &&
-          request.resource.data.diff(resource.data).changedKeys()
-            .hasOnly(["status","updatedAt","decisionBy"]) &&
-          (request.resource.data.status in ["accepted","rejected"])
-        )
-        ||
-        // sender cancela
-        (
-          request.auth.uid == reqFrom(resource.data) &&
-          request.resource.data.diff(resource.data).changedKeys()
-            .hasOnly(["status","updatedAt","canceledBy"]) &&
-          request.resource.data.status == "canceled"
-        )
-      );
-
-      allow delete: if false;
-    }
-
-    // ---- friends (legacy/compat) ----
-    match /friends/{chatId} {
-      allow read: if signedIn() && (request.auth.uid in resource.data.uids);
-      allow create: if signedIn() && (request.auth.uid in request.resource.data.uids);
-      allow update: if signedIn()
-        && (request.auth.uid in resource.data.uids)
-        && request.resource.data.uids == resource.data.uids
-        && request.resource.data.chatId == resource.data.chatId
-        && request.resource.data.diff(resource.data).changedKeys().hasOnly(["createdAt","uids","chatId"]);
-      allow delete: if false;
-    }
-
-    // ---- chats + messages ----
-    match /chats/{chatId} {
-
-      function isParticipant(data) {
-        return signedIn()
-          && ((data.users is list && request.auth.uid in data.users)
-            || (data.uids is list && request.auth.uid in data.uids));
-      }
-
-      allow read: if isParticipant(resource.data);
-
-      allow create: if signedIn()
-        && ((request.resource.data.users is list && request.auth.uid in request.resource.data.users)
-          || (request.resource.data.uids is list && request.auth.uid in request.resource.data.uids));
-
-      // no permitir cambiar miembros ni createdAt una vez creado
-      allow update: if isParticipant(resource.data)
-        && request.resource.data.diff(resource.data).changedKeys()
-          .hasOnly(['lastMessage','updatedAt','users','uids'])
-        && request.resource.data.users == resource.data.users
-        && request.resource.data.uids == resource.data.uids;
-
-      allow delete: if false;
-
-      match /messages/{messageId} {
-        function senderMatches() {
-          return signedIn()
-            && ((request.resource.data.senderUid is string && request.resource.data.senderUid == request.auth.uid)
-              || (request.resource.data.senderId is string && request.resource.data.senderId == request.auth.uid));
-        }
-
-        allow read: if isParticipant(get(/databases/$(database)/documents/chats/$(chatId)).data);
-
-        allow create: if senderMatches()
-          && isParticipant(get(/databases/$(database)/documents/chats/$(chatId)).data);
-
-        allow update, delete: if false;
-      }
     }
   }
 }
