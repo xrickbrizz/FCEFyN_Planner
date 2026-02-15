@@ -402,20 +402,17 @@
               <span>🔎</span>
               <input id="profSearchInput" type="search" placeholder="Buscar profesor por nombre">
             </label>
-            <select id="profSortSelect" aria-label="Ordenar profesores">
-              <option value="name_asc">Orden alfabético A-Z</option>
-              <option value="name_desc">Orden alfabético Z-A</option>
-            </select>
+            <button id="profAdvancedFiltersBtn" class="btn-outline btn-small" type="button">Filtros avanzados</button>
           </div>
         </header>
 
-        <div id="professorsList" class="prof-grid"></div>
+        <div id="profTopPagination" class="prof-pagination">
+          <button id="profPrevPage" class="btn-outline btn-small" type="button" aria-label="Página anterior">&lt;</button>
+          <span id="profPageIndicator">1 / 1</span>
+          <button id="profNextPage" class="btn-outline btn-small" type="button" aria-label="Página siguiente">&gt;</button>
+        </div>
 
-        <footer class="prof-pagination">
-          <button id="profPrevPage" class="btn-outline btn-small" type="button">Anterior</button>
-          <span id="profPageIndicator">1 de 1</span>
-          <button id="profNextPage" class="btn-outline btn-small" type="button">Siguiente</button>
-        </footer>
+        <div id="professorsList" class="prof-grid"></div>
       </div>
 
       <div id="professorDetailSection" class=" hidden">
@@ -443,6 +440,40 @@
           <div class="prof-modal-actions">
             <button class="btn-blue btn-small" id="btnSubmitRating" type="button">Enviar</button>
             <button class="btn-outline btn-small" id="btnCancelRatingModal" type="button">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="profAdvancedFiltersModal" class="prof-modal hidden" role="dialog" aria-modal="true" aria-labelledby="profFiltersModalTitle">
+        <div class="prof-modal-backdrop" data-close="true"></div>
+        <div class="prof-modal-content prof-filters-modal-content">
+          <div class="prof-modal-header">
+            <h3 id="profFiltersModalTitle">Filtros avanzados</h3>
+            <button id="closeProfAdvancedFiltersModal" class="btn-icon" type="button" aria-label="Cerrar filtros">✕</button>
+          </div>
+
+          <div class="prof-filter-field">
+            <label for="profSubjectFilterSelect">Materia</label>
+            <select id="profSubjectFilterSelect" aria-label="Filtrar por materia">
+              <option value="">Todas las materias</option>
+            </select>
+          </div>
+
+          <div class="prof-filter-field">
+            <label for="profRankingFilterSelect">Ordenamiento</label>
+            <select id="profRankingFilterSelect" aria-label="Ordenamiento de profesores">
+              <option value="">Sin ordenamiento</option>
+              <option value="reviews_desc">Más reseñas</option>
+              <option value="average_desc">Mejor promedio</option>
+              <option value="teaching_desc">Mejor enseñanza</option>
+              <option value="treatment_desc">Mejor trato con estudiantes</option>
+              <option value="exams_easy">Parciales más fáciles</option>
+              <option value="exams_hard">Parciales más difíciles</option>
+            </select>
+          </div>
+
+          <div class="prof-modal-actions">
+            <button class="btn-outline btn-small" id="profClearAdvancedFilters" type="button">Limpiar filtros</button>
           </div>
         </div>
       </div>
