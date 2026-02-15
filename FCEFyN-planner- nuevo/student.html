@@ -121,7 +121,7 @@
         <div class="study-main-column">
                     <section class="study-stats-grid" aria-label="Resumen de estudio">
             <article class="study-stat-card">
-              <div class="study-stat-label">Racha</div>
+              <div class="study-stat-label">🔥 Racha</div>
               <div class="study-stat-value" id="studyStreakValue">0 días</div>
             </article>
             <article class="study-stat-card">
@@ -129,15 +129,8 @@
               <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
             </article>
             <article class="study-stat-card">
-              <div class="study-stat-label study-goal-label">
-                <span>🎯 Meta semanal</span>
-                <button type="button" id="studyWeeklyGoalEdit" class="study-goal-edit-btn" aria-label="Editar meta semanal">✎</button>
-              </div>
+              <div class="study-stat-label">🎯 Meta semanal</div>
               <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
-              <div class="study-goal-edit-row" id="studyWeeklyGoalEditRow" hidden>
-                <input id="studyWeeklyGoalInput" type="number" min="1" step="1" inputmode="numeric" aria-label="Meta semanal en horas" />
-                <span>h</span>
-              </div>
             </article>
           </section>
           <section id="studyTimerWidget" class="widget-card study-timer-card">
@@ -187,9 +180,6 @@
               </div>
               <div class="cal-controls">
                 <div class="cal-controls-group">
-                  <button class="cal-nav-btn" id="btnStudyReturn" type="button" title="Volver al mes actual">
-                    <span>Volver a hoy</span>
-                  </button>
                   <button class="cal-nav-btn" id="btnStudyPrev" type="button" title="Mes anterior">
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     <span>Mes anterior</span>
@@ -202,6 +192,9 @@
                     <span>Mes siguiente</span>
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
                   </button>
+                </div>
+                <div class="cal-status" id="studyMonthStatus" hidden>
+                  <button type="button" id="btnStudyReturn">Volver a hoy</button>
                 </div>
               </div>
             </div>

@@ -953,41 +953,6 @@ body[data-theme="light"] .tab-card{
 
     .study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
     .study-stat-value{ color:var(--text); font-size:1.15rem; font-weight:700; }
-    .study-goal-label{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:.4rem;
-    }
-    .study-goal-edit-btn{
-      border:1px solid var(--border);
-      background:transparent;
-      color:var(--text-soft);
-      border-radius:.45rem;
-      padding:.08rem .35rem;
-      line-height:1;
-      font-size:.78rem;
-      cursor:pointer;
-    }
-    .study-goal-edit-btn:hover{ color:var(--primary); border-color:var(--primary); }
-    .study-goal-edit-row{
-      display:flex;
-      align-items:center;
-      gap:.35rem;
-      margin-top:.2rem;
-      color:var(--text-soft);
-      font-size:.82rem;
-    }
-    #studyWeeklyGoalInput{
-      width:3.2rem;
-      border:1px solid var(--border);
-      border-radius:.45rem;
-      padding:.2rem .35rem;
-      background:var(--surface);
-      color:var(--text);
-      text-align:center;
-    }
 
     @media(max-width:900px){
       .tab-estudio-layout{ grid-template-columns:1fr; }
@@ -1089,11 +1054,6 @@ body[data-theme="light"] .tab-card{
       min-width: 0;
     }
     .day-number span{ min-width:0; }
-    .streak-day {
-      color: #ff7a00;
-      text-shadow: 0 0 8px rgba(255,122,0,0.6);
-      font-weight: bold;
-    }
     .today-dot{
       width: 0.5rem; height:0.5rem; border-radius:50%;
       background:var(--color-accent-2);

@@ -26,7 +26,7 @@ async function loadPlannerData(ctx){
   ctx.aulaState.activePresetId = null;
   ctx.aulaState.activePresetName = "";
   ctx.aulaState.activeSelectedSectionIds = [];
-  setCalendarioCaches({ estudios: {}, academico: {}, metaSemanal: 10 });
+  setCalendarioCaches({ estudios: {}, academico: {} });
 
   const currentUser = ctx.getCurrentUser?.();
   if (!currentUser) return;
@@ -37,7 +37,6 @@ async function loadPlannerData(ctx){
 
   let estudiosData = {};
   let academicoData = {};
-  let metaSemanal = 10;
   if (snap.exists()){
     const data = snap.data();
     if (data.estudios && typeof data.estudios === "object") estudiosData = data.estudios;
@@ -53,8 +52,6 @@ async function loadPlannerData(ctx){
     if (data.activePresetId) ctx.aulaState.activePresetId = data.activePresetId;
 
     if (data.academico && typeof data.academico === "object") academicoData = data.academico;
-    const parsedGoal = Number(data.metaSemanal);
-    if (Number.isFinite(parsedGoal) && parsedGoal > 0) metaSemanal = Math.round(parsedGoal);
   } else {
     await setDoc(ref, {
       estudios:{},
@@ -74,7 +71,7 @@ async function loadPlannerData(ctx){
   }
 
   ctx.ensureAgendaStructure?.();
-  setCalendarioCaches({ estudios: estudiosData, academico: academicoData, metaSemanal });
+  setCalendarioCaches({ estudios: estudiosData, academico: academicoData });
   if (removedSunday){
     await setDoc(ref, { agenda: ctx.aulaState.agendaData }, { merge:true });
   }
