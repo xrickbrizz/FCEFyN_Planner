@@ -1,4 +1,4 @@
-const INDEX_URL = "./plans/plans_index.json";
+import { functions, httpsCallable } from "./core/firebase.js";
 
 const normalizeStr = (s) => (s || "")
   .toString()
@@ -7,36 +7,24 @@ const normalizeStr = (s) => (s || "")
   .replace(/[\u0300-\u036f]/g, "")
   .trim();
 
-let cachedIndex = null; // [{slug,nombre,json}]
+let cachedIndex = null; // [{slug,nombre,version}]
 const cachedSubjects = new Map(); // slug -> {subjects, rawPlan}
 
-async function fetchJson(url){
-  console.log("[plans] fetching", url);
-  const res = await fetch(url, { cache:"no-store" });
-  console.log("[plans] fetch response", res.status, url);
-  if(!res.ok) throw new Error(`HTTP ${res.status} al leer ${url}`);
-  return await res.json();
-}
+const listPlansCallable = httpsCallable(functions, "listPlansCallable");
+const getPlanByCareerSlugCallable = httpsCallable(functions, "getPlanByCareerSlugCallable");
 
 export async function getPlansIndex(){
   if (cachedIndex) return cachedIndex;
-  try{
-    const data = await fetchJson(INDEX_URL);
-    const arr = Array.isArray(data.plans) ? data.plans
-             : Array.isArray(data.carreras) ? data.carreras
-             : Array.isArray(data) ? data
-             : [];
-    cachedIndex = arr.map(p => ({
-      slug: p.slug || p.id || "",
-      nombre: p.nombre || p.name || p.slug || p.id || "Carrera",
-      json: p.json || p.path || ""
-    })).filter(p => p.slug && p.json);
-    console.log("[plans] index loaded", cachedIndex.length);
-    return cachedIndex;
-  }catch(error){
-    console.error("[plans] ERROR", error);
-    throw error;
-  }
+  const result = await listPlansCallable();
+  const plans = Array.isArray(result?.data?.plans) ? result.data.plans : [];
+  cachedIndex = plans
+    .map((p) => ({
+      slug: p?.slug || "",
+      nombre: p?.nombre || p?.slug || "Carrera",
+      version: Number(p?.version || 1)
+    }))
+    .filter((p) => p.slug);
+  return cachedIndex;
 }
 
 export function findPlanByName(name){
@@ -51,18 +39,12 @@ export async function getPlanWithSubjects(slug){
   if(!plan) return { plan:null, subjects:[], raw:{} };
   if(cachedSubjects.has(slug)) return { plan, ...cachedSubjects.get(slug) };
 
-  try{
-    const raw = await fetchJson(plan.json);
-    const subjects = Array.isArray(raw.materias) ? raw.materias
-                   : Array.isArray(raw.subjects) ? raw.subjects
-                   : [];
-    const payload = { subjects, raw };
-    cachedSubjects.set(slug, payload);
-    return { plan, ...payload };
-  }catch(error){
-    console.error("[plans] ERROR", error);
-    throw error;
-  }
+  const result = await getPlanByCareerSlugCallable({ careerSlug: slug });
+  const rawPlan = result?.data?.plan || {};
+  const subjects = Array.isArray(rawPlan.materias) ? rawPlan.materias : [];
+  const payload = { subjects, raw: rawPlan };
+  cachedSubjects.set(slug, payload);
+  return { plan, ...payload };
 }
 
 export function mapCareersToPlans(careers){

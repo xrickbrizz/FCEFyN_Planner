@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, getDocs } from "../core/firebase.js";
+import { doc, getDoc, setDoc, collection, getDocs, query, where } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
@@ -211,8 +211,17 @@ async function loadCourseSections(){
   CTX.aulaState.courseSections = [];
   try{
     console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
-    console.log("🧭 Consultando colección Firestore: comisiones");
-    const snap = await getDocs(collection(CTX.db, "comisiones"));
+    const activeCareerSlug = CTX.normalizeStr(CTX.getCurrentCareer?.() || "");
+    if (!activeCareerSlug){
+      console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
+      return;
+    }
+    console.log("🧭 Consultando colección Firestore: comisiones (filtrada por carrera)");
+    const comisionesQuery = query(
+      collection(CTX.db, "comisiones"),
+      where("careerSlugs", "array-contains", activeCareerSlug)
+    );
+    const snap = await getDocs(comisionesQuery);
     console.log("📦 Snapshot recibido:", snap);
     console.log("📊 Cantidad de documentos:", snap.size);
     snap.forEach(d => {

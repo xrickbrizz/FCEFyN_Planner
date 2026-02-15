@@ -1621,26 +1621,34 @@ body[data-theme="light"] .event{
     }
 
     /* AGENDA SEMANAL */
-    .agenda-header{
+    .agenda-header-row{
       display:flex;
-      justify-content:space-between;
       align-items:center;
-      margin-bottom:.6rem;
-      gap: .6rem;
+      justify-content:space-between;
+      gap:1rem;
+      margin-bottom:1rem;
       flex-wrap:wrap;
+    }
+    .agenda-title{
+      flex:1;
+      min-width:220px;
+    }
+    .agenda-title h3{
+      margin:0;
+      font-size:1.05rem;
+    }
+    .agenda-presets-inline{
+      display:flex;
+      gap:.6rem;
+      align-items:center;
+      min-width:0;
     }
     .agenda-actions{
       display:flex;
-      gap: .6rem;
-      flex-wrap:wrap;
+      gap:.6rem;
       align-items:center;
-      justify-content:flex-end;
-      width: 100%;
-    }
-    .agenda-downloads{
-      display:flex;
-      gap: .35rem;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
     .agenda-shell{
       grid-column: 1 / -1;
@@ -3467,15 +3475,6 @@ header{
   display: none;
 }
 /* Planner modal + chips sobre agenda */
-.agenda-presets-bar{
-  border:1px solid var(--border-85);
-  background:var(--color-surface-3);
-  border-radius:var(--radius-md);
-  padding:.7rem;
-  margin-bottom:.75rem;
-}
-.agenda-presets-head{ display:flex; align-items:center; gap:.5rem; margin-bottom:.45rem; }
-.agenda-presets-actions{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
 .preset-chips-row{ display:flex; flex-wrap:wrap; gap:12px; }
 .preset-chip{
   display:inline-flex;

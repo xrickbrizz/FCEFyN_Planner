@@ -11,12 +11,38 @@ service cloud.firestore {
       );
     }
 
+    function validSubjectIds(listValue) {
+      return listValue is list && listValue.size() <= 500;
+    }
+
+    function validUserAcademicState(data) {
+      return data.careerSlug is string
+        && data.careerSlug.size() > 0
+        && (!('planVersion' in data) || data.planVersion is int)
+        && (!('approvedSubjects' in data) || validSubjectIds(data.approvedSubjects))
+        && (!('currentSubjects' in data) || validSubjectIds(data.currentSubjects));
+    }
+
     // ---- users (privado) ----
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow create: if isOwner(uid) || isAdmin();
-      allow update: if isOwner(uid) || isAdmin();
+      allow create: if (isOwner(uid) || isAdmin()) && validUserAcademicState(request.resource.data);
+      allow update: if (isOwner(uid) || isAdmin()) && validUserAcademicState(request.resource.data);
       allow delete: if isAdmin();
+    }
+
+    // ---- plans (estructura académica global) ----
+    match /plans/{careerSlug} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---- comisiones (oferta académica) ----
+    match /comisiones/{id} {
+      allow read: if signedIn() && (resource.data.careerSlugs is list);
+      allow create, update, delete: if isAdmin()
+        && (request.resource.data.careerSlugs is list)
+        && request.resource.data.careerSlugs.size() > 0;
     }
 
     // ---- publicUsers (directorio) ----

@@ -315,11 +315,20 @@ async function syncCareerSlugFromSelect(){
   const careerSlug = (careerSelect.value || "").trim();
   if (!careerSlug) return;
   try{
+    const plan = (CTX?.getCareerPlans?.() || []).find((item) => item.slug === careerSlug);
+    const planVersion = Number(plan?.version || 1);
     await updateDoc(doc(db, "publicUsers", currentUser.uid), {
       careerSlug,
       updatedAt: serverTimestamp()
     });
-    updateUserProfileCache({ careerSlug });
+    await setDoc(doc(db, "users", currentUser.uid), {
+      careerSlug,
+      planVersion,
+      approvedSubjects: Array.isArray(getSessionUserProfile()?.approvedSubjects) ? getSessionUserProfile().approvedSubjects : [],
+      currentSubjects: Array.isArray(getSessionUserProfile()?.currentSubjects) ? getSessionUserProfile().currentSubjects : [],
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    updateUserProfileCache({ careerSlug, planVersion });
     window.dispatchEvent(new CustomEvent("careerChanged", { detail: { careerSlug } }));
     setProfileStatus(profileStatusEl, "Carrera actualizada automáticamente.");
   }catch(error){
@@ -376,16 +385,25 @@ function bindProfileHandlers(){
       }
 
       try{
+        const planVersion = Number(plan?.version || 1);
+        const baseAcademicState = {
+          approvedSubjects: Array.isArray(cachedProfile?.approvedSubjects) ? cachedProfile.approvedSubjects : [],
+          currentSubjects: Array.isArray(cachedProfile?.currentSubjects) ? cachedProfile.currentSubjects : []
+        };
         await setDoc(doc(db, "users", currentUser.uid), {
           firstName,
           lastName,
           name,
           career: careerSlug ? careerName : "",
           careerSlug,
+          planVersion,
           yearIn: yearIn || "",
           documento,
           dni: documento,
-          legajo: documento
+          legajo: documento,
+          ...baseAcademicState,
+          createdAt: cachedProfile?.createdAt || serverTimestamp(),
+          updatedAt: serverTimestamp()
         }, { merge:true });
         const nextProfile = updateUserProfileCache({
           firstName,
@@ -393,10 +411,12 @@ function bindProfileHandlers(){
           name,
           career: careerSlug ? careerName : "",
           careerSlug,
+          planVersion,
           yearIn: yearIn || "",
           documento,
           dni: documento,
-          legajo: documento
+          legajo: documento,
+          ...baseAcademicState
         });
         await ensurePublicUserProfile(db, currentUser, nextProfile);
         notifySuccess?.("Perfil actualizado.");

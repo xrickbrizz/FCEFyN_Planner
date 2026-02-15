@@ -127,3 +127,71 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     throw new HttpsError("internal", "No se pudo guardar la valoración.", { message: err?.message || String(err) });
   }
 });
+
+
+const normalizeCareerSlug = (value) => String(value || "").trim();
+
+const sanitizeSubjectIds = (value, fieldName) => {
+  if (!Array.isArray(value)) {
+    throw new HttpsError("invalid-argument", `${fieldName} debe ser un arreglo.`);
+  }
+  const cleaned = value
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
+  return [...new Set(cleaned)];
+};
+
+exports.listPlansCallable = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+  const snap = await db.collection("plans").orderBy("nombre").get();
+  const plans = snap.docs.map((docSnap) => {
+    const data = docSnap.data() || {};
+    return {
+      slug: docSnap.id,
+      nombre: String(data.nombre || docSnap.id),
+      version: Number(data.version || 1)
+    };
+  });
+  return { plans };
+});
+
+exports.getPlanByCareerSlugCallable = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+  const careerSlug = normalizeCareerSlug(request.data?.careerSlug);
+  if (!careerSlug) throw new HttpsError("invalid-argument", "careerSlug es obligatorio.");
+
+  const planSnap = await db.collection("plans").doc(careerSlug).get();
+  if (!planSnap.exists) throw new HttpsError("not-found", "Plan no encontrado.");
+
+  const data = planSnap.data() || {};
+  return {
+    plan: {
+      slug: planSnap.id,
+      nombre: String(data.nombre || planSnap.id),
+      version: Number(data.version || 1),
+      materias: Array.isArray(data.materias) ? data.materias : []
+    }
+  };
+});
+
+exports.updateApprovedSubjectsCallable = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+  const approvedSubjects = sanitizeSubjectIds(request.data?.approvedSubjects, "approvedSubjects");
+  const uid = request.auth.uid;
+  await db.collection("users").doc(uid).set({
+    approvedSubjects,
+    updatedAt: FieldValue.serverTimestamp()
+  }, { merge: true });
+  return { ok: true, approvedSubjects };
+});
+
+exports.updateCurrentSubjectsCallable = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+  const currentSubjects = sanitizeSubjectIds(request.data?.currentSubjects, "currentSubjects");
+  const uid = request.auth.uid;
+  await db.collection("users").doc(uid).set({
+    currentSubjects,
+    updatedAt: FieldValue.serverTimestamp()
+  }, { merge: true });
+  return { ok: true, currentSubjects };
+});

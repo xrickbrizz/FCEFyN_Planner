@@ -269,24 +269,17 @@
     </div>
 
     <div id="tab-agenda" class="tab-card" style="display:none;">
-      <div class="agenda-presets-bar" aria-label="Presets guardados">
-        <div class="agenda-presets-head">
-          <strong>Presets guardados</strong><button class="btn-outline btn-small icon-btn" id="btnOpenPlannerModal" type="button" aria-label="Abrir planificador">
-            <span aria-hidden="true">✎</span>
-          </button>
+      <div class="agenda-header-row">
+        <div class="agenda-title">
+          <h3>Agenda semanal (08:00 — 22:00)</h3>
         </div>
-        <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
-      </div>
-      <div class="agenda-header">
-        <div><strong>Agenda semanal</strong> (08:00 – 22:00)</div>
+        <div class="agenda-presets-inline">
+          <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
+        </div>
         <div class="agenda-actions">
-          <div class="agenda-downloads">
-            <button class="btn-outline btn-small" id="btnDownloadAgendaPng">Descargar PNG</button>
-            <button class="btn-outline btn-small" id="btnDownloadAgendaPdf">Descargar PDF</button>
-          </div>
-          <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn-outline btn-small" id="btnPlanificadorAgenda">Planificador de Agenda</button>
-          </div>
+          <button class="btn-outline btn-small" id="btnDownloadAgendaPng">Descargar PNG</button>
+          <button class="btn-outline btn-small" id="btnDownloadAgendaPdf">Descargar PDF</button>
+          <button class="btn-outline btn-small" id="btnPlanificadorAgenda">Planificador de Agenda</button>
         </div>
       </div>
       <div class="agenda-shell">
