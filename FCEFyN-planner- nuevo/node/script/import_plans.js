@@ -14,16 +14,22 @@ const slugify = (value) => String(value || "")
   .replace(/^-+|-+$/g, "")
   .trim();
 
-const normalizeSubject = (subject) => ({
-  id: String(subject?.id || "").trim(),
-  nombre: String(subject?.nombre || subject?.name || subject?.id || "").trim(),
-  semester: Number(subject?.semester || subject?.semestre || 1),
-  correlativas: Array.isArray(subject?.correlativas)
-    ? subject.correlativas.map((item) => String(item || "").trim()).filter(Boolean)
-    : Array.isArray(subject?.requisitos)
-      ? subject.requisitos.map((item) => String(item || "").trim()).filter(Boolean)
-      : undefined
-});
+const normalizeSubject = (subject) => {
+  const nombre = String(subject?.nombre || subject?.name || subject?.id || "").trim();
+  const id = String(subject?.id || "").trim();
+  const slug = slugify(subject?.slug || subject?.subjectSlug || nombre || id);
+  return {
+    id: id || slug,
+    slug,
+    nombre,
+    semester: Number(subject?.semester || subject?.semestre || 1),
+    correlativas: Array.isArray(subject?.correlativas)
+      ? subject.correlativas.map((item) => String(item || "").trim()).filter(Boolean)
+      : Array.isArray(subject?.requisitos)
+        ? subject.requisitos.map((item) => String(item || "").trim()).filter(Boolean)
+        : undefined
+  };
+};
 
 async function main(){
   if (!admin.apps.length) admin.initializeApp();

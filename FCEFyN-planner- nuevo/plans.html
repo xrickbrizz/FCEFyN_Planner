@@ -38,8 +38,8 @@
 
 <script type="module">
 import { showConfirm } from "./scripts/ui/notifications.js";
+import { getPlansIndex, getPlanWithSubjects } from "./scripts/plans-data.js";
 (function(){
-  const INDEX_URL = "./plans/plans_index.json";
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
   const params = new URLSearchParams(window.location.search);
   const embed = params.get("embed") === "1";
@@ -375,16 +375,8 @@ function revalidateEstados() {
   }
 
   async function loadIndex(){
-    const res = await fetch(INDEX_URL, { cache: "no-store" });
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-
-    const arr = Array.isArray(data.plans) ? data.plans
-              : Array.isArray(data.carreras) ? data.carreras
-              : Array.isArray(data) ? data
-              : [];
-
-    indexPlans = arr.slice().sort((a,b)=>{
+    const plans = await getPlansIndex();
+    indexPlans = (Array.isArray(plans) ? plans : []).slice().sort((a,b)=>{
       return normalize(a.nombre).localeCompare(normalize(b.nombre), "es");
     });
 
@@ -401,21 +393,19 @@ function revalidateEstados() {
     const plan = indexPlans.find(p=> (p.slug || "") === slug);
     if(!plan){
       gridWrap.style.display = "none";
-      showMsg("No se encontró ese plan en plans/plans_index.json.");
+      showMsg("No se encontró ese plan en la colección plans de Firestore.");
       return;
     }
 
     hideMsg();
 
-    const res = await fetch(plan.json, { cache: "no-store" });
-    if(!res.ok) throw new Error("No pude leer " + plan.json + " (HTTP " + res.status + ").");
-    const data = await res.json();
-    storageKey = data.storageKey || STORAGE_KEY_DEFAULT;
+    const data = await getPlanWithSubjects(plan.slug || slug);
+    storageKey = `${STORAGE_KEY_DEFAULT}_${plan.slug || slug}`;
 
-    materias = detectMaterias(data);
+    materias = detectMaterias(data.raw || { materias: data.subjects || [] });
     if(!materias.length){
       gridWrap.style.display = "none";
-      showMsg("El JSON del plan no tiene 'materias' (o está vacío).");
+      showMsg("El plan en Firestore no tiene materias cargadas.");
       return;
     }
 
@@ -429,7 +419,6 @@ function revalidateEstados() {
 
     // guardo selección para que no se vea query string
     sessionStorage.setItem("selectedPlanSlug", plan.slug || "");
-    sessionStorage.setItem("selectedPlanJson", plan.json || "");
     sessionStorage.setItem("selectedPlanNombre", plan.nombre || "");
     planSelect.value = plan.slug || "";
   }
@@ -489,7 +478,7 @@ function revalidateEstados() {
       showMsg("Elegí una carrera para abrir su plan.");
     }catch(e){
       gridWrap.style.display = "none";
-      showMsg("Error al cargar el índice: " + (e && e.message ? e.message : e));
+      showMsg("Error al cargar el índice desde Firestore: " + (e && e.message ? e.message : e));
     }
   })();
 })();

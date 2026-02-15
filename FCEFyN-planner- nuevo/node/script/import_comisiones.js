@@ -9,6 +9,31 @@ const { db, admin } = require("./initAdmin");
 
 const DATA_FOLDER = path.join(__dirname, "..", "data", "comisiones");
 
+const CAREER_SLUG_EQUIVALENCES = {
+  "ingenieria-aeroespacial": "aeroespacial",
+  "ingenieria-en-agrimensura": "agrimensura",
+  "ingenieria-ambiental": "ambiental",
+  "ingenieria-biomedica": "biomedica",
+  "ingenieria-civil": "civil",
+  "ingenieria-en-computacion": "computacion",
+  "ingenieria-electromecanica": "electromecanica",
+  "ingenieria-electronica": "electronica",
+  "ingenieria-industrial": "industrial",
+  "ingenieria-mecanica": "mecanica",
+  "ingenieria-quimica": "quimica"
+};
+
+const normalizeStr = (value) => String(value || "")
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .trim();
+
+const normalizeCareerSlug = (value) => {
+  const normalized = normalizeStr(value);
+  return CAREER_SLUG_EQUIVALENCES[normalized] || normalized;
+};
+
 /* =======================
    IMPORT COMISIONES
 ======================= */
@@ -42,12 +67,17 @@ async function importComisiones() {
 
     for (const item of data) {
       const ref = db.collection("comisiones").doc(item.id);
+      const careerSlugs = Array.isArray(item.careerSlugs)
+        ? [...new Set(item.careerSlugs.map(normalizeCareerSlug).filter(Boolean))]
+        : [];
+      const subjectSlug = normalizeStr(item.subjectSlug || item.subject || item.materia || "");
 
-    batch.set(ref, {
-    ...item,
-  careerSlugs: admin.firestore.FieldValue.arrayUnion(...item.careerSlugs),
-  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    }, { merge: true });
+      batch.set(ref, {
+        ...item,
+        subjectSlug,
+        careerSlugs,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
 
       operationCount++;
       totalDocs++;

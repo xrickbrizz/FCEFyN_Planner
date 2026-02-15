@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
+import { expandCareerSlugAliases } from "../core/career-slugs.js";
 
 let CTX = null;
 
@@ -19,7 +20,7 @@ function getSubjectNameFromSection(section){
   if (!slug) return "";
   const normalize = CTX.normalizeStr;
 
-  const careerMatch = (CTX.aulaState.careerSubjects || []).find((item) => normalize(item?.id || item?.slug || "") === slug);
+  const careerMatch = (CTX.aulaState.careerSubjects || []).find((item) => normalize(item?.slug || item?.id || item?.nombre || item?.name || "") === slug);
   if (careerMatch) return careerMatch.nombre || careerMatch.name || slug;
 
   const customMatch = (CTX.aulaState.subjects || []).find((item) => normalize(item?.slug || "") === slug);
@@ -212,6 +213,7 @@ async function loadCourseSections(){
   try{
     console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
     const activeCareerSlug = CTX.normalizeStr(CTX.getCurrentCareer?.() || "");
+    const activeCareerAliases = expandCareerSlugAliases(activeCareerSlug);
     if (!activeCareerSlug){
       console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
       return;
@@ -219,7 +221,7 @@ async function loadCourseSections(){
     console.log("🧭 Consultando colección Firestore: comisiones (filtrada por carrera)");
     const comisionesQuery = query(
       collection(CTX.db, "comisiones"),
-      where("careerSlugs", "array-contains", activeCareerSlug)
+      where("careerSlugs", "array-contains-any", activeCareerAliases)
     );
     const snap = await getDocs(comisionesQuery);
     console.log("📦 Snapshot recibido:", snap);
