@@ -266,30 +266,50 @@ function renderPresetsList(){
   presets.forEach(p => {
     [list, outside].forEach(target => {
       if (!target) return;
-      const wrap = document.createElement("div");
-      wrap.className = "preset-chip-wrap";
+      if (target === outside){
+        const chip = document.createElement("div");
+        chip.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
+        chip.dataset.id = p.id;
+        chip.setAttribute("role", "tab");
+        chip.setAttribute("tabindex", "0");
+        chip.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
+
+        const name = document.createElement("span");
+        name.className = "preset-name";
+        name.textContent = p.name || "Sin nombre";
+        chip.appendChild(name);
+
+        chip.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
+        chip.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            selectPresetAndRefreshAgenda(p.id);
+          }
+        });
+
+        const remove = document.createElement("button");
+        remove.className = "preset-delete";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", `Eliminar preset ${p.name || ""}`);
+        remove.addEventListener("click", async (event) => {
+          event.stopPropagation();
+          loadPreset(p.id);
+          await deletePreset();
+          renderPresetsList();
+        });
+        chip.appendChild(remove);
+        target.appendChild(chip);
+        return;
+      }
+
       const btn = document.createElement("button");
       btn.className = "preset-chip" + (p.id === CTX.aulaState.activePresetId ? " active" : "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("aria-selected", p.id === CTX.aulaState.activePresetId ? "true" : "false");
       btn.textContent = p.name || "Sin nombre";
       btn.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
-      wrap.appendChild(btn);
-
-      if (target === outside){
-        const remove = document.createElement("button");
-        remove.className = "preset-delete-btn";
-        remove.type = "button";
-        remove.textContent = "✕";
-        remove.setAttribute("aria-label", `Eliminar preset ${p.name || ""}`);
-        remove.addEventListener("click", async () => {
-          loadPreset(p.id);
-          await deletePreset();
-          renderPresetsList();
-        });
-        wrap.appendChild(remove);
-      }
-      target.appendChild(wrap);
+      target.appendChild(btn);
     });
   });
 

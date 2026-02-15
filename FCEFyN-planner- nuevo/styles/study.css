@@ -3327,31 +3327,36 @@ header{
 }
 .agenda-presets-head{ display:flex; align-items:center; gap:.5rem; margin-bottom:.45rem; }
 .agenda-presets-actions{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
-.preset-chips-row{ display:flex; flex-wrap:wrap; gap:.45rem; }
-.preset-chip-wrap{ display:flex; align-items:center; gap:.2rem; }
+.preset-chips-row{ display:flex; flex-wrap:wrap; gap:12px; }
 .preset-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:140px;
   border:1px solid var(--border-60);
-  background:var(--glass-soft);
+  background:#f3f3f3;
   color:var(--color-text);
-  border-radius:999px;
-  padding:.36rem .72rem;
+  border-radius:20px;
+  padding:8px 14px;
+  font-size:14px;
   font-weight:700;
   cursor:pointer;
+  transition:all .2s ease;
 }
 .preset-chip.active{ background:var(--accent-15); border-color:var(--accent-60); }
-.preset-chip.add{ width:2rem; padding:.36rem 0; text-align:center; }
+.preset-chip.add{ width:2rem; min-width:2rem; padding:.36rem 0; justify-content:center; text-align:center; border-radius:999px; }
+.preset-name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .preset-chip-edit{ border:1px solid var(--border-60); background:transparent; color:var(--text-soft); border-radius:999px; padding:.2rem .45rem; }
-.preset-delete-btn{
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--danger);
-  transition: all 0.2s ease;
+.preset-delete{
+  background:transparent;
+  border:none;
+  color:#9e9e9e;
+  font-size:14px;
+  cursor:pointer;
+  transition:color .2s ease, transform .2s ease;
 }
-.preset-delete-btn:hover{
-  transform: scale(1.1);
-  opacity: 0.85;
-}
+.preset-delete:hover{ color:#e53935; transform:scale(1.1); }
 
 .planner-modal-bg{ z-index:130; backdrop-filter:none; background:rgba(0, 0, 0, .5); animation: plannerFadeIn .2s ease; }
 .planner-modal{
