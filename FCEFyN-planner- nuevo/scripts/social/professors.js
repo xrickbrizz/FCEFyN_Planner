@@ -10,11 +10,9 @@ import {
   doc
 } from "../core/firebase.js";
 import { ensurePublicUserProfile } from "../core/firestore-helpers.js";
-import { getPlanWithSubjects } from "../plans-data.js";
 
 let CTX = null;
 const PAGE_SIZE = 6;
-const REVIEWS_PAGE_SIZE = 6;
 
 const METRICS = [
   { key:"teachingQuality", label:"Calidad de enseñanza", descriptor: teachingDescriptor },
@@ -23,18 +21,13 @@ const METRICS = [
 ];
 
 const SORT_OPTIONS = {
-  reviews_desc: (a, b) => Number(b.totalReviews || 0) - Number(a.totalReviews || 0),
-  average_desc: (a, b) => Number(b.averageRating || 0) - Number(a.averageRating || 0),
-  teaching_desc: (a, b) => Number(b.teachingQualityAvg || 0) - Number(a.teachingQualityAvg || 0),
-  treatment_desc: (a, b) => Number(b.studentTreatmentAvg || 0) - Number(a.studentTreatmentAvg || 0),
-  exams_easy: (a, b) => Number(b.examDifficultyAvg || 0) - Number(a.examDifficultyAvg || 0),
-  exams_hard: (a, b) => Number(a.examDifficultyAvg || 0) - Number(b.examDifficultyAvg || 0)
+  name_asc: { field:"name", direction:"asc" },
+  name_desc: { field:"name", direction:"desc" }
 };
 
 const state = {
-  filters: { search:"", subject:"", ranking:"" },
+  filters: { search:"", sort:"name_asc" },
   page: 1,
-  reviewsPage: 1,
   selectedProfessorId: null,
   allProfessors: [],
   pageItems: [],
@@ -42,7 +35,6 @@ const state = {
   totalItems: 0,
   professorsById: new Map(),
   hasNextPage: false,
-  subjectsForCareer: [],
   reviewsByProfessor: new Map(),
   ratingDraft: { teachingQuality:null, examDifficulty:null, studentTreatment:null, comment:"", anonymous:false }
 };
@@ -131,87 +123,18 @@ function parseProfessor(docSnap){
   };
 }
 
+function sortConfig(){
+  return SORT_OPTIONS[state.filters.sort] || SORT_OPTIONS.name_asc;
+}
+
 function compareProfessors(a, b){
-  const sorter = SORT_OPTIONS[state.filters.ranking];
-  if (typeof sorter === "function"){
-    const sortedValue = sorter(a, b);
-    if (sortedValue !== 0) return sortedValue;
-  }
-  const left = normalize(a?.name || "");
-  const right = normalize(b?.name || "");
-  if (left < right) return -1;
-  if (left > right) return 1;
+  const { field, direction } = sortConfig();
+  const factor = direction === "desc" ? -1 : 1;
+  const left = normalize(a?.[field] || "");
+  const right = normalize(b?.[field] || "");
+  if (left < right) return -1 * factor;
+  if (left > right) return 1 * factor;
   return 0;
-}
-
-function formatSubjectLabel(value = ""){
-  const normalizedBase = String(value || "").replaceAll("_", "-").trim();
-  const spaced = normalizedBase.replaceAll("-", " ").replace(/\s+/g, " ").trim();
-  const lower = spaced.toLowerCase();
-  const accentMap = {
-    fisica: "física",
-    matematica: "matemática",
-    quimica: "química",
-    analisis: "análisis",
-    algebra: "álgebra",
-    geometria: "geometría",
-    estadistica: "estadística",
-    mecanica: "mecánica",
-    electrica: "eléctrica",
-    electronica: "electrónica",
-    computacion: "computación",
-    introduccion: "introducción"
-  };
-  return lower
-    .split(" ")
-    .map((word) => accentMap[word] || word)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-function normalizedSubject(value = ""){
-  return normalize(String(value || "").replaceAll("_", " ").replaceAll("-", " "));
-}
-
-async function loadCareerSubjects(){
-  const currentProfile = CTX?.AppState?.userProfile || CTX?.getUserProfile?.() || {};
-  const slug = currentProfile?.careerSlug || "";
-  if (!slug){
-    state.subjectsForCareer = [];
-    return;
-  }
-  try{
-    const { subjects } = await getPlanWithSubjects(slug);
-    const subjectNames = (subjects || [])
-      .map((subject) => subject?.nombre || subject?.name || subject?.id || "")
-      .filter(Boolean);
-    const unique = new Map();
-    subjectNames.forEach((subject) => {
-      const key = normalizedSubject(subject);
-      if (!key || unique.has(key)) return;
-      unique.set(key, formatSubjectLabel(subject));
-    });
-    state.subjectsForCareer = [...unique.entries()].map(([value, label]) => ({ value, label }));
-  }catch(error){
-    console.error("[Profesores] No se pudieron cargar materias del plan", error);
-    state.subjectsForCareer = [];
-  }
-}
-
-function syncSubjectsFilterOptions(){
-  const select = document.getElementById("profSubjectFilterSelect");
-  if (!select) return;
-  const currentValue = state.filters.subject || "";
-  select.innerHTML = '<option value="">Todas las materias</option>';
-  state.subjectsForCareer
-    .sort((a, b) => a.label.localeCompare(b.label, "es"))
-    .forEach((subject) => {
-      const option = document.createElement("option");
-      option.value = subject.value;
-      option.textContent = subject.label;
-      select.appendChild(option);
-    });
-  select.value = currentValue;
 }
 
 async function loadAllProfessors(){
@@ -237,14 +160,6 @@ function applySearchFilter(items){
   return items.filter((professor) => normalize(professor.name).includes(search));
 }
 
-function applySubjectFilter(items){
-  if (!state.filters.subject) return items;
-  return items.filter((professor) => {
-    const subjects = Array.isArray(professor.subjects) ? professor.subjects : [];
-    return subjects.some((subject) => normalizedSubject(subject) === state.filters.subject);
-  });
-}
-
 function paginate(items){
   const searchActive = Boolean(normalize(state.filters.search));
   if (searchActive){
@@ -263,18 +178,10 @@ function paginate(items){
 
 async function loadDirectoryPage(){
   await loadAllProfessors();
-  const searched = applySearchFilter(state.allProfessors);
-  const bySubject = applySubjectFilter(searched);
-  const filtered = [...bySubject].sort(compareProfessors);
+  const sorted = [...state.allProfessors].sort(compareProfessors);
+  const filtered = applySearchFilter(sorted);
   state.totalItems = filtered.length;
   state.pageItems = paginate(filtered);
-}
-
-function updateAdvancedFilterCounter(){
-  const btn = document.getElementById("profAdvancedFiltersBtn");
-  if (!btn) return;
-  const activeCount = Number(Boolean(state.filters.subject)) + Number(Boolean(state.filters.ranking));
-  btn.textContent = activeCount ? `Filtros avanzados (${activeCount})` : "Filtros avanzados";
 }
 
 function renderDirectory(){
@@ -282,9 +189,8 @@ function renderDirectory(){
   const pageLabel = document.getElementById("profPageIndicator");
   const prevBtn = document.getElementById("profPrevPage");
   const nextBtn = document.getElementById("profNextPage");
-  const pagination = document.getElementById("profTopPagination");
   const totalLabel = document.getElementById("profTotalLabel");
-  if (!listEl || !pageLabel || !prevBtn || !nextBtn || !totalLabel || !pagination) return;
+  if (!listEl || !pageLabel || !prevBtn || !nextBtn || !totalLabel) return;
 
   listEl.innerHTML = "";
   if (!state.pageItems.length){
@@ -301,17 +207,16 @@ function renderDirectory(){
         <div class="prof-card-rating">${formatDecimal(professor.averageRating)} ⭐</div>
         <div class="prof-card-metrics">${professor.totalReviews} reseñas</div>
         <div class="prof-subjects">
-          ${(professor.subjects || []).slice(0, 4).map(subject => `<span class="prof-subject-chip">${escapeHTML(formatSubjectLabel(subject))}</span>`).join("") || '<span class="prof-subject-chip">Sin materias</span>'}
+          ${(professor.subjects || []).slice(0, 4).map(subject => `<span class="prof-subject-chip">${escapeHTML(subject)}</span>`).join("") || '<span class="prof-subject-chip">Sin materias</span>'}
         </div>
       </div>
       <div class="prof-card-action">
-        <button class="btn-blue btn-small prof-primary-btn" type="button" data-prof-id="${professor.id}">Ver Perfil</button>
+        <button class="btn-blue btn-small" type="button" data-prof-id="${professor.id}">Ver Perfil</button>
       </div>
     `;
 
     card.querySelector("button")?.addEventListener("click", async () => {
       state.selectedProfessorId = professor.id;
-      state.reviewsPage = 1;
       await loadProfessorReviews(professor.id);
       renderProfessorDetail();
       document.getElementById("filtersSection")?.classList.add("hidden");
@@ -321,11 +226,9 @@ function renderDirectory(){
   });
 
   totalLabel.textContent = `${state.totalItems} profesores`;
-  pageLabel.textContent = `${Math.min(state.page, state.totalPages)} / ${state.totalPages}`;
+  pageLabel.textContent = `${Math.min(state.page, state.totalPages)} de ${state.totalPages}`;
   prevBtn.disabled = state.page <= 1;
   nextBtn.disabled = !state.hasNextPage;
-  pagination.classList.toggle("hidden", state.totalPages <= 1);
-  updateAdvancedFilterCounter();
 }
 
 function getRatingDistribution(reviews){
@@ -353,10 +256,6 @@ function renderProfessorDetail(){
   }
 
   const reviews = state.reviewsByProfessor.get(professor.id) || [];
-  const reviewsTotalPages = Math.max(1, Math.ceil(reviews.length / REVIEWS_PAGE_SIZE));
-  if (state.reviewsPage > reviewsTotalPages) state.reviewsPage = reviewsTotalPages;
-  const reviewsStart = (state.reviewsPage - 1) * REVIEWS_PAGE_SIZE;
-  const reviewsPageItems = reviews.slice(reviewsStart, reviewsStart + REVIEWS_PAGE_SIZE);
   const distribution = getRatingDistribution(reviews);
   const total = Math.max(1, reviews.length);
 
@@ -388,13 +287,13 @@ function renderProfessorDetail(){
           `;
         }).join("")}
 
-        <button id="openProfRatingModal" class="btn-blue btn-small prof-primary-btn" type="button" style="margin-top:1rem;">Calificar profesor</button>
+        <button id="openProfRatingModal" class="btn-blue btn-small" type="button" style="margin-top:1rem;">Calificar profesor</button>
       </section>
 
       <section class="prof-detail-reviews">
         <h3>Reseñas</h3>
         <div class="prof-review-scroll">
-          ${reviewsPageItems.length ? reviewsPageItems.map(review => {
+          ${reviews.length ? reviews.map(review => {
             const avg = reviewAverage(review);
             return `
               <article class="prof-review-item">
@@ -413,26 +312,11 @@ function renderProfessorDetail(){
             `;
           }).join("") : '<div class="small-muted">Todavía no hay reseñas para este profesor.</div>'}
         </div>
-        <div class="prof-pagination ${reviewsTotalPages <= 1 ? "hidden" : ""}">
-          <button id="profReviewsPrevPage" class="btn-outline btn-small" type="button" aria-label="Página anterior de reseñas">&lt;</button>
-          <span>${state.reviewsPage} / ${reviewsTotalPages}</span>
-          <button id="profReviewsNextPage" class="btn-outline btn-small" type="button" aria-label="Página siguiente de reseñas">&gt;</button>
-        </div>
       </section>
     </div>
   `;
 
   document.getElementById("openProfRatingModal")?.addEventListener("click", () => openRatingModal(professor));
-  document.getElementById("profReviewsPrevPage")?.addEventListener("click", () => {
-    if (state.reviewsPage <= 1) return;
-    state.reviewsPage -= 1;
-    renderProfessorDetail();
-  });
-  document.getElementById("profReviewsNextPage")?.addEventListener("click", () => {
-    if (state.reviewsPage >= reviewsTotalPages) return;
-    state.reviewsPage += 1;
-    renderProfessorDetail();
-  });
 }
 
 async function loadProfessorReviews(professorId){
@@ -535,30 +419,6 @@ function closeRatingModal(){
   document.getElementById("profRatingModal")?.classList.add("hidden");
 }
 
-function openAdvancedFiltersModal(){
-  const modal = document.getElementById("profAdvancedFiltersModal");
-  if (!modal) return;
-  syncSubjectsFilterOptions();
-  const subjectSelect = document.getElementById("profSubjectFilterSelect");
-  const rankingSelect = document.getElementById("profRankingFilterSelect");
-  if (subjectSelect) subjectSelect.value = state.filters.subject || "";
-  if (rankingSelect) rankingSelect.value = state.filters.ranking || "";
-  modal.classList.remove("hidden");
-}
-
-function closeAdvancedFiltersModal(){
-  document.getElementById("profAdvancedFiltersModal")?.classList.add("hidden");
-}
-
-async function onAdvancedFiltersChange(){
-  const subjectSelect = document.getElementById("profSubjectFilterSelect");
-  const rankingSelect = document.getElementById("profRankingFilterSelect");
-  state.filters.subject = subjectSelect?.value || "";
-  state.filters.ranking = rankingSelect?.value || "";
-  state.page = 1;
-  await refreshDirectoryAndRender();
-}
-
 async function submitRating(){
   const professorId = state.selectedProfessorId;
   if (!professorId) return;
@@ -659,6 +519,11 @@ function bindEvents(){
     state.page = 1;
     await refreshDirectoryAndRender();
   });
+  document.getElementById("profSortSelect")?.addEventListener("change", async (event) => {
+    state.filters.sort = event.target.value || "name_asc";
+    state.page = 1;
+    await refreshDirectoryAndRender();
+  });
   document.getElementById("profPrevPage")?.addEventListener("click", async () => {
     if (state.page > 1){
       state.page -= 1;
@@ -674,8 +539,7 @@ function bindEvents(){
   document.getElementById("volverListaProfesores")?.addEventListener("click", () => {
     document.getElementById("professorDetailSection")?.classList.add("hidden");
     document.getElementById("filtersSection")?.classList.remove("hidden");
-      state.selectedProfessorId = null;
-      state.reviewsPage = 1;
+    state.selectedProfessorId = null;
   });
 
   document.getElementById("closeProfRatingModal")?.addEventListener("click", closeRatingModal);
@@ -687,22 +551,6 @@ function bindEvents(){
     const value = event.target.value || "";
     document.getElementById("rateCommentCount").textContent = `${value.length} / 500`;
   });
-
-  document.getElementById("profAdvancedFiltersBtn")?.addEventListener("click", openAdvancedFiltersModal);
-  document.getElementById("closeProfAdvancedFiltersModal")?.addEventListener("click", closeAdvancedFiltersModal);
-  document.querySelector("#profAdvancedFiltersModal .prof-modal-backdrop")?.addEventListener("click", closeAdvancedFiltersModal);
-  document.getElementById("profSubjectFilterSelect")?.addEventListener("change", onAdvancedFiltersChange);
-  document.getElementById("profRankingFilterSelect")?.addEventListener("change", onAdvancedFiltersChange);
-  document.getElementById("profClearAdvancedFilters")?.addEventListener("click", async () => {
-    state.filters.subject = "";
-    state.filters.ranking = "";
-    const subjectSelect = document.getElementById("profSubjectFilterSelect");
-    const rankingSelect = document.getElementById("profRankingFilterSelect");
-    if (subjectSelect) subjectSelect.value = "";
-    if (rankingSelect) rankingSelect.value = "";
-    state.page = 1;
-    await refreshDirectoryAndRender();
-  });
 }
 
 const Professors = {
@@ -713,8 +561,9 @@ const Professors = {
 
     await ensurePublicUserProfile(CTX.db, currentUser, CTX?.AppState?.userProfile || null);
 
-    await loadCareerSubjects();
-    syncSubjectsFilterOptions();
+    const sortSelect = document.getElementById("profSortSelect");
+    if (sortSelect && !SORT_OPTIONS[sortSelect.value]) sortSelect.value = "name_asc";
+    state.filters.sort = sortSelect?.value || "name_asc";
 
     bindEvents();
     await refreshDirectoryAndRender();
