@@ -349,6 +349,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
       d.className = "subject";
       d.textContent = m.nombre;
       d.dataset.id = m.id;
+      d.dataset.subjectSlug = m.id;
       container.appendChild(d);
       renderizadas++;
     });
@@ -498,67 +499,98 @@ async function revalidateEstados() {
     updateStatsUI();
   }
 
-  function openStatusModal(subjectId, subjectName){
-    if (!statusModal) return;
-    selectedSubjectId = String(subjectId || "").trim();
-    if (!selectedSubjectId){
-      console.warn("[plans] No se puede abrir modal de estado: falta subjectSlug.");
-      return;
-    }
+function openStatusModal(subjectId, subjectName){
+  if (!statusModal) return;
 
-    previousFocusedElement = document.activeElement;
-    statusModalSubject.textContent = subjectName || "Seleccioná una materia";
-    statusModal.hidden = false;
-    statusModal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("status-modal-open");
-
-    const firstOption = statusModalActions?.querySelector(".status-option");
-    if (firstOption) firstOption.focus();
+  selectedSubjectId = String(subjectId || "").trim();
+  if (!selectedSubjectId){
+    console.warn("[plans] No se puede abrir modal de estado: falta subjectSlug.");
+    return;
   }
 
-  function closeStatusModal(){
-    if (!statusModal) return;
-    statusModal.hidden = true;
-    statusModal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("status-modal-open");
-    selectedSubjectId = "";
-    if (previousFocusedElement && typeof previousFocusedElement.focus === "function"){
-      previousFocusedElement.focus();
-    }
-    previousFocusedElement = null;
+  // ✅ Guardar también en el modal (fuente de verdad)
+  statusModal.dataset.subjectSlug = selectedSubjectId;
+
+  previousFocusedElement = document.activeElement;
+  statusModalSubject.textContent = subjectName ? `Materia: ${subjectName}` : "Materia seleccionada";
+  statusModal.hidden = false;
+  statusModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("status-modal-open");
+
+  const firstOption = statusModalActions?.querySelector(".status-option");
+  if (firstOption) firstOption.focus();
+}
+function closeStatusModal(){
+  if (!statusModal) return;
+  statusModal.hidden = true;
+  statusModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("status-modal-open");
+
+  selectedSubjectId = "";
+  delete statusModal.dataset.subjectSlug; // ✅
+
+  if (previousFocusedElement && typeof previousFocusedElement.focus === "function"){
+    previousFocusedElement.focus();
+  }
+  previousFocusedElement = null;
+}
+async function applyStatus(statusValue, triggerButton){
+  const slugFromModal = statusModal?.dataset?.subjectSlug || "";
+  const slug = String(selectedSubjectId || slugFromModal || "").trim();
+
+  if (!slug){
+    console.warn("[plans] No se puede actualizar estado: falta subjectSlug seleccionado.");
+    return;
   }
 
-  async function applyStatus(statusValue, triggerButton){
-    if (!selectedSubjectId){
-      console.warn("[plans] No se puede actualizar estado: falta subjectSlug en la tarjeta.");
-      return;
-    }
+  const estados = getEstados();
+  estados[slug] = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
+  setEstados(estados);
 
-    const estados = getEstados();
-    estados[selectedSubjectId] = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
-    setEstados(estados);
-
-    if (triggerButton){
-      triggerButton.classList.add("is-selected");
-      setTimeout(() => triggerButton.classList.remove("is-selected"), 150);
-    }
-
-    try{
-      await updateSubjectState(selectedSubjectId, estados[selectedSubjectId]);
-    }catch(error){
-      console.error("[plans] Error guardando subjectStates en Firestore:", error);
-    }
-    await revalidateEstados();
-    closeStatusModal();
-    updateUI();
+  if (triggerButton){
+    triggerButton.classList.add("is-selected");
+    setTimeout(() => triggerButton.classList.remove("is-selected"), 150);
   }
 
+  try{
+  try {
+  if (!plannerRef) {
+    console.warn("[plans] plannerRef no disponible; se guarda solo en cache local.");
+  } else {
+    const normalizedStatus = normalizeStatus(estados[slug]);
+    const payload = {
+      status: normalizedStatus,
+      approved: isApproved(normalizedStatus),
+      updatedAt: serverTimestamp()
+    };
+
+    await setDoc(plannerRef, {
+      subjectStates: {
+        [slug]: payload
+      }
+    }, { merge: true });
+
+    // opcional: mantener en memoria sincronizado
+    subjectStates = { ...(subjectStates || {}), [slug]: payload };
+  }
+} catch (error) {
+  console.error("[plans] Error guardando subjectStates en Firestore:", error);
+}
+  }catch(error){
+    console.error("[plans] Error guardando subjectStates en Firestore:", error);
+  }
+
+  await revalidateEstados();
+  closeStatusModal();
+  updateUI();
+}
   function attachEventsToSubjects(){
     document.querySelectorAll(".subject").forEach(el=>{
       el.onclick = (e)=>{
+        const subjectSlug = el.dataset.subjectSlug || el.dataset.id;
         const estados = getEstados();
-        if(el.classList.contains("locked") && !estados[el.dataset.id]) return;
-        openStatusModal(el.dataset.id, el.textContent || "Materia");
+        if(el.classList.contains("locked") && !estados[subjectSlug]) return;
+        openStatusModal(subjectSlug, el.textContent || "Materia");
       };
     });
   }
@@ -756,6 +788,35 @@ async function revalidateEstados() {
 
     return { resolvedDocId, attempts };
   }
+
+async function updateSubjectState(slug, status){
+  const normalizedSlug = String(slug || "").trim();
+  if (!normalizedSlug){
+    console.warn("[plans] No se puede guardar estado: falta subjectSlug.");
+    return;
+  }
+
+  const normalizedStatus = normalizeStatus(status);
+  const payload = {
+    status: normalizedStatus,
+    approved: isApproved(normalizedStatus),
+    updatedAt: serverTimestamp()
+  };
+
+  // memoria local
+  subjectStates = { ...(subjectStates || {}), [normalizedSlug]: payload };
+
+  // firestore
+  if (!plannerRef){
+    console.warn("[plans] plannerRef no disponible; se guarda solo en cache local.");
+    return;
+  }
+
+  await setDoc(plannerRef, {
+    subjectStates: { [normalizedSlug]: payload }
+  }, { merge: true });
+}
+
 
   async function loadPlans(){
     const snapshot = await getDocs(collection(db, "plans"));
