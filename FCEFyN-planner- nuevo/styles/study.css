@@ -1,3 +1,14 @@
+
+:root{
+  --subj-1: #2EAF6F;
+  --subj-2: #2D7FF9;
+  --subj-3: #8B5CF6;
+  --subj-4: #F59E0B;
+  --subj-5: #EF4444;
+  --subj-6: #14B8A6;
+  --subj-7: #64748B;
+}
+
 /* =========================================================
    Layout
    ========================================================= */
@@ -1771,6 +1782,27 @@ body[data-theme="light"] .event{
       color:color-mix(in srgb, var(--text) 82%, var(--muted));
     }
 
+.calendar-event[data-color="0"],
+.planner-card[data-color="0"]{ --accent: var(--subj-1); }
+.calendar-event[data-color="1"],
+.planner-card[data-color="1"]{ --accent: var(--subj-2); }
+.calendar-event[data-color="2"],
+.planner-card[data-color="2"]{ --accent: var(--subj-3); }
+.calendar-event[data-color="3"],
+.planner-card[data-color="3"]{ --accent: var(--subj-4); }
+.calendar-event[data-color="4"],
+.planner-card[data-color="4"]{ --accent: var(--subj-5); }
+.calendar-event[data-color="5"],
+.planner-card[data-color="5"]{ --accent: var(--subj-6); }
+.calendar-event[data-color="6"],
+.planner-card[data-color="6"]{ --accent: var(--subj-7); }
+
+.calendar-event{
+  border-left:6px solid var(--accent);
+  background-color:color-mix(in srgb, var(--accent) 18%, white);
+  box-shadow:0 4px 10px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
     /* TAB MATERIAS */
     .subjects-layout{
       display:grid;
@@ -2202,6 +2234,24 @@ body[data-theme="light"] .event{
       padding:.75rem .9rem;
       width: 25rem;
     }
+    .planner-card{
+      border-left:6px solid var(--accent, #d9e2ec);
+    }
+    .subject-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:1.1rem;
+      height:1.1rem;
+      border-radius:999px;
+      margin-right:.45rem;
+      background: color-mix(in srgb, var(--accent, var(--muted)) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent, var(--muted)) 35%, transparent);
+      color: var(--accent, var(--muted));
+      font-size:.74rem;
+      line-height:1;
+      vertical-align:middle;
+    }
     .planner-card-header{
       display:flex;
       align-items:center;
@@ -2212,6 +2262,8 @@ body[data-theme="light"] .event{
       font-size:.95rem;
       font-weight:600;
       margin:0;
+      display:flex;
+      align-items:center;
     }
     .section-card-layout{
       display:grid;

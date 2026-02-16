@@ -121,9 +121,14 @@ function renderAgendaGridInto(grid, data, allowEdit){
       if (isNaN(startM) || isNaN(endM) || endM <= startM) return;
 
       const block = document.createElement("div");
-      block.className = "class-block planner-item";
-      const color = CTX.subjectColor?.(item.materia);
-      if (color) block.style.setProperty("--materia-color", color);
+      block.className = "class-block calendar-event planner-item";
+      const plannerColorIndex = Number(item?.colorIndex);
+      if (Number.isFinite(plannerColorIndex)){
+        block.dataset.color = String(((plannerColorIndex % 7) + 7) % 7);
+      } else {
+        const color = CTX.subjectColor?.(item.materia);
+        if (color) block.style.setProperty("--materia-color", color);
+      }
       block.style.top = ((startM - minutesStart) * pxPerMinute) + "px";
       block.style.height = ((endM - startM) * pxPerMinute) + "px";
 

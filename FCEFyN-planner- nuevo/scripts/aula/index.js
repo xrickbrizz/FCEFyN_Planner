@@ -26,6 +26,8 @@ async function loadPlannerData(ctx){
   ctx.aulaState.activePresetId = null;
   ctx.aulaState.activePresetName = "";
   ctx.aulaState.activeSelectedSectionIds = [];
+  ctx.aulaState.plannerSubjectColors = {};
+  ctx.aulaState.plannerColorCursor = 0;
   setCalendarioCaches({ estudios: {}, academico: {} });
 
   const currentUser = ctx.getCurrentUser?.();
@@ -50,6 +52,12 @@ async function loadPlannerData(ctx){
 
     if (Array.isArray(data.schedulePresets)) ctx.aulaState.presets = data.schedulePresets;
     if (data.activePresetId) ctx.aulaState.activePresetId = data.activePresetId;
+    if (data.plannerSubjectColors && typeof data.plannerSubjectColors === "object"){
+      ctx.aulaState.plannerSubjectColors = data.plannerSubjectColors;
+    }
+    if (Number.isFinite(Number(data.plannerColorCursor))){
+      ctx.aulaState.plannerColorCursor = Number(data.plannerColorCursor);
+    }
 
     if (data.academico && typeof data.academico === "object") academicoData = data.academico;
   } else {
@@ -60,6 +68,8 @@ async function loadPlannerData(ctx){
       agenda:{},
       schedulePresets:[],
       activePresetId:"",
+      plannerSubjectColors:{},
+      plannerColorCursor:0,
       academico:{}
     });
     ctx.aulaState.subjects = [];
@@ -104,7 +114,9 @@ const Aula = {
         presets: [],
         activePresetId: null,
         activePresetName: "",
-        activeSelectedSectionIds: []
+        activeSelectedSectionIds: [],
+        plannerSubjectColors: {},
+        plannerColorCursor: 0
       };
     }
 

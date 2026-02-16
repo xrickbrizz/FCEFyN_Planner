@@ -9,6 +9,73 @@ const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
 let plannerSearchQuery = "";
+const PLANNER_COLOR_COUNT = 7;
+const COLOR_KEY = "planner_subject_colors_v1";
+const CURSOR_KEY = "planner_color_cursor_v1";
+let plannerColorState = { map: {}, cursor: 0 };
+
+function normalizeColorMap(rawMap){
+  if (!rawMap || typeof rawMap !== "object") return {};
+  const normalizedMap = {};
+  Object.entries(rawMap).forEach(([rawSlug, rawIndex]) => {
+    const slug = CTX.normalizeStr(rawSlug);
+    const index = Number(rawIndex);
+    if (!slug || !Number.isFinite(index)) return;
+    normalizedMap[slug] = ((index % PLANNER_COLOR_COUNT) + PLANNER_COLOR_COUNT) % PLANNER_COLOR_COUNT;
+  });
+  return normalizedMap;
+}
+
+function loadColorStateFromLocalStorage(){
+  let map = {};
+  let cursor = 0;
+  try{ map = JSON.parse(localStorage.getItem(COLOR_KEY) || "{}"); }catch{}
+  try{ cursor = Number(localStorage.getItem(CURSOR_KEY) || "0"); }catch{}
+  if (!Number.isFinite(cursor) || cursor < 0) cursor = 0;
+  return {
+    map: normalizeColorMap(map),
+    cursor: cursor % PLANNER_COLOR_COUNT
+  };
+}
+
+function setPlannerColorState(map, cursor){
+  plannerColorState = {
+    map: normalizeColorMap(map),
+    cursor: Number.isFinite(cursor) && cursor >= 0 ? cursor % PLANNER_COLOR_COUNT : 0
+  };
+  localStorage.setItem(COLOR_KEY, JSON.stringify(plannerColorState.map));
+  localStorage.setItem(CURSOR_KEY, String(plannerColorState.cursor));
+  if (CTX?.aulaState){
+    CTX.aulaState.plannerSubjectColors = { ...plannerColorState.map };
+    CTX.aulaState.plannerColorCursor = plannerColorState.cursor;
+  }
+}
+
+function hydratePlannerColorStateFromRemote(){
+  const savedMap = CTX.aulaState?.plannerSubjectColors;
+  const savedCursor = Number(CTX.aulaState?.plannerColorCursor);
+  if (!savedMap || typeof savedMap !== "object") return;
+  setPlannerColorState(savedMap, Number.isFinite(savedCursor) ? savedCursor : 0);
+}
+
+function getSubjectColorIndex(subjectSlug){
+  const slug = CTX.normalizeStr(subjectSlug || "");
+  if (!slug) return null;
+  const colorIndex = plannerColorState.map[slug];
+  return Number.isFinite(colorIndex) ? colorIndex : null;
+}
+
+function ensureColorForSubject(subjectSlug){
+  const slug = CTX.normalizeStr(subjectSlug || "");
+  if (!slug) return 0;
+  const existingColor = getSubjectColorIndex(slug);
+  if (existingColor !== null) return existingColor;
+
+  const nextIndex = plannerColorState.cursor;
+  const updatedMap = { ...plannerColorState.map, [slug]: nextIndex };
+  setPlannerColorState(updatedMap, (plannerColorState.cursor + 1) % PLANNER_COLOR_COUNT);
+  return nextIndex;
+}
 
 function getSectionSubjectSlug(section){
   const rawSlug = section?.subjectSlug || section?.code || section?.subject || "";
@@ -109,12 +176,14 @@ function buildWeeklyDataFromSectionIds(sectionIds){
 
   (sectionIds || []).map(getSectionById).filter(Boolean).forEach(sec => {
     const subject = getSubjectNameFromSection(sec) || "(Sin materia)";
+    const subjectSlug = getSectionSubjectSlug(sec);
+    const colorIndex = ensureColorForSubject(subjectSlug);
     const commission = sec.commission ? `Comisión ${sec.commission}` : "";
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
       const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" • ");
-      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "" });
+      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "", subjectSlug, colorIndex });
     });
   });
 
@@ -199,6 +268,7 @@ function diagnoseCareerSlug(){
 }
 
 async function refreshPlannerSections(options = {}){
+  hydratePlannerColorStateFromRemote();
   const slugDiagnostic = diagnoseCareerSlug();
   console.log("careerSlug diagnóstico", slugDiagnostic);
   const slug = slugDiagnostic.resolvedCareerSlug;
@@ -385,15 +455,21 @@ function renderSectionsList(){
   filtered.forEach(sec => {
     const selected = CTX.aulaState.activeSelectedSectionIds.includes(sec.id);
     const conflict = selected ? { blocked: false, reason: "Añadida" } : getConflictInfo(sec);
+    const subjectSlug = getSectionSubjectSlug(sec);
+    const colorIndex = getSubjectColorIndex(subjectSlug);
 
     const card = document.createElement("article");
     card.className = "section-card planner-card planner-item" + (conflict.blocked ? " blocked" : "");
+    if (Number.isFinite(colorIndex)) card.dataset.color = String(colorIndex);
     const teachers = getSectionTeachers(sec);
     const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
+    const colorBadge = Number.isFinite(colorIndex)
+      ? `<span class="subject-pill" aria-label="Color de materia">●</span>`
+      : "";
     card.innerHTML = `
       <div class="section-academic-info">
         <div class="section-card-header planner-card-header">
-          <h4 class="section-title planner-card-title">${escapeHtml(formatAcademicTitle(sec))}</h4>
+          <h4 class="section-title planner-card-title">${colorBadge}${escapeHtml(formatAcademicTitle(sec))}</h4>
         </div>
         <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
         <div class="section-schedule-wrap planner-card-body">
@@ -449,6 +525,8 @@ async function persistPresetsToFirestore(){
   const data = snap.exists() ? snap.data() : {};
   data.schedulePresets = CTX.aulaState.presets;
   data.activePresetId = CTX.aulaState.activePresetId || "";
+  data.plannerSubjectColors = plannerColorState.map;
+  data.plannerColorCursor = plannerColorState.cursor;
   await setDoc(ref, data);
 }
 
@@ -517,6 +595,7 @@ function toggleSectionInPreset(sectionId){
     if (!sec) return;
     const conflict = getConflictInfo(sec);
     if (conflict.blocked){ CTX?.notifyWarn?.(conflict.reason); return; }
+    ensureColorForSubject(getSectionSubjectSlug(sec));
     CTX.aulaState.activeSelectedSectionIds.push(sectionId);
   }
 
@@ -859,6 +938,8 @@ const Planner = {
   init(ctx){
     CTX = ctx;
     console.log("🛠️ Planner.init ejecutándose");
+    plannerColorState = loadColorStateFromLocalStorage();
+    hydratePlannerColorStateFromRemote();
     initPresetToAgendaModalUI();
   },
   refreshPlannerSections,
@@ -867,7 +948,10 @@ const Planner = {
   renderPlannerAll,
   renderSectionsList,
   renderSelectedSectionsList,
-  renderPlannerPreview
+  renderPlannerPreview,
+  getSubjectColorIndex,
+  getSubjectColorsMap: () => ({ ...plannerColorState.map }),
+  getColorCursor: () => plannerColorState.cursor
 };
 
 export default Planner;
