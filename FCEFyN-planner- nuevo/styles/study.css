@@ -4515,3 +4515,9 @@ body[data-theme="light"] .planner-modal{
 @media (max-width:520px){
   .correlativas-plans .plans-embedded-root .status-modal-content{ width:min(40rem,calc(100% - 1.5rem)); }
 }
+
+.stats-v1{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+}

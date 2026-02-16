@@ -24,17 +24,17 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const hasRating = data.rating !== undefined && data.rating !== null;
     const rating = hasRating ? Number(data.rating) : null;
 
-    const hasMetrics =
-      data.teachingQuality !== undefined ||
-      data.examDifficulty !== undefined ||
-      data.studentTreatment !== undefined;
+    const tq = data.teachingQuality !== undefined ? Number(data.teachingQuality) : null;
+    const ed = data.examDifficulty !== undefined ? Number(data.examDifficulty) : null;
+    const st = data.studentTreatment !== undefined ? Number(data.studentTreatment) : null;
+    const hasMetrics = [tq, ed, st].some((v) => v !== null);
 
     console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
     console.log("[submitProfessorReviewCallable] hasRating:", hasRating);
     console.log("[submitProfessorReviewCallable] metrics:", {
-      teachingQuality: data.teachingQuality,
-      examDifficulty: data.examDifficulty,
-      studentTreatment: data.studentTreatment
+      teachingQuality: tq,
+      examDifficulty: ed,
+      studentTreatment: st
     });
 
     const inRange1to5 = (n) => Number.isFinite(n) && n >= 1 && n <= 5;
@@ -49,9 +49,9 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     let finalRating = null;
 
     if (hasMetrics) {
-      teachingQuality = Number(data.teachingQuality);
-      examDifficulty = Number(data.examDifficulty);
-      studentTreatment = Number(data.studentTreatment);
+      teachingQuality = tq;
+      examDifficulty = ed;
+      studentTreatment = st;
       if (![teachingQuality, examDifficulty, studentTreatment].every(inRange1to5)) {
         throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 1 y 5.");
       }
@@ -79,6 +79,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const profData = profSnap.data() || {};
       const ratings = profData.ratings || {};
       const totalReviews = Number(ratings.totalReviews || profData.ratingCount || 0);
+      const totalReviewsAll = Number(profData.totalReviews || totalReviews || 0);
       const sumQuality = Number(ratings.sumQuality || 0);
       const sumDifficulty = Number(ratings.sumDifficulty || 0);
       const sumTreatment = Number(ratings.sumTreatment || 0);
@@ -86,6 +87,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const wroteRating = finalRating !== null;
 
       const nextCount = wroteRating ? totalReviews + 1 : totalReviews;
+      const nextTotalReviewsAll = totalReviewsAll + 1;
       const nextSumQuality = wroteRating
         ? (sumQuality + (hasMetrics ? teachingQuality : finalRating))
         : sumQuality;
@@ -135,6 +137,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
       const professorUpdate = {
         commentsCount: Math.max(0, nextComments),
+        totalReviews: nextTotalReviewsAll,
         updatedAt: now
       };
 
@@ -156,8 +159,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
           avgTeaching: qualityAvg,
           avgExams: difficultyAvg,
           avgTreatment: treatmentAvg,
-          averageRating: average,
-          totalReviews: nextCount
+          averageRating: average
         });
       }
 
@@ -202,5 +204,6 @@ exports.updateCurrentSubjectsCallable = onCall({ region: "us-central1" }, async 
     currentSubjects,
     updatedAt: FieldValue.serverTimestamp()
   }, { merge: true });
-  return { ok: true, currentSubjects };
+  return { ok: true, version: "reviewCallable-optional-rating-2026-02-16", wroteComment: hasComment, wroteRating: finalRating !== null };
+ // return { ok: true, currentSubjects };
 });
