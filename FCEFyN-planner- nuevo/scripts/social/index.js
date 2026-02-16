@@ -24,7 +24,9 @@ const Social = {
         userProfileCache: new Map(),
         usersSearchList: null,
         usersSearchInput: null,
-        usersLoading: false
+        usersLoading: false,
+        friendsFilter: "all",
+        friendsSearch: ""
       };
     }
 

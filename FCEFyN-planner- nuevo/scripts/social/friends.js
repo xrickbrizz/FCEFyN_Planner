@@ -32,11 +32,10 @@ function ensureRequestEndpoints(req, context){
 }
 
 function sortFriendsRows(rows){
-  return (rows || []).slice().sort((a,b)=>{
-    const aTime = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : (a.updatedAt || 0);
-    const bTime = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : (b.updatedAt || 0);
-    return bTime - aTime;
-  });
+  if (CTX?.socialModules?.Messaging?.sortFriendsRows){
+    return CTX.socialModules.Messaging.sortFriendsRows(rows);
+  }
+  return (rows || []).slice();
 }
 
 async function loadFriendRequests(){
@@ -371,30 +370,44 @@ function renderFriendsList(){
     return;
   }
 
-  if (!state.friendsList.length){
-    box.innerHTML = "<div class='muted'>No hay chats activos.</div>";
+  const list = CTX.socialModules.Messaging?.getVisibleFriends?.() || sortFriendsRows(state.friendsList || []);
+  if (!list.length){
+    box.innerHTML = "<div class='muted'>No hay chats para mostrar.</div>";
     return;
   }
-  state.friendsList.forEach(f =>{
+
+  list.forEach(f => {
     const profile = f.otherProfile || {};
     const name = profile.name || profile.fullName || profile.email || "Estudiante";
-    const status = CTX.getUserStatusLabel?.(f.otherUid) || "Desconectado";
-    const online = CTX.socialState.userStatusMap.get(f.otherUid)?.online;
+    const statusRaw = CTX.socialState.userStatusMap.get(f.otherUid) || {};
+    const isOnline = !!statusRaw.online;
+    const lastSeenMs = statusRaw.lastSeen?.toMillis ? statusRaw.lastSeen.toMillis() : (statusRaw.lastSeen?.toDate ? statusRaw.lastSeen.toDate().getTime() : (statusRaw.lastSeen ? new Date(statusRaw.lastSeen).getTime() : 0));
+    const lastSeen = lastSeenMs && Number.isFinite(lastSeenMs)
+      ? CTX.socialModules.Messaging?.formatDateTimeDDMMYYYY_HHmm?.(lastSeenMs)
+      : "Sin actividad";
+    const unreadCount = CTX.socialModules.Messaging?.getFriendUnreadCount?.(f) || 0;
     const avatarUrl = CTX.resolveAvatarUrl?.(profile.photoURL);
+    const isSelected = f.chatId === state.activeChatId;
+
     const div = document.createElement("div");
-    div.className = "friend-row";
+    div.className = `friend-row ${isOnline ? "friend-online" : ""} ${isSelected ? "selected" : ""}`;
     div.innerHTML = `
       <div class="friend-main">
         <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}">
-        <div>
-          <div class="friend-name">${name}</div>
-          <div class="friend-meta">${status}</div>
+        <div class="friend-copy">
+          <div class="friend-name-line">
+            <div class="friend-name">${name}</div>
+            <span class="status-dot ${isOnline ? "online" : ""}"></span>
+          </div>
+          <div class="friend-meta">Última vez: ${lastSeen}</div>
         </div>
       </div>
-      <button class="btn-outline btn-small" data-chat="${f.chatId}">Chat</button>
+      <div class="friend-actions">
+        ${unreadCount > 0 ? `<span class="friend-unread-badge">${unreadCount}</span>` : ""}
+        <button class="btn-outline btn-small friend-chat-btn" data-chat="${f.chatId}">Chat</button>
+      </div>
     `;
-    if (online) div.classList.add("friend-online");
-    div.querySelector("button").addEventListener("click", ()=> CTX.socialModules.Messaging?.openChatWithFriend?.(f));
+    div.querySelector("button")?.addEventListener("click", () => CTX.socialModules.Messaging?.openChatWithFriend?.(f));
     box.appendChild(div);
   });
 }

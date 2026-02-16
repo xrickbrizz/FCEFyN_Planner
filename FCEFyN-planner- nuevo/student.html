@@ -548,9 +548,16 @@
           <article class="card-block mensajeria-card friends-block">
             <div class="block-title friends-title-row">
               <span>Lista de amigos</span>
-              <span class="small-muted">Solo podés chatear con solicitudes aceptadas</span>
             </div>
-            <div class="friend-list-note small-muted">Cada fila muestra estado (online/offline), última conexión y acceso directo al chat.</div>
+            <div class="chat-filter-chips" id="friendsFilterChips">
+              <button type="button" class="chip-filter active" data-filter="all">Todos</button>
+              <button type="button" class="chip-filter" data-filter="online">En línea</button>
+              <button type="button" class="chip-filter" data-filter="unread">No leídos</button>
+            </div>
+            <label class="friends-search" for="friendsSearchInput">
+              <span aria-hidden="true">🔍</span>
+              <input id="friendsSearchInput" type="search" placeholder="Buscar amigo…" autocomplete="off" />
+            </label>
             <div id="friendsListBox" class="friends-box friend-list" aria-live="polite"></div>
           </article>
         </aside>
@@ -570,19 +577,63 @@
 
           <article class="card-block mensajeria-card mensajeria-chat-card chat-card">
             <div class="chat-header">
-              <div>
-                <div id="chatHeader" class="chat-title">No hay conversación activa</div>
-                <div id="chatSubheader" class="chat-subtitle">Seleccioná un amigo para empezar a chatear.</div>
+              <div class="chat-header-main">
+                <img id="chatAvatar" class="chat-avatar" src="" alt="Avatar del chat" />
+                <div>
+                  <div id="chatHeader" class="chat-title">No hay conversación activa</div>
+                  <div id="chatSubheader" class="chat-subtitle">Seleccioná un amigo para empezar a chatear.</div>
+                </div>
+              </div>
+              <div class="chat-header-actions">
+                <button id="chatMenuButton" class="chat-menu-button" type="button" aria-label="Opciones del chat">⋯</button>
+                <div id="chatContextMenu" class="chat-context-menu hidden" role="menu" aria-hidden="true">
+                  <button type="button" data-action="toggle-pin">Fijar chat</button>
+                  <button type="button" data-action="mark-unread">Marcar como no leído</button>
+                  <button type="button" data-action="mute-8h">Silenciar 8h</button>
+                  <button type="button" data-action="mute-24h">Silenciar 24h</button>
+                  <button type="button" data-action="mute-always">Silenciar siempre</button>
+                  <button type="button" data-action="archive-chat">Archivar chat</button>
+                  <button type="button" data-action="open-settings">Ajustes de chat</button>
+                </div>
               </div>
             </div>
             <div id="messagesList" class="messages-box">
               <div class="chat-placeholder">No hay conversación activa</div>
             </div>
             <div class="chat-input-row" id="chatInputRow">
+              <button class="btn-outline btn-small emoji-button" id="btnEmoji" type="button" aria-label="Emoji">☺</button>
               <input id="messageInput" placeholder="Seleccioná un amigo para chatear" disabled />
-              <button class="btn-blue btn-small" id="btnSendMessage" type="button" disabled>Enviar</button>
+              <button class="btn-blue btn-small btn-send-pill" id="btnSendMessage" type="button" disabled>Enviar</button>
             </div>
           </article>
+
+          <div id="chatSettingsModal" class="chat-settings-overlay hidden" aria-hidden="true">
+            <div class="chat-settings-modal" role="dialog" aria-modal="true" aria-labelledby="chatSettingsTitle">
+              <div class="chat-settings-header">
+                <h3 id="chatSettingsTitle">⚙️ Ajustes de Chat</h3>
+                <button id="closeChatSettings" type="button" aria-label="Cerrar ajustes">×</button>
+              </div>
+
+              <section class="chat-settings-section">
+                <h4>Temas Personalizables</h4>
+                <div id="chatThemeOptions" class="theme-options"></div>
+              </section>
+
+              <section class="chat-settings-section">
+                <h4>Notificaciones</h4>
+                <label class="toggle-line"><span>Notificaciones activadas</span><input type="checkbox" id="prefNotificationsEnabled" /></label>
+                <label class="toggle-line"><span>Sonido de mensaje</span><input type="checkbox" id="prefSoundEnabled" /></label>
+                <label class="toggle-line"><span>Mostrar estado en línea</span><input type="checkbox" id="prefShowOnlineStatus" /></label>
+              </section>
+
+              <section class="chat-settings-section">
+                <h4>Privacidad</h4>
+                <label class="toggle-line"><span>Mostrar última conexión</span><input type="checkbox" id="prefShowLastSeen" /></label>
+                <label class="toggle-line"><span>Mensajes solo de amigos</span><input type="checkbox" id="prefFriendsOnly" /></label>
+                <button type="button" id="btnBlockUser" class="btn-danger-soft">Bloquear usuario</button>
+              </section>
+            </div>
+          </div>
         </section>
       </section>
     </div>
