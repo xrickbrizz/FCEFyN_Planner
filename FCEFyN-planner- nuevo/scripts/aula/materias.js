@@ -28,7 +28,7 @@ let plannerStateUnsubscribe = null;
 let firestoreBlockedFallbackApplied = false;
 let didBindPlannerSubjectStatesChanged = false;
 const semesterExpandedState = new Map();
-const plannerKeyAliases = new Map();
+let SUBJECT_KEY_ALIASES = null;
 const missingStateLogged = new Set();
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
@@ -74,6 +74,7 @@ function readSubjectsLocalFallback(){
 
 function applyPlannerStateFromPayload(payload = {}, { render = true } = {}){
   plannerState = payload && typeof payload === "object" ? payload : {};
+  CTX.plannerState = { ...(CTX?.plannerState || {}), subjectStates: plannerState };
   if (render) renderSubjectsList();
 }
 
@@ -211,10 +212,11 @@ function getCatalogSubjects(){
     const key = normalizeStr(name);
     if (map.has(key)) return;
     const rawSem = Number(s?.semestre ?? s?.semester ?? 0);
-    const slug = normalizeStr(s?.slug || s?.id || s?.subjectSlug || s?.code || name);
+    const slug = (s?.slug || s?.subjectSlug || s?.id || s?.code || "").trim() || normalizeStr(name);
     map.set(key, {
       key,
       slug,
+      id: (s?.id || "").trim(),
       name,
       semester: Number.isFinite(rawSem) ? Math.max(1, rawSem) : 1,
       area: s?.area || s?.department || ""
@@ -227,58 +229,82 @@ function getCatalogSubjects(){
     .filter((item) => !catalogSearchQuery || normalizeStr(item.name).includes(normalizeStr(catalogSearchQuery)));
 }
 
-function normalizePlannerKey(subjectSlug){
-  const normalized = normalizeStr(subjectSlug || "");
-  if (!normalized) return "";
-  return plannerKeyAliases.get(normalized) || normalized;
+function normalizePlannerKey(subjectSlugOrId){
+  const rawKey = (subjectSlugOrId || "").trim();
+  if (!rawKey) return "";
+  return SUBJECT_KEY_ALIASES?.get(rawKey) || rawKey;
 }
 
-function rebuildPlannerKeyAliases(){
-  plannerKeyAliases.clear();
-  (CTX?.aulaState?.careerSubjects || []).forEach((subject) => {
-    const canonical = normalizeStr(subject?.id || subject?.slug || subject?.subjectSlug || subject?.code || subject?.nombre || subject?.name || "");
-    if (!canonical) return;
-    const aliases = [
-      subject?.id,
-      subject?.slug,
-      subject?.subjectSlug,
-      subject?.code,
-      subject?.nombre,
-      subject?.name,
-      canonical
-    ];
-    aliases.forEach((alias) => {
-      const normalizedAlias = normalizeStr(alias || "");
-      if (!normalizedAlias || plannerKeyAliases.has(normalizedAlias)) return;
-      plannerKeyAliases.set(normalizedAlias, canonical);
-    });
-  });
-}
+function buildSubjectKeyAliases(subjects){
+  const map = new Map();
+  for (const subject of (subjects || [])) {
+    const id = (subject?.id || "").trim();
+    const slug = (subject?.slug || subject?.subjectSlug || "").trim();
+    const name = (subject?.nombre || subject?.name || "").trim();
 
-function getSubjectState(subjectSlug){
-  const plannerKey = normalizePlannerKey(subjectSlug);
-  if (!plannerKey) return { approved: false, status: null };
-  const entry = plannerState?.[plannerKey];
-  if ((!entry || typeof entry !== "object") && plannerKey && !missingStateLogged.has(plannerKey)) {
-    missingStateLogged.add(plannerKey);
-    console.warn("[materias] No encuentro estado para:", { subjectSlug, plannerKey });
-    const allKeys = Object.keys(plannerState || {});
-    const approx = allKeys.find((k) => k.includes(plannerKey) || plannerKey.includes(k));
-    console.warn("[materias] keys sample:", allKeys.slice(0, 30), "approx:", approx, approx ? plannerState[approx] : null);
+    if (slug && id) {
+      map.set(id, slug);
+      map.set(slug, slug);
+    } else if (slug) {
+      map.set(slug, slug);
+    } else if (id) {
+      map.set(id, id);
+    }
+
+    if (name) {
+      const generatedSlug = normalizeStr(name);
+      if (generatedSlug && slug) map.set(generatedSlug, slug);
+      else if (generatedSlug && id) map.set(generatedSlug, id);
+    }
   }
-  if (!entry) return { approved: false, status: null };
+  return map;
+}
+
+function rebuildPlannerKeyAliases(subjects = CTX?.aulaState?.careerSubjects || []){
+  SUBJECT_KEY_ALIASES = buildSubjectKeyAliases(subjects);
+  const sample = SUBJECT_KEY_ALIASES ? Array.from(SUBJECT_KEY_ALIASES.entries()).slice(0, 10) : [];
+  console.log("[materias] alias map sample:", sample);
+}
+
+function normalizeState(entry){
   if (typeof entry === "string") {
-    const status = entry;
     return {
-      approved: status === "promocionada" || status === "regular",
-      status
+      status: entry,
+      approved: entry === "promocionada" || entry === "regular" || entry === "aprobada"
     };
   }
-  if (typeof entry !== "object") return { approved: false, status: null };
-  return {
-    approved: entry?.approved === true,
-    status: typeof entry?.status === "string" ? entry.status : null
-  };
+  if (entry && typeof entry === "object") {
+    return {
+      ...entry,
+      approved: entry.approved === true
+    };
+  }
+  return { approved: false };
+}
+
+function getSubjectState(subjectSlugOrId){
+  const states = CTX?.plannerState?.subjectStates || CTX?.plannerState || plannerState || {};
+  if (!states || typeof states !== "object") return { approved: false };
+
+  const rawKey = (subjectSlugOrId || "").trim();
+  if (!rawKey) return { approved: false };
+
+  if (states[rawKey]) return normalizeState(states[rawKey]);
+
+  const alias = SUBJECT_KEY_ALIASES?.get(rawKey);
+  if (alias && states[alias]) return normalizeState(states[alias]);
+
+  if (!missingStateLogged.has(rawKey)) {
+    missingStateLogged.add(rawKey);
+    console.warn("[materias] sin estado para", rawKey, {
+      hasExact: !!states[rawKey],
+      alias,
+      hasAlias: alias ? !!states[alias] : false,
+      availableKeysSample: Object.keys(states).slice(0, 25)
+    });
+  }
+
+  return { approved: false };
 }
 
 function isSubjectPromotedOrApproved(subjectSlug){
@@ -342,7 +368,7 @@ function renderCatalog(){
 
   Array.from(bySemester.keys()).sort((a, b) => a - b).forEach((semester) => {
     const semesterSubjects = bySemester.get(semester) || [];
-    const approvedCount = semesterSubjects.filter((item) => isSubjectPromotedOrApproved(item.slug || item.key)).length;
+    const approvedCount = semesterSubjects.filter((item) => isSubjectPromotedOrApproved(item.slug || item.id || item.key)).length;
     const isFullyApproved = semesterSubjects.length > 0 && approvedCount === semesterSubjects.length;
     const persistedExpanded = readSemesterExpandedState(semester);
     const shouldExpand = semesterExpandedState.has(semester)
@@ -390,7 +416,8 @@ function renderCatalog(){
     semesterSubjects
       .sort((a, b) => a.name.localeCompare(b.name, "es"))
       .forEach((item) => {
-        const isPromoted = isSubjectPromotedOrApproved(item.slug || item.key);
+        const st = getSubjectState(item.slug || item.id || item.key);
+        const isPromoted = st.approved === true;
         const row = document.createElement("div");
         row.className = `catalog-subject-row catalog-item ${isPromoted ? "is-approved subject-approved" : ""}`.trim();
         row.dataset.subjectSlug = item.slug || item.key;
