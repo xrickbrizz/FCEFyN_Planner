@@ -25,6 +25,12 @@ let hasLocalChanges = false;
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
 
+function semesterTagClass(semester){
+  const sem = Number.isFinite(Number(semester)) ? Number(semester) : 1;
+  const safeSem = ((Math.max(1, sem) - 1) % 11) + 1;
+  return `sem-${safeSem}`;
+}
+
 const themeColor = (varName, fallback) => {
   const value = getComputedStyle(document.documentElement).getPropertyValue(varName);
   return (value || "").trim() || fallback;
@@ -150,7 +156,7 @@ function renderCatalog(){
     section.className = "catalog-semester";
 
     const tag = document.createElement("div");
-    tag.className = "catalog-semester-tag";
+    tag.className = `catalog-semester-tag ${semesterTagClass(semester)}`;
     tag.textContent = `SEMESTRE ${semester}`;
     section.appendChild(tag);
 

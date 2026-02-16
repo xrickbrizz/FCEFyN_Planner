@@ -541,7 +541,7 @@
             <div class="block-title">Agregar amigo</div>
             <div class="small-muted">Abrí el buscador para encontrar estudiantes y enviar solicitudes.</div>
             <div class="friend-form add-amigo-form">
-              <button class="btn-blue btn-small" id="openFriendSearch" type="button">Buscar amigo</button>
+              <button class="btn-outline btn-small btn-send-request" id="openFriendSearch" type="button">Enviar solicitud</button>
             </div>
           </article>
 
@@ -563,18 +563,6 @@
         </aside>
 
         <section class="mensajeria-chat messages-right panel-chat">
-          <div id="friendSearchOverlay" class="friend-search-overlay hidden" aria-hidden="true">
-            <div class="friend-search-modal">
-              <div class="friend-search-header">
-                <h3>Buscar amigos</h3>
-                <button id="closeFriendSearch" type="button" aria-label="Cerrar buscador de amigos">×</button>
-              </div>
-              <input type="text" id="friendSearchInput" placeholder="Buscar por correo..." aria-label="Buscar usuario por correo" />
-              <div id="friendSearchResults" class="friend-search-results" aria-live="polite"></div>
-              <input id="friendEmailInput" type="email" hidden aria-hidden="true" tabindex="-1" />
-            </div>
-          </div>
-
           <article class="card-block mensajeria-card mensajeria-chat-card chat-card">
             <div class="chat-header">
               <div class="chat-header-main">
@@ -610,7 +598,7 @@
           <div id="chatSettingsModal" class="chat-settings-overlay hidden" aria-hidden="true">
             <div class="chat-settings-modal" role="dialog" aria-modal="true" aria-labelledby="chatSettingsTitle">
               <div class="chat-settings-header">
-                <h3 id="chatSettingsTitle">⚙️ Ajustes de Chat</h3>
+                <h3 id="chatSettingsTitle">Ajustes de Chat</h3>
                 <button id="closeChatSettings" type="button" aria-label="Cerrar ajustes">×</button>
               </div>
 
@@ -629,7 +617,6 @@
               <section class="chat-settings-section">
                 <h4>Privacidad</h4>
                 <label class="toggle-line"><span>Mostrar última conexión</span><input type="checkbox" id="prefShowLastSeen" /></label>
-                <label class="toggle-line"><span>Mensajes solo de amigos</span><input type="checkbox" id="prefFriendsOnly" /></label>
                 <button type="button" id="btnBlockUser" class="btn-danger-soft">Bloquear usuario</button>
               </section>
             </div>
@@ -730,6 +717,24 @@
       </div>
     </div>
   </main>
+    </div>
+  </div>
+
+  <div id="friendSearchOverlay" class="friend-search-overlay hidden" aria-hidden="true">
+    <div class="friend-search-modal" role="dialog" aria-modal="true" aria-labelledby="friendSearchTitle">
+      <div class="friend-search-header">
+        <h3 id="friendSearchTitle">Buscar amigos</h3>
+        <button id="closeFriendSearch" type="button" aria-label="Cerrar buscador de amigos">×</button>
+      </div>
+      <div class="friend-search-field">
+        <span class="friend-search-icon" aria-hidden="true">🔍</span>
+        <input type="text" id="friendSearchInput" placeholder="Buscar por correo o nombre…" aria-label="Buscar usuario por correo o nombre" />
+        <button id="clearFriendSearch" class="friend-search-clear" type="button" aria-label="Limpiar búsqueda" hidden>×</button>
+      </div>
+      <div class="friend-search-helper">Se mostrarán usuarios con cuenta @mi.unc.edu.ar</div>
+      <div id="friendSearchError" class="friend-search-error" hidden></div>
+      <div id="friendSearchResults" class="friend-search-results" aria-live="polite"></div>
+      <input id="friendEmailInput" type="email" hidden aria-hidden="true" tabindex="-1" />
     </div>
   </div>
 

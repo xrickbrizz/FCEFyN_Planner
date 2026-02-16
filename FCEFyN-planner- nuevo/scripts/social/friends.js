@@ -12,6 +12,14 @@ import {
 
 let CTX = null;
 
+const CHAT_ACCENTS = {
+  green: "#7CC7A0",
+  blue: "#A7C8FF",
+  purple: "#C9B8FF",
+  grey: "#CED3DB",
+  beige: "#E6D6C3"
+};
+
 function getReqFrom(req){
   return req?.fromUid || req?.senderUid || req?.senderId || "";
 }
@@ -388,9 +396,13 @@ function renderFriendsList(){
     const unreadCount = CTX.socialModules.Messaging?.getFriendUnreadCount?.(f) || 0;
     const avatarUrl = CTX.resolveAvatarUrl?.(profile.photoURL);
     const isSelected = f.chatId === state.activeChatId;
+    const pref = CTX.socialModules.Messaging?.getChatPref?.(CTX?.getCurrentUser?.()?.uid || "", f.chatId) || null;
 
     const div = document.createElement("div");
     div.className = `friend-row ${isOnline ? "friend-online" : ""} ${isSelected ? "selected" : ""}`;
+    if (isSelected && pref?.theme){
+      div.style.setProperty("--chat-accent", CHAT_ACCENTS[pref.theme] || CHAT_ACCENTS.green);
+    }
     div.innerHTML = `
       <div class="friend-main">
         <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}">
