@@ -1,0 +1,511 @@
+import { doc, getDoc, setDoc, serverTimestamp } from "../core/firebase.js";
+import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
+
+const SEMESTER_LABELS = [
+  "Ingreso",
+  "1º Semestre",
+  "2º Semestre",
+  "3º Semestre",
+  "4º Semestre",
+  "5º Semestre",
+  "6º Semestre",
+  "7º Semestre",
+  "8º Semestre",
+  "9º Semestre",
+  "10º Semestre"
+];
+
+const STATUS_VALUES = ["promocionada", "regular", "libre", "en_curso"];
+
+function normalizeStatus(value) {
+  const raw = normalizeStr(value);
+  if (!raw) return null;
+  if (raw === "promocion" || raw === "promocionada") return "promocionada";
+  if (raw === "regular") return "regular";
+  if (raw === "libre") return "libre";
+  if (raw === "en_curso" || raw === "encurso" || raw === "curso") return "en_curso";
+  return null;
+}
+
+function isApproved(status) {
+  return status === "promocionada" || status === "regular";
+}
+
+function isBlockedByClientError(error) {
+  const detail = String(error?.message || error?.code || "");
+  return detail.includes("ERR_BLOCKED_BY_CLIENT") || detail.toLowerCase().includes("blocked by client");
+}
+
+function parseSemestre(raw) {
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  if (typeof raw === "string" && /^\d+$/.test(raw.trim())) return Number(raw.trim());
+  return null;
+}
+
+function toSubjectSlug(subject) {
+  const candidate = subject?.subjectSlug || subject?.slug || subject?.id || subject?.codigo || subject?.code || subject?.nombre;
+  return normalizeStr(candidate).replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function normalizeSubjects(rawSubjects) {
+  return (Array.isArray(rawSubjects) ? rawSubjects : [])
+    .map((raw) => {
+      const subjectSlug = toSubjectSlug(raw);
+      if (!subjectSlug) return null;
+      return {
+        subjectSlug,
+        name: raw?.nombre || raw?.name || raw?.titulo || subjectSlug,
+        semester: parseSemestre(raw?.semestre ?? raw?.semester),
+        requires: (Array.isArray(raw?.requisitos) ? raw.requisitos : Array.isArray(raw?.prerequisites) ? raw.prerequisites : [])
+          .map((entry) => normalizeStr(entry).replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""))
+          .filter(Boolean),
+        requiresApprovedCount: Number(raw?.requiereAprobadas || raw?.requiresApprovedCount || 0),
+        requiresProgressPercent: Number(raw?.requierePorcentaje || raw?.requiresProgressPercent || 0)
+      };
+    })
+    .filter(Boolean);
+}
+
+export async function mountPlansEmbedded({
+  containerEl,
+  careerSlug,
+  userUid,
+  db,
+  plannerRef,
+  initialPlanSlug,
+  embedKey = "correlativas"
+}) {
+  if (!(containerEl instanceof HTMLElement)) {
+    throw new Error("mountPlansEmbedded requiere containerEl válido");
+  }
+
+  const state = {
+    planSlug: resolvePlanSlug(initialPlanSlug || careerSlug || ""),
+    planName: "",
+    materias: [],
+    subjectStates: {},
+    selectedSubjectId: "",
+    selectedAnchorEl: null,
+    previousFocus: null,
+    storageKey: "",
+    cloudBlocked: false,
+    plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null)
+  };
+
+  containerEl.classList.add("plans-embedded-root");
+  containerEl.innerHTML = "";
+  containerEl.dataset.planSlug = state.planSlug;
+
+  const shell = document.createElement("div");
+  shell.className = "plans-embedded-shell";
+  shell.innerHTML = `
+    <div class="msg" data-role="msg" hidden></div>
+    <main class="grid-wrap" data-role="grid"></main>
+    <div class="status-modal" data-role="status-modal" hidden aria-hidden="true">
+      <div class="status-modal-overlay" data-status-modal-close="1"></div>
+      <div class="status-modal-content" role="dialog" aria-modal="true" aria-label="Cambiar estado">
+        <div class="status-modal-header">
+          <div>
+            <h3>Cambiar estado</h3>
+            <p data-role="status-subject">Seleccioná una materia</p>
+          </div>
+          <button class="btn status-modal-close" type="button" data-status-modal-close="1" aria-label="Cerrar">×</button>
+        </div>
+        <div class="status-modal-actions" data-role="status-actions">
+          <button class="btn status-option" type="button" data-status-value="promocionada">Promocionada</button>
+          <button class="btn status-option" type="button" data-status-value="regular">Regular</button>
+          <button class="btn status-option" type="button" data-status-value="libre">Libre</button>
+          <button class="btn status-option" type="button" data-status-value="en_curso">En curso</button>
+          <button class="btn status-option status-option-remove" type="button" data-status-value="ninguno">Quitar estado</button>
+        </div>
+      </div>
+    </div>
+  `;
+  containerEl.appendChild(shell);
+
+  const msgEl = shell.querySelector('[data-role="msg"]');
+  const gridEl = shell.querySelector('[data-role="grid"]');
+  const modalEl = shell.querySelector('[data-role="status-modal"]');
+  const modalContentEl = modalEl?.querySelector(".status-modal-content");
+  const modalSubjectEl = shell.querySelector('[data-role="status-subject"]');
+  const modalActionsEl = shell.querySelector('[data-role="status-actions"]');
+
+  function showSectionMsg(text) {
+    if (!msgEl) return;
+    msgEl.hidden = false;
+    msgEl.textContent = text;
+  }
+
+  function hideSectionMsg() {
+    if (!msgEl) return;
+    msgEl.hidden = true;
+    msgEl.textContent = "";
+  }
+
+  function buildGrid() {
+    gridEl.innerHTML = "";
+
+    const statsCell = document.createElement("section");
+    statsCell.className = "cell";
+    statsCell.innerHTML = `
+      <h2>Panel de estadísticas</h2>
+      <div class="stats">
+        <div class="stats-grid">
+          <div class="stat-card"><strong data-stat="promocionada">0</strong><div class="stat-label">Promocionadas</div></div>
+          <div class="stat-card"><strong data-stat="regular">0</strong><div class="stat-label">Regulares</div></div>
+          <div class="stat-card"><strong data-stat="libre">0</strong><div class="stat-label">Libres</div></div>
+          <div class="stat-card"><strong data-stat="en_curso">0</strong><div class="stat-label">En curso</div></div>
+        </div>
+        <div class="stats-meta">
+          <div class="progress-wrap">
+            <div class="progress"><div class="fill" data-role="progress-fill"></div></div>
+            <div class="progress-caption">
+              <div data-role="caption-left">0 materias aprobadas</div>
+              <div data-role="caption-right">0 total</div>
+            </div>
+          </div>
+          <div class="plans-embedded-reset-wrap">
+            <button class="btn" type="button" data-role="reset-states">Resetear estados</button>
+            <div class="small-muted">Cambios guardados automáticamente</div>
+          </div>
+          <div class="small-muted" data-role="cloud-warning" hidden>Guardado local: sincronización bloqueada.</div>
+        </div>
+      </div>
+    `;
+    gridEl.appendChild(statsCell);
+
+    SEMESTER_LABELS.forEach((label, index) => {
+      const cell = document.createElement("section");
+      cell.className = "cell";
+      cell.innerHTML = `<h2>${label}</h2><div class="subjects" data-sem="${index + 1}"></div>`;
+      gridEl.appendChild(cell);
+    });
+  }
+
+  function getEstadoSimpleMap() {
+    const out = {};
+    Object.entries(state.subjectStates || {}).forEach(([slug, entry]) => {
+      const status = normalizeStatus(entry?.status || entry);
+      if (status) out[slug] = status;
+    });
+    return out;
+  }
+
+  function setEstadoSimpleMap(simple) {
+    const next = {};
+    Object.entries(simple || {}).forEach(([slug, status]) => {
+      const normalized = normalizeStatus(status);
+      if (!normalized) return;
+      next[slug] = { status: normalized, approved: isApproved(normalized) };
+    });
+    state.subjectStates = next;
+  }
+
+  function computeBlocked(subject, estados) {
+    const currentStatus = estados[subject.subjectSlug] || null;
+    if (currentStatus) return false;
+
+    const blockedByReqs = (subject.requires || []).some((req) => !isApproved(estados[req]));
+    if (blockedByReqs) return true;
+
+    if (subject.requiresApprovedCount > 0) {
+      const approvedCount = Object.values(estados).filter(isApproved).length;
+      if (approvedCount < subject.requiresApprovedCount) return true;
+    }
+
+    if (subject.requiresProgressPercent > 0) {
+      const approvedCount = Object.values(estados).filter(isApproved).length;
+      const total = state.materias.length || 1;
+      const progress = (approvedCount / total) * 100;
+      if (progress < subject.requiresProgressPercent) return true;
+    }
+
+    return false;
+  }
+
+  function renderSubjects() {
+    gridEl.querySelectorAll(".subjects").forEach((el) => { el.innerHTML = ""; });
+    const estados = getEstadoSimpleMap();
+
+    state.materias.forEach((subject) => {
+      const sem = Number(subject.semester || 1);
+      const listEl = gridEl.querySelector(`.subjects[data-sem="${sem}"]`);
+      if (!listEl) return;
+
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "subject";
+      item.textContent = subject.name;
+      item.dataset.subjectSlug = subject.subjectSlug;
+      item.dataset.subjectName = subject.name;
+
+      const status = estados[subject.subjectSlug] || null;
+      if (status) item.classList.add(status);
+      if (computeBlocked(subject, estados)) item.classList.add("locked");
+      if (isApproved(status)) item.classList.add("subject-approved");
+
+      listEl.appendChild(item);
+    });
+  }
+
+  function updateUI() {
+    renderSubjects();
+    const estados = getEstadoSimpleMap();
+    const total = state.materias.length;
+    const byStatus = {
+      promocionada: 0,
+      regular: 0,
+      libre: 0,
+      en_curso: 0
+    };
+
+    Object.values(estados).forEach((status) => {
+      if (byStatus[status] !== undefined) byStatus[status] += 1;
+    });
+
+    STATUS_VALUES.forEach((status) => {
+      const el = gridEl.querySelector(`[data-stat="${status}"]`);
+      if (el) el.textContent = String(byStatus[status] || 0);
+    });
+
+    const approvedCount = byStatus.promocionada + byStatus.regular;
+    const progress = total > 0 ? (approvedCount / total) * 100 : 0;
+    const fillEl = gridEl.querySelector('[data-role="progress-fill"]');
+    const capLeftEl = gridEl.querySelector('[data-role="caption-left"]');
+    const capRightEl = gridEl.querySelector('[data-role="caption-right"]');
+    if (fillEl) fillEl.style.width = `${Math.max(0, Math.min(progress, 100)).toFixed(2)}%`;
+    if (capLeftEl) capLeftEl.textContent = `${approvedCount} materias aprobadas`;
+    if (capRightEl) capRightEl.textContent = `${total} total`;
+
+    const cloudWarningEl = gridEl.querySelector('[data-role="cloud-warning"]');
+    if (cloudWarningEl) cloudWarningEl.hidden = !state.cloudBlocked;
+  }
+
+  function positionModal() {
+    if (!modalEl || !modalContentEl || modalEl.hidden) return;
+    if (window.innerWidth < 520) {
+      modalContentEl.style.top = "50%";
+      modalContentEl.style.left = "50%";
+      modalContentEl.style.transform = "translate(-50%, -50%)";
+      return;
+    }
+
+    const anchor = state.selectedAnchorEl;
+    if (!(anchor instanceof HTMLElement)) return;
+
+    const anchorRect = anchor.getBoundingClientRect();
+    const containerRect = containerEl.getBoundingClientRect();
+    const modalRect = modalContentEl.getBoundingClientRect();
+
+    let top = (anchorRect.top - containerRect.top) + containerEl.scrollTop + (anchorRect.height / 2) - (modalRect.height / 2);
+    let left = (anchorRect.left - containerRect.left) + containerEl.scrollLeft + (anchorRect.width / 2) - (modalRect.width / 2);
+
+    top = Math.max(12, Math.min(top, containerEl.clientHeight - modalRect.height - 12));
+    left = Math.max(12, Math.min(left, containerEl.clientWidth - modalRect.width - 12));
+
+    modalContentEl.style.top = `${top}px`;
+    modalContentEl.style.left = `${left}px`;
+    modalContentEl.style.transform = "none";
+  }
+
+  function openStatusModal(anchorEl, subjectId, subjectName) {
+    state.selectedSubjectId = subjectId;
+    state.selectedAnchorEl = anchorEl;
+    state.previousFocus = document.activeElement;
+    if (modalSubjectEl) modalSubjectEl.textContent = `Materia: ${subjectName || "Materia"}`;
+    modalEl.hidden = false;
+    modalEl.setAttribute("aria-hidden", "false");
+    window.requestAnimationFrame(positionModal);
+    const firstAction = modalActionsEl?.querySelector(".status-option");
+    firstAction?.focus?.();
+  }
+
+  function closeStatusModal() {
+    if (!modalEl) return;
+    if (modalEl.contains(document.activeElement)) state.previousFocus?.focus?.();
+    modalEl.hidden = true;
+    modalEl.setAttribute("aria-hidden", "true");
+    state.selectedSubjectId = "";
+    state.selectedAnchorEl = null;
+  }
+
+  function persistLocal() {
+    localStorage.setItem(state.storageKey, JSON.stringify(getEstadoSimpleMap()));
+  }
+
+  async function persistCloud(slug, status) {
+    if (!state.plannerRef || !slug) return;
+    try {
+      await setDoc(state.plannerRef, {
+        subjectStates: {
+          [slug]: {
+            status,
+            approved: isApproved(status),
+            updatedAt: serverTimestamp()
+          }
+        }
+      }, { merge: true });
+      state.cloudBlocked = false;
+    } catch (error) {
+      state.cloudBlocked = isBlockedByClientError(error) || state.cloudBlocked;
+    }
+  }
+
+  async function applyStatus(statusValue) {
+    const slug = String(state.selectedSubjectId || "").trim();
+    if (!slug) return;
+    const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
+    const current = getEstadoSimpleMap();
+    if (normalized) current[slug] = normalized;
+    else delete current[slug];
+    setEstadoSimpleMap(current);
+    persistLocal();
+    if (normalized) await persistCloud(slug, normalized);
+    else await persistCloud(slug, null);
+    closeStatusModal();
+    updateUI();
+  }
+
+  async function resetAll() {
+    setEstadoSimpleMap({});
+    persistLocal();
+    if (state.plannerRef) {
+      try {
+        const payload = {};
+        state.materias.forEach((subject) => {
+          payload[subject.subjectSlug] = { status: null, approved: false, updatedAt: serverTimestamp() };
+        });
+        await setDoc(state.plannerRef, { subjectStates: payload }, { merge: true });
+        state.cloudBlocked = false;
+      } catch (error) {
+        state.cloudBlocked = isBlockedByClientError(error) || state.cloudBlocked;
+      }
+    }
+    updateUI();
+  }
+
+  async function loadPlan(slug) {
+    const resolved = resolvePlanSlug(slug || "");
+    if (!resolved) {
+      state.materias = [];
+      updateUI();
+      return;
+    }
+
+    try {
+      const result = await getPlanWithSubjects(resolved);
+      state.planName = result?.plan?.nombre || resolved;
+      state.materias = normalizeSubjects(result?.subjects || []);
+      if (!state.materias.length) throw new Error("empty-plan");
+      hideSectionMsg();
+      return;
+    } catch {
+      try {
+        const indexUrl = new URL("../../plans/plans_index.json", import.meta.url);
+        const indexResponse = await fetch(indexUrl);
+        const indexData = await indexResponse.json();
+        const found = (indexData?.plans || []).find((plan) => plan.slug === resolved);
+        if (!found?.json) throw new Error("plan-not-found");
+        const planUrl = new URL(`../../${found.json.replace(/^\.\//, "")}`, import.meta.url);
+        const planResponse = await fetch(planUrl);
+        const planData = await planResponse.json();
+        state.planName = planData?.nombre || resolved;
+        state.materias = normalizeSubjects(planData?.materias || []);
+        hideSectionMsg();
+      } catch {
+        showSectionMsg("No se pudo cargar el plan de correlativas.");
+        state.materias = [];
+      }
+    }
+  }
+
+  async function loadStates() {
+    try {
+      const localRaw = localStorage.getItem(state.storageKey);
+      if (localRaw) setEstadoSimpleMap(JSON.parse(localRaw));
+    } catch {
+      setEstadoSimpleMap({});
+    }
+
+    if (!state.plannerRef) return;
+    try {
+      const snap = await getDoc(state.plannerRef);
+      const remote = snap.exists() ? snap.data()?.subjectStates : null;
+      if (remote && typeof remote === "object" && Object.keys(remote).length > 0) {
+        const merged = getEstadoSimpleMap();
+        Object.entries(remote).forEach(([slug, entry]) => {
+          const status = normalizeStatus(entry?.status);
+          if (status) merged[slug] = status;
+        });
+        setEstadoSimpleMap(merged);
+        persistLocal();
+      }
+      state.cloudBlocked = false;
+    } catch (error) {
+      state.cloudBlocked = isBlockedByClientError(error);
+    }
+  }
+
+  async function loadIndex() {
+    await loadPlan(state.planSlug);
+    state.storageKey = `estadosMaterias_v2_${embedKey}_${state.planSlug}`;
+    await loadStates();
+    buildGrid();
+    updateUI();
+  }
+
+  containerEl.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const resetBtn = target.closest('[data-role="reset-states"]');
+    if (resetBtn) {
+      await resetAll();
+      return;
+    }
+
+    const subjectEl = target.closest(".subject");
+    if (!subjectEl || !containerEl.contains(subjectEl)) return;
+
+    const subjectId = String(subjectEl.dataset.subjectSlug || "");
+    const current = getEstadoSimpleMap();
+    if (subjectEl.classList.contains("locked") && !current[subjectId]) return;
+    openStatusModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
+  });
+
+  modalActionsEl?.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const statusBtn = target.closest("[data-status-value]");
+    if (!statusBtn) return;
+    await applyStatus(statusBtn.dataset.statusValue || "");
+  });
+
+  modalEl?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest("[data-status-modal-close]")) closeStatusModal();
+  });
+
+  containerEl.addEventListener("scroll", () => {
+    if (!modalEl?.hidden) positionModal();
+  }, { passive: true });
+
+  window.addEventListener("resize", () => {
+    if (!modalEl?.hidden) positionModal();
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modalEl && !modalEl.hidden) closeStatusModal();
+  });
+
+  await loadIndex();
+
+  return {
+    reload(nextSlug) {
+      state.planSlug = resolvePlanSlug(nextSlug || state.planSlug || "");
+      containerEl.dataset.planSlug = state.planSlug;
+      return loadIndex();
+    }
+  };
+}

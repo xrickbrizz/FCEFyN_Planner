@@ -7,12 +7,14 @@ from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
 import { resolvePlanSlug } from "./plans-data.js";
+import { mountPlansEmbedded } from "./plans/plansEmbedded.js";
 
 let html2canvasLib = null;
 let jsPDFLib = null;
 let appCtx = null;
 let unsubscribeHomeNotices = null;
 let pendingCareerChangeSlug = "";
+let plansEmbeddedController = null;
 
 const AppState = {
   currentUser: null,
@@ -519,6 +521,19 @@ onSessionReady(async (user) => {
   Aula.open("agenda");
   Social.open("perfil");
   bindProfileShortcuts();
+
+  const correlativasRoot = document.getElementById("correlativasPlansRoot");
+  if (correlativasRoot){
+    plansEmbeddedController = await mountPlansEmbedded({
+      containerEl: correlativasRoot,
+      careerSlug: getProfileCareerSlug(),
+      initialPlanSlug: getProfileCareerSlug(),
+      userUid: getUid(),
+      db,
+      embedKey: "correlativas"
+    });
+  }
+
   initHomeModules();
   initHomeNotices();
   restoreLastSection();
@@ -632,23 +647,22 @@ function getProfileCareerSlug(){
 // plan de estudio 
 
 function updatePlanTab(){
-  const frame = document.getElementById("planFrame");
+  const root = document.getElementById("correlativasPlansRoot");
   const notice = document.getElementById("planTabNotice");
-  if (!frame) return;
+  if (!root) return;
   const rawSlug = getProfileCareerSlug();
   const slug = resolvePlanSlug(rawSlug);
   if (!slug){
     if (notice) notice.style.display = "block";
-    frame.style.display = "none";
-    frame.removeAttribute("src");
+    root.style.display = "none";
     return;
   }
 
   if (notice) notice.style.display = "none";
-  frame.style.display = "block";
-  const targetUrl = new URL(`plans.html?embed=1&slug=${encodeURIComponent(slug)}&lock=1`, window.location.href);
-  if (frame.src !== targetUrl.href){
-    frame.src = targetUrl.href;
+  root.style.display = "block";
+  if (!plansEmbeddedController) return;
+  if (root.dataset.planSlug !== slug){
+    plansEmbeddedController.reload(slug);
   }
 }
 

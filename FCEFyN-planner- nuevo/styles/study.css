@@ -930,7 +930,7 @@ body[data-theme="light"] .tab-card{
     }
     #studyTimerStart{
       background: var(--primary);
-      color: #fff;
+      color: var(--text);
       border-color: color-mix(in srgb, var(--primary) 65%, transparent);
       box-shadow: 0 .35rem .85rem color-mix(in srgb, var(--primary) 32%, transparent);
     }
