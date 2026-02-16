@@ -814,7 +814,7 @@ async function submitComment(){
     const functions = getFunctions(app, "us-central1");
     const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
     const res = await submitProfessorReviewCallable(payload);
-    console.log("[prof] submit result", res?.data);
+    console.log("[prof] submit result DATA", res?.data);
 
     draft.comment = "";
     draft.anonymous = false;
@@ -831,7 +831,7 @@ async function submitComment(){
       console.warn("Comentario guardado pero falló el refresh UI:", error);
     }
   }catch(error){
-    console.error("[prof] submit error", {
+    console.error("[prof] submit error FULL", {
       code: error?.code,
       message: error?.message,
       details: error?.details,

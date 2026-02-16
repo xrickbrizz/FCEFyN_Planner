@@ -9,6 +9,7 @@ const MAX_COMMENT_LENGTH = 500;
 
 exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async (request) => {
   try {
+    console.log("### VERSION MARKER reviewCallable-optional-rating-2026-02-16 ###");
     const data = request.data || {};
     console.log("[submitProfessorReviewCallable] raw data:", JSON.stringify(data));
 
