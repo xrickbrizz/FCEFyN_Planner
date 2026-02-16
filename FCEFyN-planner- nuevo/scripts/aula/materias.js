@@ -1,5 +1,6 @@
 import { doc, getDoc, onSnapshot, setDoc } from "../core/firebase.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "../plans-data.js";
+import { PLAN_CHANGED_EVENT, LEGACY_PLAN_CHANGED_EVENT } from "../core/events.js";
 
 let CTX = null;
 let didBindSubjectsUI = false;
@@ -28,6 +29,45 @@ const semesterExpandedState = new Map();
 const plannerKeyAliases = new Map();
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
+const SUBJECTS_FALLBACK_STORAGE_KEY = "planner:subjects:fallback";
+
+function isClientBlockedFirestoreError(err){
+  const message = String(err?.message || "");
+  const code = String(err?.code || "");
+  return message.includes("ERR_BLOCKED_BY_CLIENT")
+    || code.includes("ERR_BLOCKED_BY_CLIENT")
+    || code === "unavailable"
+    || code === "failed-precondition";
+}
+
+function persistSubjectsLocalFallback(payload = {}){
+  try{
+    const previousRaw = localStorage.getItem(SUBJECTS_FALLBACK_STORAGE_KEY);
+    const previous = previousRaw ? JSON.parse(previousRaw) : {};
+    const next = {
+      ...previous,
+      ...payload,
+      updatedAt: Date.now()
+    };
+    localStorage.setItem(SUBJECTS_FALLBACK_STORAGE_KEY, JSON.stringify(next));
+  }catch (error){
+    console.warn("[materias] No se pudo guardar fallback local.", error);
+  }
+}
+
+function notifyFirestoreBlockedFallback(){
+  CTX?.notifyWarn?.("No se pudo sincronizar con la nube (posible bloqueador). Se guardó localmente.");
+}
+
+function dispatchPlanChanged(detail = {}){
+  const eventDetail = {
+    source: "materias",
+    timestamp: Date.now(),
+    ...detail
+  };
+  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, { detail: eventDetail }));
+  window.dispatchEvent(new CustomEvent(LEGACY_PLAN_CHANGED_EVENT, { detail: eventDetail }));
+}
 
 function semesterTagClass(semester){
   const sem = Number.isFinite(Number(semester)) ? Number(semester) : 1;
@@ -197,7 +237,11 @@ function startPlannerStateSubscription(){
     }
 
     renderSubjectsList();
-  }, () => {});
+  }, (error) => {
+    if (isClientBlockedFirestoreError(error)) {
+      notifyFirestoreBlockedFallback();
+    }
+  });
 }
 
 function renderCatalog(){
@@ -395,28 +439,33 @@ function renderSubjectsList(){
 function syncSubjectsStateFromStaged({ emitEvent = true } = {}){
   CTX.aulaState.subjects = stagedSubjects.map((subject) => ({ ...subject }));
   if (!emitEvent) return;
-  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
-    detail: {
-      source: "materias",
-      subjects: CTX.aulaState.subjects
-    }
-  }));
+  dispatchPlanChanged({
+    subjects: CTX.aulaState.subjects
+  });
 }
 
 function addSubjectToUser(item){
-  if (isSubjectPromotedOrApproved(item?.slug || item?.key || item?.name)){
-    CTX?.notifyWarn?.("Esta materia ya está promocionada.");
-    return;
+  try{
+    if (isSubjectPromotedOrApproved(item?.slug || item?.key || item?.name)){
+      CTX?.notifyWarn?.("Esta materia ya está promocionada.");
+      return;
+    }
+    const exists = stagedSubjects.some((subject) => normalizeStr(subject.name) === normalizeStr(item.name));
+    if (exists) return;
+    stagedSubjects.push({
+      name: item.name,
+      color: defaultSubjectColor()
+    });
+    hasLocalChanges = true;
+    try{
+      syncSubjectsStateFromStaged();
+    }catch (dispatchError){
+      console.error("[materias] Error al despachar cambio de plan:", dispatchError);
+    }
+    renderSubjectsList();
+  }catch (err){
+    console.error("[materias] Error al agregar materia:", err);
   }
-  const exists = stagedSubjects.some((subject) => normalizeStr(subject.name) === normalizeStr(item.name));
-  if (exists) return;
-  stagedSubjects.push({
-    name: item.name,
-    color: defaultSubjectColor()
-  });
-  hasLocalChanges = true;
-  syncSubjectsStateFromStaged();
-  renderSubjectsList();
 }
 
 function removeSubjectFromUser(name){
@@ -500,27 +549,43 @@ async function persistSubjects(subjectsToSave){
 
   CTX.aulaState.subjects = subjectsToSave.slice();
   const ref = doc(CTX.db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
+  let data = {};
+  try{
+    const snap = await getDoc(ref);
+    data = snap.exists() ? snap.data() : {};
+  }catch (error){
+    if (!isClientBlockedFirestoreError(error)) throw error;
+  }
   data.subjects = CTX.aulaState.subjects;
   if (CTX.aulaState.plannerCareer?.slug) data.subjectCareer = CTX.aulaState.plannerCareer;
   data.estudios = estudiosCache;
   data.agenda = CTX.aulaState.agendaData;
   data.academico = academicoCache;
-  await setDoc(ref, data, { merge: true });
+  try{
+    await setDoc(ref, data, { merge: true });
+  }catch (error){
+    if (!isClientBlockedFirestoreError(error)) throw error;
+    persistSubjectsLocalFallback({
+      stagedSubjects,
+      userSubjects: CTX.aulaState.subjects,
+      subjectStates: plannerState,
+      agenda: CTX.aulaState.agendaData,
+      estudios: estudiosCache,
+      academico: academicoCache,
+      subjectCareer: CTX.aulaState.plannerCareer
+    });
+    notifyFirestoreBlockedFallback();
+  }
   CTX.setCalendarioCaches?.({ estudios: estudiosCache, academico: academicoCache });
 
   renderSubjectsOptions();
   CTX.paintStudyEvents?.();
   CTX.renderAgenda?.();
   CTX.renderAcadCalendar?.();
-  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
-    detail: {
-      source: "materias",
-      subjects: CTX.aulaState.subjects,
-      agenda: CTX.aulaState.agendaData
-    }
-  }));
+  dispatchPlanChanged({
+    subjects: CTX.aulaState.subjects,
+    agenda: CTX.aulaState.agendaData
+  });
 }
 
 async function saveSubjectConfig(){
@@ -566,7 +631,15 @@ async function setActiveCareer(slug, persist){
   updateSubjectPlanHint();
 
   if (persist && CTX.getCurrentUser?.()){
-    await setDoc(doc(CTX.db, "planner", CTX.getCurrentUser().uid), { subjectCareer: CTX.aulaState.plannerCareer }, { merge: true });
+    try{
+      await setDoc(doc(CTX.db, "planner", CTX.getCurrentUser().uid), { subjectCareer: CTX.aulaState.plannerCareer }, { merge: true });
+    }catch (error){
+      if (!isClientBlockedFirestoreError(error)) throw error;
+      persistSubjectsLocalFallback({
+        subjectCareer: CTX.aulaState.plannerCareer
+      });
+      notifyFirestoreBlockedFallback();
+    }
   }
 }
 

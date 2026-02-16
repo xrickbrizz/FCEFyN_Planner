@@ -71,6 +71,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   const msg = document.getElementById("msg");
   const gridWrap = document.getElementById("gridWrap");
   const statusModal = document.getElementById("statusModal");
+  const statusModalContent = statusModal?.querySelector(".status-modal-content") || null;
   const statusModalSubject = document.getElementById("statusModalSubject");
   const statusModalActions = document.getElementById("statusModalActions");
 
@@ -116,6 +117,70 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   let subjectStates = {};
   let selectedSubjectId = "";
   let previousFocusedElement = null;
+  let lastStatusModalAnchorEl = null;
+  let lastStatusModalAnchorRect = null;
+
+  function getAnchorRectFromData(anchorEl, clickEvent){
+    const rectFromElement = anchorEl instanceof Element ? anchorEl.getBoundingClientRect() : null;
+    if (rectFromElement) return rectFromElement;
+
+    const clickY = Number.isFinite(clickEvent?.clientY) ? clickEvent.clientY : null;
+    const clickX = Number.isFinite(clickEvent?.clientX) ? clickEvent.clientX : window.innerWidth / 2;
+    if (clickY === null) return null;
+
+    return {
+      top: clickY,
+      left: clickX,
+      width: 0,
+      height: 0
+    };
+  }
+
+  function clearStatusModalPosition(){
+    if (!statusModalContent) return;
+    statusModalContent.style.top = "";
+    statusModalContent.style.left = "";
+    statusModalContent.style.transform = "";
+  }
+
+  function positionStatusModal(){
+    if (!statusModal || !statusModalContent || statusModal.hidden) return;
+
+    if (window.innerWidth < 520){
+      clearStatusModalPosition();
+      return;
+    }
+
+    let anchorRect = null;
+    if (lastStatusModalAnchorEl instanceof Element && document.contains(lastStatusModalAnchorEl)){
+      anchorRect = lastStatusModalAnchorEl.getBoundingClientRect();
+      lastStatusModalAnchorRect = anchorRect;
+    } else {
+      anchorRect = lastStatusModalAnchorRect;
+    }
+
+    if (!anchorRect){
+      clearStatusModalPosition();
+      return;
+    }
+
+    const modalRect = statusModalContent.getBoundingClientRect();
+    const viewportPadding = 12;
+
+    const desiredTop = anchorRect.top + (anchorRect.height / 2) - (modalRect.height / 2);
+    const minTop = viewportPadding;
+    const maxTop = window.innerHeight - modalRect.height - viewportPadding;
+    const top = Math.max(minTop, Math.min(desiredTop, maxTop));
+
+    const desiredLeft = anchorRect.left + (anchorRect.width / 2) - (modalRect.width / 2);
+    const minLeft = viewportPadding;
+    const maxLeft = window.innerWidth - modalRect.width - viewportPadding;
+    const left = Math.max(minLeft, Math.min(desiredLeft, maxLeft));
+
+    statusModalContent.style.top = `${top}px`;
+    statusModalContent.style.left = `${left}px`;
+    statusModalContent.style.transform = "none";
+  }
 
   function showCloudSaveWarning(text){
     showMsg(text);
@@ -521,7 +586,7 @@ async function revalidateEstados() {
     updateStatsUI();
   }
 
-function openStatusModal(subjectId, subjectName){
+function openStatusModal(subjectId, subjectName, anchorEl, anchorEvent){
   if (!statusModal) return;
 
   selectedSubjectId = String(subjectId || "").trim();
@@ -537,10 +602,15 @@ function openStatusModal(subjectId, subjectName){
   });
 
   previousFocusedElement = document.activeElement;
+  lastStatusModalAnchorEl = anchorEl instanceof Element ? anchorEl : null;
+  lastStatusModalAnchorRect = getAnchorRectFromData(lastStatusModalAnchorEl, anchorEvent);
   statusModalSubject.textContent = subjectName ? `Materia: ${subjectName}` : "Materia seleccionada";
   statusModal.hidden = false;
   statusModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("status-modal-open");
+  window.requestAnimationFrame(() => {
+    positionStatusModal();
+  });
 
   const firstOption = statusModalActions?.querySelector(".status-option");
   if (firstOption) firstOption.focus();
@@ -560,6 +630,9 @@ function closeStatusModal(){
 
   selectedSubjectId = "";
   delete statusModal.dataset.subjectSlug;
+  clearStatusModalPosition();
+  lastStatusModalAnchorEl = null;
+  lastStatusModalAnchorRect = null;
 
   focusTarget?.focus?.();
   previousFocusedElement = null;
@@ -604,8 +677,16 @@ async function applyStatus(statusValue, triggerButton){
     if (subjectEl.classList.contains("locked") && !estados[subjectSlug]) return;
 
     console.log("[plans] Click materia:", { slug: subjectSlug, nombre: subjectName });
-    openStatusModal(subjectSlug, subjectName);
+    openStatusModal(subjectSlug, subjectName, subjectEl, event);
   });
+
+  window.addEventListener("resize", () => {
+    positionStatusModal();
+  });
+
+  window.addEventListener("scroll", () => {
+    positionStatusModal();
+  }, { passive: true });
 
   if (statusModalActions){
     statusModalActions.addEventListener("click", async (event) => {

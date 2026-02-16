@@ -952,7 +952,7 @@ body.plans-page .status-modal-overlay{
   background:rgba(7, 10, 18, 0.5);
 }
 body.plans-page .status-modal-content{
-  position:relative;
+  position:fixed;
   z-index:1;
   width:min(40rem, 100%);
   border-radius:0.95rem;
@@ -960,6 +960,9 @@ body.plans-page .status-modal-content{
   background:var(--card-bg);
   box-shadow:0 16px 36px rgba(0, 0, 0, 0.24);
   padding:0.95rem;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
 }
 body.plans-page .status-modal-header{
   display:flex;
@@ -1019,4 +1022,12 @@ body.plans-page footer{
   body.plans-page .grid-wrap{ grid-template-columns:1fr; width:100%; }
   body.plans-page .cell{ min-height:auto; padding:0.7rem; }
   body.plans-page .stats-grid{ grid-template-columns:1fr; }
+}
+@media (max-width:520px){
+  body.plans-page .status-modal-content{
+    width:min(40rem, calc(100% - 1.5rem));
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+  }
 }
