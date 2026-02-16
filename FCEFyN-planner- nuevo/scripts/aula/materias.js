@@ -1,5 +1,5 @@
 import { arrayRemove, deleteField, doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "../core/firebase.js";
-import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "../plans-data.js";
+import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr, resolvePlanSlug } from "../plans-data.js";
 import { PLAN_CHANGED_EVENT, LEGACY_PLAN_CHANGED_EVENT } from "../core/events.js";
 
 let CTX = null;
@@ -29,6 +29,7 @@ let firestoreBlockedFallbackApplied = false;
 let didBindPlannerSubjectStatesChanged = false;
 const semesterExpandedState = new Map();
 const plannerKeyAliases = new Map();
+const missingStateLogged = new Set();
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
 const SUBJECTS_FALLBACK_STORAGE_KEY = "planner:subjects:fallback";
@@ -258,6 +259,13 @@ function getSubjectState(subjectSlug){
   const plannerKey = normalizePlannerKey(subjectSlug);
   if (!plannerKey) return { approved: false, status: null };
   const entry = plannerState?.[plannerKey];
+  if ((!entry || typeof entry !== "object") && plannerKey && !missingStateLogged.has(plannerKey)) {
+    missingStateLogged.add(plannerKey);
+    console.warn("[materias] No encuentro estado para:", { subjectSlug, plannerKey });
+    const allKeys = Object.keys(plannerState || {});
+    const approx = allKeys.find((k) => k.includes(plannerKey) || plannerKey.includes(k));
+    console.warn("[materias] keys sample:", allKeys.slice(0, 30), "approx:", approx, approx ? plannerState[approx] : null);
+  }
   if (!entry) return { approved: false, status: null };
   if (typeof entry === "string") {
     const status = entry;
@@ -275,7 +283,7 @@ function getSubjectState(subjectSlug){
 
 function isSubjectPromotedOrApproved(subjectSlug){
   const state = getSubjectState(subjectSlug);
-  return state.approved === true || state.status === "promocionada" || state.status === "regular" || state.status === "aprobada";
+  return state.approved === true;
 }
 
 function startPlannerStateSubscription(){
@@ -287,8 +295,17 @@ function startPlannerStateSubscription(){
 
   plannerStateUnsubscribe = onSnapshot(doc(CTX.db, "planner", currentUser.uid), (snap) => {
     const data = snap.exists() ? (snap.data() || {}) : {};
-    applyPlannerStateFromPayload(data.subjectStates || {}, { render: false });
+    const states = data.subjectStates || {};
+    console.log("[materias] planner snapshot subjectStates keys:", Object.keys(states).length, Object.keys(states).slice(0, 25));
+    const sampleKey = Object.keys(states)[0];
+    if (sampleKey) console.log("[materias] sample state:", sampleKey, states[sampleKey]);
+    applyPlannerStateFromPayload(states, { render: false });
+    console.log("[materias] plannerState aplicado. keys:", Object.keys(plannerState || {}).length);
     firestoreBlockedFallbackApplied = false;
+
+    if (data.subjectCareer && typeof data.subjectCareer === "object"){
+      CTX.aulaState.plannerCareer = data.subjectCareer;
+    }
 
     if (!hasLocalChanges && Array.isArray(data.subjects)) {
       CTX.aulaState.subjects = data.subjects;
@@ -704,13 +721,21 @@ async function setActiveCareer(slug, persist){
     return;
   }
 
-  const needsReload = CTX.aulaState.plannerCareer?.slug !== slug || !Array.isArray(CTX.aulaState.careerSubjects) || !CTX.aulaState.careerSubjects.length;
-  const plan = (CTX.aulaState.careerPlans || []).find((item) => item.slug === slug);
-  CTX.aulaState.plannerCareer = { slug, name: plan?.nombre || slug };
+  const originalSlug = slug;
+  const resolvedSlug = resolvePlanSlug(slug);
+  console.log("[materias] setActiveCareer slug original:", originalSlug);
+  console.log("[materias] setActiveCareer slug resuelto:", resolvedSlug);
+
+  const canonicalSlug = resolvedSlug || originalSlug;
+  const needsReload = CTX.aulaState.plannerCareer?.slug !== canonicalSlug || !Array.isArray(CTX.aulaState.careerSubjects) || !CTX.aulaState.careerSubjects.length;
+  const careerPlans = CTX.aulaState.careerPlans || [];
+  const plan = careerPlans.find((item) => item.slug === resolvedSlug) || careerPlans.find((item) => item.slug === originalSlug);
+  CTX.aulaState.plannerCareer = { slug: canonicalSlug, name: plan?.nombre || slug };
 
   if (needsReload){
     try{
-      const data = await getPlanWithSubjects(slug);
+      const data = await getPlanWithSubjects(canonicalSlug);
+      console.log("[materias] subjects cargadas:", data.subjects?.length, "primeros ids:", (data.subjects || []).slice(0, 5).map((s) => s.id || s.slug || s.nombre));
       CTX.aulaState.careerSubjects = Array.isArray(data.subjects) ? data.subjects : [];
       rebuildPlannerKeyAliases();
     }catch (_error){
@@ -745,7 +770,8 @@ async function syncCareerFromProfile({ forceReload = false } = {}){
   const profileCareer = getProfileCareer();
   const hasProfileCareer = !!profileCareer?.slug;
   updateCareerFallbackUI(hasProfileCareer);
-  const resolvedSlug = profileCareer?.slug || "";
+  const storedPlannerSlug = CTX.aulaState.plannerCareer?.slug || "";
+  const resolvedSlug = storedPlannerSlug || profileCareer?.slug || "";
   const changed = CTX.aulaState.plannerCareer?.slug !== resolvedSlug;
   if (resolvedSlug && (changed || forceReload)) {
     await setActiveCareer(resolvedSlug, false);
