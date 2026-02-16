@@ -44,8 +44,7 @@ const state = {
   hasNextPage: false,
   subjectsForCareer: [],
   reviewsByProfessor: new Map(),
-  ratingDraft: { teachingQuality:null, examDifficulty:null, studentTreatment:null },
-  commentDraft: { comment:"", anonymous:false }
+  reviewDraft: {}
 };
 
 const notifySuccess = (message) => CTX?.notifySuccess?.(message);
@@ -77,6 +76,34 @@ function validateRating(value){
 
 function sanitizeRatingValue(value){
   return Number.parseInt(value, 10);
+}
+
+function normalizeRating(x){
+  const n = Number(x);
+  return Number.isFinite(n) ? n : null;
+}
+
+function ensureReviewDraft(professorId){
+  if (!state.reviewDraft) state.reviewDraft = {};
+  if (!state.reviewDraft[professorId]){
+    state.reviewDraft[professorId] = {
+      rating: null,
+      comment: "",
+      anonymous: false,
+      teachingQuality: null,
+      examDifficulty: null,
+      studentTreatment: null
+    };
+  }
+  return state.reviewDraft[professorId];
+}
+
+function buildDraftRating(draft){
+  const teachingQuality = sanitizeRatingValue(draft?.teachingQuality);
+  const examDifficulty = sanitizeRatingValue(draft?.examDifficulty);
+  const studentTreatment = sanitizeRatingValue(draft?.studentTreatment);
+  if (!validateRating(teachingQuality) || !validateRating(examDifficulty) || !validateRating(studentTreatment)) return null;
+  return Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
 }
 
 function teachingDescriptor(value){
@@ -365,6 +392,7 @@ function renderProfessorDetail(){
   const ratedReviewsCount = reviews.filter((review) => reviewAverage(review) !== null).length;
   const total = Math.max(1, ratedReviewsCount);
 
+  console.warn("[prof] modal re-render / rebuild", { professorId: professor.id, keepRating: ensureReviewDraft(professor.id).rating });
   box.innerHTML = `
     <div class="prof-detail-layout">
       <section class="prof-detail-main">
@@ -516,12 +544,19 @@ function openRatingModal(professor){
   const groups = document.getElementById("profRatingGroups");
   if (!modal || !modalName || !groups || !professor) return;
 
+  const draft = ensureReviewDraft(professor.id);
   modalName.textContent = professor.name;
   groups.innerHTML = "";
+  console.log("[prof] openReviewModal", { professorId: professor.id, hasModal: !!modal });
 
-  if (!Number.isInteger(state.ratingDraft.teachingQuality)) state.ratingDraft.teachingQuality = null;
-  if (!Number.isInteger(state.ratingDraft.examDifficulty)) state.ratingDraft.examDifficulty = null;
-  if (!Number.isInteger(state.ratingDraft.studentTreatment)) state.ratingDraft.studentTreatment = null;
+  if (!Number.isInteger(draft.teachingQuality)) draft.teachingQuality = null;
+  if (!Number.isInteger(draft.examDifficulty)) draft.examDifficulty = null;
+  if (!Number.isInteger(draft.studentTreatment)) draft.studentTreatment = null;
+  console.log("[prof] initRatingUI", {
+    stars: METRICS.length * 5,
+    input: false,
+    currentStateRating: draft.rating
+  });
 
   METRICS.forEach(metric => {
     const wrap = document.createElement("div");
@@ -537,17 +572,22 @@ function openRatingModal(professor){
       btn.dataset.value = String(i);
       btn.addEventListener("click", () => {
         const selectedValue = Number(i);
-        state.ratingDraft[metric.key] = selectedValue;
+        console.log("[prof] rating click", { starValue: selectedValue, professorId: professor.id });
+        draft[metric.key] = selectedValue;
+        draft.rating = buildDraftRating(draft);
+        console.log("[prof] state.rating updated", { rating: draft.rating, type: typeof draft.rating });
         paintMetricStars(metric.key, selectedValue);
       });
       picker?.appendChild(btn);
     }
 
     groups.appendChild(wrap);
-    const selected = Number.isInteger(state.ratingDraft[metric.key]) ? state.ratingDraft[metric.key] : 0;
+    const selected = Number.isInteger(draft[metric.key]) ? draft[metric.key] : 0;
     paintMetricStars(metric.key, selected);
   });
 
+  draft.rating = buildDraftRating(draft);
+  console.log("[prof] state.rating updated", { rating: draft.rating, type: typeof draft.rating });
   modal.classList.remove("hidden");
 }
 
@@ -566,6 +606,9 @@ function paintMetricStars(metricKey, selected){
 }
 
 function closeRatingModal(){
+  const professorId = state.selectedProfessorId;
+  const draft = professorId ? ensureReviewDraft(professorId) : null;
+  console.log("[prof] closeReviewModal", { lastRating: draft?.rating ?? null });
   document.getElementById("profRatingModal")?.classList.add("hidden");
 }
 
@@ -573,7 +616,11 @@ function setCommentSubmitState(){
   const commentInput = document.getElementById("profCommentInput");
   const submitButton = document.getElementById("btnSubmitComment");
   if (!submitButton || !commentInput) return;
-  submitButton.disabled = !commentInput.value.trim();
+  const professorId = state.selectedProfessorId;
+  const draft = professorId ? ensureReviewDraft(professorId) : null;
+  const normalized = normalizeRating(draft?.rating);
+  const hasValidRating = normalized != null && normalized >= 1 && normalized <= 5;
+  submitButton.disabled = !commentInput.value.trim() || !hasValidRating;
 }
 
 function openCommentModal(professor){
@@ -583,15 +630,26 @@ function openCommentModal(professor){
   const anonymousCheck = document.getElementById("profCommentAnonymous");
   if (!modal || !commentInput || !commentCount || !anonymousCheck || !professor) return;
 
-  commentInput.value = state.commentDraft.comment || "";
+  const draft = ensureReviewDraft(professor.id);
+  console.log("[prof] openReviewModal", { professorId: professor.id, hasModal: !!modal });
+  console.log("[prof] initRatingUI", {
+    stars: document.querySelectorAll("#profRatingModal .star-btn")?.length || 0,
+    input: !!commentInput,
+    currentStateRating: draft.rating
+  });
+
+  commentInput.value = draft.comment || "";
   commentCount.textContent = `${commentInput.value.length} / 500`;
-  anonymousCheck.checked = Boolean(state.commentDraft.anonymous);
+  anonymousCheck.checked = Boolean(draft.anonymous);
   setCommentSubmitState();
 
   modal.classList.remove("hidden");
 }
 
 function closeCommentModal(){
+  const professorId = state.selectedProfessorId;
+  const draft = professorId ? ensureReviewDraft(professorId) : null;
+  console.log("[prof] closeReviewModal", { lastRating: draft?.rating ?? null });
   document.getElementById("profCommentModal")?.classList.add("hidden");
 }
 
@@ -622,10 +680,11 @@ async function onAdvancedFiltersChange(){
 async function submitRating(){
   const professorId = state.selectedProfessorId;
   if (!professorId) return;
+  const draft = ensureReviewDraft(professorId);
 
-  const teachingQuality = sanitizeRatingValue(state.ratingDraft.teachingQuality);
-  const examDifficulty = sanitizeRatingValue(state.ratingDraft.examDifficulty);
-  const studentTreatment = sanitizeRatingValue(state.ratingDraft.studentTreatment);
+  const teachingQuality = sanitizeRatingValue(draft.teachingQuality);
+  const examDifficulty = sanitizeRatingValue(draft.examDifficulty);
+  const studentTreatment = sanitizeRatingValue(draft.studentTreatment);
 
   console.log("Valores enviados:", {
     calidad: teachingQuality,
@@ -659,14 +718,18 @@ async function submitRating(){
     studentTreatment,
     rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2))
   };
+  draft.rating = payload.rating;
+  console.log("[prof] state.rating updated", { rating: draft.rating, type: typeof draft.rating });
 
   const submitBtn = document.getElementById("btnSubmitRating");
   if (submitBtn) submitBtn.disabled = true;
 
   try{
     const functions = getFunctions(app, "us-central1");
-    const callable = httpsCallable(functions, "submitProfessorReviewCallable");
-    await callable(payload);
+    const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
+    console.log("[prof] submit payload FINAL", payload);
+    const res = await submitProfessorReviewCallable(payload);
+    console.log("[prof] submit result", res?.data || res);
 
     await refreshSelectedProfessorStats(professorId);
     await loadProfessorReviews(professorId);
@@ -676,7 +739,12 @@ async function submitRating(){
     closeRatingModal();
     notifySuccess("Calificación enviada correctamente.");
   }catch(error){
-    console.error("Error controlado al enviar reseña:", error?.message || error);
+    console.error("[prof] submit error", {
+      code: error?.code,
+      message: error?.message,
+      details: error?.details,
+      stack: error?.stack
+    });
     notifyError("No se pudo guardar la calificación.");
   }finally{
     if (submitBtn) submitBtn.disabled = false;
@@ -693,6 +761,25 @@ async function submitComment(){
   const commentText = commentInput?.value || "";
   const anonymous = Boolean(anonymousCheck?.checked);
   const comment = commentText.trim();
+  const draft = ensureReviewDraft(professorId);
+  draft.comment = commentText;
+  draft.anonymous = anonymous;
+
+  console.log("[prof] submit payload BEFORE sanitize", {
+    professorId,
+    rating: draft.rating,
+    commentLen: (commentText || "").length,
+    anonymous: !!anonymous
+  });
+
+  const normalized = normalizeRating(draft.rating);
+  console.log("[prof] rating normalized", { raw: draft.rating, normalized });
+
+  if (normalized == null || normalized < 1 || normalized > 5) {
+    console.warn("[prof] BLOCK submit: invalid rating", { raw: draft.rating, normalized });
+    notifyWarn("Elegí una valoración entre 1 y 5.");
+    return;
+  }
 
   if (!comment){
     notifyWarn("Escribí un comentario para continuar.");
@@ -706,30 +793,23 @@ async function submitComment(){
 
   const payload = {
     professorId,
+    rating: normalized,
     comment: commentText.trim(),
     anonymous: !!anonymous
   };
-
-  const forbiddenKeys = [
-    "rating",
-    "teachingQuality", "examDifficulty", "studentTreatment",
-    "quality", "difficulty", "treatment",
-    "scores", "metrics"
-  ];
-  for (const key of forbiddenKeys) delete payload[key];
-
-  console.log("Payload submitComment:", payload);
+  console.log("[prof] submit payload FINAL", payload);
 
   const submitBtn = document.getElementById("btnSubmitComment");
   if (submitBtn) submitBtn.disabled = true;
 
   try{
     const functions = getFunctions(app, "us-central1");
-    const callable = httpsCallable(functions, "submitProfessorReviewCallable");
-    await callable(payload);
+    const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
+    const res = await submitProfessorReviewCallable(payload);
+    console.log("[prof] submit result", res?.data || res);
 
-    state.commentDraft.comment = "";
-    state.commentDraft.anonymous = false;
+    draft.comment = "";
+    draft.anonymous = false;
     closeCommentModal();
     notifySuccess("Comentario enviado correctamente.");
 
@@ -743,12 +823,18 @@ async function submitComment(){
       console.warn("Comentario guardado pero falló el refresh UI:", error);
     }
   }catch(error){
-    console.error("submitComment error:", error?.code, error?.message, error?.details, error);
+    console.error("[prof] submit error", {
+      code: error?.code,
+      message: error?.message,
+      details: error?.details,
+      stack: error?.stack
+    });
     notifyError(error?.message || "No se pudo guardar el comentario.");
   }finally{
     setCommentSubmitState();
   }
 }
+
 
 async function refreshSelectedProfessorStats(professorId){
   const snap = await getDoc(doc(CTX.db, "professors", professorId));
@@ -811,14 +897,19 @@ function bindEvents(){
   });
 
   document.getElementById("profCommentInput")?.addEventListener("input", (event) => {
+    const professorId = state.selectedProfessorId;
+    const draft = professorId ? ensureReviewDraft(professorId) : null;
     const value = String(event.target.value || "").slice(0, 500);
     event.target.value = value;
-    state.commentDraft.comment = value;
+    if (draft) draft.comment = value;
+    console.log("[prof] rating change", { value, professorId });
     document.getElementById("profCommentCount").textContent = `${value.length} / 500`;
     setCommentSubmitState();
   });
   document.getElementById("profCommentAnonymous")?.addEventListener("change", (event) => {
-    state.commentDraft.anonymous = Boolean(event.target.checked);
+    const professorId = state.selectedProfessorId;
+    const draft = professorId ? ensureReviewDraft(professorId) : null;
+    if (draft) draft.anonymous = Boolean(event.target.checked);
   });
 
   document.getElementById("profAdvancedFiltersBtn")?.addEventListener("click", openAdvancedFiltersModal);
