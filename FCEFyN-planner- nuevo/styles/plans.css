@@ -20,3 +20,7 @@ body.plans-embed .grid-wrap {
     background: var(--card); 
     box-shadow: none;
 }
+
+.status-modal[hidden]{
+    display: none !important;
+}
