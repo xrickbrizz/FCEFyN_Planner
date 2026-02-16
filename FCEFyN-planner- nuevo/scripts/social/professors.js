@@ -730,7 +730,7 @@ async function submitRating(){
     const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
     console.log("[prof] submit payload FINAL", payload);
     const res = await submitProfessorReviewCallable(payload);
-    console.log("[prof] submit result", res?.data || res);
+    console.log("[prof] submit result", res?.data);
 
     await refreshSelectedProfessorStats(professorId);
     await loadProfessorReviews(professorId);
@@ -814,7 +814,7 @@ async function submitComment(){
     const functions = getFunctions(app, "us-central1");
     const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
     const res = await submitProfessorReviewCallable(payload);
-    console.log("[prof] submit result", res?.data || res);
+    console.log("[prof] submit result", res?.data);
 
     draft.comment = "";
     draft.anonymous = false;

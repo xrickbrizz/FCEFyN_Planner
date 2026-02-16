@@ -21,12 +21,16 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const hasComment = comment.length > 0;
     if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
 
-    const hasRating = data.rating !== undefined && data.rating !== null;
-    const rating = hasRating ? Number(data.rating) : null;
+    const parsedRating = Number(data.rating);
+    const hasRating = Number.isFinite(parsedRating);
+    const rating = hasRating ? parsedRating : null;
 
-    const tq = data.teachingQuality !== undefined ? Number(data.teachingQuality) : null;
-    const ed = data.examDifficulty !== undefined ? Number(data.examDifficulty) : null;
-    const st = data.studentTreatment !== undefined ? Number(data.studentTreatment) : null;
+    const parsedTeachingQuality = Number(data.teachingQuality);
+    const parsedExamDifficulty = Number(data.examDifficulty);
+    const parsedStudentTreatment = Number(data.studentTreatment);
+    const tq = Number.isFinite(parsedTeachingQuality) ? parsedTeachingQuality : null;
+    const ed = Number.isFinite(parsedExamDifficulty) ? parsedExamDifficulty : null;
+    const st = Number.isFinite(parsedStudentTreatment) ? parsedStudentTreatment : null;
     const hasMetrics = [tq, ed, st].some((v) => v !== null);
 
     console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
@@ -166,7 +170,12 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       tx.set(professorRef, professorUpdate, { merge: true });
     });
 
-    return { ok: true, wroteComment: hasComment, wroteRating: finalRating !== null };
+    return {
+      ok: true,
+      version: "reviewCallable-optional-rating-2026-02-16",
+      wroteComment: hasComment,
+      wroteRating: finalRating !== null
+    };
   } catch (err) {
     console.error("submitProfessorReviewCallable error", err);
     if (err instanceof HttpsError) throw err;
@@ -204,6 +213,5 @@ exports.updateCurrentSubjectsCallable = onCall({ region: "us-central1" }, async 
     currentSubjects,
     updatedAt: FieldValue.serverTimestamp()
   }, { merge: true });
-  return { ok: true, version: "reviewCallable-optional-rating-2026-02-16", wroteComment: hasComment, wroteRating: finalRating !== null };
- // return { ok: true, currentSubjects };
+  return { ok: true, currentSubjects };
 });
