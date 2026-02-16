@@ -532,14 +532,14 @@
           <article class="card-block mensajeria-card add-amigo">
             <div class="block-title add-amigo-header-row">
               <span>Agregar amigo</span>
-              <button class="quick-toggle-btn heart-toggle-btn" id="friendRequestsBtn" type="button" aria-label="Ver solicitudes de amistad">
-                ❤️
-                <span id="friendReqBadge" class="friend-requests-badge" hidden>0</span>
-              </button>
             </div>
             <div class="small-muted">Abrí el buscador para encontrar estudiantes y enviar solicitudes.</div>
             <div class="friend-form add-amigo-form">
               <button class="btn-outline btn-small btn-send-request" id="openFriendSearch" type="button">Enviar solicitud</button>
+            <button class="quick-toggle-btn heart-toggle-btn" id="friendRequestsBtn" type="button" aria-label="Ver solicitudes de amistad">
+                ❤️
+                <span id="friendReqBadge" class="friend-requests-badge" hidden>0</span>
+              </button>
             </div>
           </article>
 
@@ -740,17 +740,19 @@
     <div class="friend-requests-modal" role="dialog" aria-modal="true" aria-labelledby="friendRequestsModalTitle">
       <div class="friend-requests-modal-header">
         <h3 id="friendRequestsModalTitle">Solicitudes de amistad</h3>
-        <button id="closeFriendRequestsModal" type="button" class="btn-outline btn-small" aria-label="Cerrar modal">Cerrar</button>
+        <button id="closeFriendRequestsModal" type="button" class="friend-requests-close" aria-label="Cerrar solicitudes de amistad">×</button>
       </div>
-      <div class="friend-requests-modal-grid">
-        <section class="friend-requests-column">
-          <h4>Recibidas</h4>
-          <div id="incomingRequests" class="requests-box friend-list modal-requests-list" aria-live="polite"></div>
-        </section>
-        <section class="friend-requests-column">
-          <h4>Enviadas</h4>
-          <div id="outgoingRequests" class="requests-box friend-list modal-requests-list" aria-live="polite"></div>
-        </section>
+      <div class="friend-requests-modal-body">
+        <div class="friend-requests-modal-grid">
+          <section class="friend-requests-column">
+            <h4>Recibidas</h4>
+            <div id="incomingRequests" class="requests-box friend-list modal-requests-list" aria-live="polite"></div>
+          </section>
+          <section class="friend-requests-column">
+            <h4>Enviadas</h4>
+            <div id="outgoingRequests" class="requests-box friend-list modal-requests-list" aria-live="polite"></div>
+          </section>
+        </div>
       </div>
     </div>
   </div>

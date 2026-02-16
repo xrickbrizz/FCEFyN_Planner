@@ -448,12 +448,24 @@ function formatRequestDate(value){
   return new Date(ms).toLocaleString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
 }
 
+function getInitialsLabel(value){
+  const label = String(value || "U").trim();
+  return (label.charAt(0) || "U").toUpperCase();
+}
+
 function getRequestDisplay(req, type){
   const fallbackEmail = type === "incoming" ? (req.fromEmail || "Correo desconocido") : (req.toEmail || "Correo");
   const name = req.displayName || req.fullName || req.name || fallbackEmail;
   const email = type === "incoming" ? (req.fromEmail || fallbackEmail) : (req.toEmail || fallbackEmail);
-  const avatar = CTX.resolveAvatarUrl?.(req.photoURL || req.avatarUrl || "") || "https://www.gravatar.com/avatar/?d=mp";
-  return { name, email, avatar };
+  const avatar = CTX.resolveAvatarUrl?.(req.photoURL || req.avatarUrl || "") || "";
+  return { name, email, avatar, initial:getInitialsLabel(name) };
+}
+
+function buildRequestAvatarMarkup(info){
+  if (!info.avatar){
+    return `<div class="friend-avatar-fallback" aria-hidden="true">${info.initial}</div>`;
+  }
+  return `<img class="friend-avatar" src="${info.avatar}" alt="Avatar de ${info.name}">`;
 }
 
 function renderFriendRequestsUI(){
@@ -467,13 +479,13 @@ function renderFriendRequestsUI(){
   updateFriendRequestsBadge();
 
   if (state.requestsLoading){
-    incomingBox.innerHTML = "<div class='muted'>Cargando...</div>";
-    outgoingBox.innerHTML = "<div class='muted'>Cargando...</div>";
+    incomingBox.innerHTML = "<div class='request-empty'>Cargando...</div>";
+    outgoingBox.innerHTML = "<div class='request-empty'>Cargando...</div>";
     return;
   }
 
   if (!state.friendRequests.incoming.length){
-    incomingBox.innerHTML = "<div class='muted'>Sin solicitudes pendientes.</div>";
+    incomingBox.innerHTML = "<div class='request-empty'>Sin solicitudes pendientes.</div>";
   } else {
     state.friendRequests.incoming.forEach(req =>{
       const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/incoming");
@@ -483,15 +495,15 @@ function renderFriendRequestsUI(){
       div.className = "request-card";
       div.innerHTML = `
         <div class="req-main">
-          <img class="friend-avatar" src="${info.avatar}" alt="Avatar de ${info.name}">
-          <div>
+          ${buildRequestAvatarMarkup(info)}
+          <div class="req-user">
             <div class="req-email">${info.name}</div>
-            <div class="req-meta">${info.email} · ${formatRequestDate(req.createdAt)}</div>
+            <div class="req-meta">${info.email}</div>
           </div>
         </div>
         <div class="req-actions">
-          <button class="btn-blue btn-small" data-action="accept" data-id="${req.id}" data-from="${req.fromUid}" data-to="${req.toUid}">Aceptar</button>
-          <button class="btn-danger btn-small" data-action="reject" data-id="${req.id}">✕</button>
+          <button class="btn-request" data-action="accept" data-id="${req.id}" data-from="${req.fromUid}" data-to="${req.toUid}">Aceptar</button>
+          <button class="btn-request-soft" data-action="reject" data-id="${req.id}">Rechazar</button>
         </div>
       `;
       incomingBox.appendChild(div);
@@ -499,24 +511,25 @@ function renderFriendRequestsUI(){
   }
 
   if (!state.friendRequests.outgoing.length){
-    outgoingBox.innerHTML = "<div class='muted'>No enviaste solicitudes.</div>";
+    outgoingBox.innerHTML = "<div class='request-empty'>Sin solicitudes pendientes.</div>";
   } else {
     state.friendRequests.outgoing.forEach(req =>{
       const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/outgoing");
       if (!endpoints) return;
       const info = getRequestDisplay(req, "outgoing");
       const div = document.createElement("div");
-      div.className = "request-card ghost";
+      div.className = "request-card";
       div.innerHTML = `
         <div class="req-main">
-          <img class="friend-avatar" src="${info.avatar}" alt="Avatar de ${info.name}">
-          <div>
+          ${buildRequestAvatarMarkup(info)}
+          <div class="req-user">
             <div class="req-email">${info.name}</div>
             <div class="req-meta">${info.email} · ${formatRequestDate(req.createdAt)}</div>
           </div>
         </div>
         <div class="req-actions">
-          <button class="btn-outline btn-small" data-action="cancel" data-id="${req.id}">Cancelar</button>
+          <span class="request-state-pill">Solicitud enviada ✓</span>
+          <button class="btn-request-soft" data-action="cancel" data-id="${req.id}">Cancelar</button>
         </div>
       `;
       outgoingBox.appendChild(div);
