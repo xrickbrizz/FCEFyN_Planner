@@ -1,4 +1,4 @@
-import { doc, getDoc, onSnapshot, setDoc } from "../core/firebase.js";
+import { arrayRemove, deleteField, doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "../core/firebase.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "../plans-data.js";
 import { PLAN_CHANGED_EVENT, LEGACY_PLAN_CHANGED_EVENT } from "../core/events.js";
 
@@ -468,7 +468,11 @@ function renderUserSubjects(){
     remove.className = "subject-remove-btn";
     remove.textContent = "🗑";
     remove.setAttribute("aria-label", `Eliminar ${subject.name}`);
-    remove.addEventListener("click", () => removeSubjectFromUser(subject.name));
+    remove.addEventListener("click", () => {
+      removeSubjectFromUser(subject).catch((error) => {
+        console.error("[materias] Error inesperado al quitar materia:", error);
+      });
+    });
 
     controls.appendChild(colors);
     controls.appendChild(remove);
@@ -506,7 +510,8 @@ function addSubjectToUser(item){
     if (exists) return;
     stagedSubjects.push({
       name: item.name,
-      color: defaultSubjectColor()
+      color: defaultSubjectColor(),
+      slug: item.slug || item.key || normalizeStr(item.name)
     });
     hasLocalChanges = true;
     try{
@@ -520,11 +525,37 @@ function addSubjectToUser(item){
   }
 }
 
-function removeSubjectFromUser(name){
-  stagedSubjects = stagedSubjects.filter((subject) => normalizeStr(subject.name) !== normalizeStr(name));
+async function removeSubjectFromUser(subjectToRemove){
+  const normalizedName = normalizeStr(subjectToRemove?.name || "");
+  const subjectSlug = normalizePlannerKey(subjectToRemove?.slug || subjectToRemove?.name || "");
+
+  stagedSubjects = stagedSubjects.filter((subject) => normalizeStr(subject.name) !== normalizedName);
   hasLocalChanges = true;
+  if (subjectSlug && plannerState?.[subjectSlug]) delete plannerState[subjectSlug];
   syncSubjectsStateFromStaged();
   renderSubjectsList();
+
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser?.uid || !subjectSlug) return;
+
+  const ref = doc(CTX.db, "planner", currentUser.uid);
+  try{
+    const updatePayload = {
+      [`subjectStates.${subjectSlug}`]: deleteField(),
+      updatedAt: serverTimestamp()
+    };
+
+    const snap = await getDoc(ref);
+    const remoteSubjects = snap.exists() ? snap.data()?.subjects : null;
+    if (Array.isArray(remoteSubjects) && remoteSubjects.every((entry) => typeof entry === "string")) {
+      updatePayload.subjects = arrayRemove(subjectSlug);
+    }
+
+    await updateDoc(ref, updatePayload);
+  }catch (error){
+    console.error("[materias] Error al quitar materia en Firestore:", error);
+    CTX?.notifyError?.("No se pudo quitar la materia en la nube.");
+  }
 }
 
 function handleColorChange(subjectName, color){
@@ -610,6 +641,7 @@ async function persistSubjects(subjectsToSave){
   }
   data.subjects = CTX.aulaState.subjects;
   if (CTX.aulaState.plannerCareer?.slug) data.subjectCareer = CTX.aulaState.plannerCareer;
+  data.updatedAt = serverTimestamp();
   data.estudios = estudiosCache;
   data.agenda = CTX.aulaState.agendaData;
   data.academico = academicoCache;
@@ -758,7 +790,8 @@ function hydrateStagedSubjects(){
   stagedSubjects = Array.isArray(CTX?.aulaState?.subjects)
     ? CTX.aulaState.subjects.map((item) => ({
       name: item?.name || "",
-      color: cssColorToHex(item?.color) || defaultSubjectColor()
+      color: cssColorToHex(item?.color) || defaultSubjectColor(),
+      slug: item?.slug || normalizeStr(item?.name || "")
     })).filter((item) => item.name)
     : [];
   syncSubjectsStateFromStaged({ emitEvent: false });
