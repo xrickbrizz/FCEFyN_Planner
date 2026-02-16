@@ -13,6 +13,12 @@ const normalizeMetric = (value) => {
   return num;
 };
 
+const hasMetricValue = (value) => {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string" && value.trim() === "") return false;
+  return true;
+};
+
 const reviewAverage = ({ teachingQuality, examDifficulty, studentTreatment }) => {
   const avg = (Number(teachingQuality || 0) + Number(examDifficulty || 0) + Number(studentTreatment || 0)) / 3;
   return Number(avg.toFixed(2));
@@ -20,16 +26,34 @@ const reviewAverage = ({ teachingQuality, examDifficulty, studentTreatment }) =>
 
 exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async (request) => {
   try {
+    console.log("submitProfessorReviewCallable request.data", request.data);
+
     if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");
 
     const professorId = String(request.data?.professorId || "").trim();
     if (!professorId) throw new HttpsError("invalid-argument", "Profesor inválido.");
 
-    const teachingQuality = normalizeMetric(request.data?.teachingQuality ?? request.data?.quality);
-    const examDifficulty = normalizeMetric(request.data?.examDifficulty ?? request.data?.difficulty);
-    const studentTreatment = normalizeMetric(request.data?.studentTreatment ?? request.data?.treatment);
+    const teachingQualityRaw = request.data?.teachingQuality ?? request.data?.quality;
+    const examDifficultyRaw = request.data?.examDifficulty ?? request.data?.difficulty;
+    const studentTreatmentRaw = request.data?.studentTreatment ?? request.data?.treatment;
+    const ratingRaw = request.data?.rating;
+    const ratingFallback = normalizeMetric(ratingRaw);
+
+    const teachingQuality = normalizeMetric(hasMetricValue(teachingQualityRaw) ? teachingQualityRaw : ratingRaw);
+    const examDifficulty = normalizeMetric(hasMetricValue(examDifficultyRaw) ? examDifficultyRaw : ratingRaw);
+    const studentTreatment = normalizeMetric(hasMetricValue(studentTreatmentRaw) ? studentTreatmentRaw : ratingRaw);
+
+    const missingMetrics = [];
+    if (!hasMetricValue(teachingQualityRaw) && ratingFallback === null) missingMetrics.push("teachingQuality/quality o rating");
+    if (!hasMetricValue(examDifficultyRaw) && ratingFallback === null) missingMetrics.push("examDifficulty/difficulty o rating");
+    if (!hasMetricValue(studentTreatmentRaw) && ratingFallback === null) missingMetrics.push("studentTreatment/treatment o rating");
+
+    if (missingMetrics.length > 0) {
+      throw new HttpsError("invalid-argument", `Faltan métricas obligatorias: ${missingMetrics.join(", ")}.`);
+    }
+
     if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
-      throw new HttpsError("invalid-argument", "Cada métrica debe estar entre 1 y 5.");
+      throw new HttpsError("invalid-argument", "La valoración debe estar entre 1 y 5 para todas las métricas.");
     }
 
     const comment = typeof request.data?.comment === "string" ? request.data.comment.trim() : "";

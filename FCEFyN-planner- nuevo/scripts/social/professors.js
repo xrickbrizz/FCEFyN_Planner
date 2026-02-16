@@ -607,6 +607,7 @@ async function submitRating(){
     teachingQuality,
     examDifficulty,
     studentTreatment,
+    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2)),
     comment: state.ratingDraft.comment,
     anonymous: state.ratingDraft.anonymous
   };
