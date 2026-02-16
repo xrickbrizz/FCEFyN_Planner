@@ -26,6 +26,7 @@ let hasLocalChanges = false;
 let plannerState = {};
 let plannerStateUnsubscribe = null;
 let firestoreBlockedFallbackApplied = false;
+let didBindPlannerSubjectStatesChanged = false;
 const semesterExpandedState = new Map();
 const plannerKeyAliases = new Map();
 
@@ -257,7 +258,15 @@ function getSubjectState(subjectSlug){
   const plannerKey = normalizePlannerKey(subjectSlug);
   if (!plannerKey) return { approved: false, status: null };
   const entry = plannerState?.[plannerKey];
-  if (!entry || typeof entry !== "object") return { approved: false, status: null };
+  if (!entry) return { approved: false, status: null };
+  if (typeof entry === "string") {
+    const status = entry;
+    return {
+      approved: status === "promocionada" || status === "regular",
+      status
+    };
+  }
+  if (typeof entry !== "object") return { approved: false, status: null };
   return {
     approved: entry?.approved === true,
     status: typeof entry?.status === "string" ? entry.status : null
@@ -266,7 +275,7 @@ function getSubjectState(subjectSlug){
 
 function isSubjectPromotedOrApproved(subjectSlug){
   const state = getSubjectState(subjectSlug);
-  return state.approved === true || state.status === "promocionada" || state.status === "aprobada";
+  return state.approved === true || state.status === "promocionada" || state.status === "regular" || state.status === "aprobada";
 }
 
 function startPlannerStateSubscription(){
@@ -771,6 +780,15 @@ function bindSubjectsFormHandlers(){
   window.addEventListener("careerChanged", async () => {
     await syncCareerFromProfile({ forceReload: true });
   });
+
+  if (!didBindPlannerSubjectStatesChanged) {
+    didBindPlannerSubjectStatesChanged = true;
+    window.addEventListener("plannerSubjectStatesChanged", (e) => {
+      const incoming = e?.detail?.subjectStates || {};
+      applyPlannerStateFromPayload(incoming, { render: false });
+      renderCatalog();
+    });
+  }
 
   subjectCatalogSearch?.addEventListener("input", (e) => {
     catalogSearchQuery = e.target.value || "";

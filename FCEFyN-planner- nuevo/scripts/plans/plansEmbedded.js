@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, serverTimestamp } from "../core/firebase.js";
+import { doc, onSnapshot, setDoc, serverTimestamp, updateDoc, deleteField } from "../core/firebase.js";
 import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
 
 const SEMESTER_LABELS = [
@@ -31,9 +31,13 @@ function isApproved(status) {
   return status === "promocionada" || status === "regular";
 }
 
-function isBlockedByClientError(error) {
-  const detail = String(error?.message || error?.code || "");
-  return detail.includes("ERR_BLOCKED_BY_CLIENT") || detail.toLowerCase().includes("blocked by client");
+function normalizeRemoteSubjectStates(remoteStates) {
+  const simple = {};
+  Object.entries(remoteStates || {}).forEach(([slug, entry]) => {
+    const status = normalizeStatus(typeof entry === "string" ? entry : entry?.status);
+    if (status) simple[slug] = status;
+  });
+  return simple;
 }
 
 function parseSemestre(raw) {
@@ -89,7 +93,8 @@ export async function mountPlansEmbedded({
     previousFocus: null,
     storageKey: "",
     cloudBlocked: false,
-    plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null)
+    plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null),
+    plannerUnsubscribe: null
   };
 
   containerEl.classList.add("plans-embedded-root");
@@ -140,6 +145,12 @@ export async function mountPlansEmbedded({
     if (!msgEl) return;
     msgEl.hidden = true;
     msgEl.textContent = "";
+  }
+
+  function dispatchSubjectStatesChanged() {
+    window.dispatchEvent(new CustomEvent("plannerSubjectStatesChanged", {
+      detail: { subjectStates: state.subjectStates }
+    }));
   }
 
   function buildGrid() {
@@ -336,49 +347,79 @@ export async function mountPlansEmbedded({
   async function persistCloud(slug, status) {
     if (!state.plannerRef || !slug) return;
     try {
-      await setDoc(state.plannerRef, {
-        subjectStates: {
-          [slug]: {
-            status,
-            approved: isApproved(status),
-            updatedAt: serverTimestamp()
-          }
-        }
-      }, { merge: true });
+      if (typeof status === "string") {
+        await setDoc(state.plannerRef, {
+          subjectStates: {
+            [slug]: {
+              status,
+              approved: isApproved(status),
+              updatedAt: serverTimestamp()
+            }
+          },
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } else {
+        await updateDoc(state.plannerRef, {
+          [`subjectStates.${slug}`]: deleteField(),
+          updatedAt: serverTimestamp()
+        });
+      }
       state.cloudBlocked = false;
+      hideSectionMsg();
     } catch (error) {
-      state.cloudBlocked = isBlockedByClientError(error) || state.cloudBlocked;
+      state.cloudBlocked = true;
+      showSectionMsg("No se pudo guardar en la nube. Revisá permisos / sesión.");
+      console.error("[plansEmbedded] Error al guardar estado en la nube", { slug, status, error });
+      throw error;
     }
   }
 
   async function applyStatus(statusValue) {
     const slug = String(state.selectedSubjectId || "").trim();
     if (!slug) return;
+    const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
-    const current = getEstadoSimpleMap();
+    const current = { ...previous };
     if (normalized) current[slug] = normalized;
     else delete current[slug];
     setEstadoSimpleMap(current);
     persistLocal();
-    if (normalized) await persistCloud(slug, normalized);
-    else await persistCloud(slug, null);
+    dispatchSubjectStatesChanged();
+    try {
+      if (normalized) await persistCloud(slug, normalized);
+      else await persistCloud(slug, null);
+    } catch (_error) {
+      setEstadoSimpleMap(previous);
+      persistLocal();
+      dispatchSubjectStatesChanged();
+    }
     closeStatusModal();
     updateUI();
   }
 
   async function resetAll() {
+    const previous = getEstadoSimpleMap();
     setEstadoSimpleMap({});
     persistLocal();
+    dispatchSubjectStatesChanged();
     if (state.plannerRef) {
       try {
-        const payload = {};
+        const payload = {
+          updatedAt: serverTimestamp()
+        };
         state.materias.forEach((subject) => {
-          payload[subject.subjectSlug] = { status: null, approved: false, updatedAt: serverTimestamp() };
+          payload[`subjectStates.${subject.subjectSlug}`] = deleteField();
         });
-        await setDoc(state.plannerRef, { subjectStates: payload }, { merge: true });
+        await updateDoc(state.plannerRef, payload);
         state.cloudBlocked = false;
+        hideSectionMsg();
       } catch (error) {
-        state.cloudBlocked = isBlockedByClientError(error) || state.cloudBlocked;
+        state.cloudBlocked = true;
+        showSectionMsg("No se pudo guardar en la nube. Revisá permisos / sesión.");
+        console.error("[plansEmbedded] Error al resetear estados en la nube", error);
+        setEstadoSimpleMap(previous);
+        persistLocal();
+        dispatchSubjectStatesChanged();
       }
     }
     updateUI();
@@ -426,24 +467,27 @@ export async function mountPlansEmbedded({
     } catch {
       setEstadoSimpleMap({});
     }
+    dispatchSubjectStatesChanged();
+  }
 
+  function startPlannerSubscription() {
     if (!state.plannerRef) return;
-    try {
-      const snap = await getDoc(state.plannerRef);
-      const remote = snap.exists() ? snap.data()?.subjectStates : null;
-      if (remote && typeof remote === "object" && Object.keys(remote).length > 0) {
-        const merged = getEstadoSimpleMap();
-        Object.entries(remote).forEach(([slug, entry]) => {
-          const status = normalizeStatus(entry?.status);
-          if (status) merged[slug] = status;
-        });
-        setEstadoSimpleMap(merged);
-        persistLocal();
-      }
+    state.plannerUnsubscribe?.();
+    state.plannerUnsubscribe = onSnapshot(state.plannerRef, (snap) => {
+      const remote = snap.exists() ? (snap.data()?.subjectStates || {}) : {};
+      const normalizedRemote = normalizeRemoteSubjectStates(remote);
+      setEstadoSimpleMap(normalizedRemote);
+      persistLocal();
+      dispatchSubjectStatesChanged();
       state.cloudBlocked = false;
-    } catch (error) {
-      state.cloudBlocked = isBlockedByClientError(error);
-    }
+      hideSectionMsg();
+      updateUI();
+    }, (error) => {
+      state.cloudBlocked = true;
+      showSectionMsg("No se pudo sincronizar con la nube.");
+      console.error("[plansEmbedded] Error de sincronización en tiempo real", error);
+      updateUI();
+    });
   }
 
   async function loadIndex() {
@@ -452,6 +496,7 @@ export async function mountPlansEmbedded({
     await loadStates();
     buildGrid();
     updateUI();
+    startPlannerSubscription();
   }
 
   containerEl.addEventListener("click", async (event) => {
