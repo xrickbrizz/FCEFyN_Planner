@@ -39,6 +39,7 @@
 <script type="module">
 import { showConfirm } from "./scripts/ui/notifications.js";
 import { db, collection, getDocs, doc, getDoc } from "./scripts/core/firebase.js";
+import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
 (function(){
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
   const params = new URLSearchParams(window.location.search);
@@ -66,10 +67,13 @@ import { db, collection, getDocs, doc, getDoc } from "./scripts/core/firebase.js
   ];
 
   function normalize(s){
-    return (s || "")
-      .toString()
-      .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return normalizeStr(s);
+  }
+
+  function slugify(value){
+    return normalizeStr(value)
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
   }
 
   function showMsg(text){
@@ -374,6 +378,82 @@ function revalidateEstados() {
     return [];
   }
 
+  const aliasMap = new Map();
+
+  function registerAlias(alias, realSlug){
+    const normalizedAlias = normalize(alias);
+    const normalizedReal = normalize(realSlug);
+    if (!normalizedAlias || !normalizedReal || aliasMap.has(normalizedAlias)) return;
+    aliasMap.set(normalizedAlias, realSlug);
+  }
+
+  function buildAliasMap(plans){
+    aliasMap.clear();
+    (plans || []).forEach((plan) => {
+      const realSlug = (plan.slug || "").trim();
+      if (!realSlug) return;
+
+      const resolvedSlug = resolvePlanSlug(realSlug);
+      const nameSlug = slugify(plan.nombre || "");
+
+      registerAlias(realSlug, realSlug);
+      registerAlias(resolvedSlug, realSlug);
+      registerAlias(nameSlug, realSlug);
+
+      if (nameSlug){
+        registerAlias(`ingenieria-${nameSlug}`, realSlug);
+        registerAlias(`ingenieria-en-${nameSlug}`, realSlug);
+      }
+
+      if (resolvedSlug){
+        registerAlias(`ingenieria-${resolvedSlug}`, realSlug);
+        registerAlias(`ingenieria-en-${resolvedSlug}`, realSlug);
+      }
+    });
+  }
+
+  function findPlanInIndex(slugInput){
+    const normalizedInput = normalize(slugInput);
+    return indexPlans.find((plan) => normalize(plan.slug) === normalizedInput) || null;
+  }
+
+  function resolvePlanDocId(slugInput){
+    const attempts = [];
+    const addAttempt = (value) => {
+      const normalizedValue = normalize(value);
+      if (!normalizedValue) return;
+      if (!attempts.includes(normalizedValue)) attempts.push(normalizedValue);
+    };
+
+    const rawSlug = String(slugInput || "");
+    const resolvedSlug = resolvePlanSlug(rawSlug);
+
+    addAttempt(rawSlug);
+    addAttempt(resolvedSlug);
+
+    if (resolvedSlug){
+      addAttempt(`ingenieria-${resolvedSlug}`);
+      addAttempt(`ingenieria-en-${resolvedSlug}`);
+    }
+
+    let resolvedDocId = "";
+    for (const attempt of attempts){
+      const fromAlias = aliasMap.get(attempt);
+      if (fromAlias){
+        resolvedDocId = fromAlias;
+        break;
+      }
+
+      const fromIndex = findPlanInIndex(attempt);
+      if (fromIndex?.slug){
+        resolvedDocId = fromIndex.slug;
+        break;
+      }
+    }
+
+    return { resolvedDocId, attempts };
+  }
+
   async function loadPlans(){
     const snapshot = await getDocs(collection(db, "plans"));
     return snapshot.docs.map((snap) => ({
@@ -400,6 +480,8 @@ function revalidateEstados() {
       return normalize(a.nombre).localeCompare(normalize(b.nombre), "es");
     });
 
+    buildAliasMap(indexPlans);
+
     planSelect.innerHTML = `<option value="">Elegí plan…</option>`;
     indexPlans.forEach(p=>{
       const opt = document.createElement("option");
@@ -409,28 +491,40 @@ function revalidateEstados() {
     });
   }
 
-  async function loadPlanBySlug(slug){
-    const plan = indexPlans.find(p=> (p.slug || "") === slug);
-    if(!plan){
+  async function loadPlanBySlug(slugInput){
+    const rawSlug = String(slugInput || "");
+    const resolvedSlug = resolvePlanSlug(rawSlug);
+    const { resolvedDocId, attempts } = resolvePlanDocId(rawSlug);
+
+    console.log("[plans] slug recibido:", rawSlug);
+    console.log("[plans] slug resuelto:", resolvedSlug);
+
+    if(!resolvedDocId){
       gridWrap.style.display = "none";
-      showMsg("No se encontró ese plan en la colección plans de Firestore.");
+      title.textContent = "Planes de Estudio";
+      const examples = indexPlans.slice(0, 3).map((plan) => plan.slug).filter(Boolean).join(", ") || "(sin planes disponibles)";
+      showMsg(`No se encontró el plan para slug: ${rawSlug}. Probé: [${attempts.join(", ")}]. Planes disponibles: ${examples}`);
       return;
     }
 
     hideMsg();
 
-    const planData = await loadPlan(plan.slug || slug);
-    const planSlug = planData.slug || plan.slug || slug;
+    const plan = findPlanInIndex(resolvedDocId);
+    const planData = await loadPlan(resolvedDocId);
+    const planSlug = planData.slug || planData.id || plan?.slug || resolvedDocId;
     storageKey = `${STORAGE_KEY_DEFAULT}_${planSlug}`;
 
     materias = detectMaterias(planData);
-    if(!materias.length){
+    console.log("[plans] docId final usado:", resolvedDocId);
+    console.log("[plans] cantidad de materias detectadas:", Array.isArray(materias) ? materias.length : 0);
+
+    if(!Array.isArray(materias) || !materias.length){
       gridWrap.style.display = "none";
-      showMsg("El plan en Firestore no tiene materias cargadas.");
+      showMsg(`El plan ${resolvedDocId} no tiene materias válidas para mostrar.`);
       return;
     }
 
-    title.textContent = planData.nombre || plan.nombre || "Plan de Estudios";
+    title.textContent = planData.nombre || plan?.nombre || "Plan de Estudios";
     gridWrap.style.display = "grid";
 
     buildGrid();
@@ -438,11 +532,11 @@ function revalidateEstados() {
     attachEventsToSubjects();
     updateUI();
 
-    // guardo selección para que no se vea query string
     sessionStorage.setItem("selectedPlanSlug", planSlug || "");
-    sessionStorage.setItem("selectedPlanNombre", planData.nombre || plan.nombre || "");
-    planSelect.value = planSlug || "";
+    sessionStorage.setItem("selectedPlanNombre", planData.nombre || plan?.nombre || "");
+    planSelect.value = planSlug || resolvedDocId || "";
   }
+
 
   btnBack.addEventListener("click", ()=> window.location.href = getBackUrl());
 

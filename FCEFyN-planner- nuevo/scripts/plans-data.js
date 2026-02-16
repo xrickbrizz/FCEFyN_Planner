@@ -7,6 +7,26 @@ const normalizeStr = (s) => (s || "")
   .replace(/[\u0300-\u036f]/g, "")
   .trim();
 
+const PLAN_SLUG_EQUIVALENCES = {
+  "ingenieria-aeroespacial": "aeroespacial",
+  "ingenieria-en-agrimensura": "agrimensura",
+  "ingenieria-ambiental": "ambiental",
+  "ingenieria-biomedica": "biomedica",
+  "ingenieria-civil": "civil",
+  "ingenieria-en-computacion": "computacion",
+  "ingenieria-electromecanica": "electromecanica",
+  "ingenieria-electronica": "electronica",
+  "ingenieria-industrial": "industrial",
+  "ingenieria-mecanica": "mecanica",
+  "ingenieria-quimica": "quimica"
+};
+
+export function resolvePlanSlug(inputSlug){
+  const normalized = normalizeStr(inputSlug);
+  if (!normalized) return "";
+  return PLAN_SLUG_EQUIVALENCES[normalized] || normalized;
+}
+
 let cachedIndex = null; // [{slug,nombre,version}]
 const cachedSubjects = new Map(); // slug -> {subjects, rawPlan}
 

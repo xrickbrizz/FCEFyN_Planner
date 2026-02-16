@@ -6,6 +6,7 @@ import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioC
 from "./aula/calendario.js";
 import Social from "./social/index.js";
 import Aula from "./aula/index.js";
+import { resolvePlanSlug } from "./plans-data.js";
 
 let html2canvasLib = null;
 let jsPDFLib = null;
@@ -634,7 +635,8 @@ function updatePlanTab(){
   const frame = document.getElementById("planFrame");
   const notice = document.getElementById("planTabNotice");
   if (!frame) return;
-  const slug = getProfileCareerSlug();
+  const rawSlug = getProfileCareerSlug();
+  const slug = resolvePlanSlug(rawSlug);
   if (!slug){
     if (notice) notice.style.display = "block";
     frame.style.display = "none";
