@@ -690,8 +690,9 @@ async function submitComment(){
 
   const commentInput = document.getElementById("profCommentInput");
   const anonymousCheck = document.getElementById("profCommentAnonymous");
-  const comment = (commentInput?.value || "").trim();
+  const commentText = commentInput?.value || "";
   const anonymous = Boolean(anonymousCheck?.checked);
+  const comment = commentText.trim();
 
   if (!comment){
     notifyWarn("Escribí un comentario para continuar.");
@@ -705,9 +706,19 @@ async function submitComment(){
 
   const payload = {
     professorId,
-    comment,
-    anonymous
+    comment: commentText.trim(),
+    anonymous: !!anonymous
   };
+
+  const forbiddenKeys = [
+    "rating",
+    "teachingQuality", "examDifficulty", "studentTreatment",
+    "quality", "difficulty", "treatment",
+    "scores", "metrics"
+  ];
+  for (const key of forbiddenKeys) delete payload[key];
+
+  console.log("Payload submitComment:", payload);
 
   const submitBtn = document.getElementById("btnSubmitComment");
   if (submitBtn) submitBtn.disabled = true;
@@ -719,17 +730,21 @@ async function submitComment(){
 
     state.commentDraft.comment = "";
     state.commentDraft.anonymous = false;
-
-    await refreshSelectedProfessorStats(professorId);
-    await loadProfessorReviews(professorId);
-    await loadDirectoryPage();
-    renderDirectory();
-    renderProfessorDetail();
     closeCommentModal();
     notifySuccess("Comentario enviado correctamente.");
+
+    try{
+      await refreshSelectedProfessorStats(professorId);
+      await loadProfessorReviews(professorId);
+      await loadDirectoryPage();
+      renderDirectory();
+      renderProfessorDetail();
+    }catch(error){
+      console.warn("Comentario guardado pero falló el refresh UI:", error);
+    }
   }catch(error){
-    console.error("Error controlado al enviar comentario:", error?.message || error);
-    notifyError("No se pudo guardar el comentario.");
+    console.error("submitComment error:", error?.code, error?.message, error?.details, error);
+    notifyError(error?.message || "No se pudo guardar el comentario.");
   }finally{
     setCommentSubmitState();
   }
