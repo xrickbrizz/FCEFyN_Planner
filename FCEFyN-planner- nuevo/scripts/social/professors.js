@@ -620,7 +620,8 @@ function setCommentSubmitState(){
   const draft = professorId ? ensureReviewDraft(professorId) : null;
   const normalized = normalizeRating(draft?.rating);
   const hasValidRating = normalized != null && normalized >= 1 && normalized <= 5;
-  submitButton.disabled = !commentInput.value.trim() || !hasValidRating;
+  const hasComment = Boolean(commentInput.value.trim());
+  submitButton.disabled = !hasComment && !hasValidRating;
 }
 
 function openCommentModal(professor){
@@ -772,31 +773,38 @@ async function submitComment(){
     anonymous: !!anonymous
   });
 
-  const normalized = normalizeRating(draft.rating);
-  console.log("[prof] rating normalized", { raw: draft.rating, normalized });
-
-  if (normalized == null || normalized < 1 || normalized > 5) {
-    console.warn("[prof] BLOCK submit: invalid rating", { raw: draft.rating, normalized });
-    notifyWarn("Elegí una valoración entre 1 y 5.");
-    return;
-  }
-
-  if (!comment){
-    notifyWarn("Escribí un comentario para continuar.");
-    return;
-  }
+  const teachingQuality = sanitizeRatingValue(draft.teachingQuality);
+  const examDifficulty = sanitizeRatingValue(draft.examDifficulty);
+  const studentTreatment = sanitizeRatingValue(draft.studentTreatment);
+  const hasCompleteMetrics =
+    validateRating(teachingQuality) &&
+    validateRating(examDifficulty) &&
+    validateRating(studentTreatment);
 
   if (comment.length > 500){
     notifyWarn("El comentario no puede superar los 500 caracteres.");
     return;
   }
 
+  if (!comment && !hasCompleteMetrics){
+    notifyWarn("Debes escribir un comentario o completar la puntuación.");
+    return;
+  }
+
   const payload = {
     professorId,
-    rating: normalized,
     comment: commentText.trim(),
     anonymous: !!anonymous
   };
+  if (!comment) delete payload.comment;
+  if (hasCompleteMetrics){
+    Object.assign(payload, {
+      teachingQuality,
+      examDifficulty,
+      studentTreatment,
+      rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2))
+    });
+  }
   console.log("[prof] submit payload FINAL", payload);
 
   const submitBtn = document.getElementById("btnSubmitComment");
@@ -811,7 +819,7 @@ async function submitComment(){
     draft.comment = "";
     draft.anonymous = false;
     closeCommentModal();
-    notifySuccess("Comentario enviado correctamente.");
+    notifySuccess("Comentario publicado.");
 
     try{
       await refreshSelectedProfessorStats(professorId);
@@ -831,6 +839,7 @@ async function submitComment(){
     });
     notifyError(error?.message || "No se pudo guardar el comentario.");
   }finally{
+    if (submitBtn) submitBtn.disabled = false;
     setCommentSubmitState();
   }
 }

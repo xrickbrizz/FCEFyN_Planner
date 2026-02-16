@@ -49,7 +49,12 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     }
 
     const comment = typeof request.data?.comment === "string" ? request.data.comment.trim() : "";
+    const hasComment = comment.length > 0;
     if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
+
+    if (!hasComment && !hasRatingInput) {
+      throw new HttpsError("invalid-argument", "Debes enviar comentario o puntuación.");
+    }
 
     const anonymous = Boolean(request.data?.anonymous);
     const authorName = anonymous
@@ -81,7 +86,6 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const previousComment = reviewSnap.exists ? String(reviewSnap.get("comment") || "") : "";
 
       const hadComment = previousComment.trim().length > 0;
-      const hasComment = comment.trim().length > 0;
       const previousCommentsCount = Number(profData.commentsCount || 0);
 
       const nextCount = hasRatingInput
@@ -109,12 +113,14 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
         professorId,
         userId: uid,
         authorUid: uid,
-        comment,
         anonymous,
         authorName,
         createdAt,
         updatedAt: now
       };
+      if (hasComment) {
+        reviewPayload.comment = comment;
+      }
       if (hasRatingInput) {
         const rating = reviewAverage({ teachingQuality, examDifficulty, studentTreatment });
         Object.assign(reviewPayload, {
@@ -154,7 +160,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       }, { merge: true });
     });
 
-    return { ok: true };
+    return { ok: true, wroteComment: hasComment, wroteRating: hasRatingInput };
   } catch (err) {
     console.error("submitProfessorReviewCallable error", err);
     if (err instanceof HttpsError) throw err;
