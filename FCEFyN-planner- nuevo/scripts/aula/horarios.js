@@ -1,6 +1,9 @@
 import { doc, getDoc, setDoc } from "../core/firebase.js";
 
 let CTX = null;
+let didBindPlanChangedListener = false;
+
+const PLAN_CHANGED_EVENT = "plan:changed";
 
 const dayKeys = ['lunes','martes','miercoles','jueves','viernes','sabado'];
 const dayLabels = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -48,6 +51,19 @@ function renderAgenda(){
   ensureAgendaStructure();
   console.log("[Agenda] renderAgenda ejecutado");
   renderAgendaGridInto(agendaGrid, CTX.aulaState.agendaData, true);
+}
+
+function refreshAgenda(){
+  if (!CTX) return;
+  renderAgenda();
+}
+
+function bindPlanChangedListener(){
+  if (didBindPlanChangedListener) return;
+  didBindPlanChangedListener = true;
+  window.addEventListener(PLAN_CHANGED_EVENT, () => {
+    refreshAgenda();
+  });
 }
 
 function renderAgendaGridInto(grid, data, allowEdit){
@@ -313,6 +329,7 @@ const Horarios = {
   init(ctx){
     CTX = ctx;
     bindAgendaModal();
+    bindPlanChangedListener();
   },
   renderAgenda,
   renderAgendaGridInto,

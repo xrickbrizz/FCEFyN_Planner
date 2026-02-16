@@ -3,6 +3,8 @@ import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
 
+const PLAN_CHANGED_EVENT = "plan:changed";
+
 const subjectColorCanvas = document.createElement("canvas");
 const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
@@ -548,11 +550,18 @@ async function applyPresetToAgendaDirect(presetId, notify = false){
 
   CTX.renderAgenda?.();
   renderPlannerAll();
-  if (notify) CTX?.notifySuccess?.(`Agenda actualizada con ${p.name || "preset"}.`);
+  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
+    detail: {
+      source: "planner",
+      presetId: p.id,
+      agenda: CTX.aulaState.agendaData
+    }
+  }));
+  void notify;
 }
 
 function selectPresetAndRefreshAgenda(id){
-  applyPresetToAgendaDirect(id, true).catch(() => {});
+  applyPresetToAgendaDirect(id).catch(() => {});
 }
 
 function togglePlannerStyleModal(modalId, open){
@@ -822,7 +831,7 @@ function initPresetToAgendaModalUI(){
     presetApplyInfo.textContent = p ? `Preset: ${p.name || "Sin nombre"} · ${(p.sectionIds || []).length} comisiones.` : "—";
   });
   btnPresetApplyConfirm?.addEventListener("click", async () => {
-    await applyPresetToAgendaDirect(presetApplySelect.value, true);
+    await applyPresetToAgendaDirect(presetApplySelect.value);
     if (presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none";
   });
   document.getElementById("btnAgendaFromPreset")?.addEventListener("click", openPresetToAgendaModal);

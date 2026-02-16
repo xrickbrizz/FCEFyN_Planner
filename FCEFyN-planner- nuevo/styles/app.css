@@ -880,9 +880,15 @@ body.plans-page .stats{
   flex-direction:column;
   gap: 0.8rem;
 }
-body.plans-page .stat-row{
+body.plans-page .stats-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+body.plans-page .stats-meta{
   display:flex;
-  gap: 1rem;
+  flex-direction:column;
+  gap: 0.7rem;
 }
 body.plans-page .stat-card{
   background: var(--plan-glass);
@@ -928,6 +934,71 @@ body.plans-page .progress-caption{
   color:var(--color-muted-2);
   margin-top:0.35rem;
 }
+body.status-modal-open{
+  overflow:hidden;
+}
+body.plans-page .status-modal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+}
+body.plans-page .status-modal-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(7, 10, 18, 0.5);
+}
+body.plans-page .status-modal-content{
+  position:relative;
+  z-index:1;
+  width:min(40rem, 100%);
+  border-radius:0.95rem;
+  border:1px solid var(--border-35);
+  background:var(--card-bg);
+  box-shadow:0 16px 36px rgba(0, 0, 0, 0.24);
+  padding:0.95rem;
+}
+body.plans-page .status-modal-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:0.75rem;
+  margin-bottom:0.8rem;
+}
+body.plans-page .status-modal-header h3{
+  margin:0;
+  font-size:1.05rem;
+  color:var(--color-text);
+}
+body.plans-page .status-modal-header p{
+  margin:0.2rem 0 0;
+  font-size:0.86rem;
+  color:var(--color-muted-2);
+}
+body.plans-page .status-modal-close{
+  min-width:auto;
+  padding:0.25rem 0.6rem;
+}
+body.plans-page .status-modal-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+body.plans-page .status-option{
+  margin:0;
+}
+body.plans-page .status-option-remove{
+  border-color: color-mix(in srgb, var(--color-danger) 45%, var(--border-35));
+  color:var(--color-danger);
+  background:transparent;
+}
+body.plans-page .status-option.is-selected{
+  transform:scale(0.98);
+  box-shadow:0 0 0 2px var(--accent-25);
+}
 body.plans-page footer{
   width: 100%;
   max-width: 100rem;
@@ -947,4 +1018,5 @@ body.plans-page footer{
   body.plans-page select{ min-width: 100%; }
   body.plans-page .grid-wrap{ grid-template-columns:1fr; width:100%; }
   body.plans-page .cell{ min-height:auto; padding:0.7rem; }
+  body.plans-page .stats-grid{ grid-template-columns:1fr; }
 }

@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "../core/firebase.js";
+import { doc, getDoc, onSnapshot, setDoc } from "../core/firebase.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr } from "../plans-data.js";
 
 let CTX = null;
@@ -22,6 +22,10 @@ const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let stagedSubjects = [];
 let catalogSearchQuery = "";
 let hasLocalChanges = false;
+let plannerState = {};
+let plannerStateUnsubscribe = null;
+const semesterExpandedState = new Map();
+const plannerKeyAliases = new Map();
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
 
@@ -117,8 +121,10 @@ function getCatalogSubjects(){
     const key = normalizeStr(name);
     if (map.has(key)) return;
     const rawSem = Number(s?.semestre ?? s?.semester ?? 0);
+    const slug = normalizeStr(s?.slug || s?.id || s?.subjectSlug || s?.code || name);
     map.set(key, {
       key,
+      slug,
       name,
       semester: Number.isFinite(rawSem) ? Math.max(1, rawSem) : 1,
       area: s?.area || s?.department || ""
@@ -129,6 +135,69 @@ function getCatalogSubjects(){
   return Array.from(map.values())
     .filter((item) => !selectedKeys.has(item.key))
     .filter((item) => !catalogSearchQuery || normalizeStr(item.name).includes(normalizeStr(catalogSearchQuery)));
+}
+
+function normalizePlannerKey(subjectSlug){
+  const normalized = normalizeStr(subjectSlug || "");
+  if (!normalized) return "";
+  return plannerKeyAliases.get(normalized) || normalized;
+}
+
+function rebuildPlannerKeyAliases(){
+  plannerKeyAliases.clear();
+  (CTX?.aulaState?.careerSubjects || []).forEach((subject) => {
+    const canonical = normalizeStr(subject?.id || subject?.slug || subject?.subjectSlug || subject?.code || subject?.nombre || subject?.name || "");
+    if (!canonical) return;
+    const aliases = [
+      subject?.id,
+      subject?.slug,
+      subject?.subjectSlug,
+      subject?.code,
+      subject?.nombre,
+      subject?.name,
+      canonical
+    ];
+    aliases.forEach((alias) => {
+      const normalizedAlias = normalizeStr(alias || "");
+      if (!normalizedAlias || plannerKeyAliases.has(normalizedAlias)) return;
+      plannerKeyAliases.set(normalizedAlias, canonical);
+    });
+  });
+}
+
+function getSubjectState(subjectSlug){
+  const plannerKey = normalizePlannerKey(subjectSlug);
+  if (!plannerKey) return { approved: false, status: null };
+  const entry = plannerState?.[plannerKey];
+  if (!entry || typeof entry !== "object") return { approved: false, status: null };
+  return {
+    approved: entry?.approved === true,
+    status: typeof entry?.status === "string" ? entry.status : null
+  };
+}
+
+function isSubjectPromotedOrApproved(subjectSlug){
+  const state = getSubjectState(subjectSlug);
+  return state.approved === true || state.status === "promocionada";
+}
+
+function startPlannerStateSubscription(){
+  if (plannerStateUnsubscribe) plannerStateUnsubscribe();
+  plannerStateUnsubscribe = null;
+
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser?.uid) return;
+
+  plannerStateUnsubscribe = onSnapshot(doc(CTX.db, "planner", currentUser.uid), (snap) => {
+    const data = snap.exists() ? (snap.data() || {}) : {};
+    plannerState = data;
+
+    if (!hasLocalChanges && Array.isArray(data.subjects)) {
+      CTX.aulaState.subjects = data.subjects;
+    }
+
+    renderSubjectsList();
+  }, () => {});
 }
 
 function renderCatalog(){
@@ -152,17 +221,54 @@ function renderCatalog(){
   });
 
   Array.from(bySemester.keys()).sort((a, b) => a - b).forEach((semester) => {
+    const semesterSubjects = bySemester.get(semester) || [];
+    const approvedCount = semesterSubjects.filter((item) => isSubjectPromotedOrApproved(item.slug || item.key)).length;
+    const isFullyApproved = semesterSubjects.length > 0 && approvedCount === semesterSubjects.length;
+    const shouldExpand = semesterExpandedState.has(semester)
+      ? semesterExpandedState.get(semester)
+      : !isFullyApproved;
+    semesterExpandedState.set(semester, shouldExpand);
+
     const section = document.createElement("section");
     section.className = "catalog-semester";
 
-    const tag = document.createElement("div");
+    const header = document.createElement("button");
+    header.type = "button";
+    header.className = "catalog-semester-header";
+    header.setAttribute("aria-expanded", shouldExpand ? "true" : "false");
+
+    const tag = document.createElement("span");
     tag.className = `catalog-semester-tag ${semesterTagClass(semester)}`;
     tag.textContent = `SEMESTRE ${semester}`;
-    section.appendChild(tag);
 
-    bySemester.get(semester)
+    const summary = document.createElement("span");
+    summary.className = "catalog-semester-summary";
+    summary.textContent = `(${approvedCount}/${semesterSubjects.length})`;
+
+    const status = document.createElement("span");
+    status.className = `catalog-semester-status ${isFullyApproved ? "is-complete" : ""}`;
+    status.textContent = isFullyApproved ? "✅ Promocionadas" : "";
+
+    header.appendChild(tag);
+    header.appendChild(summary);
+    header.appendChild(status);
+    section.appendChild(header);
+
+    const body = document.createElement("div");
+    body.className = "catalog-semester-body";
+    body.hidden = !shouldExpand;
+
+    header.addEventListener("click", () => {
+      const nextExpanded = !(semesterExpandedState.get(semester) === true);
+      semesterExpandedState.set(semester, nextExpanded);
+      body.hidden = !nextExpanded;
+      header.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
+    });
+
+    semesterSubjects
       .sort((a, b) => a.name.localeCompare(b.name, "es"))
       .forEach((item) => {
+        const isPromoted = isSubjectPromotedOrApproved(item.slug || item.key);
         const row = document.createElement("div");
         row.className = "catalog-subject-row";
 
@@ -181,18 +287,28 @@ function renderCatalog(){
           info.appendChild(area);
         }
 
+        if (isPromoted){
+          const badge = document.createElement("span");
+          badge.className = "catalog-state-chip is-promoted";
+          badge.textContent = "✅ Promocionada";
+          info.appendChild(badge);
+        }
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "catalog-add-btn";
         btn.textContent = "+";
         btn.setAttribute("aria-label", `Agregar ${item.name}`);
+        btn.disabled = isPromoted;
+        if (isPromoted) btn.classList.add("is-disabled");
         btn.addEventListener("click", () => addSubjectToUser(item));
 
         row.appendChild(info);
         row.appendChild(btn);
-        section.appendChild(row);
+        body.appendChild(row);
       });
 
+    section.appendChild(body);
     subjectCatalogList.appendChild(section);
   });
 }
@@ -276,7 +392,22 @@ function renderSubjectsList(){
   renderCatalog();
 }
 
+function syncSubjectsStateFromStaged({ emitEvent = true } = {}){
+  CTX.aulaState.subjects = stagedSubjects.map((subject) => ({ ...subject }));
+  if (!emitEvent) return;
+  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
+    detail: {
+      source: "materias",
+      subjects: CTX.aulaState.subjects
+    }
+  }));
+}
+
 function addSubjectToUser(item){
+  if (isSubjectPromotedOrApproved(item?.slug || item?.key || item?.name)){
+    CTX?.notifyWarn?.("Esta materia ya está promocionada.");
+    return;
+  }
   const exists = stagedSubjects.some((subject) => normalizeStr(subject.name) === normalizeStr(item.name));
   if (exists) return;
   stagedSubjects.push({
@@ -284,12 +415,14 @@ function addSubjectToUser(item){
     color: defaultSubjectColor()
   });
   hasLocalChanges = true;
+  syncSubjectsStateFromStaged();
   renderSubjectsList();
 }
 
 function removeSubjectFromUser(name){
   stagedSubjects = stagedSubjects.filter((subject) => normalizeStr(subject.name) !== normalizeStr(name));
   hasLocalChanges = true;
+  syncSubjectsStateFromStaged();
   renderSubjectsList();
 }
 
@@ -299,6 +432,7 @@ function handleColorChange(subjectName, color){
     return { ...subject, color };
   });
   hasLocalChanges = true;
+  syncSubjectsStateFromStaged();
   renderUserSubjects();
 }
 
@@ -380,6 +514,13 @@ async function persistSubjects(subjectsToSave){
   CTX.paintStudyEvents?.();
   CTX.renderAgenda?.();
   CTX.renderAcadCalendar?.();
+  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
+    detail: {
+      source: "materias",
+      subjects: CTX.aulaState.subjects,
+      agenda: CTX.aulaState.agendaData
+    }
+  }));
 }
 
 async function saveSubjectConfig(){
@@ -391,6 +532,7 @@ async function saveSubjectConfig(){
 function clearStagedSelection(){
   stagedSubjects = [];
   hasLocalChanges = true;
+  syncSubjectsStateFromStaged();
   renderSubjectsList();
 }
 
@@ -398,6 +540,7 @@ async function setActiveCareer(slug, persist){
   if (!slug){
     CTX.aulaState.plannerCareer = { slug: "", name: "" };
     CTX.aulaState.careerSubjects = [];
+    rebuildPlannerKeyAliases();
     renderSubjectsList();
     updateSubjectPlanHint();
     return;
@@ -411,8 +554,10 @@ async function setActiveCareer(slug, persist){
     try{
       const data = await getPlanWithSubjects(slug);
       CTX.aulaState.careerSubjects = Array.isArray(data.subjects) ? data.subjects : [];
+      rebuildPlannerKeyAliases();
     }catch (_error){
       CTX.aulaState.careerSubjects = [];
+      rebuildPlannerKeyAliases();
       CTX?.notifyWarn?.("No se pudieron cargar las materias de la carrera.");
     }
   }
@@ -491,6 +636,7 @@ function hydrateStagedSubjects(){
       color: cssColorToHex(item?.color) || defaultSubjectColor()
     })).filter((item) => item.name)
     : [];
+  syncSubjectsStateFromStaged({ emitEvent: false });
   hasLocalChanges = false;
 }
 
@@ -505,8 +651,13 @@ const Materias = {
     CTX.getCareerPlans = () => CTX.aulaState.careerPlans || [];
     CTX.findPlanByName = findPlanByName;
     CTX.normalizeStr = normalizeStr;
+    CTX.getSubjectState = getSubjectState;
+    CTX.isSubjectPromotedOrApproved = isSubjectPromotedOrApproved;
+    CTX.normalizePlannerKey = normalizePlannerKey;
     CTX.syncSubjectsCareerFromProfile = syncCareerFromProfile;
     hydrateStagedSubjects();
+    rebuildPlannerKeyAliases();
+    startPlannerStateSubscription();
     bindSubjectsFormHandlers();
   },
   renderSubjectsList,

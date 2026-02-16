@@ -34,7 +34,25 @@
   <div>FCEFyN • UNC</div>
 </footer>
 
-<div id="menu" style="display:none; position:fixed; z-index:9999;"></div>
+<div id="statusModal" class="status-modal" hidden aria-hidden="true">
+  <div class="status-modal-overlay" data-status-modal-close></div>
+  <div class="status-modal-content" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+    <div class="status-modal-header">
+      <div>
+        <h3 id="statusModalTitle">Cambiar estado</h3>
+        <p id="statusModalSubject">Seleccioná una materia</p>
+      </div>
+      <button class="btn status-modal-close" type="button" aria-label="Cerrar modal" data-status-modal-close>×</button>
+    </div>
+    <div class="status-modal-actions" id="statusModalActions">
+      <button class="btn status-option" type="button" data-status-value="promocionada">Promocionada</button>
+      <button class="btn status-option" type="button" data-status-value="regular">Regular</button>
+      <button class="btn status-option" type="button" data-status-value="libre">Libre</button>
+      <button class="btn status-option" type="button" data-status-value="en_curso">En curso</button>
+      <button class="btn status-option status-option-remove" type="button" data-status-value="ninguno">Quitar estado</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { showConfirm } from "./scripts/ui/notifications.js";
@@ -52,7 +70,9 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   const title = document.getElementById("title");
   const msg = document.getElementById("msg");
   const gridWrap = document.getElementById("gridWrap");
-  const menu = document.getElementById("menu");
+  const statusModal = document.getElementById("statusModal");
+  const statusModalSubject = document.getElementById("statusModalSubject");
+  const statusModalActions = document.getElementById("statusModalActions");
 
   const btnBack = document.getElementById("btnBack");
   const btnReset = document.getElementById("btnReset");
@@ -94,6 +114,8 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   let plannerUid = "";
   let plannerRef = null;
   let subjectStates = {};
+  let selectedSubjectId = "";
+  let previousFocusedElement = null;
 
   function normalizeStatus(statusValue){
     const raw = typeof statusValue === "string" ? normalize(statusValue) : "";
@@ -249,32 +271,32 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
       }else{
         cell.innerHTML = `<h2>Panel de estadísticas</h2>
           <div class="stats" id="panelStats">
-            <div class="stat-row">
+            <div class="stats-grid">
               <div class="stat-card"><strong id="countProm">0</strong><div class="stat-label">Promocionadas</div></div>
               <div class="stat-card"><strong id="countReg">0</strong><div class="stat-label">Regulares</div></div>
-            </div>
-            <div class="stat-row">
               <div class="stat-card"><strong id="countLib">0</strong><div class="stat-label">Libres</div></div>
               <div class="stat-card"><strong id="countCur">0</strong><div class="stat-label">En curso</div></div>
             </div>
 
-            <div class="progress-wrap">
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                <div style="color:var(--muted); font-size:0.85rem;">Progreso de la carrera</div>
-                <div style="color:var(--muted); font-size:0.85rem;" id="pctText">0,00%</div>
+            <div class="stats-meta">
+              <div class="progress-wrap">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                  <div style="color:var(--muted); font-size:0.85rem;">Progreso de la carrera</div>
+                  <div style="color:var(--muted); font-size:0.85rem;" id="pctText">0,00%</div>
+                </div>
+                <div class="progress" aria-hidden="true" style="margin-top:8px;">
+                  <div class="fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <div class="progress-caption">
+                  <div id="captionLeft">0 materias promocionadas</div>
+                  <div id="totalMateriasText"></div>
+                </div>
               </div>
-              <div class="progress" aria-hidden="true" style="margin-top:8px;">
-                <div class="fill" id="progressFill" style="width:0%"></div>
-              </div>
-              <div class="progress-caption">
-                <div id="captionLeft">0 materias promocionadas</div>
-                <div id="totalMateriasText"></div>
-              </div>
-            </div>
 
-            <div style="display:flex; gap:8px; justify-content:space-between; align-items:center;">
-              <button class="btn" id="btnResetPanel" type="button" title="Borrar todos los estados">Resetear estados</button>
-              <div style="color:var(--muted); font-size:0.85rem;">Cambios guardados automáticamente</div>
+              <div style="display:flex; gap:8px; justify-content:space-between; align-items:center;">
+                <button class="btn" id="btnResetPanel" type="button" title="Borrar todos los estados">Resetear estados</button>
+                <div style="color:var(--muted); font-size:0.85rem;">Cambios guardados automáticamente</div>
+              </div>
             </div>
           </div>`;
         statsPanelCell = cell;
@@ -476,64 +498,59 @@ async function revalidateEstados() {
     updateStatsUI();
   }
 
-  function openMenuFor(element, clientX, clientY){
-    const id = element.dataset.id;
-    menu.style.display = "block";
-    menu.innerHTML = `
-      <div class="plan-menu-card">
-        <div data-estado="promocionada" class="btn plan-menu-item">Promocionada</div>
-        <div data-estado="regular" class="btn plan-menu-item">Regular</div>
-        <div data-estado="libre" class="btn plan-menu-item">Libre</div>
-        <div data-estado="en_curso" class="btn plan-menu-item">En curso</div>
-        <div data-estado="ninguno" class="btn plan-menu-item plan-menu-item-last">Quitar estado</div>
-      </div>
-    `;
-
-    const pad = 10, mw = 240;
-    let left = clientX, top = clientY;
-    if(left + mw > window.innerWidth - pad) left = window.innerWidth - mw - pad;
-    if(top + 240 > window.innerHeight - pad) top = window.innerHeight - 240 - pad;
-    menu.style.left = left + "px";
-    menu.style.top = top + "px";
-    menu.style.position = "fixed";
-
-    menu.querySelectorAll("[data-estado]").forEach(item=>{
-      item.addEventListener("click", async ()=>{
-        const estado = item.dataset.estado;
-        const estados = getEstados();
-        if (!id){
-          console.warn("[plans] No se puede actualizar estado: falta subjectSlug en la tarjeta.");
-          return;
-        }
-        if(estado === "ninguno") estados[id] = null;
-        else estados[id] = normalizeStatus(estado);
-        setEstados(estados);
-        try{
-          await updateSubjectState(id, estados[id]);
-        }catch(error){
-          console.error("[plans] Error guardando subjectStates en Firestore:", error);
-        }
-        await revalidateEstados();
-        closeMenu();
-        updateUI();
-      });
-    });
-
-    setTimeout(()=> window.addEventListener("click", outClick), 0);
-    window.addEventListener("keydown", onEsc);
-
-    function outClick(ev){
-      if(!menu.contains(ev.target) && ev.target !== element) closeMenu();
+  function openStatusModal(subjectId, subjectName){
+    if (!statusModal) return;
+    selectedSubjectId = String(subjectId || "").trim();
+    if (!selectedSubjectId){
+      console.warn("[plans] No se puede abrir modal de estado: falta subjectSlug.");
+      return;
     }
-    function onEsc(e){
-      if(e.key === "Escape") closeMenu();
+
+    previousFocusedElement = document.activeElement;
+    statusModalSubject.textContent = subjectName || "Seleccioná una materia";
+    statusModal.hidden = false;
+    statusModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("status-modal-open");
+
+    const firstOption = statusModalActions?.querySelector(".status-option");
+    if (firstOption) firstOption.focus();
+  }
+
+  function closeStatusModal(){
+    if (!statusModal) return;
+    statusModal.hidden = true;
+    statusModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("status-modal-open");
+    selectedSubjectId = "";
+    if (previousFocusedElement && typeof previousFocusedElement.focus === "function"){
+      previousFocusedElement.focus();
     }
-    function closeMenu(){
-      menu.style.display = "none";
-      menu.innerHTML = "";
-      window.removeEventListener("click", outClick);
-      window.removeEventListener("keydown", onEsc);
+    previousFocusedElement = null;
+  }
+
+  async function applyStatus(statusValue, triggerButton){
+    if (!selectedSubjectId){
+      console.warn("[plans] No se puede actualizar estado: falta subjectSlug en la tarjeta.");
+      return;
     }
+
+    const estados = getEstados();
+    estados[selectedSubjectId] = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
+    setEstados(estados);
+
+    if (triggerButton){
+      triggerButton.classList.add("is-selected");
+      setTimeout(() => triggerButton.classList.remove("is-selected"), 150);
+    }
+
+    try{
+      await updateSubjectState(selectedSubjectId, estados[selectedSubjectId]);
+    }catch(error){
+      console.error("[plans] Error guardando subjectStates en Firestore:", error);
+    }
+    await revalidateEstados();
+    closeStatusModal();
+    updateUI();
   }
 
   function attachEventsToSubjects(){
@@ -541,10 +558,31 @@ async function revalidateEstados() {
       el.onclick = (e)=>{
         const estados = getEstados();
         if(el.classList.contains("locked") && !estados[el.dataset.id]) return;
-        openMenuFor(el, e.clientX + 4, e.clientY + 4);
+        openStatusModal(el.dataset.id, el.textContent || "Materia");
       };
     });
   }
+
+  if (statusModalActions){
+    statusModalActions.querySelectorAll("[data-status-value]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        await applyStatus(button.dataset.statusValue, button);
+      });
+    });
+  }
+
+  if (statusModal){
+    statusModal.addEventListener("click", (event) => {
+      const shouldClose = event.target instanceof HTMLElement && event.target.hasAttribute("data-status-modal-close");
+      if (shouldClose) closeStatusModal();
+    });
+  }
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && statusModal && !statusModal.hidden){
+      closeStatusModal();
+    }
+  });
 
   function detectMaterias(data){
     if(Array.isArray(data)) return data;
