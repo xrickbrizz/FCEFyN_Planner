@@ -399,16 +399,30 @@
           </div>
           <div id="profModalProfessorName" class="prof-modal-professor"></div>
           <div id="profRatingGroups"></div>
-          <label class="prof-modal-label" for="rateComment">Tu opinión (máx. 500 caracteres)</label>
-          <textarea id="rateComment" maxlength="500" placeholder="Escribe tu comentario aquí..."></textarea>
-          <div id="rateCommentCount" class="small-muted">0 / 500</div>
+          <div class="prof-modal-actions">
+            <button class="btn-outline btn-small" id="btnCancelRatingModal" type="button">Cancelar</button>
+            <button class="btn-blue btn-small" id="btnSubmitRating" type="button">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="profCommentModal" class="prof-modal hidden" role="dialog" aria-modal="true" aria-labelledby="profCommentModalTitle">
+        <div class="prof-modal-backdrop" data-close="true"></div>
+        <div class="prof-modal-content prof-comment-modal-content">
+          <div class="prof-modal-header">
+            <h3 id="profCommentModalTitle">Dejar comentario</h3>
+            <button id="closeProfCommentModal" class="btn-icon" type="button" aria-label="Cerrar modal">✕</button>
+          </div>
+          <label class="prof-modal-label" for="profCommentInput">Comentario</label>
+          <textarea id="profCommentInput" maxlength="500" placeholder="Escribe tu comentario aquí..."></textarea>
+          <div id="profCommentCount" class="small-muted prof-comment-count">0 / 500</div>
           <label class="prof-rate-check">
-            <input type="checkbox" id="rateAnonymous">
+            <input type="checkbox" id="profCommentAnonymous">
             <span>Publicar anónimamente</span>
           </label>
           <div class="prof-modal-actions">
-            <button class="btn-blue btn-small" id="btnSubmitRating" type="button">Enviar</button>
-            <button class="btn-outline btn-small" id="btnCancelRatingModal" type="button">Cancelar</button>
+            <button class="btn-outline btn-small" id="btnCancelCommentModal" type="button">Cancelar</button>
+            <button class="btn-blue btn-small" id="btnSubmitComment" type="button" disabled>Enviar</button>
           </div>
         </div>
       </div>

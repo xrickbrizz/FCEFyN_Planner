@@ -14,7 +14,7 @@ import { getPlanWithSubjects } from "../plans-data.js";
 
 let CTX = null;
 const PAGE_SIZE = 6;
-const REVIEWS_PAGE_SIZE = 6;
+const REVIEWS_PAGE_SIZE = 8;
 
 const METRICS = [
   { key:"teachingQuality", label:"Calidad de enseñanza", descriptor: teachingDescriptor },
@@ -44,7 +44,8 @@ const state = {
   hasNextPage: false,
   subjectsForCareer: [],
   reviewsByProfessor: new Map(),
-  ratingDraft: { teachingQuality:null, examDifficulty:null, studentTreatment:null, comment:"", anonymous:false }
+  ratingDraft: { teachingQuality:null, examDifficulty:null, studentTreatment:null },
+  commentDraft: { comment:"", anonymous:false }
 };
 
 const notifySuccess = (message) => CTX?.notifySuccess?.(message);
@@ -392,23 +393,20 @@ function renderProfessorDetail(){
       </section>
 
       <section class="prof-detail-reviews">
-        <h3>Reseñas</h3>
+        <div class="prof-reviews-header">
+          <h3>Reseñas</h3>
+          <button id="openProfCommentModal" class="btn-small prof-dark-btn" type="button">Dejar comentario</button>
+        </div>
         <div class="prof-review-scroll">
           ${reviewsPageItems.length ? reviewsPageItems.map(review => {
-            const avg = reviewAverage(review);
+            const authorName = resolveReviewAuthorName(review);
             return `
               <article class="prof-review-item">
                 <div class="prof-review-head">
-                  <strong>${review.anonymous ? "Anónimo" : escapeHTML(review.authorName || "Estudiante")}</strong>
+                  <strong>${escapeHTML(authorName)}</strong>
                   <span>${formatReviewDate(review.createdAt)}</span>
                 </div>
-                <div class="prof-review-criteria">
-                  <span>Enseñanza: ${formatDecimal(review.teachingQuality)}</span>
-                  <span>Parciales: ${formatDecimal(review.examDifficulty)}</span>
-                  <span>Trato: ${formatDecimal(review.studentTreatment)}</span>
-                </div>
-                <div class="small-muted" style="margin-top:.25rem;">Promedio de reseña: ${formatDecimal(avg)} ⭐</div>
-                <p style="margin:.5rem 0 0;">${escapeHTML(review.comment || "Sin opinión escrita.")}</p>
+                <p class="prof-review-comment">${escapeHTML(review.comment || "Sin opinión escrita.")}</p>
               </article>
             `;
           }).join("") : '<div class="small-muted">Todavía no hay reseñas para este profesor.</div>'}
@@ -423,6 +421,7 @@ function renderProfessorDetail(){
   `;
 
   document.getElementById("openProfRatingModal")?.addEventListener("click", () => openRatingModal(professor));
+  document.getElementById("openProfCommentModal")?.addEventListener("click", () => openCommentModal(professor));
   document.getElementById("profReviewsPrevPage")?.addEventListener("click", () => {
     if (state.reviewsPage <= 1) return;
     state.reviewsPage -= 1;
@@ -433,6 +432,25 @@ function renderProfessorDetail(){
     state.reviewsPage += 1;
     renderProfessorDetail();
   });
+}
+
+function resolveReviewAuthorName(review){
+  if (review.anonymous) return "Anónimo";
+  const candidates = [
+    review.authorName,
+    review.displayName,
+    [review.firstName, review.lastName].filter(Boolean).join(" "),
+    review.firstName,
+    review.lastName,
+    review.name
+  ];
+  for (const candidate of candidates){
+    const value = String(candidate || "").trim();
+    if (!value) continue;
+    if (value.includes("@")) continue;
+    return value;
+  }
+  return "Usuario";
 }
 
 async function loadProfessorReviews(professorId){
@@ -457,7 +475,11 @@ async function loadProfessorReviews(professorId){
         comment: data.comment || "",
         createdAt: data.createdAt || data.updatedAt || null,
         anonymous: Boolean(data.anonymous),
-        authorName: data.authorName || ""
+        authorName: data.authorName || "",
+        displayName: data.displayName || "",
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        name: data.name || ""
       });
     });
     state.reviewsByProfessor.set(professorId, reviews);
@@ -505,15 +527,6 @@ function openRatingModal(professor){
     paintMetricStars(metric.key, selected);
   });
 
-  const comment = document.getElementById("rateComment");
-  const anonymous = document.getElementById("rateAnonymous");
-  const countLabel = document.getElementById("rateCommentCount");
-  if (comment){
-    comment.value = state.ratingDraft.comment || "";
-    countLabel.textContent = `${comment.value.length} / 500`;
-  }
-  if (anonymous) anonymous.checked = Boolean(state.ratingDraft.anonymous);
-
   modal.classList.remove("hidden");
 }
 
@@ -533,6 +546,32 @@ function paintMetricStars(metricKey, selected){
 
 function closeRatingModal(){
   document.getElementById("profRatingModal")?.classList.add("hidden");
+}
+
+function setCommentSubmitState(){
+  const commentInput = document.getElementById("profCommentInput");
+  const submitButton = document.getElementById("btnSubmitComment");
+  if (!submitButton || !commentInput) return;
+  submitButton.disabled = !commentInput.value.trim();
+}
+
+function openCommentModal(professor){
+  const modal = document.getElementById("profCommentModal");
+  const commentInput = document.getElementById("profCommentInput");
+  const commentCount = document.getElementById("profCommentCount");
+  const anonymousCheck = document.getElementById("profCommentAnonymous");
+  if (!modal || !commentInput || !commentCount || !anonymousCheck || !professor) return;
+
+  commentInput.value = state.commentDraft.comment || "";
+  commentCount.textContent = `${commentInput.value.length} / 500`;
+  anonymousCheck.checked = Boolean(state.commentDraft.anonymous);
+  setCommentSubmitState();
+
+  modal.classList.remove("hidden");
+}
+
+function closeCommentModal(){
+  document.getElementById("profCommentModal")?.classList.add("hidden");
 }
 
 function openAdvancedFiltersModal(){
@@ -563,11 +602,6 @@ async function submitRating(){
   const professorId = state.selectedProfessorId;
   if (!professorId) return;
 
-  const commentEl = document.getElementById("rateComment");
-  const anonymousEl = document.getElementById("rateAnonymous");
-  state.ratingDraft.comment = (commentEl?.value || "").trim();
-  state.ratingDraft.anonymous = Boolean(anonymousEl?.checked);
-
   const teachingQuality = sanitizeRatingValue(state.ratingDraft.teachingQuality);
   const examDifficulty = sanitizeRatingValue(state.ratingDraft.examDifficulty);
   const studentTreatment = sanitizeRatingValue(state.ratingDraft.studentTreatment);
@@ -597,19 +631,12 @@ async function submitRating(){
     return;
   }
 
-  if (!state.ratingDraft.comment){
-    notifyWarn("Agregá una opinión antes de enviar.");
-    return;
-  }
-
   const payload = {
     professorId,
     teachingQuality,
     examDifficulty,
     studentTreatment,
-    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2)),
-    comment: state.ratingDraft.comment,
-    anonymous: state.ratingDraft.anonymous
+    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2))
   };
 
   const submitBtn = document.getElementById("btnSubmitRating");
@@ -626,12 +653,84 @@ async function submitRating(){
     renderDirectory();
     renderProfessorDetail();
     closeRatingModal();
-    notifySuccess("Reseña enviada correctamente.");
+    notifySuccess("Calificación enviada correctamente.");
   }catch(error){
     console.error("Error controlado al enviar reseña:", error?.message || error);
     notifyError("No se pudo guardar la calificación.");
   }finally{
     if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+async function submitComment(){
+  const professorId = state.selectedProfessorId;
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!professorId || !currentUser) return;
+
+  const commentInput = document.getElementById("profCommentInput");
+  const anonymousCheck = document.getElementById("profCommentAnonymous");
+  const comment = (commentInput?.value || "").trim();
+  const anonymous = Boolean(anonymousCheck?.checked);
+
+  if (!comment){
+    notifyWarn("Escribí un comentario para continuar.");
+    return;
+  }
+
+  if (comment.length > 500){
+    notifyWarn("El comentario no puede superar los 500 caracteres.");
+    return;
+  }
+
+  const reviews = state.reviewsByProfessor.get(professorId) || [];
+  const ownReview = reviews.find((item) => item.userId === currentUser.uid);
+  if (!ownReview){
+    notifyWarn("Primero calificá al profesor para poder dejar un comentario.");
+    return;
+  }
+
+  const teachingQuality = sanitizeRatingValue(ownReview.teachingQuality);
+  const examDifficulty = sanitizeRatingValue(ownReview.examDifficulty);
+  const studentTreatment = sanitizeRatingValue(ownReview.studentTreatment);
+
+  if (!validateRating(teachingQuality) || !validateRating(examDifficulty) || !validateRating(studentTreatment)){
+    notifyWarn("Tu calificación actual es inválida. Volvé a puntuar al profesor.");
+    return;
+  }
+
+  const payload = {
+    professorId,
+    teachingQuality,
+    examDifficulty,
+    studentTreatment,
+    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2)),
+    comment,
+    anonymous
+  };
+
+  const submitBtn = document.getElementById("btnSubmitComment");
+  if (submitBtn) submitBtn.disabled = true;
+
+  try{
+    const functions = getFunctions(app, "us-central1");
+    const callable = httpsCallable(functions, "submitProfessorReviewCallable");
+    await callable(payload);
+
+    state.commentDraft.comment = "";
+    state.commentDraft.anonymous = false;
+
+    await refreshSelectedProfessorStats(professorId);
+    await loadProfessorReviews(professorId);
+    await loadDirectoryPage();
+    renderDirectory();
+    renderProfessorDetail();
+    closeCommentModal();
+    notifySuccess("Comentario enviado correctamente.");
+  }catch(error){
+    console.error("Error controlado al enviar comentario:", error?.message || error);
+    notifyError("No se pudo guardar el comentario.");
+  }finally{
+    setCommentSubmitState();
   }
 }
 
@@ -684,9 +783,20 @@ function bindEvents(){
   document.querySelector("#profRatingModal .prof-modal-backdrop")?.addEventListener("click", closeRatingModal);
   document.getElementById("btnSubmitRating")?.addEventListener("click", submitRating);
 
-  document.getElementById("rateComment")?.addEventListener("input", (event) => {
-    const value = event.target.value || "";
-    document.getElementById("rateCommentCount").textContent = `${value.length} / 500`;
+  document.getElementById("closeProfCommentModal")?.addEventListener("click", closeCommentModal);
+  document.getElementById("btnCancelCommentModal")?.addEventListener("click", closeCommentModal);
+  document.querySelector("#profCommentModal .prof-modal-backdrop")?.addEventListener("click", closeCommentModal);
+  document.getElementById("btnSubmitComment")?.addEventListener("click", submitComment);
+
+  document.getElementById("profCommentInput")?.addEventListener("input", (event) => {
+    const value = String(event.target.value || "").slice(0, 500);
+    event.target.value = value;
+    state.commentDraft.comment = value;
+    document.getElementById("profCommentCount").textContent = `${value.length} / 500`;
+    setCommentSubmitState();
+  });
+  document.getElementById("profCommentAnonymous")?.addEventListener("change", (event) => {
+    state.commentDraft.anonymous = Boolean(event.target.checked);
   });
 
   document.getElementById("profAdvancedFiltersBtn")?.addEventListener("click", openAdvancedFiltersModal);
