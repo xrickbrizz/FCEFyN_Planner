@@ -25,11 +25,13 @@ let catalogSearchQuery = "";
 let hasLocalChanges = false;
 let plannerState = {};
 let plannerStateUnsubscribe = null;
+let firestoreBlockedFallbackApplied = false;
 const semesterExpandedState = new Map();
 const plannerKeyAliases = new Map();
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
 const SUBJECTS_FALLBACK_STORAGE_KEY = "planner:subjects:fallback";
+const SEMESTER_EXPANDED_STORAGE_KEY = "planner:subjects:semester-expanded";
 
 function isClientBlockedFirestoreError(err){
   const message = String(err?.message || "");
@@ -57,6 +59,52 @@ function persistSubjectsLocalFallback(payload = {}){
 
 function notifyFirestoreBlockedFallback(){
   CTX?.notifyWarn?.("No se pudo sincronizar con la nube (posible bloqueador). Se guardó localmente.");
+}
+
+function readSubjectsLocalFallback(){
+  try{
+    const raw = localStorage.getItem(SUBJECTS_FALLBACK_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) || {}) : {};
+  }catch (_error){
+    return {};
+  }
+}
+
+function applyPlannerStateFromPayload(payload = {}, { render = true } = {}){
+  plannerState = payload && typeof payload === "object" ? payload : {};
+  if (render) renderSubjectsList();
+}
+
+function applyLocalPlannerFallback({ notify = true } = {}){
+  const fallback = readSubjectsLocalFallback();
+  const fallbackStates = fallback?.subjectStates;
+  const hasFallbackStates = fallbackStates && typeof fallbackStates === "object";
+  if (!hasFallbackStates) return;
+  applyPlannerStateFromPayload(fallbackStates);
+  if (notify && !firestoreBlockedFallbackApplied){
+    CTX?.notifyWarn?.("No se pudo leer progreso desde la nube. Se mostraron aprobadas desde guardado local.");
+  }
+  firestoreBlockedFallbackApplied = true;
+}
+
+function saveSemesterExpandedState(){
+  try{
+    localStorage.setItem(SEMESTER_EXPANDED_STORAGE_KEY, JSON.stringify(Object.fromEntries(semesterExpandedState.entries())));
+  }catch (_error){
+    // noop
+  }
+}
+
+function readSemesterExpandedState(semester){
+  try{
+    const raw = localStorage.getItem(SEMESTER_EXPANDED_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) || {};
+    if (!(semester in parsed)) return null;
+    return parsed[semester] === true;
+  }catch (_error){
+    return null;
+  }
 }
 
 function dispatchPlanChanged(detail = {}){
@@ -218,7 +266,7 @@ function getSubjectState(subjectSlug){
 
 function isSubjectPromotedOrApproved(subjectSlug){
   const state = getSubjectState(subjectSlug);
-  return state.approved === true || state.status === "promocionada";
+  return state.approved === true || state.status === "promocionada" || state.status === "aprobada";
 }
 
 function startPlannerStateSubscription(){
@@ -230,7 +278,8 @@ function startPlannerStateSubscription(){
 
   plannerStateUnsubscribe = onSnapshot(doc(CTX.db, "planner", currentUser.uid), (snap) => {
     const data = snap.exists() ? (snap.data() || {}) : {};
-    plannerState = data;
+    applyPlannerStateFromPayload(data.subjectStates || {}, { render: false });
+    firestoreBlockedFallbackApplied = false;
 
     if (!hasLocalChanges && Array.isArray(data.subjects)) {
       CTX.aulaState.subjects = data.subjects;
@@ -240,6 +289,7 @@ function startPlannerStateSubscription(){
   }, (error) => {
     if (isClientBlockedFirestoreError(error)) {
       notifyFirestoreBlockedFallback();
+      applyLocalPlannerFallback({ notify: false });
     }
   });
 }
@@ -268,13 +318,14 @@ function renderCatalog(){
     const semesterSubjects = bySemester.get(semester) || [];
     const approvedCount = semesterSubjects.filter((item) => isSubjectPromotedOrApproved(item.slug || item.key)).length;
     const isFullyApproved = semesterSubjects.length > 0 && approvedCount === semesterSubjects.length;
+    const persistedExpanded = readSemesterExpandedState(semester);
     const shouldExpand = semesterExpandedState.has(semester)
       ? semesterExpandedState.get(semester)
-      : !isFullyApproved;
+      : (persistedExpanded ?? !isFullyApproved);
     semesterExpandedState.set(semester, shouldExpand);
 
     const section = document.createElement("section");
-    section.className = "catalog-semester";
+    section.className = `catalog-semester semester-block ${isFullyApproved ? "semester-approved" : ""}`.trim();
 
     const header = document.createElement("button");
     header.type = "button";
@@ -291,7 +342,7 @@ function renderCatalog(){
 
     const status = document.createElement("span");
     status.className = `catalog-semester-status ${isFullyApproved ? "is-complete" : ""}`;
-    status.textContent = isFullyApproved ? "✅ Promocionadas" : "";
+    status.textContent = isFullyApproved ? "✓ Aprobado" : "";
 
     header.appendChild(tag);
     header.appendChild(summary);
@@ -305,6 +356,7 @@ function renderCatalog(){
     header.addEventListener("click", () => {
       const nextExpanded = !(semesterExpandedState.get(semester) === true);
       semesterExpandedState.set(semester, nextExpanded);
+      saveSemesterExpandedState();
       body.hidden = !nextExpanded;
       header.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
     });
@@ -314,7 +366,8 @@ function renderCatalog(){
       .forEach((item) => {
         const isPromoted = isSubjectPromotedOrApproved(item.slug || item.key);
         const row = document.createElement("div");
-        row.className = "catalog-subject-row";
+        row.className = `catalog-subject-row catalog-item ${isPromoted ? "is-approved subject-approved" : ""}`.trim();
+        row.dataset.subjectSlug = item.slug || item.key;
 
         const info = document.createElement("div");
         info.className = "catalog-subject-info";
@@ -333,22 +386,21 @@ function renderCatalog(){
 
         if (isPromoted){
           const badge = document.createElement("span");
-          badge.className = "catalog-state-chip is-promoted";
-          badge.textContent = "✅ Promocionada";
-          info.appendChild(badge);
+          badge.className = "approved-pill";
+          badge.setAttribute("aria-label", `${item.name} aprobada`);
+          badge.textContent = "✓ Aprobada";
+          row.appendChild(info);
+          row.appendChild(badge);
+        } else {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "catalog-add-btn";
+          btn.textContent = "+";
+          btn.setAttribute("aria-label", `Agregar ${item.name}`);
+          btn.addEventListener("click", () => addSubjectToUser(item));
+          row.appendChild(info);
+          row.appendChild(btn);
         }
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "catalog-add-btn";
-        btn.textContent = "+";
-        btn.setAttribute("aria-label", `Agregar ${item.name}`);
-        btn.disabled = isPromoted;
-        if (isPromoted) btn.classList.add("is-disabled");
-        btn.addEventListener("click", () => addSubjectToUser(item));
-
-        row.appendChild(info);
-        row.appendChild(btn);
         body.appendChild(row);
       });
 
@@ -447,7 +499,7 @@ function syncSubjectsStateFromStaged({ emitEvent = true } = {}){
 function addSubjectToUser(item){
   try{
     if (isSubjectPromotedOrApproved(item?.slug || item?.key || item?.name)){
-      CTX?.notifyWarn?.("Esta materia ya está promocionada.");
+      CTX?.notifyWarn?.("Esta materia ya está aprobada.");
       return;
     }
     const exists = stagedSubjects.some((subject) => normalizeStr(subject.name) === normalizeStr(item.name));
@@ -713,6 +765,13 @@ function hydrateStagedSubjects(){
   hasLocalChanges = false;
 }
 
+function loadInitialPlannerState(){
+  const fallback = readSubjectsLocalFallback();
+  if (fallback?.subjectStates && typeof fallback.subjectStates === "object"){
+    applyPlannerStateFromPayload(fallback.subjectStates, { render: false });
+  }
+}
+
 const Materias = {
   init(ctx){
     CTX = ctx;
@@ -729,6 +788,7 @@ const Materias = {
     CTX.normalizePlannerKey = normalizePlannerKey;
     CTX.syncSubjectsCareerFromProfile = syncCareerFromProfile;
     hydrateStagedSubjects();
+    loadInitialPlannerState();
     rebuildPlannerKeyAliases();
     startPlannerStateSubscription();
     bindSubjectsFormHandlers();

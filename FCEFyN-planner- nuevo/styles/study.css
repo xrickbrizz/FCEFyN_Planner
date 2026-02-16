@@ -1847,7 +1847,6 @@ body[data-theme="light"] .event{
       margin-bottom:.7rem;
     }
     #tab-planestudios{
-      height: 150rem;
       overflow: hidden;
     }
     .plan-frame{
@@ -3837,6 +3836,9 @@ body[data-theme="light"] .planner-modal{
 .catalog-semester-status{ margin-left:auto; font-size:.76rem; font-weight:700; color:var(--color-muted-2); }
 .catalog-semester-status.is-complete{ color:#1c8f4b; }
 .catalog-semester-body[hidden]{ display:none; }
+.semester-block.semester-approved .catalog-semester-status{
+  color:var(--ok, #2eaf6f);
+}
 
 .catalog-semester-tag.sem-1{ background:#def3e4; color:#235a3e; }
 .catalog-semester-tag.sem-2{ background:#dfeeff; color:#2a4f7f; }
@@ -3852,6 +3854,11 @@ body[data-theme="light"] .planner-modal{
 .catalog-subject-row{
   display:flex; justify-content:space-between; align-items:center; gap:.5rem;
   border:1px solid var(--border-85); border-radius:12px; padding:.55rem .65rem; background:var(--color-surface-3); margin:.4rem 0;
+}
+.catalog-item.is-approved{
+  opacity:.95;
+  border-left:6px solid var(--ok, #2eaf6f);
+  background:rgba(46,175,111,.10);
 }
 .catalog-subject-actions{ display:flex; align-items:center; gap:.4rem; }
 .catalog-subject-name{ font-weight:700; font-size:.92rem; }
@@ -3881,6 +3888,19 @@ body[data-theme="light"] .planner-modal{
 .catalog-state-chip.is-promoted{
   background:#def3e4;
   color:#1c8f4b;
+}
+.catalog-item .approved-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:.85rem;
+  color:#1f8f57;
+  background:rgba(46,175,111,.14);
+  border:1px solid rgba(46,175,111,.25);
+  white-space:nowrap;
 }
 .subjects-modern-header--row{ display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
 .subjects-active-total{ text-align:right; text-transform:uppercase; font-size:.64rem; color:var(--color-muted-2); letter-spacing:.04em; }
@@ -4175,8 +4195,9 @@ body[data-theme="light"] .planner-modal{
 .correlativas-plans .plans-embedded-root{
   position:relative;
   width:100%;
-  max-height:75vh;
-  overflow:auto;
+  height:auto;
+  max-height:none;
+  overflow:visible;
   padding:.25rem;
 }
 
@@ -4195,7 +4216,7 @@ body[data-theme="light"] .planner-modal{
 .correlativas-plans .plans-embedded-root .grid-wrap{ width:100%; max-width:100rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
 .correlativas-plans .plans-embedded-root .cell{ background:var(--glass-faint); border-radius:.875rem; padding:.9rem; min-height:20rem; border:1px solid var(--cor-plan-border); display:flex; flex-direction:column; }
 .correlativas-plans .plans-embedded-root .cell h2{ margin:0 0 .6rem; color:var(--color-accent); font-size:1rem; text-align:center; padding-bottom:.35rem; border-bottom:2px solid var(--accent-18); }
-.correlativas-plans .plans-embedded-root .subjects{ display:flex; flex-direction:column; gap:.35rem; margin-top:.45rem; overflow:auto; padding-right:6px; }
+.correlativas-plans .plans-embedded-root .subjects{ display:flex; flex-direction:column; gap:.35rem; margin-top:.45rem; overflow:visible; padding-right:0; }
 .correlativas-plans .plans-embedded-root .subject{ background:var(--cor-plan-card); padding:.55rem; border-radius:.625rem; font-weight:700; font-size:.92rem; text-align:center; cursor:pointer; transition:transform .12s, background .18s, border-color .12s; color:var(--color-text); border:1px solid transparent; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .correlativas-plans .plans-embedded-root .subject:hover{ transform:translateY(-4px); background:var(--primary-12); border-color:var(--accent-25); }
 .correlativas-plans .plans-embedded-root .subject.locked{ cursor:not-allowed; opacity:.62; transform:none; background:var(--primary-06); color:var(--cor-plan-muted); border-color:transparent; }
