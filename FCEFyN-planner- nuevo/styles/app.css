@@ -851,10 +851,25 @@ body[data-theme="light"] .plans-page .subject{
 .plan-menu-item-last{
   margin-bottom: 0;
 }
-body.plans-page .promocion{ background:var(--color-ok) !important; color:var(--color-primary-strong); }
+body.plans-page .promocionada{ background:var(--color-ok) !important; color:var(--color-primary-strong); }
 body.plans-page .regular{ background:var(--color-warn) !important; color:var(--color-primary-strong) !important; }
 body.plans-page .libre{ background:var(--color-danger) !important; color:var(--color-text-contrast); }
-body.plans-page .curso{ background:var(--color-accent) !important; color:var(--color-primary-strong) !important; }
+body.plans-page .en_curso{ background:var(--color-accent) !important; color:var(--color-primary-strong) !important; }
+
+body.plans-page .subject.subject-approved{
+  border-color: var(--color-ok) !important;
+  box-shadow: inset 0 0 0 1px var(--color-ok);
+  position: relative;
+}
+body.plans-page .subject.subject-approved::after{
+  content: "✓";
+  position: absolute;
+  top: 0.22rem;
+  right: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
 body.plans-page .subjects::-webkit-scrollbar{ width:8px; }
 body.plans-page .subjects::-webkit-scrollbar-thumb{
   background:var(--primary-20);

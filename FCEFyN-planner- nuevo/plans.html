@@ -38,7 +38,7 @@
 
 <script type="module">
 import { showConfirm } from "./scripts/ui/notifications.js";
-import { db, collection, getDocs, doc, getDoc } from "./scripts/core/firebase.js";
+import { auth, db, collection, getDocs, doc, getDoc, onAuthStateChanged, setDoc, serverTimestamp } from "./scripts/core/firebase.js";
 import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
 (function(){
   const STORAGE_KEY_DEFAULT = "estadosMaterias_v2";
@@ -91,13 +91,148 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   }
 
   let storageKey = STORAGE_KEY_DEFAULT;
+  let plannerUid = "";
+  let plannerRef = null;
+  let subjectStates = {};
 
-  function getEstados(){
+  function normalizeStatus(statusValue){
+    const raw = typeof statusValue === "string" ? normalize(statusValue) : "";
+    if (!raw) return null;
+    if (raw === "promocionada" || raw === "promocion") return "promocionada";
+    if (raw === "regular") return "regular";
+    if (raw === "libre") return "libre";
+    if (raw === "en_curso" || raw === "curso" || raw === "encurso") return "en_curso";
+    return null;
+  }
+
+  function isApproved(status){
+    const normalized = normalizeStatus(status);
+    return normalized === "promocionada" || normalized === "regular";
+  }
+
+  function getSubjectStatus(slug){
+    const safeSlug = String(slug || "").trim();
+    if (!safeSlug){
+      console.warn("[plans] getSubjectStatus recibió subjectSlug vacío.");
+      return null;
+    }
+    return normalizeStatus(subjectStates?.[safeSlug]?.status);
+  }
+
+  function getSubjectApproved(slug){
+    return isApproved(getSubjectStatus(slug));
+  }
+
+  function getLegacyStates(){
     try{ return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
     catch{ return {}; }
   }
+
+  function getEstados(){
+    const estados = {};
+    Object.keys(subjectStates || {}).forEach((slug) => {
+      const status = normalizeStatus(subjectStates?.[slug]?.status);
+      if (status) estados[slug] = status;
+    });
+    return estados;
+  }
   function setEstados(obj){
-    localStorage.setItem(storageKey, JSON.stringify(obj));
+    localStorage.setItem(storageKey, JSON.stringify(obj || {}));
+
+    const nextStates = { ...(subjectStates || {}) };
+    Object.entries(obj || {}).forEach(([slug, status]) => {
+      const normalizedSlug = String(slug || "").trim();
+      const normalizedStatus = normalizeStatus(status);
+      if (!normalizedSlug || !normalizedStatus) return;
+      nextStates[normalizedSlug] = {
+        ...(nextStates[normalizedSlug] || {}),
+        status: normalizedStatus,
+        approved: isApproved(normalizedStatus)
+      };
+    });
+    Object.keys(nextStates).forEach((slug) => {
+      if (!(slug in (obj || {}))){
+        nextStates[slug] = {
+          ...(nextStates[slug] || {}),
+          status: null,
+          approved: false
+        };
+      }
+    });
+    subjectStates = nextStates;
+  }
+
+  async function updateSubjectState(slug, status){
+    const normalizedSlug = String(slug || "").trim();
+    if (!normalizedSlug){
+      console.warn("[plans] No se puede guardar estado: falta subjectSlug.");
+      return;
+    }
+
+    const normalizedStatus = normalizeStatus(status);
+    const approved = isApproved(normalizedStatus);
+    const payload = {
+      status: normalizedStatus,
+      approved,
+      updatedAt: serverTimestamp()
+    };
+
+    subjectStates = {
+      ...(subjectStates || {}),
+      [normalizedSlug]: payload
+    };
+
+    if (!plannerRef){
+      console.warn("[plans] plannerRef no disponible; se guarda solo en cache local.");
+      return;
+    }
+
+    await setDoc(plannerRef, {
+      subjectStates: {
+        [normalizedSlug]: payload
+      }
+    }, { merge: true });
+  }
+
+  async function loadSubjectStatesFromPlanner(){
+    if (!plannerRef){
+      console.warn("[plans] No se puede cargar subjectStates: plannerRef ausente.");
+      return;
+    }
+
+    const plannerSnap = await getDoc(plannerRef);
+    if (!plannerSnap.exists()){
+      console.warn("[plans] planner/{uid} no existe; se inicializa subjectStates vacío.");
+      subjectStates = {};
+      return;
+    }
+
+    const plannerData = plannerSnap.data() || {};
+    if (!plannerData.subjectStates || typeof plannerData.subjectStates !== "object"){
+      console.warn("[plans] planner.subjectStates no existe o no es mapa; se usa fallback local.");
+      subjectStates = {};
+      return;
+    }
+
+    subjectStates = plannerData.subjectStates;
+  }
+
+  function hydrateSubjectStatesFromLegacy(){
+    const legacyStates = getLegacyStates();
+    if (!legacyStates || typeof legacyStates !== "object") return;
+
+    const hasRemoteStates = Object.keys(subjectStates || {}).length > 0;
+    if (hasRemoteStates) return;
+
+    Object.entries(legacyStates).forEach(([slug, status]) => {
+      const normalizedSlug = String(slug || "").trim();
+      const normalizedStatus = normalizeStatus(status);
+      if (!normalizedSlug || !normalizedStatus) return;
+      subjectStates[normalizedSlug] = {
+        status: normalizedStatus,
+        approved: isApproved(normalizedStatus)
+      };
+    });
   }
 
   let indexPlans = [];
@@ -156,7 +291,16 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
           danger:true
         });
         if(!ok) return;
+        const previousSlugs = Object.keys(getEstados());
         localStorage.removeItem(storageKey);
+        setEstados({});
+        for (const slug of previousSlugs){
+          try{
+            await updateSubjectState(slug, null);
+          }catch(error){
+            console.error("[plans] Error limpiando subjectState en Firestore:", slug, error);
+          }
+        }
         updateUI();
       });
     }
@@ -186,7 +330,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
   function porcentajePromocionadas(){
     const estados = getEstados();
     const total = materias.filter(m => m.id !== "practica").length || 1;
-    const promo = Object.values(estados).filter(e => e === "promocion").length;
+    const promo = Object.values(estados).filter(e => e === "promocionada").length;
     return (promo / total) * 100;
   }
 
@@ -198,7 +342,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
     Object.entries(estados).forEach(([id, st])=>{
       if(id === "practica") return;
       if(excludeId && id === excludeId) return;
-      if(st === "promocion" || st === "regular") aprobadas++;
+      if(isApproved(st)) aprobadas++;
     });
 
     return (aprobadas / total) * 100;
@@ -206,14 +350,14 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
 
   function updateStatsUI(){
     const estados = getEstados();
-    const counts = { promocion:0, regular:0, libre:0, curso:0 };
+    const counts = { promocionada:0, regular:0, libre:0, en_curso:0 };
     Object.values(estados).forEach(v => { if(counts[v] !== undefined) counts[v]++; });
 
     const total = materias.filter(m => m.id !== "practica").length || 1;
     let aprobadas = 0;
     Object.entries(estados).forEach(([id, st])=>{
       if(id === "practica") return;
-      if(st === "promocion" || st === "regular") aprobadas++;
+      if(isApproved(st)) aprobadas++;
     });
     const pct = (aprobadas / total) * 100;
 
@@ -221,10 +365,10 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
     const elReg  = document.getElementById("countReg");
     const elLib  = document.getElementById("countLib");
     const elCur  = document.getElementById("countCur");
-    if(elProm) elProm.textContent = counts.promocion;
+    if(elProm) elProm.textContent = counts.promocionada;
     if(elReg)  elReg.textContent  = counts.regular;
     if(elLib)  elLib.textContent  = counts.libre;
-    if(elCur)  elCur.textContent  = counts.curso;
+    if(elCur)  elCur.textContent  = counts.en_curso;
 
     const pctText = document.getElementById("pctText");
     const fill = document.getElementById("progressFill");
@@ -236,7 +380,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
     if(captionLeft) captionLeft.textContent = aprobadas + " materias aprobadas/regularizadas";
     if(totalText) totalText.textContent = total + " materias totales";
   }
-function revalidateEstados() {
+async function revalidateEstados() {
   const estados = getEstados();
   let changed = true;
 
@@ -259,7 +403,7 @@ function revalidateEstados() {
       // requisito por cantidad aprobadas
       if (!invalida && mat.requiereAprobadas) {
         const aprobadas = Object.values(estados)
-          .filter(e => e === "promocion" || e === "regular").length;
+          .filter(e => isApproved(e)).length;
         if (aprobadas < mat.requiereAprobadas) {
           invalida = true;
         }
@@ -273,20 +417,26 @@ function revalidateEstados() {
       ) {
         const faltan = mat.requisitos.some(r => {
           const est = estados[r];
-          return !(est === "promocion" || est === "regular");
+          return !isApproved(est);
         });
         if (faltan) invalida = true;
       }
 
-      // 🔥 si quedó inválida → borrar estado
+      // si quedó inválida → quitar estado
       if (invalida) {
-        delete estados[mat.id];
+        estados[mat.id] = null;
         changed = true;
       }
     });
   }
 
   setEstados(estados);
+  const updates = Object.entries(estados)
+    .filter(([, status]) => normalizeStatus(status) === null)
+    .map(([slug]) => updateSubjectState(slug, null).catch((error) => {
+      console.error("[plans] Error al revalidar estado en Firestore:", slug, error);
+    }));
+  await Promise.all(updates);
 }
 
   function updateUI(){
@@ -301,18 +451,20 @@ function revalidateEstados() {
       if(mat && mat.requierePorcentaje){
         if(porcentajeAprobadas(mat.id) < mat.requierePorcentaje) bloqueada = true;
       }else if(mat && mat.requiereAprobadas){
-        const aprobadas = Object.values(estados).filter(e => e === "promocion" || e === "regular").length;
+        const aprobadas = Object.values(estados).filter(e => isApproved(e)).length;
         if(aprobadas < mat.requiereAprobadas) bloqueada = true;
       }else if(mat && Array.isArray(mat.requisitos) && mat.requisitos.length){
         const faltan = mat.requisitos.filter(r=>{
           const est = estados[r];
-          return !(est === "promocion" || est === "regular");
+          return !isApproved(est);
         });
         if(faltan.length) bloqueada = true;
       }
 
       if(bloqueada && !estado) el.classList.add("locked");
       if(estado) el.classList.add(estado);
+      el.classList.toggle("subject-approved", getSubjectApproved(id));
+      el.dataset.approved = getSubjectApproved(id) ? "true" : "false";
     });
 
     updateStatsUI();
@@ -323,10 +475,10 @@ function revalidateEstados() {
     menu.style.display = "block";
     menu.innerHTML = `
       <div class="plan-menu-card">
-        <div data-estado="promocion" class="btn plan-menu-item">Promoción</div>
+        <div data-estado="promocionada" class="btn plan-menu-item">Promocionada</div>
         <div data-estado="regular" class="btn plan-menu-item">Regular</div>
         <div data-estado="libre" class="btn plan-menu-item">Libre</div>
-        <div data-estado="curso" class="btn plan-menu-item">En curso</div>
+        <div data-estado="en_curso" class="btn plan-menu-item">En curso</div>
         <div data-estado="ninguno" class="btn plan-menu-item plan-menu-item-last">Quitar estado</div>
       </div>
     `;
@@ -340,13 +492,22 @@ function revalidateEstados() {
     menu.style.position = "fixed";
 
     menu.querySelectorAll("[data-estado]").forEach(item=>{
-      item.addEventListener("click", ()=>{
+      item.addEventListener("click", async ()=>{
         const estado = item.dataset.estado;
         const estados = getEstados();
-        if(estado === "ninguno") delete estados[id];
-        else estados[id] = estado;
+        if (!id){
+          console.warn("[plans] No se puede actualizar estado: falta subjectSlug en la tarjeta.");
+          return;
+        }
+        if(estado === "ninguno") estados[id] = null;
+        else estados[id] = normalizeStatus(estado);
         setEstados(estados);
-        revalidateEstados();
+        try{
+          await updateSubjectState(id, estados[id]);
+        }catch(error){
+          console.error("[plans] Error guardando subjectStates en Firestore:", error);
+        }
+        await revalidateEstados();
         closeMenu();
         updateUI();
       });
@@ -453,9 +614,15 @@ function revalidateEstados() {
       semestre = isIngresoMateria(materia) ? 1 : 2;
     }
 
+    const nombre = materia.nombre || materia.name || materia.subjectName || materia.title || "(Sin nombre)";
+    const subjectSlug = materia.id || materia.slug || materia.subjectSlug || materia.subjectId || slugify(nombre);
+    if (!subjectSlug){
+      console.warn("[plans] Materia sin subjectSlug detectada:", materia);
+    }
+
     return {
-      id: materia.id || materia.slug || materia.subjectSlug || materia.subjectId || "",
-      nombre: materia.nombre || materia.name || materia.subjectName || materia.title || "(Sin nombre)",
+      id: subjectSlug,
+      nombre,
       semestre,
       requisitos: normalizeRequisitos(
         materia.requisitos ?? materia.prerequisites ?? materia.correlativas ?? materia.requires ?? []
@@ -641,7 +808,16 @@ function revalidateEstados() {
       danger:true
     });
     if(!ok) return;
+    const previousSlugs = Object.keys(getEstados());
     localStorage.removeItem(storageKey);
+    setEstados({});
+    for (const slug of previousSlugs){
+      try{
+        await updateSubjectState(slug, null);
+      }catch(error){
+        console.error("[plans] Error limpiando subjectState en Firestore:", slug, error);
+      }
+    }
     updateUI();
   });
 
@@ -660,10 +836,21 @@ function revalidateEstados() {
     });
   });
 
-  window.addEventListener("storage", (e)=>{ if(e.key === storageKey) updateUI(); });
+  window.addEventListener("storage", (e)=>{ if(e.key === storageKey){ hydrateSubjectStatesFromLegacy(); updateUI(); } });
 
   async function initPlansPage(){
     try{
+      await new Promise((resolve) => {
+        const unsub = onAuthStateChanged(auth, (user) => {
+          unsub();
+          plannerUid = user?.uid || "";
+          plannerRef = plannerUid ? doc(db, "planner", plannerUid) : null;
+          if (!plannerUid) console.warn("[plans] Usuario sin sesión: subjectStates se mantiene en cache local.");
+          resolve();
+        }, () => resolve());
+      });
+      await loadSubjectStatesFromPlanner();
+      hydrateSubjectStatesFromLegacy();
       await loadIndex();
 
       // 1) query string directo (modo embebido o link directo)
