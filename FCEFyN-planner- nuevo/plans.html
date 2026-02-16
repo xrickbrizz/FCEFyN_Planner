@@ -240,6 +240,7 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
 
   function buildGrid(){
     gridWrap.innerHTML = "";
+    let statsPanelCell = null;
     for(let i=0;i<12;i++){
       const cell = document.createElement("section");
       cell.className = "cell";
@@ -276,8 +277,13 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
               <div style="color:var(--muted); font-size:0.85rem;">Cambios guardados automáticamente</div>
             </div>
           </div>`;
+        statsPanelCell = cell;
       }
       gridWrap.appendChild(cell);
+    }
+
+    if (statsPanelCell && statsPanelCell.parentNode === gridWrap){
+      gridWrap.prepend(statsPanelCell);
     }
 
     const btnResetPanel = document.getElementById("btnResetPanel");

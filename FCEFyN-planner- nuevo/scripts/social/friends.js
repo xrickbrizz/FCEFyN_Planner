@@ -3,6 +3,7 @@ import {
   getDocs,
   query,
   where,
+  onSnapshot,
   serverTimestamp,
   updateDoc,
   addDoc,
@@ -11,6 +12,9 @@ import {
 } from "../core/firebase.js";
 
 let CTX = null;
+let requestsBadgeUnsubs = [];
+let requestsModalLiveUnsubs = [];
+let requestsModalBound = false;
 
 const CHAT_ACCENTS = {
   green: "#7CC7A0",
@@ -224,10 +228,164 @@ async function rejectFriendRequest(id){
   }
 }
 
+async function cancelFriendRequest(id){
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser?.uid){
+    CTX?.notifyError?.("Sesión inválida.");
+    return;
+  }
+  const req = CTX.socialState.friendRequests.outgoing.find(r => r.id === id);
+  if (!req){
+    CTX?.notifyWarn?.("Solicitud enviada no encontrada.");
+    return;
+  }
+  try{
+    await updateDoc(doc(CTX.db,"friendRequests",id), {
+      status:"cancelled",
+      updatedAt: serverTimestamp(),
+      cancelledBy: currentUser.uid
+    });
+    await loadFriendRequests();
+    CTX?.notifyWarn?.("Solicitud cancelada.");
+  }catch(e){
+    CTX?.notifyError?.("No se pudo cancelar: " + (e.message || e));
+  }
+}
+
+function updateFriendRequestsBadge(){
+  const badge = document.getElementById("friendReqBadge");
+  if (!badge) return;
+  const count = (CTX?.socialState?.friendRequests?.incoming || [])
+    .filter(req => req?.status === "pending").length;
+  if (count <= 0){
+    badge.hidden = true;
+    badge.textContent = "0";
+    return;
+  }
+  badge.hidden = false;
+  badge.textContent = count > 9 ? "9+" : String(count);
+}
+
+function stopRequestsBadgeSubscription(){
+  requestsBadgeUnsubs.forEach((u)=>{
+    try{ u?.(); }catch(_e){}
+  });
+  requestsBadgeUnsubs = [];
+}
+
+function startRequestsBadgeSubscription(){
+  stopRequestsBadgeSubscription();
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser?.uid) return;
+
+  const incomingSnapshots = [new Map(), new Map(), new Map()];
+  const queries = [
+    query(collection(CTX.db,"friendRequests"), where("toUid","==", currentUser.uid), where("status","==","pending")),
+    query(collection(CTX.db,"friendRequests"), where("receiverUid","==", currentUser.uid), where("status","==","pending")),
+    query(collection(CTX.db,"friendRequests"), where("recipientUid","==", currentUser.uid), where("status","==","pending"))
+  ];
+
+  const syncFromSnapshots = () => {
+    const merged = new Map();
+    incomingSnapshots.forEach((bucket)=>{
+      bucket.forEach((request, requestId)=> merged.set(requestId, request));
+    });
+    const incoming = Array.from(merged.values());
+    const outgoing = CTX?.socialState?.friendRequests?.outgoing || [];
+    CTX.socialState.friendRequests = { incoming, outgoing };
+    updateFriendRequestsBadge();
+    renderFriendRequestsUI();
+  };
+
+  queries.forEach((q, idx)=>{
+    const unsub = onSnapshot(q, (snap)=>{
+      const bucket = new Map();
+      snap.docs.forEach((docSnap)=>{
+        const data = docSnap.data() || {};
+        bucket.set(docSnap.id, {
+          id: docSnap.id,
+          ...data,
+          fromUid: data.fromUid || data.senderUid || data.senderId || "",
+          toUid: data.receiverUid || data.toUid || data.recipientUid || ""
+        });
+      });
+      incomingSnapshots[idx] = bucket;
+      syncFromSnapshots();
+    }, (error)=>{
+      console.error("[Mensajeria] badge onSnapshot failed", error);
+    });
+    requestsBadgeUnsubs.push(unsub);
+  });
+}
+
+function closeFriendRequestsModal(){
+  const modal = document.getElementById("friendRequestsModal");
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  requestsModalLiveUnsubs.forEach((u)=>{
+    try{ u?.(); }catch(_e){}
+  });
+  requestsModalLiveUnsubs = [];
+}
+
+function startModalLiveSubscriptions(){
+  requestsModalLiveUnsubs.forEach((u)=>{
+    try{ u?.(); }catch(_e){}
+  });
+  requestsModalLiveUnsubs = [];
+
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser?.uid) return;
+
+  const incomingQuery = query(collection(CTX.db,"friendRequests"), where("toUid","==", currentUser.uid), where("status","==","pending"));
+  const outgoingQuery = query(collection(CTX.db,"friendRequests"), where("fromUid","==", currentUser.uid), where("status","==","pending"));
+
+  const unsubIncoming = onSnapshot(incomingQuery, ()=> loadFriendRequests());
+  const unsubOutgoing = onSnapshot(outgoingQuery, ()=> loadFriendRequests());
+  requestsModalLiveUnsubs.push(unsubIncoming, unsubOutgoing);
+}
+
+async function openFriendRequestsModal(){
+  const modal = document.getElementById("friendRequestsModal");
+  if (!modal) return;
+  await loadFriendRequests();
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  startModalLiveSubscriptions();
+}
+
+function wireFriendRequestsModal(){
+  if (requestsModalBound) return;
+  requestsModalBound = true;
+
+  const btn = document.getElementById("friendRequestsBtn");
+  const modal = document.getElementById("friendRequestsModal");
+  const closeBtn = document.getElementById("closeFriendRequestsModal");
+  if (!btn || !modal) return;
+
+  btn.addEventListener("click", ()=> {
+    openFriendRequestsModal();
+  });
+
+  closeBtn?.addEventListener("click", closeFriendRequestsModal);
+  modal.addEventListener("click", (event)=>{
+    if (event.target === modal) closeFriendRequestsModal();
+  });
+
+  document.addEventListener("keydown", (event)=>{
+    if (event.key === "Escape" && !modal.hidden){
+      closeFriendRequestsModal();
+    }
+  });
+}
+
 function wireFriendRequestActions(){
-  const incomingBox = document.getElementById("incomingRequests");
-  if (!incomingBox) return;
-  incomingBox.addEventListener("click", (e)=>{
+  const modal = document.getElementById("friendRequestsModal");
+  if (!modal) return;
+  modal.addEventListener("click", (e)=>{
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
     const id = btn.getAttribute("data-id");
@@ -236,6 +394,7 @@ function wireFriendRequestActions(){
       acceptFriendRequest(id);
     }
     else if (action === "reject") rejectFriendRequest(id);
+    else if (action === "cancel") cancelFriendRequest(id);
   });
 }
 
@@ -282,44 +441,34 @@ async function loadFriendsList(){
   }
 }
 
+
+function formatRequestDate(value){
+  const ms = value?.toMillis?.() || (value?.seconds ? ((value.seconds || 0) * 1000) : (value ? new Date(value).getTime() : 0));
+  if (!ms || !Number.isFinite(ms)) return "Sin fecha";
+  return new Date(ms).toLocaleString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+
+function getRequestDisplay(req, type){
+  const fallbackEmail = type === "incoming" ? (req.fromEmail || "Correo desconocido") : (req.toEmail || "Correo");
+  const name = req.displayName || req.fullName || req.name || fallbackEmail;
+  const email = type === "incoming" ? (req.fromEmail || fallbackEmail) : (req.toEmail || fallbackEmail);
+  const avatar = CTX.resolveAvatarUrl?.(req.photoURL || req.avatarUrl || "") || "https://www.gravatar.com/avatar/?d=mp";
+  return { name, email, avatar };
+}
+
 function renderFriendRequestsUI(){
   const incomingBox = document.getElementById("incomingRequests");
   const outgoingBox = document.getElementById("outgoingRequests");
-  const receivedDropdownBox = document.getElementById("receivedRequests");
-  const sentDropdownBox = document.getElementById("sentRequests");
   const state = CTX.socialState;
   if (!incomingBox || !outgoingBox) return;
 
-  const renderDropdownList = (box, requests, emptyText, emailField) => {
-    if (!box) return;
-    box.innerHTML = "";
-    if (state.requestsLoading){
-      box.innerHTML = "<div class='dropdown-request-item'>Cargando...</div>";
-      return;
-    }
-    if (!requests.length){
-      box.innerHTML = `<div class='dropdown-request-item'>${emptyText}</div>`;
-      return;
-    }
-    requests.forEach((req) => {
-      const item = document.createElement("div");
-      item.className = "dropdown-request-item";
-      item.innerHTML = `
-        <strong>${req[emailField] || "Correo desconocido"}</strong>
-        <span>Estado: ${req.status || "pendiente"}</span>
-      `;
-      box.appendChild(item);
-    });
-  };
-
   incomingBox.innerHTML = "";
   outgoingBox.innerHTML = "";
+  updateFriendRequestsBadge();
 
   if (state.requestsLoading){
     incomingBox.innerHTML = "<div class='muted'>Cargando...</div>";
     outgoingBox.innerHTML = "<div class='muted'>Cargando...</div>";
-    renderDropdownList(receivedDropdownBox, [], "Cargando...", "fromEmail");
-    renderDropdownList(sentDropdownBox, [], "Cargando...", "toEmail");
     return;
   }
 
@@ -329,16 +478,20 @@ function renderFriendRequestsUI(){
     state.friendRequests.incoming.forEach(req =>{
       const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/incoming");
       if (!endpoints) return;
+      const info = getRequestDisplay(req, "incoming");
       const div = document.createElement("div");
       div.className = "request-card";
       div.innerHTML = `
-        <div>
-          <div class="req-email">${req.fromEmail || "Correo desconocido"}</div>
-          <div class="req-meta">Estado: ${req.status || "pendiente"}</div>
+        <div class="req-main">
+          <img class="friend-avatar" src="${info.avatar}" alt="Avatar de ${info.name}">
+          <div>
+            <div class="req-email">${info.name}</div>
+            <div class="req-meta">${info.email} · ${formatRequestDate(req.createdAt)}</div>
+          </div>
         </div>
         <div class="req-actions">
           <button class="btn-blue btn-small" data-action="accept" data-id="${req.id}" data-from="${req.fromUid}" data-to="${req.toUid}">Aceptar</button>
-          <button class="btn-danger btn-small" data-action="reject" data-id="${req.id}">Rechazar</button>
+          <button class="btn-danger btn-small" data-action="reject" data-id="${req.id}">✕</button>
         </div>
       `;
       incomingBox.appendChild(div);
@@ -351,20 +504,24 @@ function renderFriendRequestsUI(){
     state.friendRequests.outgoing.forEach(req =>{
       const endpoints = ensureRequestEndpoints(req, "renderFriendRequestsUI/outgoing");
       if (!endpoints) return;
+      const info = getRequestDisplay(req, "outgoing");
       const div = document.createElement("div");
       div.className = "request-card ghost";
       div.innerHTML = `
-        <div>
-          <div class="req-email">${req.toEmail || "Correo"}</div>
-          <div class="req-meta">Estado: ${req.status || "pendiente"}</div>
+        <div class="req-main">
+          <img class="friend-avatar" src="${info.avatar}" alt="Avatar de ${info.name}">
+          <div>
+            <div class="req-email">${info.name}</div>
+            <div class="req-meta">${info.email} · ${formatRequestDate(req.createdAt)}</div>
+          </div>
+        </div>
+        <div class="req-actions">
+          <button class="btn-outline btn-small" data-action="cancel" data-id="${req.id}">Cancelar</button>
         </div>
       `;
       outgoingBox.appendChild(div);
     });
   }
-
-  renderDropdownList(receivedDropdownBox, state.friendRequests.incoming, "Sin solicitudes pendientes.", "fromEmail");
-  renderDropdownList(sentDropdownBox, state.friendRequests.outgoing, "No enviaste solicitudes.", "toEmail");
 }
 
 function renderFriendsList(){
@@ -446,6 +603,8 @@ const Friends = {
   init(ctx){
     CTX = ctx;
     wireFriendRequestActions();
+    wireFriendRequestsModal();
+    startRequestsBadgeSubscription();
   },
   loadFriendRequests,
   loadFriendsList,
@@ -454,8 +613,11 @@ const Friends = {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  cancelFriendRequest,
   sortFriendsRows,
-  ensureRequestEndpoints
+  ensureRequestEndpoints,
+  openFriendRequestsModal,
+  closeFriendRequestsModal
 };
 
 export default Friends;

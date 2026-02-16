@@ -699,27 +699,6 @@ if (helpButton) helpButton.addEventListener("click", ()=> openHelpModal(navState
 if (btnHelpClose) btnHelpClose.addEventListener("click", closeHelpModal);
 if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === helpModalBg) closeHelpModal(); });
 
-const friendRequestsBtn = document.getElementById("friendRequestsBtn");
-const friendRequestsPanel = document.getElementById("friendRequestsPanel");
-
-friendRequestsBtn?.addEventListener("click", (event) => {
-  event.stopPropagation();
-  if (!friendRequestsPanel) return;
-  const shouldOpen = !friendRequestsPanel.classList.contains("is-open");
-  friendRequestsPanel.classList.toggle("is-open", shouldOpen);
-  friendRequestsPanel.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
-});
-
-document.addEventListener("click", (event) => {
-  if (!friendRequestsPanel || !friendRequestsBtn) return;
-  const insidePanel = friendRequestsPanel.contains(event.target);
-  const onButton = friendRequestsBtn.contains(event.target);
-  if (!insidePanel && !onButton){
-    friendRequestsPanel.classList.remove("is-open");
-    friendRequestsPanel.setAttribute("aria-hidden", "true");
-  }
-});
-
 let sidebarCtrl = null;
 
 window.getCurrentCareer = getCurrentCareer;
@@ -769,8 +748,6 @@ window.showTab = function(name){
     label.innerHTML = `${iconHtml}<span>${nav.label || ""}</span>`;
   }
 
-  document.getElementById("friendRequestsPanel")?.classList.remove("is-open");
-  document.getElementById("friendRequestsPanel")?.setAttribute("aria-hidden", "true");
 };
 
 function isBlockedByClientError(error){
