@@ -164,15 +164,23 @@ import { resolvePlanSlug, normalizeStr } from "./scripts/plans-data.js";
 
   function placeSubjects(){
     document.querySelectorAll(".subjects").forEach(s => s.innerHTML = "");
+    let renderizadas = 0;
+    let sinSemestreValido = 0;
     materias.forEach(m=>{
       const container = document.querySelector(`.subjects[data-sem='${m.semestre}']`);
-      if(!container) return;
+      if(!container){
+        sinSemestreValido++;
+        console.warn("[plans] materia sin contenedor", m.id, m.semestre, m);
+        return;
+      }
       const d = document.createElement("div");
       d.className = "subject";
       d.textContent = m.nombre;
       d.dataset.id = m.id;
       container.appendChild(d);
+      renderizadas++;
     });
+    console.log("[plans] materias renderizadas:", renderizadas, "sin semestre válido:", sinSemestreValido);
   }
 
   function porcentajePromocionadas(){
@@ -378,6 +386,90 @@ function revalidateEstados() {
     return [];
   }
 
+  function parseSemestre(value){
+    if(value === null || value === undefined) return null;
+    if(typeof value === "number" && Number.isFinite(value)) return value;
+    if(typeof value === "string"){
+      const trimmed = value.trim();
+      if(!trimmed) return null;
+      if(/^\d+$/.test(trimmed)) return Number(trimmed);
+    }
+    return null;
+  }
+
+  function isIngresoMateria(raw){
+    const values = [
+      raw?.semestre,
+      raw?.semester,
+      raw?.cuatrimestre,
+      raw?.term,
+      raw?.nivel,
+      raw?.tag,
+      raw?.tags,
+      raw?.category,
+      raw?.categoria,
+      raw?.tipo,
+      raw?.level
+    ];
+
+    return values.some((value) => {
+      if(Array.isArray(value)){
+        return value.some((item) => normalize(String(item || "")).includes("ingreso"));
+      }
+      return normalize(String(value || "")).includes("ingreso");
+    });
+  }
+
+  function normalizeRequisitos(value){
+    if(!value) return [];
+
+    const toReqId = (item) => {
+      if(item === null || item === undefined) return "";
+      if(typeof item === "string" || typeof item === "number") return String(item).trim();
+      if(typeof item === "object"){
+        return String(
+          item.id || item.slug || item.subjectSlug || item.subjectId || item.codigo || item.code || ""
+        ).trim();
+      }
+      return "";
+    };
+
+    const list = typeof value === "string"
+      ? value.split(",")
+      : Array.isArray(value)
+        ? value
+        : [value];
+
+    return list.map(toReqId).filter(Boolean);
+  }
+
+  function normalizeMateria(raw){
+    const materia = raw && typeof raw === "object" ? raw : {};
+    let semestre = parseSemestre(
+      materia.semestre ?? materia.semester ?? materia.cuatrimestre ?? materia.term ?? materia.nivel
+    );
+
+    if(semestre === null){
+      semestre = isIngresoMateria(materia) ? 1 : 2;
+    }
+
+    return {
+      id: materia.id || materia.slug || materia.subjectSlug || materia.subjectId || "",
+      nombre: materia.nombre || materia.name || materia.subjectName || materia.title || "(Sin nombre)",
+      semestre,
+      requisitos: normalizeRequisitos(
+        materia.requisitos ?? materia.prerequisites ?? materia.correlativas ?? materia.requires ?? []
+      ),
+      requiereAprobadas: materia.requiereAprobadas ?? materia.requiresApprovedCount ?? materia.minApproved ?? null,
+      requierePorcentaje: materia.requierePorcentaje ?? materia.requiresPercentage ?? materia.minPercent ?? null
+    };
+  }
+
+  function normalizeMaterias(list){
+    if(!Array.isArray(list)) return [];
+    return list.map(normalizeMateria);
+  }
+
   const aliasMap = new Map();
 
   function registerAlias(alias, realSlug){
@@ -514,7 +606,7 @@ function revalidateEstados() {
     const planSlug = planData.slug || planData.id || plan?.slug || resolvedDocId;
     storageKey = `${STORAGE_KEY_DEFAULT}_${planSlug}`;
 
-    materias = detectMaterias(planData);
+    materias = normalizeMaterias(detectMaterias(planData));
     console.log("[plans] docId final usado:", resolvedDocId);
     console.log("[plans] cantidad de materias detectadas:", Array.isArray(materias) ? materias.length : 0);
 
