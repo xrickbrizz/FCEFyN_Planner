@@ -43,16 +43,8 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const examDifficulty = normalizeMetric(hasMetricValue(examDifficultyRaw) ? examDifficultyRaw : ratingRaw);
     const studentTreatment = normalizeMetric(hasMetricValue(studentTreatmentRaw) ? studentTreatmentRaw : ratingRaw);
 
-    const missingMetrics = [];
-    if (!hasMetricValue(teachingQualityRaw) && ratingFallback === null) missingMetrics.push("teachingQuality/quality o rating");
-    if (!hasMetricValue(examDifficultyRaw) && ratingFallback === null) missingMetrics.push("examDifficulty/difficulty o rating");
-    if (!hasMetricValue(studentTreatmentRaw) && ratingFallback === null) missingMetrics.push("studentTreatment/treatment o rating");
-
-    if (missingMetrics.length > 0) {
-      throw new HttpsError("invalid-argument", `Faltan métricas obligatorias: ${missingMetrics.join(", ")}.`);
-    }
-
-    if ([teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
+    const hasRatingInput = [teachingQualityRaw, examDifficultyRaw, studentTreatmentRaw].some(hasMetricValue) || ratingFallback !== null;
+    if (hasRatingInput && [teachingQuality, examDifficulty, studentTreatment].some((value) => value === null)) {
       throw new HttpsError("invalid-argument", "La valoración debe estar entre 1 y 5 para todas las métricas.");
     }
 
@@ -79,19 +71,31 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const sumDifficulty = Number(ratings.sumDifficulty || 0);
       const sumTreatment = Number(ratings.sumTreatment || 0);
 
-      const previousQuality = reviewSnap.exists ? Number(reviewSnap.get("teachingQuality") || reviewSnap.get("quality") || reviewSnap.get("rating") || 0) : 0;
-      const previousDifficulty = reviewSnap.exists ? Number(reviewSnap.get("examDifficulty") || reviewSnap.get("difficulty") || reviewSnap.get("rating") || 0) : 0;
-      const previousTreatment = reviewSnap.exists ? Number(reviewSnap.get("studentTreatment") || reviewSnap.get("treatment") || reviewSnap.get("rating") || 0) : 0;
+      const previousQualityRaw = reviewSnap.exists ? reviewSnap.get("teachingQuality") ?? reviewSnap.get("quality") ?? reviewSnap.get("rating") : null;
+      const previousDifficultyRaw = reviewSnap.exists ? reviewSnap.get("examDifficulty") ?? reviewSnap.get("difficulty") ?? reviewSnap.get("rating") : null;
+      const previousTreatmentRaw = reviewSnap.exists ? reviewSnap.get("studentTreatment") ?? reviewSnap.get("treatment") ?? reviewSnap.get("rating") : null;
+      const previousQuality = normalizeMetric(previousQualityRaw);
+      const previousDifficulty = normalizeMetric(previousDifficultyRaw);
+      const previousTreatment = normalizeMetric(previousTreatmentRaw);
+      const hadRating = [previousQuality, previousDifficulty, previousTreatment].every((value) => value !== null);
       const previousComment = reviewSnap.exists ? String(reviewSnap.get("comment") || "") : "";
 
       const hadComment = previousComment.trim().length > 0;
       const hasComment = comment.trim().length > 0;
       const previousCommentsCount = Number(profData.commentsCount || 0);
 
-      const nextCount = reviewSnap.exists ? totalReviews : totalReviews + 1;
-      const nextSumQuality = reviewSnap.exists ? (sumQuality - previousQuality + teachingQuality) : (sumQuality + teachingQuality);
-      const nextSumDifficulty = reviewSnap.exists ? (sumDifficulty - previousDifficulty + examDifficulty) : (sumDifficulty + examDifficulty);
-      const nextSumTreatment = reviewSnap.exists ? (sumTreatment - previousTreatment + studentTreatment) : (sumTreatment + studentTreatment);
+      const nextCount = hasRatingInput
+        ? (hadRating ? totalReviews : totalReviews + 1)
+        : totalReviews;
+      const nextSumQuality = hasRatingInput
+        ? (hadRating ? (sumQuality - previousQuality + teachingQuality) : (sumQuality + teachingQuality))
+        : sumQuality;
+      const nextSumDifficulty = hasRatingInput
+        ? (hadRating ? (sumDifficulty - previousDifficulty + examDifficulty) : (sumDifficulty + examDifficulty))
+        : sumDifficulty;
+      const nextSumTreatment = hasRatingInput
+        ? (hadRating ? (sumTreatment - previousTreatment + studentTreatment) : (sumTreatment + studentTreatment))
+        : sumTreatment;
 
       const qualityAvg = nextCount > 0 ? nextSumQuality / nextCount : 0;
       const difficultyAvg = nextCount > 0 ? nextSumDifficulty / nextCount : 0;
@@ -101,24 +105,30 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
       const now = FieldValue.serverTimestamp();
       const createdAt = reviewSnap.exists && reviewSnap.get("createdAt") ? reviewSnap.get("createdAt") : now;
-      const rating = reviewAverage({ teachingQuality, examDifficulty, studentTreatment });
-
-      tx.set(reviewRef, {
+      const reviewPayload = {
         professorId,
         userId: uid,
-        teachingQuality,
-        examDifficulty,
-        studentTreatment,
-        quality: teachingQuality,
-        difficulty: examDifficulty,
-        treatment: studentTreatment,
-        rating,
+        authorUid: uid,
         comment,
         anonymous,
         authorName,
         createdAt,
         updatedAt: now
-      }, { merge: true });
+      };
+      if (hasRatingInput) {
+        const rating = reviewAverage({ teachingQuality, examDifficulty, studentTreatment });
+        Object.assign(reviewPayload, {
+          teachingQuality,
+          examDifficulty,
+          studentTreatment,
+          quality: teachingQuality,
+          difficulty: examDifficulty,
+          treatment: studentTreatment,
+          rating
+        });
+      }
+
+      tx.set(reviewRef, reviewPayload, { merge: true });
 
       tx.set(professorRef, {
         ratings: {

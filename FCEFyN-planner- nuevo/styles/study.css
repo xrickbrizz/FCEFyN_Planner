@@ -1120,7 +1120,7 @@ body[data-theme="light"] .tab-card{
       background:var(--card);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding:1rem;
+      padding:.9rem;
       display:flex;
       flex-direction:column;
       gap:.75rem;
@@ -2533,7 +2533,7 @@ body[data-theme="light"] .event{
 #profTopPagination{ justify-self:center; }
 #profTopPagination button{ min-width:2.3rem; }
 
-.prof-detail-layout{ display:grid; grid-template-columns:minmax(290px, 380px) 1fr; gap:1rem; align-items:stretch; }
+.prof-detail-layout{ display:grid; grid-template-columns:minmax(290px, 360px) 1fr; gap:.85rem; align-items:start; }
 .prof-detail-main,
 .prof-detail-reviews{
   border:1px solid var(--border-35);
@@ -2545,7 +2545,8 @@ body[data-theme="light"] .event{
 .prof-detail-reviews{
   display:flex;
   flex-direction:column;
-  min-height:700px;
+  min-height:0;
+  overflow:visible;
 }
 .prof-reviews-header{
   display:flex;
@@ -2554,16 +2555,36 @@ body[data-theme="light"] .event{
   gap:.75rem;
 }
 .prof-reviews-header h3{ margin:0; }
-.prof-score-big{ font-size:2rem; font-weight:800; }
-.prof-distribution-row{ display:grid; grid-template-columns:64px 1fr auto; gap:.5rem; align-items:center; margin-top:.4rem; }
+.prof-score-summary{
+  display:flex;
+  align-items:flex-end;
+  gap:.3rem;
+}
+.prof-score-big{ font-size:3rem; font-weight:800; line-height:1; }
+.prof-score-max{ font-size:1.6rem; color:var(--text-soft); line-height:1.2; }
+.prof-score-underline{
+  width:92px;
+  height:5px;
+  border-radius:999px;
+  background:var(--color-text);
+  margin:.4rem 0 .45rem;
+}
+.prof-reviews-count{ color:var(--color-text); font-size:1.05rem; font-weight:700; }
+.prof-distribution-title{ margin:.9rem 0 .25rem; }
+.prof-distribution-row{ display:grid; grid-template-columns:30px 1fr auto; gap:.45rem; align-items:center; margin-top:.3rem; }
 .prof-distribution-bar{ height:8px; border-radius:99px; background:var(--glass-faint); overflow:hidden; }
 .prof-distribution-bar > span{ display:block; height:100%; background:var(--color-accent); }
-.prof-metric-list{ display:grid; gap:.45rem; margin-top:.8rem; }
-.prof-metric-item{ display:flex; justify-content:space-between; gap:.5rem; font-size:.92rem; }
-.prof-review-scroll{ flex:1; min-height:0; max-height:620px; overflow:auto; padding-right:.25rem; margin-top:.85rem; }
-.prof-review-item{ border:1px solid var(--border-16); border-radius:var(--radius-md); padding:.9rem; margin-top:.8rem; background:var(--surface-98); box-shadow:0 8px 22px rgba(0,0,0,.08); }
+.prof-metric-list{ display:grid; gap:.55rem; margin:.85rem 0; padding:.1rem 0 .2rem; border-top:1px solid var(--border-25); border-bottom:1px solid var(--border-25); }
+.prof-metric-item{ display:flex; align-items:flex-start; gap:.6rem; font-size:.92rem; }
+.prof-metric-icon{ width:1.3rem; display:inline-flex; justify-content:center; opacity:.82; }
+.prof-metric-copy{ display:grid; gap:.08rem; }
+.prof-metric-copy span{ color:var(--text-soft); }
+.prof-metric-copy strong{ font-size:.95rem; }
+.prof-review-scroll{ flex:1; min-height:0; max-height:calc(100vh - 330px); overflow:auto; padding-right:.2rem; margin-top:.55rem; }
+.prof-review-item{ border:1px solid var(--border-25); border-radius:var(--radius-md); padding:.75rem .8rem; margin-top:.55rem; background:var(--surface-98); box-shadow:0 5px 14px rgba(0,0,0,.06); }
 .prof-review-head{ display:flex; justify-content:space-between; gap:.5rem; align-items:flex-start; }
-.prof-review-comment{ margin:.55rem 0 0; color:var(--color-text); }
+.prof-review-head span{ color:var(--text-soft); font-size:.84rem; white-space:nowrap; }
+.prof-review-comment{ margin:.4rem 0 0; color:var(--color-text); }
 
 .prof-modal{ position:fixed; inset:0; z-index:1400; display:grid; place-items:center; padding:1rem; }
 .prof-modal.hidden{ display:none !important; }
@@ -2603,9 +2624,11 @@ body[data-theme="light"] .event{
 .prof-modal-actions{ display:flex; justify-content:flex-end; gap:.5rem; margin-top:.75rem; }
 
 .prof-primary-btn{
-  border-radius:.7rem;
+  border-radius:999px;
   min-width:8.2rem;
   font-weight:700;
+  margin-top:.95rem;
+  width:100%;
 }
 
 .prof-comment-modal-content{
@@ -2614,6 +2637,21 @@ body[data-theme="light"] .event{
 .prof-comment-count{
   text-align:right;
   margin-top:.45rem;
+}
+
+.prof-comment-hint{
+  margin-top:.45rem;
+  font-size:.88rem;
+  color:var(--text-soft);
+}
+.prof-comment-hint button{
+  border:0;
+  background:transparent;
+  color:var(--color-accent);
+  text-decoration:underline;
+  cursor:pointer;
+  font-weight:600;
+  padding:0;
 }
 .prof-dark-btn{
   background:#111;

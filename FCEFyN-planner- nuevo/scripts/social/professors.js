@@ -104,9 +104,10 @@ function treatmentDescriptor(value){
 }
 
 function reviewAverage(review){
-  const teaching = Number(review.teachingQuality || 0);
-  const exams = Number(review.examDifficulty || 0);
-  const treatment = Number(review.studentTreatment || 0);
+  const teaching = Number(review.teachingQuality);
+  const exams = Number(review.examDifficulty);
+  const treatment = Number(review.studentTreatment);
+  if (![teaching, exams, treatment].every((value) => Number.isFinite(value) && value >= 1 && value <= 5)) return null;
   return Number(((teaching + exams + treatment) / 3).toFixed(2));
 }
 
@@ -332,7 +333,9 @@ function renderDirectory(){
 function getRatingDistribution(reviews){
   const buckets = { 1:0, 2:0, 3:0, 4:0, 5:0 };
   reviews.forEach(review => {
-    const rounded = Math.min(5, Math.max(1, Math.round(reviewAverage(review))));
+    const average = reviewAverage(review);
+    if (average === null) return;
+    const rounded = Math.min(5, Math.max(1, Math.round(average)));
     buckets[rounded] += 1;
   });
   return buckets;
@@ -359,24 +362,37 @@ function renderProfessorDetail(){
   const reviewsStart = (state.reviewsPage - 1) * REVIEWS_PAGE_SIZE;
   const reviewsPageItems = reviews.slice(reviewsStart, reviewsStart + REVIEWS_PAGE_SIZE);
   const distribution = getRatingDistribution(reviews);
-  const total = Math.max(1, reviews.length);
+  const ratedReviewsCount = reviews.filter((review) => reviewAverage(review) !== null).length;
+  const total = Math.max(1, ratedReviewsCount);
 
   box.innerHTML = `
     <div class="prof-detail-layout">
       <section class="prof-detail-main">
         <h3>${escapeHTML(professor.name)}</h3>
-        <div class="prof-score-big">${formatDecimal(professor.averageRating)} / 5</div>
-        <div class="small-muted">${professor.totalReviews} reseñas</div>
+        <div class="prof-score-summary">
+          <span class="prof-score-big">${formatDecimal(professor.averageRating)}</span>
+          <span class="prof-score-max">/ 5</span>
+        </div>
+        <div class="prof-score-underline" aria-hidden="true"></div>
+        <div class="prof-reviews-count">${professor.totalReviews} reseñas</div>
 
         <div class="prof-metric-list">
           ${METRICS.map(metric => {
             const key = `${metric.key}Avg`;
             const value = Number(professor[key] || 0);
-            return `<div class="prof-metric-item"><span>${metric.label}</span><strong>${formatDecimal(value)} · ${metric.descriptor(value)}</strong></div>`;
+            return `
+              <div class="prof-metric-item">
+                <span class="prof-metric-icon" aria-hidden="true">${metric.key === "teachingQuality" ? "🧠" : metric.key === "examDifficulty" ? "⚙️" : "🤝"}</span>
+                <div class="prof-metric-copy">
+                  <span>${metric.label}</span>
+                  <strong>${formatDecimal(value)} - ${metric.descriptor(value)}</strong>
+                </div>
+              </div>
+            `;
           }).join("")}
         </div>
 
-        <h4 style="margin-top:1rem;">Distribución de calificaciones</h4>
+        <h4 class="prof-distribution-title">Distribución de calificaciones</h4>
         ${[5,4,3,2,1].map(star => {
           const count = distribution[star] || 0;
           const percentage = Math.round((count / total) * 100);
@@ -389,7 +405,7 @@ function renderProfessorDetail(){
           `;
         }).join("")}
 
-        <button id="openProfRatingModal" class="btn-blue btn-small prof-primary-btn" type="button" style="margin-top:1rem;">Calificar profesor</button>
+        <button id="openProfRatingModal" class="btn-blue btn-small prof-primary-btn" type="button">Calificar profesor</button>
       </section>
 
       <section class="prof-detail-reviews">
@@ -462,16 +478,21 @@ async function loadProfessorReviews(professorId){
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
       const rating = Number(data.rating || 0);
-      const teachingQuality = Number((data.teachingQuality ?? data.quality ?? rating) || 0);
-      const examDifficulty = Number((data.examDifficulty ?? data.difficulty ?? rating) || 0);
-      const studentTreatment = Number((data.studentTreatment ?? data.treatment ?? rating) || 0);
+      const teachingQualityRaw = data.teachingQuality ?? data.quality ?? rating;
+      const examDifficultyRaw = data.examDifficulty ?? data.difficulty ?? rating;
+      const studentTreatmentRaw = data.studentTreatment ?? data.treatment ?? rating;
+      const teachingQuality = Number(teachingQualityRaw);
+      const examDifficulty = Number(examDifficultyRaw);
+      const studentTreatment = Number(studentTreatmentRaw);
+      const hasRating = [teachingQuality, examDifficulty, studentTreatment].every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
       reviews.push({
         id: reviewDoc.id,
         professorId,
         userId: data.userId || "",
-        teachingQuality,
-        examDifficulty,
-        studentTreatment,
+        teachingQuality: hasRating ? teachingQuality : null,
+        examDifficulty: hasRating ? examDifficulty : null,
+        studentTreatment: hasRating ? studentTreatment : null,
+        hasRating,
         comment: data.comment || "",
         createdAt: data.createdAt || data.updatedAt || null,
         anonymous: Boolean(data.anonymous),
@@ -682,28 +703,8 @@ async function submitComment(){
     return;
   }
 
-  const reviews = state.reviewsByProfessor.get(professorId) || [];
-  const ownReview = reviews.find((item) => item.userId === currentUser.uid);
-  if (!ownReview){
-    notifyWarn("Primero calificá al profesor para poder dejar un comentario.");
-    return;
-  }
-
-  const teachingQuality = sanitizeRatingValue(ownReview.teachingQuality);
-  const examDifficulty = sanitizeRatingValue(ownReview.examDifficulty);
-  const studentTreatment = sanitizeRatingValue(ownReview.studentTreatment);
-
-  if (!validateRating(teachingQuality) || !validateRating(examDifficulty) || !validateRating(studentTreatment)){
-    notifyWarn("Tu calificación actual es inválida. Volvé a puntuar al profesor.");
-    return;
-  }
-
   const payload = {
     professorId,
-    teachingQuality,
-    examDifficulty,
-    studentTreatment,
-    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2)),
     comment,
     anonymous
   };
@@ -787,6 +788,12 @@ function bindEvents(){
   document.getElementById("btnCancelCommentModal")?.addEventListener("click", closeCommentModal);
   document.querySelector("#profCommentModal .prof-modal-backdrop")?.addEventListener("click", closeCommentModal);
   document.getElementById("btnSubmitComment")?.addEventListener("click", submitComment);
+  document.getElementById("profCommentRateShortcut")?.addEventListener("click", () => {
+    const professor = state.professorsById.get(state.selectedProfessorId);
+    if (!professor) return;
+    closeCommentModal();
+    openRatingModal(professor);
+  });
 
   document.getElementById("profCommentInput")?.addEventListener("input", (event) => {
     const value = String(event.target.value || "").slice(0, 500);
