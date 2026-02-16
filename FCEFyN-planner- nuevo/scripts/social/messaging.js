@@ -30,7 +30,6 @@ const DEFAULT_CHAT_PREF = {
   soundEnabled: true,
   showOnlineStatus: true,
   showLastSeen: true,
-  friendsOnly: true,
   muted: "off",
   pinned: false,
   archived: false,
@@ -521,6 +520,7 @@ function openChatSettingsModal(){
   const pref = getActiveChatPref();
   modal.classList.remove("hidden");
   modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
 
   const optionsWrap = document.getElementById("chatThemeOptions");
   if (optionsWrap){
@@ -552,7 +552,26 @@ function openChatSettingsModal(){
   bindToggle("prefSoundEnabled", "soundEnabled");
   bindToggle("prefShowOnlineStatus", "showOnlineStatus");
   bindToggle("prefShowLastSeen", "showLastSeen");
-  bindToggle("prefFriendsOnly", "friendsOnly");
+
+  const closeBtn = document.getElementById("closeChatSettings");
+  closeBtn?.focus();
+}
+
+
+function trapModalFocus(event, modalEl){
+  if (event.key !== "Tab" || !modalEl) return;
+  const focusables = Array.from(modalEl.querySelectorAll("button, input, [href], [tabindex]:not([tabindex='-1'])"))
+    .filter((node) => !node.disabled && !node.hidden);
+  if (!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (event.shiftKey && document.activeElement === first){
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last){
+    event.preventDefault();
+    first.focus();
+  }
 }
 
 function closeChatSettingsModal(){
@@ -560,6 +579,7 @@ function closeChatSettingsModal(){
   if (!modal) return;
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
 }
 
 function closeContextMenu(){
@@ -714,6 +734,16 @@ function initMessagingUI(){
   if (settingsOverlay){
     settingsOverlay.addEventListener("click", (e) => {
       if (e.target === settingsOverlay) closeChatSettingsModal();
+    });
+    settingsOverlay.addEventListener("keydown", (e) => {
+      if (settingsOverlay.classList.contains("hidden")) return;
+      if (e.key === "Escape"){
+        e.preventDefault();
+        closeChatSettingsModal();
+        return;
+      }
+      const dialog = settingsOverlay.querySelector(".chat-settings-modal");
+      trapModalFocus(e, dialog);
     });
   }
 
