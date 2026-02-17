@@ -93,14 +93,10 @@
             <div class="metric-value">Civil · Industrial · Sistemas</div>
             <div class="metric-sub">Y cualquier otra de la FCEFyN.</div>
           </div>
-          <div class="metric-card announcements-card" id="announcementsCard">
-            <div class="metric-label announcement-eyebrow">Novedades</div>
-            <div class="announcement-title-row">
-              <div class="metric-value">Últimos avisos</div>
-              <span class="announcement-badge" id="announcementsBadge" hidden>0</span>
-            </div>
-            <div class="announcement-list" id="announcementList"></div>
-            <button class="announcement-footer-link" id="announcementsViewAll" type="button">Ver todos →</button>
+          <div class="metric-card">
+            <div class="metric-label">Experiencia</div>
+            <div class="metric-value">Diseño claro</div>
+            <div class="metric-sub">Información simple para enfocarte en estudiar.</div>
           </div>
         </div>
 
@@ -193,15 +189,6 @@
       </section>
     </div>
   </div>
-
-  <dialog class="announcements-modal" id="announcementsModal">
-    <div class="announcements-modal-head">
-      <h3>Avisos</h3>
-      <button type="button" class="announcements-modal-close" id="announcementsModalClose" aria-label="Cerrar">✕</button>
-    </div>
-    <div class="announcements-modal-list" id="announcementsModalList"></div>
-  </dialog>
-
     <footer>
   </footer>
 
@@ -246,103 +233,6 @@
     const dotFirebase = document.getElementById("dotFirebase");
     const msgBox = document.getElementById("msgBox");
     const selCareer = document.getElementById("inpCareer");
-    const announcementList = document.getElementById("announcementList");
-    const announcementsBadge = document.getElementById("announcementsBadge");
-    const announcementsViewAll = document.getElementById("announcementsViewAll");
-    const announcementsModal = document.getElementById("announcementsModal");
-    const announcementsModalClose = document.getElementById("announcementsModalClose");
-    const announcementsModalList = document.getElementById("announcementsModalList");
-
-    const demoAnnouncements = [
-      {
-        title: "Inscripción a comisiones del próximo cuatrimestre",
-        category: "Académico",
-        createdAt: new Date()
-      },
-      {
-        title: "Actualización del planificador semanal con mejoras de rendimiento",
-        category: "General",
-        createdAt: new Date(Date.now() - 86400000)
-      },
-      {
-        title: "Nuevo horario publicado para mesas de febrero",
-        category: "Horario",
-        createdAt: new Date(Date.now() - 172800000)
-      }
-    ];
-
-    function formatShortDate(dateValue){
-      const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
-      if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "Reciente";
-      const today = new Date();
-      const sameDay = today.toDateString() === date.toDateString();
-      if (sameDay) return "Hoy";
-      return date.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit" });
-    }
-
-    function renderAnnouncementsCard(items){
-      if (!announcementList) return;
-      announcementList.innerHTML = "";
-      const cardItems = (items || []).slice(0, 2);
-      if (announcementsBadge){
-        const total = (items || []).length;
-        announcementsBadge.hidden = total < 1;
-        announcementsBadge.textContent = String(total);
-      }
-      if (!cardItems.length){
-        const emptyState = document.createElement("div");
-        emptyState.className = "announcement-empty";
-        emptyState.textContent = "No hay avisos por ahora";
-        announcementList.appendChild(emptyState);
-        announcementsViewAll.textContent = "Ver avisos →";
-        return;
-      }
-      announcementsViewAll.textContent = "Ver todos →";
-      cardItems.forEach((item)=>{
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "announcement-item";
-        button.innerHTML = `
-          <span class="announcement-item-title">${item.title}</span>
-          <span class="announcement-item-sub">${formatShortDate(item.createdAt)} · ${item.category}</span>
-        `;
-        button.addEventListener("click", ()=> openAnnouncementsModal([item]));
-        announcementList.appendChild(button);
-      });
-    }
-
-    function openAnnouncementsModal(items){
-      if (!announcementsModal || !announcementsModalList) return;
-      announcementsModalList.innerHTML = "";
-      const modalItems = (items || []).slice(0, 10);
-      if (!modalItems.length){
-        const empty = document.createElement("p");
-        empty.className = "announcement-modal-empty";
-        empty.textContent = "No hay avisos por ahora";
-        announcementsModalList.appendChild(empty);
-      } else {
-        modalItems.forEach((item)=>{
-          const article = document.createElement("article");
-          article.className = "announcement-modal-item";
-          article.innerHTML = `
-            <h4>${item.title}</h4>
-            <p>${formatShortDate(item.createdAt)} · ${item.category}</p>
-          `;
-          announcementsModalList.appendChild(article);
-        });
-      }
-      announcementsModal.showModal();
-    }
-
-    announcementsViewAll?.addEventListener("click", ()=> openAnnouncementsModal(demoAnnouncements));
-    announcementsModalClose?.addEventListener("click", ()=> announcementsModal?.close());
-    announcementsModal?.addEventListener("click", (event)=> {
-      const bounds = announcementsModal.getBoundingClientRect();
-      const isOutside = event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom;
-      if (isOutside) announcementsModal.close();
-    });
-
-    renderAnnouncementsCard(demoAnnouncements);
 
     function getCurrentCareer() {
       const select = document.getElementById("inpCareer");
