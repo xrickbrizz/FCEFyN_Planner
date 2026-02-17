@@ -647,12 +647,8 @@ function setCommentSubmitState(){
   const commentInput = document.getElementById("profCommentInput");
   const submitButton = document.getElementById("btnSubmitComment");
   if (!submitButton || !commentInput) return;
-  const professorId = state.selectedProfessorId;
-  const draft = professorId ? ensureReviewDraft(professorId) : null;
-  const normalized = normalizeRating(draft?.rating);
-  const hasValidRating = normalized != null && normalized >= 1 && normalized <= 5;
   const hasComment = Boolean(commentInput.value.trim());
-  submitButton.disabled = !hasComment && !hasValidRating;
+  submitButton.disabled = !hasComment;
 }
 
 function openCommentModal(professor){
@@ -754,10 +750,9 @@ async function submitRating(){
     professorId,
     teachingQuality,
     examDifficulty,
-    studentTreatment,
-    rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2))
+    studentTreatment
   };
-  draft.rating = payload.rating;
+  draft.rating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
   console.log("[prof] state.rating updated", { rating: draft.rating, type: typeof draft.rating });
 
   const submitBtn = document.getElementById("btnSubmitRating");
@@ -806,26 +801,17 @@ async function submitComment(){
 
   console.log("[prof] submit payload BEFORE sanitize", {
     professorId,
-    rating: draft.rating,
     commentLen: (commentText || "").length,
     anonymous: !!anonymous
   });
-
-  const teachingQuality = sanitizeRatingValue(draft.teachingQuality);
-  const examDifficulty = sanitizeRatingValue(draft.examDifficulty);
-  const studentTreatment = sanitizeRatingValue(draft.studentTreatment);
-  const hasCompleteMetrics =
-    validateRating(teachingQuality) &&
-    validateRating(examDifficulty) &&
-    validateRating(studentTreatment);
 
   if (comment.length > 500){
     notifyWarn("El comentario no puede superar los 500 caracteres.");
     return;
   }
 
-  if (!comment && !hasCompleteMetrics){
-    notifyWarn("Debes escribir un comentario o completar la puntuación.");
+  if (!comment){
+    notifyWarn("Debes escribir un comentario.");
     return;
   }
 
@@ -834,14 +820,13 @@ async function submitComment(){
     comment: commentText.trim(),
     anonymous: !!anonymous
   };
-  if (!comment) delete payload.comment;
-  if (hasCompleteMetrics){
-    Object.assign(payload, {
-      teachingQuality,
-      examDifficulty,
-      studentTreatment,
-      rating: Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2))
-    });
+  if (
+    Object.prototype.hasOwnProperty.call(payload, "rating") ||
+    Object.prototype.hasOwnProperty.call(payload, "teachingQuality") ||
+    Object.prototype.hasOwnProperty.call(payload, "examDifficulty") ||
+    Object.prototype.hasOwnProperty.call(payload, "studentTreatment")
+  ) {
+    console.warn("[prof][TEMP] submitComment payload incluye rating/métricas (no debería ocurrir)", payload);
   }
   console.log("[prof] submit payload FINAL", payload);
 
@@ -855,8 +840,11 @@ async function submitComment(){
     console.log("[prof] submit result DATA", res?.data);
 
     if (commentInput) commentInput.value = "";
+    const commentCount = document.getElementById("profCommentCount");
+    if (commentCount) commentCount.textContent = "0 / 500";
     draft.comment = "";
     draft.anonymous = false;
+    if (anonymousCheck) anonymousCheck.checked = false;
     closeCommentModal();
     notifySuccess("Comentario publicado.");
 

@@ -9,7 +9,7 @@ const MAX_COMMENT_LENGTH = 500;
 
 exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async (request) => {
   try {
-    console.log("### VERSION MARKER reviewCallable-optional-rating-2026-02-16 ###");
+    console.log("### VERSION MARKER reviewCallable-delta-rework-2026-02-17 ###");
     const data = request.data || {};
     console.log("[submitProfessorReviewCallable] raw data:", JSON.stringify(data));
 
@@ -18,13 +18,10 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const professorId = String(data.professorId || "").trim();
     if (!professorId) throw new HttpsError("invalid-argument", "Profesor inválido.");
 
-    const comment = typeof data.comment === "string" ? data.comment.trim() : "";
+    const commentProvided = typeof data.comment === "string";
+    const comment = commentProvided ? data.comment.trim() : "";
     const hasComment = comment.length > 0;
     if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
-
-    const parsedRating = Number(data.rating);
-    const hasRating = Number.isFinite(parsedRating);
-    const rating = hasRating ? parsedRating : null;
 
     const parsedTeachingQuality = Number(data.teachingQuality);
     const parsedExamDifficulty = Number(data.examDifficulty);
@@ -32,9 +29,20 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const tq = Number.isFinite(parsedTeachingQuality) ? parsedTeachingQuality : null;
     const ed = Number.isFinite(parsedExamDifficulty) ? parsedExamDifficulty : null;
     const st = Number.isFinite(parsedStudentTreatment) ? parsedStudentTreatment : null;
-    const hasMetrics = [tq, ed, st].some((v) => v !== null);
+
+    const metricsProvided = ["teachingQuality", "examDifficulty", "studentTreatment"]
+      .some((metricKey) => Object.prototype.hasOwnProperty.call(data, metricKey));
+    const hasMetrics = [tq, ed, st].every((v) => v !== null);
+
     console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
-    console.log("[submitProfessorReviewCallable] hasRating:", hasRating);
+    const hasLegacyRatingField = Number.isFinite(Number(data.rating));
+    if (hasLegacyRatingField) {
+      console.warn("[submitProfessorReviewCallable] payload incluye campo legacy rating. Se ignora para evitar ratings fantasma.", {
+        professorId,
+        uid: request.auth?.uid,
+        rating: data.rating
+      });
+    }
     console.log("[submitProfessorReviewCallable] metrics:", {
       teachingQuality: tq,
       examDifficulty: ed,
@@ -43,14 +51,17 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
     const inRange1to5 = (n) => Number.isFinite(n) && n >= 1 && n <= 5;
 
-    if (!hasComment && !hasRating && !hasMetrics) {
+    if (metricsProvided && !hasMetrics) {
+      throw new HttpsError("invalid-argument", "Debes completar las 3 métricas de la puntuación.");
+    }
+
+    if (!hasComment && !hasMetrics) {
       throw new HttpsError("invalid-argument", "Debes enviar un comentario o una puntuación.");
     }
 
     let teachingQuality = null;
     let examDifficulty = null;
     let studentTreatment = null;
-    let finalRating = null;
 
     if (hasMetrics) {
       teachingQuality = tq;
@@ -59,14 +70,9 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       if (![teachingQuality, examDifficulty, studentTreatment].every(inRange1to5)) {
         throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 1 y 5.");
       }
-      finalRating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
-    } else if (hasRating) {
-      if (!inRange1to5(rating)) {
-        throw new HttpsError("invalid-argument", "La valoración debe estar entre 1 y 5.");
-      }
-      finalRating = rating;
     }
 
+    const anonymousProvided = Object.prototype.hasOwnProperty.call(data, "anonymous");
     const anonymous = Boolean(data.anonymous);
     const authorName = anonymous
       ? ""
@@ -84,20 +90,13 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const existedBefore = prevReviewSnap.exists;
       const prev = prevReviewSnap.data() || {};
       const hadCommentBefore = Boolean(String(prev.comment || "").trim());
-      const hasCommentNow = hasComment;
-      const prevTeachingQuality = Number(prev.teachingQuality ?? prev.quality ?? prev.rating);
-      const prevExamDifficulty = Number(prev.examDifficulty ?? prev.difficulty ?? prev.rating);
-      const prevStudentTreatment = Number(prev.studentTreatment ?? prev.treatment ?? prev.rating);
+      const hasCommentNow = commentProvided ? hasComment : hadCommentBefore;
+      const prevTeachingQuality = Number(prev.teachingQuality);
+      const prevExamDifficulty = Number(prev.examDifficulty);
+      const prevStudentTreatment = Number(prev.studentTreatment);
       const hadRatingBefore = [prevTeachingQuality, prevExamDifficulty, prevStudentTreatment]
         .every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
-
-      console.log("[submitProfessorReviewCallable] transaction context", {
-        professorId,
-        uid,
-        existedBefore,
-        hadCommentBefore,
-        hasCommentNow
-      });
+      const hasRatingNow = metricsProvided ? hasMetrics : hadRatingBefore;
 
       const profData = profSnap.data() || {};
       const ratings = profData.ratings || {};
@@ -107,15 +106,14 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const sumDifficulty = Number(ratings.sumDifficulty || 0);
       const sumTreatment = Number(ratings.sumTreatment || 0);
       const previousCommentsCount = Number(profData.commentsCount || 0);
-      const wroteRating = finalRating !== null;
 
-      const ratingQualityNow = hasMetrics ? teachingQuality : finalRating;
-      const ratingDifficultyNow = hasMetrics ? examDifficulty : finalRating;
-      const ratingTreatmentNow = hasMetrics ? studentTreatment : finalRating;
+      const addNewRating = hasRatingNow && !hadRatingBefore;
+      const replaceExistingRating = hasRatingNow && hadRatingBefore && metricsProvided;
+      const removeExistingRating = !hasRatingNow && hadRatingBefore;
 
-      const addNewRating = wroteRating && !hadRatingBefore;
-      const replaceExistingRating = wroteRating && hadRatingBefore;
-      const removeExistingRating = !wroteRating && hadRatingBefore;
+      const effectiveQuality = hasRatingNow ? (metricsProvided ? teachingQuality : prevTeachingQuality) : null;
+      const effectiveDifficulty = hasRatingNow ? (metricsProvided ? examDifficulty : prevExamDifficulty) : null;
+      const effectiveTreatment = hasRatingNow ? (metricsProvided ? studentTreatment : prevStudentTreatment) : null;
 
       const nextCount = addNewRating
         ? totalReviews + 1
@@ -124,23 +122,23 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
           : totalReviews;
       const nextTotalReviewsAll = existedBefore ? totalReviewsAll : totalReviewsAll + 1;
       const nextSumQuality = addNewRating
-        ? sumQuality + ratingQualityNow
+        ? sumQuality + effectiveQuality
         : replaceExistingRating
-          ? sumQuality - prevTeachingQuality + ratingQualityNow
+          ? sumQuality - prevTeachingQuality + effectiveQuality
           : removeExistingRating
             ? sumQuality - prevTeachingQuality
             : sumQuality;
       const nextSumDifficulty = addNewRating
-        ? sumDifficulty + ratingDifficultyNow
+        ? sumDifficulty + effectiveDifficulty
         : replaceExistingRating
-          ? sumDifficulty - prevExamDifficulty + ratingDifficultyNow
+          ? sumDifficulty - prevExamDifficulty + effectiveDifficulty
           : removeExistingRating
             ? sumDifficulty - prevExamDifficulty
             : sumDifficulty;
       const nextSumTreatment = addNewRating
-        ? sumTreatment + ratingTreatmentNow
+        ? sumTreatment + effectiveTreatment
         : replaceExistingRating
-          ? sumTreatment - prevStudentTreatment + ratingTreatmentNow
+          ? sumTreatment - prevStudentTreatment + effectiveTreatment
           : removeExistingRating
             ? sumTreatment - prevStudentTreatment
             : sumTreatment;
@@ -149,27 +147,36 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const difficultyAvg = nextCount > 0 ? nextSumDifficulty / nextCount : 0;
       const treatmentAvg = nextCount > 0 ? nextSumTreatment / nextCount : 0;
       const average = nextCount > 0 ? (qualityAvg + difficultyAvg + treatmentAvg) / 3 : 0;
-      const nextComments = previousCommentsCount + (!hadCommentBefore && hasCommentNow ? 1 : 0);
+      const nextComments = previousCommentsCount
+        + (!hadCommentBefore && hasCommentNow ? 1 : 0)
+        - (hadCommentBefore && !hasCommentNow ? 1 : 0);
 
       const now = FieldValue.serverTimestamp();
       const reviewPayload = {
         professorId,
         userId: uid,
         authorUid: uid,
-        anonymous,
-        authorName,
-        createdAt: now,
         updatedAt: now
       };
-      if (hasComment) {
-        reviewPayload.comment = comment;
+      if (!existedBefore) {
+        reviewPayload.createdAt = now;
       }
-      if (wroteRating) {
-        Object.assign(reviewPayload, {
-          rating: finalRating
-        });
+      if (anonymousProvided || !existedBefore) {
+        reviewPayload.anonymous = anonymous;
+        reviewPayload.authorName = anonymous ? "" : authorName;
+      }
+      if (commentProvided) {
+        if (hasComment) {
+          reviewPayload.comment = comment;
+        } else {
+          reviewPayload.comment = FieldValue.delete();
+        }
+      }
+      if (metricsProvided) {
         if (hasMetrics) {
+          const finalRating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
           Object.assign(reviewPayload, {
+            rating: finalRating,
             teachingQuality,
             examDifficulty,
             studentTreatment,
@@ -177,47 +184,50 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
             difficulty: examDifficulty,
             treatment: studentTreatment
           });
+        } else {
+          Object.assign(reviewPayload, {
+            rating: FieldValue.delete(),
+            teachingQuality: FieldValue.delete(),
+            examDifficulty: FieldValue.delete(),
+            studentTreatment: FieldValue.delete(),
+            quality: FieldValue.delete(),
+            difficulty: FieldValue.delete(),
+            treatment: FieldValue.delete()
+          });
         }
       }
 
       tx.set(reviewRef, reviewPayload, { merge: true });
 
-      const professorUpdate = {
+      tx.set(professorRef, {
         commentsCount: Math.max(0, nextComments),
         totalReviews: nextTotalReviewsAll,
-        updatedAt: now
-      };
-
-      if (wroteRating) {
-        Object.assign(professorUpdate, {
-          ratings: {
-            average,
-            totalReviews: nextCount,
-            qualityAvg,
-            difficultyAvg,
-            treatmentAvg,
-            sumQuality: nextSumQuality,
-            sumDifficulty: nextSumDifficulty,
-            sumTreatment: nextSumTreatment
-          },
-          ratingCount: nextCount,
-          ratingAvg: average,
-          avgGeneral: average,
-          avgTeaching: qualityAvg,
-          avgExams: difficultyAvg,
-          avgTreatment: treatmentAvg,
-          averageRating: average
-        });
-      }
-
-      tx.set(professorRef, professorUpdate, { merge: true });
+        updatedAt: now,
+        ratings: {
+          average,
+          totalReviews: nextCount,
+          qualityAvg,
+          difficultyAvg,
+          treatmentAvg,
+          sumQuality: nextSumQuality,
+          sumDifficulty: nextSumDifficulty,
+          sumTreatment: nextSumTreatment
+        },
+        ratingCount: nextCount,
+        ratingAvg: average,
+        avgGeneral: average,
+        avgTeaching: qualityAvg,
+        avgExams: difficultyAvg,
+        avgTreatment: treatmentAvg,
+        averageRating: average
+      }, { merge: true });
     });
 
     return {
       ok: true,
-      version: "reviewCallable-optional-rating-2026-02-16",
+      version: "reviewCallable-delta-rework-2026-02-17",
       wroteComment: hasComment,
-      wroteRating: finalRating !== null
+      wroteRating: hasMetrics
     };
   } catch (err) {
     console.error("submitProfessorReviewCallable error", err);
@@ -225,7 +235,6 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     throw new HttpsError("internal", "No se pudo guardar la valoración.", { message: err?.message || String(err) });
   }
 });
-
 
 const sanitizeSubjectIds = (value, fieldName) => {
   if (!Array.isArray(value)) {
