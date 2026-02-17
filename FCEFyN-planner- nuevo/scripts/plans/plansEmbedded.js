@@ -80,6 +80,7 @@ export async function mountPlansEmbedded({
   db,
   plannerRef,
   initialPlanSlug,
+    getCareerName,
   embedKey = "correlativas"
 }) {
   if (!(containerEl instanceof HTMLElement)) {
@@ -98,7 +99,9 @@ export async function mountPlansEmbedded({
     storageKey: "",
     cloudBlocked: false,
     plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null),
-    plannerUnsubscribe: null
+    plannerUnsubscribe: null,
+    getCareerName: typeof getCareerName === "function" ? getCareerName : () => "",
+    careerName: ""
   };
 
   containerEl.classList.add("plans-embedded-root");
@@ -110,29 +113,16 @@ export async function mountPlansEmbedded({
   shell.innerHTML = `
     <div class="msg" data-role="msg" hidden></div>
     <main class="grid-wrap" data-role="grid"></main>
-    <div class="status-modal" data-role="status-modal" hidden aria-hidden="true">
-      <div class="status-modal-overlay" data-status-modal-close="1"></div>
-      <div class="status-modal-content" role="dialog" aria-modal="true" aria-label="Cambiar estado">
-        <div class="status-modal-header">
-          <div>
-            <h3>Cambiar estado</h3>
-            <p data-role="status-subject">Seleccioná una materia</p>
-          </div>
-          <button class="btn status-modal-close" type="button" data-status-modal-close="1" aria-label="Cerrar">×</button>
-        </div>
-        <div class="status-modal-actions" data-role="status-actions">
-          <button class="btn status-option" type="button" data-status-value="promocionada">Promocionada</button>
-          <button class="btn status-option" type="button" data-status-value="regular">Regular</button>
-          <button class="btn status-option" type="button" data-status-value="libre">Libre</button>
-          <button class="btn status-option" type="button" data-status-value="en_curso">En curso</button>
-          <button class="btn status-option status-option-remove" type="button" data-status-value="ninguno">Quitar estado</button>
-        </div>
-        <div class="small-muted" data-role="gate-msg" hidden></div>
-        <div class="status-gate" data-role="gate-modal" hidden>
-          <strong>No podés aprobar esta materia todavía.</strong>
-          <div>Te faltan estas correlativas:</div>
-          <ul data-role="gate-missing-list"></ul>
-          <button class="btn" type="button" data-role="gate-go-correlativas">Ir a correlativas</button>
+    <div class="status-pill-modal" data-role="status-modal" hidden aria-hidden="true">
+      <div class="status-pill-overlay" data-status-modal-close="1"></div>
+      <div class="status-pill-content" role="dialog" aria-modal="true" aria-label="Cambiar estado">
+        <p class="status-pill-subject" data-role="status-subject">Seleccioná una materia</p>
+        <div class="status-pill-actions" data-role="status-actions">
+          <button class="status-pill-option status-pill-pro" type="button" data-status-value="promocionada">PRO</button>
+          <button class="status-pill-option status-pill-reg" type="button" data-status-value="regular">REG</button>
+          <button class="status-pill-option status-pill-lib" type="button" data-status-value="libre">LIB</button>
+          <button class="status-pill-option status-pill-cur" type="button" data-status-value="en_curso">CUR</button>
+          <button class="status-pill-option status-pill-none" type="button" data-status-value="ninguno">NINGUNO</button>
         </div>
       </div>
     </div>
@@ -142,13 +132,11 @@ export async function mountPlansEmbedded({
   const msgEl = shell.querySelector('[data-role="msg"]');
   const gridEl = shell.querySelector('[data-role="grid"]');
   const modalEl = shell.querySelector('[data-role="status-modal"]');
-  const modalContentEl = modalEl?.querySelector(".status-modal-content");
+ const modalContentEl = modalEl?.querySelector(".status-pill-content");
   const modalSubjectEl = shell.querySelector('[data-role="status-subject"]');
   const modalActionsEl = shell.querySelector('[data-role="status-actions"]');
   const modalGateMsgEl = shell.querySelector('[data-role="gate-msg"]');
-  const modalGateEl = shell.querySelector('[data-role="gate-modal"]');
-  const modalGateMissingListEl = shell.querySelector('[data-role="gate-missing-list"]');
-
+  
   function showSectionMsg(text) {
     if (!msgEl) return;
     msgEl.hidden = false;
@@ -179,34 +167,7 @@ export async function mountPlansEmbedded({
     const missing = reqs.filter((req) => plannerStates?.[req]?.approved !== true);
     return { ok: missing.length === 0, missing, reqs };
   }
-
-  function renderModalGate(subjectKey, missing) {
-    if (!modalGateEl || !modalGateMissingListEl || !modalGateMsgEl) return;
-    if (!missing.length) {
-      modalGateEl.hidden = true;
-      modalGateMsgEl.hidden = true;
-      modalGateMsgEl.textContent = "";
-      modalGateMissingListEl.innerHTML = "";
-      return;
-    }
-
-    const prettyMissing = missing.map((entry) => getSubjectName(entry)).join(", ");
-    modalGateMsgEl.hidden = false;
-    modalGateMsgEl.textContent = `Requiere: ${prettyMissing}`;
-    modalGateEl.hidden = false;
-    modalGateMissingListEl.innerHTML = "";
-    missing.forEach((entry) => {
-      const li = document.createElement("li");
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "btn";
-      btn.textContent = getSubjectName(entry);
-      btn.dataset.jumpSubject = entry;
-      li.appendChild(btn);
-      modalGateMissingListEl.appendChild(li);
-    });
-  }
-
+}
   function updateStatusButtonsGate(subjectKey) {
     const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
     const options = modalActionsEl?.querySelectorAll(".status-option") || [];
@@ -217,7 +178,27 @@ export async function mountPlansEmbedded({
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
-    renderModalGate(subjectKey, gate.missing);
+   }
+
+  function renderTitleCareer() {
+    const titleEl = document.getElementById("careerName");
+    if (!titleEl) return;
+    const resolved = String(state.getCareerName?.() || "").trim();
+    state.careerName = resolved || "Tu carrera";
+    titleEl.textContent = state.careerName;
+  }
+
+  function renderLockIcon() {
+    const wrapper = document.createElement("span");
+    wrapper.className = "lock-icon";
+    wrapper.setAttribute("aria-hidden", "true");
+    wrapper.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 10V8a5 5 0 1 1 10 0v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    `;
+    return wrapper;
   }
 
   function buildGrid() {
@@ -322,11 +303,9 @@ export async function mountPlansEmbedded({
       if (status) item.classList.add(status);
       if (gate.blocked) {
         item.classList.add("locked");
+        item.disabled = true;
         const missingNames = gate.missing.map((entry) => getSubjectName(entry));
-        const lockHint = document.createElement("span");
-        lockHint.className = "small-muted";
-        lockHint.textContent = ` 🔒 Bloqueada`;
-        item.appendChild(lockHint);
+        item.appendChild(renderLockIcon());
         if (missingNames.length) item.title = `Requiere: ${missingNames.join(", ")}`;
       }
       if (isApproved(status)) item.classList.add("subject-approved");
@@ -395,20 +374,18 @@ export async function mountPlansEmbedded({
     modalContentEl.style.transform = "none";
   }
 
-  function openStatusModal(anchorEl, subjectId, subjectName) {
-    state.selectedSubjectId = subjectId;
+function openStatusPillModal(anchorEl, subjectId, subjectName) {    state.selectedSubjectId = subjectId;
     state.selectedAnchorEl = anchorEl;
     state.previousFocus = document.activeElement;
-    if (modalSubjectEl) modalSubjectEl.textContent = `Materia: ${subjectName || "Materia"}`;
-    updateStatusButtonsGate(subjectId);
+if (modalSubjectEl) modalSubjectEl.textContent = subjectName || "Materia";    updateStatusButtonsGate(subjectId);
     modalEl.hidden = false;
     modalEl.setAttribute("aria-hidden", "false");
     window.requestAnimationFrame(positionModal);
-    const firstAction = modalActionsEl?.querySelector(".status-option");
+    const firstAction = modalActionsEl?.querySelector(".status-pill-option");
     firstAction?.focus?.();
   }
 
-  function closeStatusModal() {
+  function closeStatusPillModal() {
     if (!modalEl) return;
     if (modalEl.contains(document.activeElement)) state.previousFocus?.focus?.();
     modalEl.hidden = true;
@@ -478,7 +455,6 @@ export async function mountPlansEmbedded({
         console.warn("[gate] BLOQUEADO aprobar", slug, "missing:", gate.missing);
         const prettyMissing = gate.missing.map((entry) => getSubjectName(entry)).join(", ");
         showSectionMsg(`No podés aprobar esta materia. Te faltan: ${prettyMissing}`);
-        renderModalGate(slug, gate.missing);
         await persistGateDebug(slug, gate.missing);
         updateStatusButtonsGate(slug);
         return;
@@ -498,7 +474,7 @@ export async function mountPlansEmbedded({
       persistLocal();
       dispatchSubjectStatesChanged();
     }
-    closeStatusModal();
+    closeStatusPillModal();
     updateUI();
   }
 
@@ -600,6 +576,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadIndex() {
+    renderTitleCareer();
     await loadPlan(state.planSlug);
     state.storageKey = `estadosMaterias_v2_${embedKey}_${state.planSlug}`;
     await loadStates();
@@ -620,30 +597,10 @@ export async function mountPlansEmbedded({
 
     const subjectEl = target.closest(".subject");
     if (!subjectEl || !containerEl.contains(subjectEl)) return;
+      if (subjectEl.classList.contains("locked")) return;
 
-    const subjectId = String(subjectEl.dataset.subjectSlug || "");
-    openStatusModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
-  });
-
-  modalGateMissingListEl?.addEventListener("click", (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const jumpBtn = target.closest("[data-jump-subject]");
-    if (!jumpBtn) return;
-    const subjectSlug = jumpBtn.dataset.jumpSubject || "";
-    if (!subjectSlug) return;
-    const targetSubject = gridEl.querySelector(`.subject[data-subject-slug="${subjectSlug}"]`);
-    if (targetSubject instanceof HTMLElement) {
-      targetSubject.scrollIntoView({ behavior: "smooth", block: "center" });
-      window.setTimeout(() => targetSubject.focus(), 150);
-    }
-  });
-
-  shell.querySelector('[data-role="gate-go-correlativas"]')?.addEventListener("click", () => {
-    closeStatusModal();
-    gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
+ const subjectId = String(subjectEl.dataset.subjectSlug || "");
+    openStatusPillModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
   modalActionsEl?.addEventListener("click", async (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
@@ -655,8 +612,7 @@ export async function mountPlansEmbedded({
   modalEl?.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest("[data-status-modal-close]")) closeStatusModal();
-  });
+    if (target.closest("[data-status-modal-close]")) closeStatusPillModal();  });
 
   containerEl.addEventListener("scroll", () => {
     if (!modalEl?.hidden) positionModal();
@@ -667,7 +623,7 @@ export async function mountPlansEmbedded({
   });
 
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && modalEl && !modalEl.hidden) closeStatusModal();
+  if (event.key === "Escape" && modalEl && !modalEl.hidden) closeStatusPillModal();    
   });
 
   await loadIndex();
@@ -677,6 +633,9 @@ export async function mountPlansEmbedded({
       state.planSlug = resolvePlanSlug(nextSlug || state.planSlug || "");
       containerEl.dataset.planSlug = state.planSlug;
       return loadIndex();
+    },
+    refreshCareerName() {
+      renderTitleCareer();
     }
   };
-}
+})
