@@ -1,5 +1,6 @@
 import { doc, onSnapshot, setDoc, serverTimestamp, updateDoc, deleteField } from "../core/firebase.js";
 import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
+import { getPrereqsForSubject, normalizeSubjectKey } from "../core/prereqs.js";
 
 const SEMESTER_LABELS = [
   "Ingreso",
@@ -16,19 +17,21 @@ const SEMESTER_LABELS = [
 ];
 
 const STATUS_VALUES = ["promocionada", "regular", "libre", "en_curso"];
+const APPROVED_STATUSES = ["promocionada", "regular", "aprobada"];
 
 function normalizeStatus(value) {
   const raw = normalizeStr(value);
   if (!raw) return null;
   if (raw === "promocion" || raw === "promocionada") return "promocionada";
   if (raw === "regular") return "regular";
+  if (raw === "aprobada" || raw === "aprobado") return "aprobada";
   if (raw === "libre") return "libre";
   if (raw === "en_curso" || raw === "encurso" || raw === "curso") return "en_curso";
   return null;
 }
 
 function isApproved(status) {
-  return status === "promocionada" || status === "regular";
+  return APPROVED_STATUSES.includes(status);
 }
 
 function normalizeRemoteSubjectStates(remoteStates) {
@@ -87,6 +90,7 @@ export async function mountPlansEmbedded({
     planSlug: resolvePlanSlug(initialPlanSlug || careerSlug || ""),
     planName: "",
     materias: [],
+    planData: null,
     subjectStates: {},
     selectedSubjectId: "",
     selectedAnchorEl: null,
@@ -123,6 +127,13 @@ export async function mountPlansEmbedded({
           <button class="btn status-option" type="button" data-status-value="en_curso">En curso</button>
           <button class="btn status-option status-option-remove" type="button" data-status-value="ninguno">Quitar estado</button>
         </div>
+        <div class="small-muted" data-role="gate-msg" hidden></div>
+        <div class="status-gate" data-role="gate-modal" hidden>
+          <strong>No podés aprobar esta materia todavía.</strong>
+          <div>Te faltan estas correlativas:</div>
+          <ul data-role="gate-missing-list"></ul>
+          <button class="btn" type="button" data-role="gate-go-correlativas">Ir a correlativas</button>
+        </div>
       </div>
     </div>
   `;
@@ -134,6 +145,9 @@ export async function mountPlansEmbedded({
   const modalContentEl = modalEl?.querySelector(".status-modal-content");
   const modalSubjectEl = shell.querySelector('[data-role="status-subject"]');
   const modalActionsEl = shell.querySelector('[data-role="status-actions"]');
+  const modalGateMsgEl = shell.querySelector('[data-role="gate-msg"]');
+  const modalGateEl = shell.querySelector('[data-role="gate-modal"]');
+  const modalGateMissingListEl = shell.querySelector('[data-role="gate-missing-list"]');
 
   function showSectionMsg(text) {
     if (!msgEl) return;
@@ -151,6 +165,59 @@ export async function mountPlansEmbedded({
     window.dispatchEvent(new CustomEvent("plannerSubjectStatesChanged", {
       detail: { subjectStates: state.subjectStates }
     }));
+  }
+
+  function getSubjectName(subjectKey) {
+    const normalized = normalizeSubjectKey(subjectKey);
+    const subject = state.materias.find((item) => normalizeSubjectKey(item.subjectSlug) === normalized);
+    return subject?.name || subjectKey;
+  }
+
+  function canApproveSubject(subjectKey, plannerStates, planData) {
+    const normalized = normalizeSubjectKey(subjectKey);
+    const reqs = getPrereqsForSubject(normalized, planData);
+    const missing = reqs.filter((req) => plannerStates?.[req]?.approved !== true);
+    return { ok: missing.length === 0, missing, reqs };
+  }
+
+  function renderModalGate(subjectKey, missing) {
+    if (!modalGateEl || !modalGateMissingListEl || !modalGateMsgEl) return;
+    if (!missing.length) {
+      modalGateEl.hidden = true;
+      modalGateMsgEl.hidden = true;
+      modalGateMsgEl.textContent = "";
+      modalGateMissingListEl.innerHTML = "";
+      return;
+    }
+
+    const prettyMissing = missing.map((entry) => getSubjectName(entry)).join(", ");
+    modalGateMsgEl.hidden = false;
+    modalGateMsgEl.textContent = `Requiere: ${prettyMissing}`;
+    modalGateEl.hidden = false;
+    modalGateMissingListEl.innerHTML = "";
+    missing.forEach((entry) => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn";
+      btn.textContent = getSubjectName(entry);
+      btn.dataset.jumpSubject = entry;
+      li.appendChild(btn);
+      modalGateMissingListEl.appendChild(li);
+    });
+  }
+
+  function updateStatusButtonsGate(subjectKey) {
+    const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
+    const options = modalActionsEl?.querySelectorAll(".status-option") || [];
+    options.forEach((buttonEl) => {
+      const value = normalizeStatus(buttonEl.dataset.statusValue || "");
+      const isApprovalOption = !!value && APPROVED_STATUSES.includes(value);
+      buttonEl.disabled = isApprovalOption && !gate.ok;
+      if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
+      else buttonEl.removeAttribute("title");
+    });
+    renderModalGate(subjectKey, gate.missing);
   }
 
   function buildGrid() {
@@ -214,25 +281,23 @@ export async function mountPlansEmbedded({
   }
 
   function computeBlocked(subject, estados) {
-    const currentStatus = estados[subject.subjectSlug] || null;
-    if (currentStatus) return false;
-
-    const blockedByReqs = (subject.requires || []).some((req) => !isApproved(estados[req]));
-    if (blockedByReqs) return true;
+    const gate = canApproveSubject(subject.subjectSlug, state.subjectStates, state.planData || { materias: state.materias });
+    const blockedByReqs = !gate.ok;
+    if (blockedByReqs) return { blocked: true, missing: gate.missing, reqs: gate.reqs };
 
     if (subject.requiresApprovedCount > 0) {
       const approvedCount = Object.values(estados).filter(isApproved).length;
-      if (approvedCount < subject.requiresApprovedCount) return true;
+      if (approvedCount < subject.requiresApprovedCount) return { blocked: true, missing: [], reqs: gate.reqs };
     }
 
     if (subject.requiresProgressPercent > 0) {
       const approvedCount = Object.values(estados).filter(isApproved).length;
       const total = state.materias.length || 1;
       const progress = (approvedCount / total) * 100;
-      if (progress < subject.requiresProgressPercent) return true;
+      if (progress < subject.requiresProgressPercent) return { blocked: true, missing: [], reqs: gate.reqs };
     }
 
-    return false;
+    return { blocked: false, missing: gate.missing, reqs: gate.reqs };
   }
 
   function renderSubjects() {
@@ -252,8 +317,18 @@ export async function mountPlansEmbedded({
       item.dataset.subjectName = subject.name;
 
       const status = estados[subject.subjectSlug] || null;
+      const gate = computeBlocked(subject, estados);
+      console.log("[gate] subject:", subject.subjectSlug, "reqs:", gate.reqs, "missing:", gate.missing);
       if (status) item.classList.add(status);
-      if (computeBlocked(subject, estados)) item.classList.add("locked");
+      if (gate.blocked) {
+        item.classList.add("locked");
+        const missingNames = gate.missing.map((entry) => getSubjectName(entry));
+        const lockHint = document.createElement("span");
+        lockHint.className = "small-muted";
+        lockHint.textContent = ` 🔒 Bloqueada`;
+        item.appendChild(lockHint);
+        if (missingNames.length) item.title = `Requiere: ${missingNames.join(", ")}`;
+      }
       if (isApproved(status)) item.classList.add("subject-approved");
 
       listEl.appendChild(item);
@@ -280,7 +355,7 @@ export async function mountPlansEmbedded({
       if (el) el.textContent = String(byStatus[status] || 0);
     });
 
-    const approvedCount = byStatus.promocionada + byStatus.regular;
+    const approvedCount = Object.values(state.subjectStates || {}).filter((entry) => entry?.approved === true).length;
     const progress = total > 0 ? (approvedCount / total) * 100 : 0;
     const fillEl = gridEl.querySelector('[data-role="progress-fill"]');
     const capLeftEl = gridEl.querySelector('[data-role="caption-left"]');
@@ -325,6 +400,7 @@ export async function mountPlansEmbedded({
     state.selectedAnchorEl = anchorEl;
     state.previousFocus = document.activeElement;
     if (modalSubjectEl) modalSubjectEl.textContent = `Materia: ${subjectName || "Materia"}`;
+    updateStatusButtonsGate(subjectId);
     modalEl.hidden = false;
     modalEl.setAttribute("aria-hidden", "false");
     window.requestAnimationFrame(positionModal);
@@ -375,11 +451,39 @@ export async function mountPlansEmbedded({
     }
   }
 
+  async function persistGateDebug(subjectKey, missing) {
+    if (!state.plannerRef || !subjectKey || !missing?.length) return;
+    try {
+      await setDoc(state.plannerRef, {
+        gateDebug: {
+          [subjectKey]: {
+            missing,
+            updatedAt: serverTimestamp()
+          }
+        }
+      }, { merge: true });
+    } catch (error) {
+      console.warn("[gate] no se pudo persistir gateDebug", { subjectKey, missing, error });
+    }
+  }
+
   async function applyStatus(statusValue) {
     const slug = String(state.selectedSubjectId || "").trim();
     if (!slug) return;
     const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
+    if (normalized && APPROVED_STATUSES.includes(normalized)) {
+      const gate = canApproveSubject(slug, state.subjectStates, state.planData || { materias: state.materias });
+      if (!gate.ok) {
+        console.warn("[gate] BLOQUEADO aprobar", slug, "missing:", gate.missing);
+        const prettyMissing = gate.missing.map((entry) => getSubjectName(entry)).join(", ");
+        showSectionMsg(`No podés aprobar esta materia. Te faltan: ${prettyMissing}`);
+        renderModalGate(slug, gate.missing);
+        await persistGateDebug(slug, gate.missing);
+        updateStatusButtonsGate(slug);
+        return;
+      }
+    }
     const current = { ...previous };
     if (normalized) current[slug] = normalized;
     else delete current[slug];
@@ -430,6 +534,7 @@ export async function mountPlansEmbedded({
     const resolved = resolvePlanSlug(slug || "");
     if (!resolved) {
       state.materias = [];
+      state.planData = { materias: [] };
       updateUI();
       return;
     }
@@ -438,6 +543,7 @@ export async function mountPlansEmbedded({
       const result = await getPlanWithSubjects(resolved);
       state.planName = result?.plan?.nombre || resolved;
       state.materias = normalizeSubjects(result?.subjects || []);
+      state.planData = result?.raw || { materias: result?.subjects || [] };
       if (!state.materias.length) throw new Error("empty-plan");
       hideSectionMsg();
       return;
@@ -453,10 +559,12 @@ export async function mountPlansEmbedded({
         const planData = await planResponse.json();
         state.planName = planData?.nombre || resolved;
         state.materias = normalizeSubjects(planData?.materias || []);
+        state.planData = planData || { materias: [] };
         hideSectionMsg();
       } catch {
         showSectionMsg("No se pudo cargar el plan de correlativas.");
         state.materias = [];
+        state.planData = { materias: [] };
       }
     }
   }
@@ -514,9 +622,26 @@ export async function mountPlansEmbedded({
     if (!subjectEl || !containerEl.contains(subjectEl)) return;
 
     const subjectId = String(subjectEl.dataset.subjectSlug || "");
-    const current = getEstadoSimpleMap();
-    if (subjectEl.classList.contains("locked") && !current[subjectId]) return;
     openStatusModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
+  });
+
+  modalGateMissingListEl?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const jumpBtn = target.closest("[data-jump-subject]");
+    if (!jumpBtn) return;
+    const subjectSlug = jumpBtn.dataset.jumpSubject || "";
+    if (!subjectSlug) return;
+    const targetSubject = gridEl.querySelector(`.subject[data-subject-slug="${subjectSlug}"]`);
+    if (targetSubject instanceof HTMLElement) {
+      targetSubject.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(() => targetSubject.focus(), 150);
+    }
+  });
+
+  shell.querySelector('[data-role="gate-go-correlativas"]')?.addEventListener("click", () => {
+    closeStatusModal();
+    gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   modalActionsEl?.addEventListener("click", async (event) => {
