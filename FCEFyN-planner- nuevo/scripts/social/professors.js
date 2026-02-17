@@ -651,6 +651,22 @@ function closeCommentModal(){
   document.getElementById("profCommentModal")?.classList.add("hidden");
 }
 
+function resetCommentForm(professorId){
+  const draft = professorId ? ensureReviewDraft(professorId) : null;
+  const commentInput = document.getElementById("profCommentInput");
+  const commentCount = document.getElementById("profCommentCount");
+  const anonymousCheck = document.getElementById("profCommentAnonymous");
+
+  if (commentInput) commentInput.value = "";
+  if (commentCount) commentCount.textContent = "0 / 500";
+  if (anonymousCheck) anonymousCheck.checked = false;
+
+  if (draft){
+    draft.comment = "";
+    draft.anonymous = false;
+  }
+}
+
 function openAdvancedFiltersModal(){
   const modal = document.getElementById("profAdvancedFiltersModal");
   if (!modal) return;
@@ -723,11 +739,12 @@ async function submitRating(){
   try{
     const functions = getFunctions(app, "us-central1");
     const submitProfessorRatingCallable = httpsCallable(functions, "submitProfessorRatingCallable");
-    console.log("[prof] submit payload FINAL", payload);
+    console.log("[prof] submit rating callable -> payload", payload);
     const res = await submitProfessorRatingCallable(payload);
-    console.log("[prof] submit result", res?.data);
+    console.log("[prof] submit rating callable <- res.data", res?.data);
 
     await refreshSelectedProfessorStats(professorId);
+    await loadProfessorReviews(professorId);
     await loadDirectoryPage();
     renderDirectory();
     renderProfessorDetail();
@@ -798,21 +815,19 @@ async function submitComment(){
   try{
     const functions = getFunctions(app, "us-central1");
     const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
+    console.log("[prof] submit comment callable -> payload", payload);
     const res = await submitProfessorCommentCallable(payload);
-    console.log("[prof] submit result DATA", res?.data);
+    console.log("[prof] submit comment callable <- res.data", res?.data);
 
-    if (commentInput) commentInput.value = "";
-    const commentCount = document.getElementById("profCommentCount");
-    if (commentCount) commentCount.textContent = "0 / 500";
-    draft.comment = "";
-    draft.anonymous = false;
-    if (anonymousCheck) anonymousCheck.checked = false;
+    resetCommentForm(professorId);
     closeCommentModal();
     notifySuccess("Comentario publicado.");
 
     try{
       await refreshSelectedProfessorStats(professorId);
       await loadProfessorReviews(professorId);
+      await loadDirectoryPage();
+      renderDirectory();
       renderProfessorDetail();
     }catch(error){
       console.warn("Comentario guardado pero falló el refresh UI:", error);
