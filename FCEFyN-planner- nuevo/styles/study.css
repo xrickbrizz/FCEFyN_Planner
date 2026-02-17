@@ -2845,8 +2845,7 @@ body[data-theme="light"] .event{
   letter-spacing: .05rem;
 }
 .friend-requests-modal .request-card{
-  display:flex;
-  justify-content:space-between;
+  display:block;
   align-items:center;
   gap:.7rem;
   border:1px solid var(--border-18);
@@ -4470,7 +4469,7 @@ body[data-theme="light"] .planner-modal{
 }
 
 .correlativas-plans .plans-embedded-root .grid-wrap{ width:100%; max-width:100rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
-.correlativas-plans .plans-embedded-root .cell{ background:var(--glass-faint); border-radius:.875rem; padding:.9rem; min-height:20rem; border:1px solid var(--cor-plan-border); display:flex; flex-direction:column; }
+.correlativas-plans .plans-embedded-root .cell{ background:var(--glass-faint); border-radius:.875rem; padding:.9rem; border:1px solid var(--cor-plan-border); display:flex; flex-direction:column; }
 .correlativas-plans .plans-embedded-root .cell h2{ margin:0 0 .6rem; color:var(--color-accent); font-size:1rem; text-align:center; padding-bottom:.35rem; border-bottom:2px solid var(--accent-18); }
 .correlativas-plans .plans-embedded-root .subjects{ display:flex; flex-direction:column; gap:.35rem; margin-top:.45rem; overflow:visible; padding-right:0; }
 .correlativas-plans .plans-embedded-root .subject{ background:var(--cor-plan-card); padding:.55rem; border-radius:.625rem; font-weight:700; font-size:.92rem; text-align:center; cursor:pointer; transition:transform .12s, background .18s, border-color .12s; color:var(--color-text); border:1px solid transparent; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -4517,7 +4516,8 @@ body[data-theme="light"] .planner-modal{
 }
 
 .stats-v1{
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
+ display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
 }

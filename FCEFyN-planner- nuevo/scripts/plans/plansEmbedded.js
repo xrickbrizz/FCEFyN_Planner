@@ -160,7 +160,7 @@ export async function mountPlansEmbedded({
     statsCell.className = "cell";
     statsCell.innerHTML = `
       <h2>Panel de estadísticas</h2>
-      <div class="stats stats-v1">
+      <div class=" stats-v1">
         <div class="stats-grid">
           <div class="stat-card"><strong data-stat="promocionada">0</strong><div class="stat-label">Promocionadas</div></div>
           <div class="stat-card"><strong data-stat="regular">0</strong><div class="stat-label">Regulares</div></div>
@@ -178,7 +178,6 @@ export async function mountPlansEmbedded({
           </div>
           <div class="plans-embedded-reset-wrap">
             <button class="btn" type="button" data-role="reset-states">Resetear estados</button>
-            <div class="small-muted">Cambios guardados automáticamente</div>
           </div>
           <div class="small-muted" data-role="cloud-warning" hidden>Guardado local: sincronización bloqueada.</div>
         </div>

@@ -54,7 +54,7 @@ footer{
   filter: brightness(1.1);
 }
 .brand-txt{ display:flex; flex-direction:column; gap:.12rem; min-width:0; }
-.brand-title{ font-family:var(--font-display); font-weight:800; letter-spacing:.3px; font-size:1.12rem; }
+.brand-title{ font-family:var(--font-display); font-weight:700; letter-spacing:.3px; font-size:1.3rem; }
 .brand-sub{ color:var(--color-muted-2); font-size:.86rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 .hdr-right{
