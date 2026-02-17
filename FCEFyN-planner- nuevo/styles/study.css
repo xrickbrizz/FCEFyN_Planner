@@ -4200,6 +4200,12 @@ body[data-theme="light"] .planner-modal{
   color:var(--color-muted-2); font-size:.82rem; text-align:center;
 }
 .subjects-modern-footer{ margin-top:.8rem; display:flex; justify-content:space-between; gap:.6rem; }
+.subjects-autosave-label{
+  align-self:center;
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--color-muted-2);
+}
 @media (max-width: 980px){
   .subjects-modern-layout{ grid-template-columns:1fr; }
 }

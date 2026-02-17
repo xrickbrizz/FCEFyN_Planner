@@ -12,7 +12,6 @@ let subjectCatalogSearch = document.getElementById("subjectCatalogSearch");
 let subjectCatalogList = document.getElementById("subjectCatalogList");
 let subjectPlanHint = document.getElementById("subjectPlanHint");
 let subjectCareerNotice = document.getElementById("subjectCareerNotice");
-let btnSubjectSave = document.getElementById("btnSubjectSave");
 let btnSubjectReset = document.getElementById("btnSubjectReset");
 let subjectsActiveCount = document.getElementById("subjectsActiveCount");
 let subjectColorInput = document.getElementById("subjectColor");
@@ -30,6 +29,8 @@ let didBindPlannerSubjectStatesChanged = false;
 const semesterExpandedState = new Map();
 let SUBJECT_KEY_ALIASES = null;
 const missingStateLogged = new Set();
+let autosaveTimer = null;
+let lastAutosaveToken = 0;
 
 const PALETTE_COLORS = ["#E6D98C", "#F2A65A", "#EF6F6C", "#E377C2", "#8A7FF0", "#4C7DFF", "#2EC4B6", "#34C759", "#A0AEC0"];
 const SUBJECTS_FALLBACK_STORAGE_KEY = "planner:subjects:fallback";
@@ -147,7 +148,6 @@ function resolveSubjectsUI(){
   subjectCatalogList = document.getElementById("subjectCatalogList");
   subjectPlanHint = document.getElementById("subjectPlanHint");
   subjectCareerNotice = document.getElementById("subjectCareerNotice");
-  btnSubjectSave = document.getElementById("btnSubjectSave");
   btnSubjectReset = document.getElementById("btnSubjectReset");
   subjectsActiveCount = document.getElementById("subjectsActiveCount");
   subjectColorInput = document.getElementById("subjectColor");
@@ -560,12 +560,17 @@ function addSubjectToUser(item){
       return;
     }
     const exists = stagedSubjects.some((subject) => normalizeStr(subject.name) === normalizeStr(item.name));
-    if (exists) return;
-    stagedSubjects.push({
+    if (exists) {
+      CTX?.notifyWarn?.("La materia ya está en Mis Materias.");
+      return;
+    }
+    const pickedColor = PALETTE_COLORS[Math.floor(Math.random() * PALETTE_COLORS.length)] || defaultSubjectColor();
+    const subjectToAdd = {
       name: item.name,
-      color: defaultSubjectColor(),
+      color: pickedColor,
       slug: item.slug || item.key || normalizeStr(item.name)
-    });
+    };
+    stagedSubjects.push(subjectToAdd);
     hasLocalChanges = true;
     try{
       syncSubjectsStateFromStaged();
@@ -573,6 +578,15 @@ function addSubjectToUser(item){
       console.error("[materias] Error al despachar cambio de plan:", dispatchError);
     }
     renderSubjectsList();
+    scheduleAutoSave({
+      successMessage: "Materia agregada (guardado automático).",
+      errorMessage: "No se pudo guardar la materia agregada.",
+      onError: () => {
+        stagedSubjects = stagedSubjects.filter((subject) => normalizeStr(subject.name) !== normalizeStr(subjectToAdd.name));
+        syncSubjectsStateFromStaged();
+        renderSubjectsList();
+      }
+    });
   }catch (err){
     console.error("[materias] Error al agregar materia:", err);
   }
@@ -587,6 +601,10 @@ async function removeSubjectFromUser(subjectToRemove){
   if (subjectSlug && plannerState?.[subjectSlug]) delete plannerState[subjectSlug];
   syncSubjectsStateFromStaged();
   renderSubjectsList();
+  scheduleAutoSave({
+    successMessage: "Materia eliminada (guardado automático).",
+    errorMessage: "No se pudo guardar la eliminación de la materia."
+  });
 
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser?.uid || !subjectSlug) return;
@@ -619,6 +637,35 @@ function handleColorChange(subjectName, color){
   hasLocalChanges = true;
   syncSubjectsStateFromStaged();
   renderUserSubjects();
+  scheduleAutoSave({
+    successMessage: "Color actualizado (guardado automático).",
+    errorMessage: "No se pudo guardar el color de la materia."
+  });
+}
+
+function scheduleAutoSave({
+  successMessage = "Cambios guardados automáticamente.",
+  errorMessage = "No se pudo guardar.",
+  onError = null,
+  delayMs = 300
+} = {}){
+  if (autosaveTimer) clearTimeout(autosaveTimer);
+  const token = ++lastAutosaveToken;
+  autosaveTimer = setTimeout(async () => {
+    autosaveTimer = null;
+    if (token !== lastAutosaveToken) return;
+    const snapshot = stagedSubjects.map((subject) => ({ ...subject }));
+    try{
+      await persistSubjects(snapshot);
+      hasLocalChanges = false;
+      CTX?.notifySuccess?.(successMessage);
+      renderSubjectsList();
+    }catch (error){
+      console.error("[materias] Error de guardado automático:", error);
+      if (typeof onError === "function") onError(error);
+      CTX?.notifyError?.(errorMessage);
+    }
+  }, delayMs);
 }
 
 function renderSubjectsOptions(){
@@ -725,17 +772,15 @@ async function persistSubjects(subjectsToSave){
   });
 }
 
-async function saveSubjectConfig(){
-  await persistSubjects(stagedSubjects);
-  hasLocalChanges = false;
-  CTX?.notifySuccess?.("Configuración de materias guardada.");
-}
-
 function clearStagedSelection(){
   stagedSubjects = [];
   hasLocalChanges = true;
   syncSubjectsStateFromStaged();
   renderSubjectsList();
+  scheduleAutoSave({
+    successMessage: "Selección limpiada (guardado automático).",
+    errorMessage: "No se pudo guardar la limpieza de materias."
+  });
 }
 
 async function setActiveCareer(slug, persist){
@@ -850,10 +895,6 @@ function bindSubjectsFormHandlers(){
 
   btnSubjectReset?.addEventListener("click", () => {
     clearStagedSelection();
-  });
-
-  btnSubjectSave?.addEventListener("click", () => {
-    saveSubjectConfig().catch(() => {});
   });
 }
 
