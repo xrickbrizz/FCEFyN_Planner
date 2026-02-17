@@ -56,21 +56,58 @@ exports.submitProfessorCommentCallable = onCall(CALLABLE_OPTS, async (request) =
         "El comentario no puede superar 500 caracteres."
       );
 
+    const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
-    const professorSnap = await professorRef.get();
-    if (!professorSnap.exists)
-      throw new HttpsError("not-found", "Profesor no encontrado.");
+    const reviewerRef = professorRef.collection("reviewers").doc(uid);
+    const reviewRef = professorRef.collection("reviews").doc();
 
-    await professorRef.collection("reviews").add({
-      userId: request.auth.uid,
-      comment,
-      anonymous,
-      authorName: anonymous ? "" : normalizeAuthorName(request),
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
+    let isFirstReview = false;
+    await db.runTransaction(async (tx) => {
+      const professorSnap = await tx.get(professorRef);
+      const reviewerSnap = await tx.get(reviewerRef);
+
+      if (!professorSnap.exists) {
+        throw new HttpsError("not-found", "Profesor no encontrado.");
+      }
+
+      const now = FieldValue.serverTimestamp();
+      tx.set(reviewRef, {
+        userId: uid,
+        comment,
+        anonymous,
+        authorName: anonymous ? "" : normalizeAuthorName(request),
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      if (!reviewerSnap.exists) {
+        isFirstReview = true;
+        tx.set(reviewerRef, {
+          userId: uid,
+          hasCommented: true,
+          hasRated: false,
+          firstAt: now,
+          updatedAt: now,
+        });
+        tx.set(
+          professorRef,
+          { "ratings.totalReviews": FieldValue.increment(1) },
+          { merge: true }
+        );
+      } else {
+        tx.set(
+          reviewerRef,
+          {
+            userId: uid,
+            hasCommented: true,
+            updatedAt: now,
+          },
+          { merge: true }
+        );
+      }
     });
 
-    return { ok: true };
+    return { ok: true, isFirstReview };
   } catch (err) {
     console.error("submitProfessorCommentCallable error", err);
     if (err instanceof HttpsError) throw err;
@@ -101,14 +138,18 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
 
     const professorRef = db.collection("professors").doc(professorId);
     const ratingRef = professorRef.collection("reviewPuntaje").doc(uid);
+    const reviewerRef = professorRef.collection("reviewers").doc(uid);
 
     // 1) Upsert rating (tx SOLO para createdAt/updatedAt sin romper reglas)
     let replaced = false;
+    let isFirstReview = false;
     await db.runTransaction(async (tx) => {
       const professorSnap = await tx.get(professorRef);
+      const ratingSnap = await tx.get(ratingRef);
+      const reviewerSnap = await tx.get(reviewerRef);
+
       if (!professorSnap.exists) throw new HttpsError("not-found", "Profesor no encontrado.");
 
-      const ratingSnap = await tx.get(ratingRef);
       replaced = ratingSnap.exists;
 
       const now = FieldValue.serverTimestamp();
@@ -125,12 +166,38 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
         },
         { merge: true }
       );
+
+      if (!reviewerSnap.exists) {
+        isFirstReview = true;
+        tx.set(reviewerRef, {
+          userId: uid,
+          hasCommented: false,
+          hasRated: true,
+          firstAt: now,
+          updatedAt: now,
+        });
+        tx.set(
+          professorRef,
+          { "ratings.totalReviews": FieldValue.increment(1) },
+          { merge: true }
+        );
+      } else {
+        tx.set(
+          reviewerRef,
+          {
+            userId: uid,
+            hasRated: true,
+            updatedAt: now,
+          },
+          { merge: true }
+        );
+      }
     });
 
     // 2) Recalcular stats FUERA de la transacción
     const puntajeSnap = await professorRef.collection("reviewPuntaje").get();
 
-    let totalReviews = 0;
+    let totalRatings = 0;
     let sumTeachingQuality = 0;
     let sumExamDifficulty = 0;
     let sumStudentTreatment = 0;
@@ -142,18 +209,18 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
       const st = asRating(row.studentTreatment);
       if (![tq, ed, st].every(isRatingValid)) return;
 
-      totalReviews += 1;
+      totalRatings += 1;
       sumTeachingQuality += tq;
       sumExamDifficulty += ed;
       sumStudentTreatment += st;
     });
 
-    const teachingQualityAvg = totalReviews > 0 ? Number((sumTeachingQuality / totalReviews).toFixed(2)) : 0;
-    const examDifficultyAvg = totalReviews > 0 ? Number((sumExamDifficulty / totalReviews).toFixed(2)) : 0;
-    const studentTreatmentAvg = totalReviews > 0 ? Number((sumStudentTreatment / totalReviews).toFixed(2)) : 0;
+    const teachingQualityAvg = totalRatings > 0 ? Number((sumTeachingQuality / totalRatings).toFixed(2)) : 0;
+    const examDifficultyAvg = totalRatings > 0 ? Number((sumExamDifficulty / totalRatings).toFixed(2)) : 0;
+    const studentTreatmentAvg = totalRatings > 0 ? Number((sumStudentTreatment / totalRatings).toFixed(2)) : 0;
 
     const average =
-      totalReviews > 0
+      totalRatings > 0
         ? Number(((teachingQualityAvg + examDifficultyAvg + studentTreatmentAvg) / 3).toFixed(2))
         : 0;
 
@@ -162,13 +229,12 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
         updatedAt: FieldValue.serverTimestamp(),
         ratings: {
           average,
-          totalReviews,
           teachingQualityAvg,
           examDifficultyAvg,
           studentTreatmentAvg,
         },
         // Compat legacy
-        ratingCount: totalReviews,
+        ratingCount: totalRatings,
         ratingAvg: average,
         avgGeneral: average,
         avgTeaching: teachingQualityAvg,
@@ -179,7 +245,7 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
       { merge: true }
     );
 
-    return { ok: true, replaced };
+    return { ok: true, replaced, isFirstReview };
   } catch (err) {
     console.error("submitProfessorRatingCallable error", err);
     if (err instanceof HttpsError) throw err;
@@ -187,6 +253,90 @@ exports.submitProfessorRatingCallable = onCall(CALLABLE_OPTS, async (request) =>
       message: err?.message || String(err),
     });
   }
+});
+
+exports.backfillProfessorUniqueReviewersCallable = onCall(CALLABLE_OPTS, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+  }
+
+  const token = request.auth.token || {};
+  if (!token.admin) {
+    throw new HttpsError("permission-denied", "Solo administradores pueden ejecutar este backfill.");
+  }
+
+  const data = request.data || {};
+  const professorId = String(data.professorId || "").trim();
+  if (!professorId) {
+    throw new HttpsError("invalid-argument", "professorId es obligatorio.");
+  }
+
+  const professorRef = db.collection("professors").doc(professorId);
+  const professorSnap = await professorRef.get();
+  if (!professorSnap.exists) {
+    throw new HttpsError("not-found", "Profesor no encontrado.");
+  }
+
+  const [reviewsSnap, ratingsSnap] = await Promise.all([
+    professorRef.collection("reviews").get(),
+    professorRef.collection("reviewPuntaje").get(),
+  ]);
+
+  const byUser = new Map();
+
+  const ensureUser = (uid) => {
+    const cleanUid = String(uid || "").trim();
+    if (!cleanUid) return null;
+    if (!byUser.has(cleanUid)) {
+      byUser.set(cleanUid, { hasCommented: false, hasRated: false });
+    }
+    return byUser.get(cleanUid);
+  };
+
+  reviewsSnap.forEach((reviewDoc) => {
+    const entry = ensureUser(reviewDoc.data()?.userId);
+    if (entry) entry.hasCommented = true;
+  });
+
+  ratingsSnap.forEach((ratingDoc) => {
+    const entry = ensureUser(ratingDoc.data()?.userId || ratingDoc.id);
+    if (entry) entry.hasRated = true;
+  });
+
+  const now = FieldValue.serverTimestamp();
+  const reviewers = [...byUser.entries()];
+
+  for (let i = 0; i < reviewers.length; i += 400) {
+    const batch = db.batch();
+    const chunk = reviewers.slice(i, i + 400);
+    chunk.forEach(([uid, flags]) => {
+      batch.set(
+        professorRef.collection("reviewers").doc(uid),
+        {
+          userId: uid,
+          hasCommented: Boolean(flags.hasCommented),
+          hasRated: Boolean(flags.hasRated),
+          firstAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+    });
+    await batch.commit();
+  }
+
+  const totalReviews = reviewers.length;
+  await professorRef.set(
+    {
+      updatedAt: now,
+      ratings: {
+        totalReviews,
+      },
+    },
+    { merge: true }
+  );
+
+  return { ok: true, professorId, totalReviews };
 });
 
 const sanitizeSubjectIds = (value, fieldName) => {

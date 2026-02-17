@@ -4480,7 +4480,7 @@ body[data-theme="light"] .planner-modal{
 .correlativas-plans .plans-embedded-root .regular{ background:var(--color-warn)!important; color:var(--color-primary-strong)!important; }
 .correlativas-plans .plans-embedded-root .libre{ background:var(--color-danger)!important; color:var(--color-text-contrast); }
 .correlativas-plans .plans-embedded-root .en_curso{ background:var(--color-accent)!important; color:var(--color-primary-strong)!important; }
-.correlativas-plans .plans-embedded-root .subject.subject-approved{ border-color:var(--color-ok)!important; box-shadow:inset 0 0 0 1px var(--color-ok); position:relative; }
+.correlativas-plans .plans-embedded-root .subject.subject-approved{position:relative; }
 .correlativas-plans .plans-embedded-root .subject.subject-approved::after{ content:"✓"; position:absolute; top:.22rem; right:.4rem; font-size:.75rem; font-weight:700; opacity:.85; }
 .correlativas-plans .plans-embedded-root .stats{ display:flex; flex-direction:column; gap:.8rem; }
 .correlativas-plans .plans-embedded-root .stats-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
