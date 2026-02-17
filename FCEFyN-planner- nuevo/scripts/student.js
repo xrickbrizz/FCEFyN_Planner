@@ -508,6 +508,7 @@ onSessionReady(async (user) => {
     doc,
     getDoc,
     setDoc,
+    onSnapshot,
     currentUser: user,
     getCurrentUser,
     getSubjects: () => ctx.aulaState?.subjects || [],

@@ -78,6 +78,8 @@ let studyTimerSeconds = 0;
 let studyTimerInterval = null;
 let studyTimerState = "idle";
 let studyWeeklyGoalHours = 10;
+let unsubscribeStudySubjects = null;
+let didBindStudySubjectsPlanChanged = false;
 
 const getSubjects = () => {
   if (!CTX) return [];
@@ -114,6 +116,8 @@ function toAcadStatus(completed){
 }
 
 export function initCalendario(ctx){
+  if (unsubscribeStudySubjects) unsubscribeStudySubjects();
+  unsubscribeStudySubjects = null;
   CTX = ctx;
   console.log("[calendario] init");
 
@@ -152,6 +156,34 @@ export function initCalendario(ctx){
   renderStudyCalendar();
   loadStudyWeeklyGoal();
   renderAcadCalendar();
+
+  const currentUser = getCurrentUser();
+  subscribeMySubjectsForStudy(currentUser?.uid);
+}
+
+function subscribeMySubjectsForStudy(uid){
+  if (unsubscribeStudySubjects) unsubscribeStudySubjects();
+  unsubscribeStudySubjects = null;
+
+  const { db, doc, onSnapshot } = CTX || {};
+  if (!uid || !db || !doc || typeof onSnapshot !== "function"){
+    renderStudySubjectSelects(getSubjects());
+    return;
+  }
+
+  unsubscribeStudySubjects = onSnapshot(doc(db, "planner", uid), (snap) => {
+    const data = snap.exists() ? (snap.data() || {}) : {};
+    const subjects = Array.isArray(data.subjects) ? data.subjects : [];
+    if (CTX?.aulaState) CTX.aulaState.subjects = subjects;
+    renderStudySubjectSelects(subjects);
+  });
+
+  if (!didBindStudySubjectsPlanChanged){
+    didBindStudySubjectsPlanChanged = true;
+    window.addEventListener("plan:changed", () => {
+      renderStudySubjectSelects(getSubjects());
+    });
+  }
 }
 
 export function setCalendarioCaches({ estudios, academico } = {}){
@@ -850,7 +882,7 @@ function initStudyWeeklyGoalUI(){
 }
 
 function initStudyTimer(){
-  if (studyTimerMateria) fillMateriaSelect(studyTimerMateria);
+  renderStudySubjectSelects(getSubjects());
   updateStudyTimerDisplay();
   updateStudyTimerButtons();
   updateStudyTimerStatus();
@@ -1890,24 +1922,38 @@ function renderAcadUpcomingWidget(items = []){
 
 function fillMateriaSelect(selectEl){
   if (!selectEl) return;
+  renderStudySubjectSelects(getSubjects(), selectEl);
+}
 
-  const subjects = getSubjects();
-  selectEl.innerHTML = "";
+function renderStudySubjectSelects(subjects = [], targetSelect = null){
+  const selects = targetSelect
+    ? [targetSelect]
+    : [studyTimerMateria, document.getElementById("inpMateria")];
 
-  if (!subjects.length){
-    const opt = document.createElement("option");
-    opt.textContent = "Creá materias primero";
-    opt.disabled = true;
-    opt.selected = true;
-    selectEl.appendChild(opt);
-    return;
-  }
+  selects.forEach((selectEl) => {
+    if (!selectEl) return;
+    const previousValue = selectEl.value;
+    selectEl.innerHTML = "";
 
-  subjects.forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = s.name;
-    opt.textContent = s.name;
-    selectEl.appendChild(opt);
+    if (!subjects.length){
+      const opt = document.createElement("option");
+      opt.textContent = "Creá materias primero";
+      opt.disabled = true;
+      opt.selected = true;
+      selectEl.appendChild(opt);
+      return;
+    }
+
+    subjects.forEach((s) => {
+      const opt = document.createElement("option");
+      opt.value = s.name;
+      opt.textContent = s.name;
+      selectEl.appendChild(opt);
+    });
+
+    const keepsPrevious = Array.from(selectEl.options).some((opt) => opt.value === previousValue);
+    if (keepsPrevious) selectEl.value = previousValue;
+    else if (selectEl.options.length) selectEl.selectedIndex = 0;
   });
 }
 console.log("[calendario] materias disponibles:", getSubjects());

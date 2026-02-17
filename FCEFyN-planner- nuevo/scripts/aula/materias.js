@@ -579,7 +579,9 @@ function addSubjectToUser(item){
     }
     renderSubjectsList();
     scheduleAutoSave({
-      successMessage: "Materia agregada (guardado automático).",
+      // Desactivado: no mostrar alertas al agregar materia (dejado como referencia).
+      // successMessage: "Materia agregada (guardado automático).",
+      notifyOnSuccess: false,
       errorMessage: "No se pudo guardar la materia agregada.",
       onError: () => {
         stagedSubjects = stagedSubjects.filter((subject) => normalizeStr(subject.name) !== normalizeStr(subjectToAdd.name));
@@ -647,7 +649,8 @@ function scheduleAutoSave({
   successMessage = "Cambios guardados automáticamente.",
   errorMessage = "No se pudo guardar.",
   onError = null,
-  delayMs = 300
+  delayMs = 300,
+  notifyOnSuccess = true
 } = {}){
   if (autosaveTimer) clearTimeout(autosaveTimer);
   const token = ++lastAutosaveToken;
@@ -658,7 +661,7 @@ function scheduleAutoSave({
     try{
       await persistSubjects(snapshot);
       hasLocalChanges = false;
-      CTX?.notifySuccess?.(successMessage);
+      if (notifyOnSuccess && successMessage) CTX?.notifySuccess?.(successMessage);
       renderSubjectsList();
     }catch (error){
       console.error("[materias] Error de guardado automático:", error);
