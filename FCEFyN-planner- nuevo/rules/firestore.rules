@@ -89,10 +89,14 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create, update, delete: if isAdmin();
 
-      match /reviews/{uid} {
+      match /reviews/{reviewId} {
         allow read: if signedIn();
-        // Según tu segundo código: Solo Cloud Functions (Admin SDK) puede escribir.
-        allow write: if false; 
+        allow write: if false;
+      }
+
+      match /reviewPuntaje/{uid} {
+        allow read: if signedIn();
+        allow write: if false;
       }
     }
 

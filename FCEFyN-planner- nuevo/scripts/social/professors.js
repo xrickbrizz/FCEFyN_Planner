@@ -158,9 +158,9 @@ function reviewAverage(review){
 function parseProfessor(docSnap){
   const data = docSnap.data() || {};
   const ratings = data.ratings || {};
-  const teachingQualityAvg = Number(ratings.qualityAvg ?? ratings.teachingQualityAvg ?? data.avgTeaching ?? data.ratingAvg ?? data.averageRating ?? 0);
-  const examDifficultyAvg = Number(ratings.difficultyAvg ?? ratings.examDifficultyAvg ?? data.avgExams ?? data.ratingAvg ?? data.averageRating ?? 0);
-  const studentTreatmentAvg = Number(ratings.treatmentAvg ?? ratings.studentTreatmentAvg ?? data.avgTreatment ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const teachingQualityAvg = Number(ratings.teachingQualityAvg ?? ratings.qualityAvg ?? data.avgTeaching ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const examDifficultyAvg = Number(ratings.examDifficultyAvg ?? ratings.difficultyAvg ?? data.avgExams ?? data.ratingAvg ?? data.averageRating ?? 0);
+  const studentTreatmentAvg = Number(ratings.studentTreatmentAvg ?? ratings.treatmentAvg ?? data.avgTreatment ?? data.ratingAvg ?? data.averageRating ?? 0);
   const averageRating = Number(ratings.average ?? data.avgGeneral ?? data.ratingAvg ?? data.averageRating ?? ((teachingQualityAvg + examDifficultyAvg + studentTreatmentAvg) / 3) ?? 0);
   const totalReviews = Number(ratings.totalReviews ?? data.ratingCount ?? data.totalReviews ?? 0);
 
@@ -507,32 +507,13 @@ async function loadProfessorReviews(professorId){
   try{
     const reviewsQuery = query(collection(CTX.db, "professors", professorId, "reviews"), orderBy("createdAt", "desc"));
     const snap = await getDocs(reviewsQuery);
-    const reviewsByUser = new Map();
-    const reviewsWithoutUser = [];
-    const resolveMillis = (value) => {
-      if (!value) return 0;
-      if (typeof value.toMillis === "function") return value.toMillis();
-      const date = new Date(value);
-      return Number.isNaN(date.getTime()) ? 0 : date.getTime();
-    };
+    const reviews = [];
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
-      const rating = Number(data.rating || 0);
-      const teachingQualityRaw = data.teachingQuality ?? data.quality ?? rating;
-      const examDifficultyRaw = data.examDifficulty ?? data.difficulty ?? rating;
-      const studentTreatmentRaw = data.studentTreatment ?? data.treatment ?? rating;
-      const teachingQuality = Number(teachingQualityRaw);
-      const examDifficulty = Number(examDifficultyRaw);
-      const studentTreatment = Number(studentTreatmentRaw);
-      const hasRating = [teachingQuality, examDifficulty, studentTreatment].every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
-      const parsedReview = {
+      reviews.push({
         id: reviewDoc.id,
         professorId,
         userId: data.userId || "",
-        teachingQuality: hasRating ? teachingQuality : null,
-        examDifficulty: hasRating ? examDifficulty : null,
-        studentTreatment: hasRating ? studentTreatment : null,
-        hasRating,
         comment: data.comment || "",
         createdAt: data.createdAt || null,
         updatedAt: data.updatedAt || null,
@@ -542,30 +523,7 @@ async function loadProfessorReviews(professorId){
         firstName: data.firstName || "",
         lastName: data.lastName || "",
         name: data.name || ""
-      };
-
-      const userKey = parsedReview.userId || "";
-      if (!userKey){
-        reviewsWithoutUser.push(parsedReview);
-        return;
-      }
-
-      const previous = reviewsByUser.get(userKey);
-      if (!previous){
-        reviewsByUser.set(userKey, parsedReview);
-        return;
-      }
-      const previousTime = resolveMillis(previous.updatedAt || previous.createdAt);
-      const currentTime = resolveMillis(parsedReview.updatedAt || parsedReview.createdAt);
-      if (currentTime >= previousTime){
-        reviewsByUser.set(userKey, parsedReview);
-      }
-    });
-
-    const reviews = [...reviewsByUser.values(), ...reviewsWithoutUser].sort((a, b) => {
-      const left = resolveMillis(a.updatedAt || a.createdAt);
-      const right = resolveMillis(b.updatedAt || b.createdAt);
-      return right - left;
+      });
     });
     state.reviewsByProfessor.set(professorId, reviews);
   }catch(error){
@@ -764,9 +722,9 @@ async function submitRating(){
 
   try{
     const functions = getFunctions(app, "us-central1");
-    const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
+    const submitProfessorRatingCallable = httpsCallable(functions, "submitProfessorRatingCallable");
     console.log("[prof] submit payload FINAL", payload);
-    const res = await submitProfessorReviewCallable(payload);
+    const res = await submitProfessorRatingCallable(payload);
     console.log("[prof] submit result", res?.data);
 
     await refreshSelectedProfessorStats(professorId);
@@ -839,8 +797,8 @@ async function submitComment(){
 
   try{
     const functions = getFunctions(app, "us-central1");
-    const submitProfessorReviewCallable = httpsCallable(functions, "submitProfessorReviewCallable");
-    const res = await submitProfessorReviewCallable(payload);
+    const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
+    const res = await submitProfessorCommentCallable(payload);
     console.log("[prof] submit result DATA", res?.data);
 
     if (commentInput) commentInput.value = "";
@@ -855,8 +813,6 @@ async function submitComment(){
     try{
       await refreshSelectedProfessorStats(professorId);
       await loadProfessorReviews(professorId);
-      await loadDirectoryPage();
-      renderDirectory();
       renderProfessorDetail();
     }catch(error){
       console.warn("Comentario guardado pero falló el refresh UI:", error);

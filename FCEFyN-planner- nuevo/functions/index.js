@@ -7,245 +7,154 @@ const { FieldValue } = admin.firestore;
 
 const MAX_COMMENT_LENGTH = 500;
 
-exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async (request) => {
+const normalizeAuthorName = (request) => {
+  const raw = request.auth?.token?.name || request.auth?.token?.displayName || "Estudiante";
+  return String(raw).replace(/@.*/, "").trim() || "Estudiante";
+};
+
+const asRating = (value) => Number.parseInt(value, 10);
+const isRatingValid = (value) => Number.isInteger(value) && value >= 1 && value <= 5;
+
+exports.submitProfessorCommentCallable = onCall({ region: "us-central1" }, async (request) => {
   try {
-    console.log("### VERSION MARKER reviewCallable-delta-rework-2026-02-17 ###");
+    if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión para comentar.");
+
     const data = request.data || {};
-    console.log("[submitProfessorReviewCallable] raw data:", JSON.stringify(data));
-
-    if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");
-
     const professorId = String(data.professorId || "").trim();
-    if (!professorId) throw new HttpsError("invalid-argument", "Profesor inválido.");
+    const comment = String(data.comment || "").trim();
+    const anonymous = Boolean(data.anonymous);
 
-    const commentProvided = typeof data.comment === "string";
-    const comment = commentProvided ? data.comment.trim() : "";
-    const hasComment = comment.length > 0;
-    if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
+    if (!professorId) throw new HttpsError("invalid-argument", "professorId es obligatorio.");
+    if (!comment) throw new HttpsError("invalid-argument", "El comentario es obligatorio.");
+    if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario no puede superar 500 caracteres.");
 
-    if (hasLegacyRatingField) {
-      console.warn("[submitProfessorReviewCallable] payload incluye campo legacy rating. Se ignora para evitar ratings fantasma.", {
-        professorId,
-        uid: request.auth?.uid,
-        rating: data.rating
-      });
-    }
-    console.log("[submitProfessorReviewCallable] metrics:", {
-      teachingQuality: tq,
-      examDifficulty: ed,
-      studentTreatment: st
+    const professorRef = db.collection("professors").doc(professorId);
+    const professorSnap = await professorRef.get();
+    if (!professorSnap.exists) throw new HttpsError("not-found", "Profesor no encontrado.");
+
+    await professorRef.collection("reviews").add({
+      userId: request.auth.uid,
+      comment,
+      anonymous,
+      authorName: anonymous ? "" : normalizeAuthorName(request),
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp()
     });
 
-    const inRange1to5 = (n) => Number.isFinite(n) && n >= 1 && n <= 5;
+    return { ok: true };
+  } catch (err) {
+    console.error("submitProfessorCommentCallable error", err);
+    if (err instanceof HttpsError) throw err;
+    throw new HttpsError("internal", "No se pudo guardar el comentario.", { message: err?.message || String(err) });
+  }
+});
 
-    if (metricsProvided && !hasMetrics) {
-      throw new HttpsError("invalid-argument", "Debes completar las 3 métricas de la puntuación.");
+exports.submitProfessorRatingCallable = onCall({ region: "us-central1" }, async (request) => {
+  try {
+    if (!request.auth) throw new HttpsError("unauthenticated", "Debes iniciar sesión para valorar.");
+
+    const data = request.data || {};
+    const professorId = String(data.professorId || "").trim();
+    if (!professorId) throw new HttpsError("invalid-argument", "professorId es obligatorio.");
+
+    const teachingQuality = asRating(data.teachingQuality);
+    const examDifficulty = asRating(data.examDifficulty);
+    const studentTreatment = asRating(data.studentTreatment);
+
+    if (![teachingQuality, examDifficulty, studentTreatment].every(isRatingValid)) {
+      throw new HttpsError("invalid-argument", "Las métricas deben ser enteros entre 1 y 5.");
     }
 
-    if (!hasComment && !hasMetrics) {
-      throw new HttpsError("invalid-argument", "Debes enviar un comentario o una puntuación.");
-    }
-
-    let teachingQuality = null;
-    let examDifficulty = null;
-    let studentTreatment = null;
-
-    if (hasMetrics) {
-      teachingQuality = tq;
-      examDifficulty = ed;
-      studentTreatment = st;
-      if (![teachingQuality, examDifficulty, studentTreatment].every(inRange1to5)) {
-        throw new HttpsError("invalid-argument", "Las valoraciones deben estar entre 1 y 5.");
-      }
-    }
-
-    const anonymousProvided = Object.prototype.hasOwnProperty.call(data, "anonymous");
-    const anonymous = Boolean(data.anonymous);
-    const authorName = anonymous
-      ? ""
-      : request.auth.token.name || request.auth.token.displayName || request.auth.token.email || "Estudiante";
-
+    const rating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
     const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
-
-    // ✅ histórico: doc nuevo SIEMPRE
-    const reviewRef = professorRef.collection("reviews").doc(); 
-
-    // ✅ contribución única por autor (para promedios/contador único)
-    const raterRef = professorRef.collection("raters").doc(uid);
-
+    const ratingRef = professorRef.collection("reviewPuntaje").doc(uid);
+    let replaced = false;
 
     await db.runTransaction(async (tx) => {
-      const profSnap = await tx.get(professorRef);
-      if (!profSnap.exists) throw new HttpsError("not-found", "Profesor no encontrado.");
-      const prevReviewSnap = await tx.get(reviewRef);
-      const existedBefore = prevReviewSnap.exists;
-      const prev = prevReviewSnap.data() || {};
-      const hadCommentBefore = Boolean(String(prev.comment || "").trim());
-      const hasCommentNow = commentProvided ? hasComment : hadCommentBefore;
+      const professorSnap = await tx.get(professorRef);
+      if (!professorSnap.exists) throw new HttpsError("not-found", "Profesor no encontrado.");
 
-      // ✅ NUEVO: leer contribución única del autor
-      const prevRaterSnap = await tx.get(raterRef);
-      const prevRater = prevRaterSnap.exists ? (prevRaterSnap.data() || {}) : {};
-
-      const prevTeachingQuality = Number(prevRater.teachingQuality);
-      const prevExamDifficulty = Number(prevRater.examDifficulty);
-      const prevStudentTreatment = Number(prevRater.studentTreatment);
-
-      const hadRatingBefore = [prevTeachingQuality, prevExamDifficulty, prevStudentTreatment]
-        .every(v => Number.isFinite(v) && v >= 1 && v <= 5);
-
-      const hasRatingNow = metricsProvided ? hasMetrics : hadRatingBefore;
-
-      const profData = profSnap.data() || {};
-      const ratings = profData.ratings || {};
-      const totalReviews = Number(ratings.totalReviews || profData.ratingCount || 0);
-      const totalReviewsAll = Number(profData.totalReviews || totalReviews || 0);
-      const sumQuality = Number(ratings.sumQuality || 0);
-      const sumDifficulty = Number(ratings.sumDifficulty || 0);
-      const sumTreatment = Number(ratings.sumTreatment || 0);
-      const previousCommentsCount = Number(profData.commentsCount || 0);
-
-      const addNewRating = hasRatingNow && !hadRatingBefore;
-      const replaceExistingRating = hasRatingNow && hadRatingBefore && metricsProvided;
-      const removeExistingRating = !hasRatingNow && hadRatingBefore;
-
-      const effectiveQuality = hasRatingNow ? (metricsProvided ? teachingQuality : prevTeachingQuality) : null;
-      const effectiveDifficulty = hasRatingNow ? (metricsProvided ? examDifficulty : prevExamDifficulty) : null;
-      const effectiveTreatment = hasRatingNow ? (metricsProvided ? studentTreatment : prevStudentTreatment) : null;
-
-      const nextCount = addNewRating
-        ? totalReviews + 1
-        : removeExistingRating
-          ? Math.max(0, totalReviews - 1)
-          : totalReviews;
-      const nextTotalReviewsAll = existedBefore ? totalReviewsAll : totalReviewsAll + 1;
-      const nextSumQuality = addNewRating
-        ? sumQuality + effectiveQuality
-        : replaceExistingRating
-          ? sumQuality - prevTeachingQuality + effectiveQuality
-          : removeExistingRating
-            ? sumQuality - prevTeachingQuality
-            : sumQuality;
-      const nextSumDifficulty = addNewRating
-        ? sumDifficulty + effectiveDifficulty
-        : replaceExistingRating
-          ? sumDifficulty - prevExamDifficulty + effectiveDifficulty
-          : removeExistingRating
-            ? sumDifficulty - prevExamDifficulty
-            : sumDifficulty;
-      const nextSumTreatment = addNewRating
-        ? sumTreatment + effectiveTreatment
-        : replaceExistingRating
-          ? sumTreatment - prevStudentTreatment + effectiveTreatment
-          : removeExistingRating
-            ? sumTreatment - prevStudentTreatment
-            : sumTreatment;
-
-      const qualityAvg = nextCount > 0 ? nextSumQuality / nextCount : 0;
-      const difficultyAvg = nextCount > 0 ? nextSumDifficulty / nextCount : 0;
-      const treatmentAvg = nextCount > 0 ? nextSumTreatment / nextCount : 0;
-      const average = nextCount > 0 ? (qualityAvg + difficultyAvg + treatmentAvg) / 3 : 0;
-      const nextComments = previousCommentsCount
-        + (!hadCommentBefore && hasCommentNow ? 1 : 0)
-        - (hadCommentBefore && !hasCommentNow ? 1 : 0);
+      const ratingSnap = await tx.get(ratingRef);
+      replaced = ratingSnap.exists;
 
       const now = FieldValue.serverTimestamp();
-      const reviewPayload = {
-        professorId,
+      tx.set(ratingRef, {
         userId: uid,
-        authorUid: uid,
-        updatedAt: now
-      };
-      if (!existedBefore) {
-        reviewPayload.createdAt = now;
-      }
-      if (anonymousProvided || !existedBefore) {
-        reviewPayload.anonymous = anonymous;
-        reviewPayload.authorName = anonymous ? "" : authorName;
-      }
-      if (commentProvided) {
-        if (hasComment) {
-          reviewPayload.comment = comment;
-        } else {
-          reviewPayload.comment = FieldValue.delete();
+        teachingQuality,
+        examDifficulty,
+        studentTreatment,
+        rating,
+        updatedAt: now,
+        ...(ratingSnap.exists ? {} : { createdAt: now })
+      }, { merge: true });
+
+      const puntajeQuery = professorRef.collection("reviewPuntaje");
+      const puntajeSnap = await tx.get(puntajeQuery);
+
+      let totalReviews = 0;
+      let sumTeachingQuality = 0;
+      let sumExamDifficulty = 0;
+      let sumStudentTreatment = 0;
+
+      puntajeSnap.forEach((docSnap) => {
+        const row = docSnap.data() || {};
+        const tq = asRating(row.teachingQuality);
+        const ed = asRating(row.examDifficulty);
+        const st = asRating(row.studentTreatment);
+        if (![tq, ed, st].every(isRatingValid)) return;
+        totalReviews += 1;
+        sumTeachingQuality += tq;
+        sumExamDifficulty += ed;
+        sumStudentTreatment += st;
+      });
+
+      if (ratingSnap.exists) {
+        const previous = ratingSnap.data() || {};
+        const previousTq = asRating(previous.teachingQuality);
+        const previousEd = asRating(previous.examDifficulty);
+        const previousSt = asRating(previous.studentTreatment);
+        if ([previousTq, previousEd, previousSt].every(isRatingValid)) {
+          sumTeachingQuality = sumTeachingQuality - previousTq + teachingQuality;
+          sumExamDifficulty = sumExamDifficulty - previousEd + examDifficulty;
+          sumStudentTreatment = sumStudentTreatment - previousSt + studentTreatment;
         }
-      }
-      if (metricsProvided) {
-        if (hasMetrics) {
-          const finalRating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
-          Object.assign(reviewPayload, {
-            rating: finalRating,
-            teachingQuality,
-            examDifficulty,
-            studentTreatment,
-            quality: teachingQuality,
-            difficulty: examDifficulty,
-            treatment: studentTreatment
-          });
-        } else {
-          Object.assign(reviewPayload, {
-            rating: FieldValue.delete(),
-            teachingQuality: FieldValue.delete(),
-            examDifficulty: FieldValue.delete(),
-            studentTreatment: FieldValue.delete(),
-            quality: FieldValue.delete(),
-            difficulty: FieldValue.delete(),
-            treatment: FieldValue.delete()
-          });
-        }
+      } else {
+        totalReviews += 1;
+        sumTeachingQuality += teachingQuality;
+        sumExamDifficulty += examDifficulty;
+        sumStudentTreatment += studentTreatment;
       }
 
-      tx.set(reviewRef, reviewPayload, { merge: true });
-// ✅ esto es lo que “cuenta” en sumas y totalReviews (usuarios únicos)
-if (metricsProvided) {
-  if (hasMetrics) {
-    tx.set(raterRef, {
-      professorId,
-      authorUid: uid,
-      teachingQuality,
-      examDifficulty,
-      studentTreatment,
-      updatedAt: now,
-      ...(prevRaterSnap.exists ? {} : { createdAt: now })
-    }, { merge: true });
-  } else {
-    tx.delete(raterRef);
-  }
-}
+      const teachingQualityAvg = totalReviews > 0 ? Number((sumTeachingQuality / totalReviews).toFixed(2)) : 0;
+      const examDifficultyAvg = totalReviews > 0 ? Number((sumExamDifficulty / totalReviews).toFixed(2)) : 0;
+      const studentTreatmentAvg = totalReviews > 0 ? Number((sumStudentTreatment / totalReviews).toFixed(2)) : 0;
+      const average = totalReviews > 0
+        ? Number((((teachingQualityAvg + examDifficultyAvg + studentTreatmentAvg) / 3)).toFixed(2))
+        : 0;
 
       tx.set(professorRef, {
-        commentsCount: Math.max(0, nextComments),
-        totalReviews: nextTotalReviewsAll,
         updatedAt: now,
         ratings: {
           average,
-          totalReviews: nextCount,
-          qualityAvg,
-          difficultyAvg,
-          treatmentAvg,
-          sumQuality: nextSumQuality,
-          sumDifficulty: nextSumDifficulty,
-          sumTreatment: nextSumTreatment
+          totalReviews,
+          teachingQualityAvg,
+          examDifficultyAvg,
+          studentTreatmentAvg
         },
-        ratingCount: nextCount,
+        ratingCount: totalReviews,
         ratingAvg: average,
         avgGeneral: average,
-        avgTeaching: qualityAvg,
-        avgExams: difficultyAvg,
-        avgTreatment: treatmentAvg,
+        avgTeaching: teachingQualityAvg,
+        avgExams: examDifficultyAvg,
+        avgTreatment: studentTreatmentAvg,
         averageRating: average
       }, { merge: true });
     });
 
-    return {
-      ok: true,
-      version: "reviewCallable-delta-rework-2026-02-17",
-      wroteComment: hasComment,
-      wroteRating: hasMetrics
-    };
+    return { ok: true, replaced };
   } catch (err) {
-    console.error("submitProfessorReviewCallable error", err);
+    console.error("submitProfessorRatingCallable error", err);
     if (err instanceof HttpsError) throw err;
     throw new HttpsError("internal", "No se pudo guardar la valoración.", { message: err?.message || String(err) });
   }
