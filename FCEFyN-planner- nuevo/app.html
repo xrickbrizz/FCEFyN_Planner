@@ -53,28 +53,28 @@
 
         <div class="feature-grid">
           <div class="feat">
-            <div class="feat-ico">A</div>
+            <div class="feat-ico" data-feature-icon="academic" aria-hidden="true"></div>
             <div>
               <b>Académico</b>
               <span>Parciales, TPs, tareas, informes y recordatorios.</span>
             </div>
           </div>
           <div class="feat">
-            <div class="feat-ico">E</div>
+            <div class="feat-ico" data-feature-icon="study" aria-hidden="true"></div>
             <div>
               <b>Estudio</b>
               <span>Registrá horas, tema y materia por día.</span>
             </div>
           </div>
           <div class="feat">
-            <div class="feat-ico">H</div>
+            <div class="feat-ico" data-feature-icon="agenda" aria-hidden="true"></div>
             <div>
               <b>Horario</b>
               <span>Agenda semanal 08:00–23:00 con bloques.</span>
             </div>
           </div>
           <div class="feat">
-            <div class="feat-ico">P</div>
+            <div class="feat-ico" data-feature-icon="plan" aria-hidden="true"></div>
             <div>
               <b>Presets</b>
               <span>Simulá comisiones y pasalas a tu agenda.</span>
@@ -214,6 +214,7 @@
       limit,
       updateDoc
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    import { ICONS } from "./scripts/core/nav.js";
     import { getPlansIndex, normalizeStr } from "./scripts/plans-data.js";
 
     const firebaseConfig = {
@@ -233,6 +234,14 @@
     const dotFirebase = document.getElementById("dotFirebase");
     const msgBox = document.getElementById("msgBox");
     const selCareer = document.getElementById("inpCareer");
+
+    document.querySelectorAll("[data-feature-icon]").forEach((el) => {
+      const iconKey = el.dataset.featureIcon;
+      const iconSvg = ICONS[iconKey];
+      if (!iconSvg) return;
+      el.innerHTML = iconSvg;
+      el.querySelector("svg")?.setAttribute("aria-hidden", "true");
+    });
 
     function getCurrentCareer() {
       const select = document.getElementById("inpCareer");

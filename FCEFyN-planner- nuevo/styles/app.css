@@ -325,6 +325,10 @@ body[data-theme="dark"] .hero-title{
   color:var(--color-primary-strong);
   flex:0 0 auto;
 }
+.feat-ico svg{
+  width: 1.2rem;
+  height: 1.2rem;
+}
 .feat b{ display:block; font-size:.95rem; margin-bottom:.1rem; }
 .feat span{ color:var(--muted); font-size:.88rem; line-height:1.35; }
 .metric-row{
@@ -1031,4 +1035,3 @@ body.plans-page footer{
     transform:translate(-50%, -50%);
   }
 }
-
