@@ -98,6 +98,23 @@ function ensureReviewDraft(professorId){
   return state.reviewDraft[professorId];
 }
 
+function buildReviewPayload({ professorId, includeComment = false, includeMetrics = false, draft, comment, anonymous }){
+  const payload = { professorId };
+
+  if (includeMetrics){
+    payload.teachingQuality = sanitizeRatingValue(draft?.teachingQuality);
+    payload.examDifficulty = sanitizeRatingValue(draft?.examDifficulty);
+    payload.studentTreatment = sanitizeRatingValue(draft?.studentTreatment);
+  }
+
+  if (includeComment){
+    payload.comment = String(comment || "").trim();
+    payload.anonymous = Boolean(anonymous);
+  }
+
+  return payload;
+}
+
 function buildDraftRating(draft){
   const teachingQuality = sanitizeRatingValue(draft?.teachingQuality);
   const examDifficulty = sanitizeRatingValue(draft?.examDifficulty);
@@ -746,12 +763,11 @@ async function submitRating(){
     return;
   }
 
-  const payload = {
+  const payload = buildReviewPayload({
     professorId,
-    teachingQuality,
-    examDifficulty,
-    studentTreatment
-  };
+    includeMetrics: true,
+    draft
+  });
   draft.rating = Number(((teachingQuality + examDifficulty + studentTreatment) / 3).toFixed(2));
   console.log("[prof] state.rating updated", { rating: draft.rating, type: typeof draft.rating });
 
@@ -766,7 +782,6 @@ async function submitRating(){
     console.log("[prof] submit result", res?.data);
 
     await refreshSelectedProfessorStats(professorId);
-    await loadProfessorReviews(professorId);
     await loadDirectoryPage();
     renderDirectory();
     renderProfessorDetail();
@@ -815,11 +830,12 @@ async function submitComment(){
     return;
   }
 
-  const payload = {
+  const payload = buildReviewPayload({
     professorId,
-    comment: commentText.trim(),
-    anonymous: !!anonymous
-  };
+    includeComment: true,
+    comment: commentText,
+    anonymous
+  });
   if (
     Object.prototype.hasOwnProperty.call(payload, "rating") ||
     Object.prototype.hasOwnProperty.call(payload, "teachingQuality") ||
