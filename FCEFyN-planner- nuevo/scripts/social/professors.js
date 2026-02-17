@@ -437,18 +437,6 @@ function renderProfessorDetail(){
           }).join("")}
         </div>
 
-        <h4 class="prof-distribution-title">Distribución de calificaciones</h4>
-        ${[5,4,3,2,1].map(star => {
-          const count = distribution[star] || 0;
-          const percentage = Math.round((count / total) * 100);
-          return `
-            <div class="prof-distribution-row">
-              <span>${star}★</span>
-              <div class="prof-distribution-bar"><span style="width:${percentage}%;"></span></div>
-              <span>${count}</span>
-            </div>
-          `;
-        }).join("")}
 
         <button id="openProfRatingModal" class="btn-blue btn-small prof-primary-btn" type="button">Calificar profesor</button>
       </section>
