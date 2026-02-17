@@ -33,7 +33,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const ed = Number.isFinite(parsedExamDifficulty) ? parsedExamDifficulty : null;
     const st = Number.isFinite(parsedStudentTreatment) ? parsedStudentTreatment : null;
     const hasMetrics = [tq, ed, st].some((v) => v !== null);
-
+    console.log("[submitProfessorReviewCallable] writing review docId:", reviewRef.id);
     console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
     console.log("[submitProfessorReviewCallable] hasRating:", hasRating);
     console.log("[submitProfessorReviewCallable] metrics:", {
@@ -75,7 +75,7 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
     const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
-    const reviewRef = professorRef.collection("reviews").doc();
+    const reviewRef = professorRef.collection("reviews").doc(userId);
 
     await db.runTransaction(async (tx) => {
       const profSnap = await tx.get(professorRef);
