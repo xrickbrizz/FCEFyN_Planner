@@ -122,6 +122,7 @@ export async function mountPlansEmbedded({
           <button class="status-pill-option status-pill-reg" type="button" data-status-value="regular">REG</button>
           <button class="status-pill-option status-pill-lib" type="button" data-status-value="libre">LIB</button>
           <button class="status-pill-option status-pill-cur" type="button" data-status-value="en_curso">CUR</button>
+          <button class="status-pill-option status-pill-clear" type="button" data-status-value="ninguno" data-action="clear-status">Quitar</button>
         </div>
       </div>
     </div>
@@ -479,6 +480,10 @@ export async function mountPlansEmbedded({
     updateUI();
   }
 
+  async function onClearStatus() {
+    await applyStatus("ninguno");
+  }
+
   async function resetAll() {
     const previous = getEstadoSimpleMap();
     setEstadoSimpleMap({});
@@ -609,6 +614,11 @@ export async function mountPlansEmbedded({
   modalActionsEl?.addEventListener("click", async (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
+    const clearBtn = target.closest('[data-action="clear-status"]');
+    if (clearBtn) {
+      await onClearStatus();
+      return;
+    }
     const statusBtn = target.closest("[data-status-value]");
     if (!statusBtn) return;
     await applyStatus(statusBtn.dataset.statusValue || "");

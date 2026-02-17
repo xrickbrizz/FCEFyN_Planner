@@ -4530,6 +4530,7 @@ body[data-theme="light"] .planner-modal{
 .correlativas-plans .plans-embedded-root .status-pill-reg{ background:#FEF9C3; color:#854D0E; }
 .correlativas-plans .plans-embedded-root .status-pill-lib{ background:#FEE2E2; color:#991B1B; }
 .correlativas-plans .plans-embedded-root .status-pill-cur{ background:#DBEAFE; color:#1D4ED8; }
+.correlativas-plans .plans-embedded-root .status-pill-clear{ background:#F3F4F6; color:#374151; border:1px solid #E5E7EB; }
 
 @media (max-width:1200px){
   .correlativas-plans .plans-embedded-root .grid-wrap{ grid-template-columns:repeat(2,1fr); }
