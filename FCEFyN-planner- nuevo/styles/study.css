@@ -142,7 +142,7 @@ body[data-theme="light"] header{
 }
 
 button{
-  padding: .48rem 1.05rem;
+
   border:none;
   border-radius: var(--radius-md);
   cursor:pointer;
@@ -1696,6 +1696,9 @@ body[data-theme="light"] .event{
     .agenda-title{
       flex:1;
       min-width:220px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     .agenda-title h3{
       margin:0;
@@ -3846,14 +3849,13 @@ header{
 .preset-chip{
   display:inline-flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
   gap:10px;
-  min-width:140px;
   border:1px solid var(--border-60);
   background:#f3f3f3;
   color:var(--color-text);
   border-radius:20px;
-  padding:8px 14px;
+  padding:0px 14px;
   font-size:14px;
   font-weight:700;
   cursor:pointer;
@@ -4119,7 +4121,7 @@ body[data-theme="light"] .planner-modal{
 .catalog-subject-name{ font-weight:700; font-size:.92rem; }
 .catalog-subject-area{ font-size:.77rem; color:var(--color-muted-2); }
 .catalog-add-btn{
-  width:1.9rem; height:1.9rem; border-radius:50%; border:1px solid var(--accent-35); background:var(--accent-12);
+ border-radius:50%; border:1px solid var(--accent-35); background:var(--accent-12);
   color:var(--accent-95); font-weight:800; cursor:pointer;
 }
 .catalog-add-btn.is-disabled,
@@ -4289,8 +4291,6 @@ body[data-theme="light"] .planner-modal{
   border:1px solid var(--border-30);
   background:#fff;
   border-radius:999px;
-  width:2rem;
-  height:2rem;
   font-size:1.1rem;
   cursor:pointer;
 }
