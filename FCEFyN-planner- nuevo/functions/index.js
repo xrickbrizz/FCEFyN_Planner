@@ -33,7 +33,6 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const ed = Number.isFinite(parsedExamDifficulty) ? parsedExamDifficulty : null;
     const st = Number.isFinite(parsedStudentTreatment) ? parsedStudentTreatment : null;
     const hasMetrics = [tq, ed, st].some((v) => v !== null);
-    console.log("[submitProfessorReviewCallable] writing review docId:", reviewRef.id);
     console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
     console.log("[submitProfessorReviewCallable] hasRating:", hasRating);
     console.log("[submitProfessorReviewCallable] metrics:", {
@@ -75,11 +74,30 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
     const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
-    const reviewRef = professorRef.collection("reviews").doc(userId);
+    const reviewRef = professorRef.collection("reviews").doc(uid);
+    console.log("[submitProfessorReviewCallable] writing review docId:", reviewRef.id);
 
     await db.runTransaction(async (tx) => {
       const profSnap = await tx.get(professorRef);
       if (!profSnap.exists) throw new HttpsError("not-found", "Profesor no encontrado.");
+      const prevReviewSnap = await tx.get(reviewRef);
+      const existedBefore = prevReviewSnap.exists;
+      const prev = prevReviewSnap.data() || {};
+      const hadCommentBefore = Boolean(String(prev.comment || "").trim());
+      const hasCommentNow = hasComment;
+      const prevTeachingQuality = Number(prev.teachingQuality ?? prev.quality ?? prev.rating);
+      const prevExamDifficulty = Number(prev.examDifficulty ?? prev.difficulty ?? prev.rating);
+      const prevStudentTreatment = Number(prev.studentTreatment ?? prev.treatment ?? prev.rating);
+      const hadRatingBefore = [prevTeachingQuality, prevExamDifficulty, prevStudentTreatment]
+        .every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
+
+      console.log("[submitProfessorReviewCallable] transaction context", {
+        professorId,
+        uid,
+        existedBefore,
+        hadCommentBefore,
+        hasCommentNow
+      });
 
       const profData = profSnap.data() || {};
       const ratings = profData.ratings || {};
@@ -91,23 +109,47 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const previousCommentsCount = Number(profData.commentsCount || 0);
       const wroteRating = finalRating !== null;
 
-      const nextCount = wroteRating ? totalReviews + 1 : totalReviews;
-      const nextTotalReviewsAll = totalReviewsAll + 1;
-      const nextSumQuality = wroteRating
-        ? (sumQuality + (hasMetrics ? teachingQuality : finalRating))
-        : sumQuality;
-      const nextSumDifficulty = wroteRating
-        ? (sumDifficulty + (hasMetrics ? examDifficulty : finalRating))
-        : sumDifficulty;
-      const nextSumTreatment = wroteRating
-        ? (sumTreatment + (hasMetrics ? studentTreatment : finalRating))
-        : sumTreatment;
+      const ratingQualityNow = hasMetrics ? teachingQuality : finalRating;
+      const ratingDifficultyNow = hasMetrics ? examDifficulty : finalRating;
+      const ratingTreatmentNow = hasMetrics ? studentTreatment : finalRating;
+
+      const addNewRating = wroteRating && !hadRatingBefore;
+      const replaceExistingRating = wroteRating && hadRatingBefore;
+      const removeExistingRating = !wroteRating && hadRatingBefore;
+
+      const nextCount = addNewRating
+        ? totalReviews + 1
+        : removeExistingRating
+          ? Math.max(0, totalReviews - 1)
+          : totalReviews;
+      const nextTotalReviewsAll = existedBefore ? totalReviewsAll : totalReviewsAll + 1;
+      const nextSumQuality = addNewRating
+        ? sumQuality + ratingQualityNow
+        : replaceExistingRating
+          ? sumQuality - prevTeachingQuality + ratingQualityNow
+          : removeExistingRating
+            ? sumQuality - prevTeachingQuality
+            : sumQuality;
+      const nextSumDifficulty = addNewRating
+        ? sumDifficulty + ratingDifficultyNow
+        : replaceExistingRating
+          ? sumDifficulty - prevExamDifficulty + ratingDifficultyNow
+          : removeExistingRating
+            ? sumDifficulty - prevExamDifficulty
+            : sumDifficulty;
+      const nextSumTreatment = addNewRating
+        ? sumTreatment + ratingTreatmentNow
+        : replaceExistingRating
+          ? sumTreatment - prevStudentTreatment + ratingTreatmentNow
+          : removeExistingRating
+            ? sumTreatment - prevStudentTreatment
+            : sumTreatment;
 
       const qualityAvg = nextCount > 0 ? nextSumQuality / nextCount : 0;
       const difficultyAvg = nextCount > 0 ? nextSumDifficulty / nextCount : 0;
       const treatmentAvg = nextCount > 0 ? nextSumTreatment / nextCount : 0;
       const average = nextCount > 0 ? (qualityAvg + difficultyAvg + treatmentAvg) / 3 : 0;
-      const nextComments = previousCommentsCount + (hasComment ? 1 : 0);
+      const nextComments = previousCommentsCount + (!hadCommentBefore && hasCommentNow ? 1 : 0);
 
       const now = FieldValue.serverTimestamp();
       const reviewPayload = {

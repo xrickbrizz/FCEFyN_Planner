@@ -502,7 +502,14 @@ async function loadProfessorReviews(professorId){
   try{
     const reviewsQuery = query(collection(CTX.db, "professors", professorId, "reviews"), orderBy("createdAt", "desc"));
     const snap = await getDocs(reviewsQuery);
-    const reviews = [];
+    const reviewsByUser = new Map();
+    const reviewsWithoutUser = [];
+    const resolveMillis = (value) => {
+      if (!value) return 0;
+      if (typeof value.toMillis === "function") return value.toMillis();
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+    };
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
       const rating = Number(data.rating || 0);
@@ -513,7 +520,7 @@ async function loadProfessorReviews(professorId){
       const examDifficulty = Number(examDifficultyRaw);
       const studentTreatment = Number(studentTreatmentRaw);
       const hasRating = [teachingQuality, examDifficulty, studentTreatment].every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
-      reviews.push({
+      const parsedReview = {
         id: reviewDoc.id,
         professorId,
         userId: data.userId || "",
@@ -522,14 +529,38 @@ async function loadProfessorReviews(professorId){
         studentTreatment: hasRating ? studentTreatment : null,
         hasRating,
         comment: data.comment || "",
-        createdAt: data.createdAt || data.updatedAt || null,
+        createdAt: data.createdAt || null,
+        updatedAt: data.updatedAt || null,
         anonymous: Boolean(data.anonymous),
         authorName: data.authorName || "",
         displayName: data.displayName || "",
         firstName: data.firstName || "",
         lastName: data.lastName || "",
         name: data.name || ""
-      });
+      };
+
+      const userKey = parsedReview.userId || "";
+      if (!userKey){
+        reviewsWithoutUser.push(parsedReview);
+        return;
+      }
+
+      const previous = reviewsByUser.get(userKey);
+      if (!previous){
+        reviewsByUser.set(userKey, parsedReview);
+        return;
+      }
+      const previousTime = resolveMillis(previous.updatedAt || previous.createdAt);
+      const currentTime = resolveMillis(parsedReview.updatedAt || parsedReview.createdAt);
+      if (currentTime >= previousTime){
+        reviewsByUser.set(userKey, parsedReview);
+      }
+    });
+
+    const reviews = [...reviewsByUser.values(), ...reviewsWithoutUser].sort((a, b) => {
+      const left = resolveMillis(a.updatedAt || a.createdAt);
+      const right = resolveMillis(b.updatedAt || b.createdAt);
+      return right - left;
     });
     state.reviewsByProfessor.set(professorId, reviews);
   }catch(error){
@@ -632,6 +663,13 @@ function openCommentModal(professor){
   if (!modal || !commentInput || !commentCount || !anonymousCheck || !professor) return;
 
   const draft = ensureReviewDraft(professor.id);
+  const currentUser = CTX?.getCurrentUser?.();
+  const userReview = (state.reviewsByProfessor.get(professor.id) || [])
+    .find((review) => review.userId === currentUser?.uid);
+  if (userReview){
+    draft.comment = userReview.comment || "";
+    draft.anonymous = Boolean(userReview.anonymous);
+  }
   console.log("[prof] openReviewModal", { professorId: professor.id, hasModal: !!modal });
   console.log("[prof] initRatingUI", {
     stars: document.querySelectorAll("#profRatingModal .star-btn")?.length || 0,
@@ -816,6 +854,7 @@ async function submitComment(){
     const res = await submitProfessorReviewCallable(payload);
     console.log("[prof] submit result DATA", res?.data);
 
+    if (commentInput) commentInput.value = "";
     draft.comment = "";
     draft.anonymous = false;
     closeCommentModal();
