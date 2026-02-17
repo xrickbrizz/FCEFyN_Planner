@@ -529,6 +529,7 @@ onSessionReady(async (user) => {
       containerEl: correlativasRoot,
       careerSlug: getProfileCareerSlug(),
       initialPlanSlug: getProfileCareerSlug(),
+      getCareerName: getProfileCareerName,
       userUid: getUid(),
       db,
       embedKey: "correlativas"
@@ -645,6 +646,20 @@ function getProfileCareerSlug(){
   return getCurrentCareer() || AppState?.userProfile?.careerSlug || "";
 }
 
+function getProfileCareerName(){
+  const profileCareer = (AppState?.userProfile?.career || "").trim();
+  if (profileCareer) return profileCareer;
+
+  const select = document.getElementById("inpCareer");
+  if (select instanceof HTMLSelectElement && select.selectedOptions?.length){
+    const selectedLabel = (select.selectedOptions[0]?.textContent || "").trim();
+    if (selectedLabel && !/^selecciona/i.test(selectedLabel)) return selectedLabel;
+  }
+
+  const slug = getProfileCareerSlug();
+  return slug || "Tu carrera";
+}
+
 // plan de estudio 
 
 function updatePlanTab(){
@@ -661,6 +676,7 @@ function updatePlanTab(){
 
   if (notice) notice.style.display = "none";
   root.style.display = "block";
+  plansEmbeddedController?.refreshCareerName?.();
   if (!plansEmbeddedController) return;
   if (root.dataset.planSlug !== slug){
     plansEmbeddedController.reload(slug);
