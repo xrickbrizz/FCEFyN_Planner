@@ -23,19 +23,6 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
     const hasComment = comment.length > 0;
     if (comment.length > MAX_COMMENT_LENGTH) throw new HttpsError("invalid-argument", "El comentario es demasiado largo.");
 
-    const parsedTeachingQuality = Number(data.teachingQuality);
-    const parsedExamDifficulty = Number(data.examDifficulty);
-    const parsedStudentTreatment = Number(data.studentTreatment);
-    const tq = Number.isFinite(parsedTeachingQuality) ? parsedTeachingQuality : null;
-    const ed = Number.isFinite(parsedExamDifficulty) ? parsedExamDifficulty : null;
-    const st = Number.isFinite(parsedStudentTreatment) ? parsedStudentTreatment : null;
-
-    const metricsProvided = ["teachingQuality", "examDifficulty", "studentTreatment"]
-      .some((metricKey) => Object.prototype.hasOwnProperty.call(data, metricKey));
-    const hasMetrics = [tq, ed, st].every((v) => v !== null);
-
-    console.log("[submitProfessorReviewCallable] hasComment:", hasComment);
-    const hasLegacyRatingField = Number.isFinite(Number(data.rating));
     if (hasLegacyRatingField) {
       console.warn("[submitProfessorReviewCallable] payload incluye campo legacy rating. Se ignora para evitar ratings fantasma.", {
         professorId,
@@ -80,8 +67,13 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
 
     const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
-    const reviewRef = professorRef.collection("reviews").doc(uid);
-    console.log("[submitProfessorReviewCallable] writing review docId:", reviewRef.id);
+
+    // ✅ histórico: doc nuevo SIEMPRE
+    const reviewRef = professorRef.collection("reviews").doc(); 
+
+    // ✅ contribución única por autor (para promedios/contador único)
+    const raterRef = professorRef.collection("raters").doc(uid);
+
 
     await db.runTransaction(async (tx) => {
       const profSnap = await tx.get(professorRef);
@@ -91,11 +83,18 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       const prev = prevReviewSnap.data() || {};
       const hadCommentBefore = Boolean(String(prev.comment || "").trim());
       const hasCommentNow = commentProvided ? hasComment : hadCommentBefore;
-      const prevTeachingQuality = Number(prev.teachingQuality);
-      const prevExamDifficulty = Number(prev.examDifficulty);
-      const prevStudentTreatment = Number(prev.studentTreatment);
+
+      // ✅ NUEVO: leer contribución única del autor
+      const prevRaterSnap = await tx.get(raterRef);
+      const prevRater = prevRaterSnap.exists ? (prevRaterSnap.data() || {}) : {};
+
+      const prevTeachingQuality = Number(prevRater.teachingQuality);
+      const prevExamDifficulty = Number(prevRater.examDifficulty);
+      const prevStudentTreatment = Number(prevRater.studentTreatment);
+
       const hadRatingBefore = [prevTeachingQuality, prevExamDifficulty, prevStudentTreatment]
-        .every((value) => Number.isFinite(value) && value >= 1 && value <= 5);
+        .every(v => Number.isFinite(v) && v >= 1 && v <= 5);
+
       const hasRatingNow = metricsProvided ? hasMetrics : hadRatingBefore;
 
       const profData = profSnap.data() || {};
@@ -198,6 +197,22 @@ exports.submitProfessorReviewCallable = onCall({ region: "us-central1" }, async 
       }
 
       tx.set(reviewRef, reviewPayload, { merge: true });
+// ✅ esto es lo que “cuenta” en sumas y totalReviews (usuarios únicos)
+if (metricsProvided) {
+  if (hasMetrics) {
+    tx.set(raterRef, {
+      professorId,
+      authorUid: uid,
+      teachingQuality,
+      examDifficulty,
+      studentTreatment,
+      updatedAt: now,
+      ...(prevRaterSnap.exists ? {} : { createdAt: now })
+    }, { merge: true });
+  } else {
+    tx.delete(raterRef);
+  }
+}
 
       tx.set(professorRef, {
         commentsCount: Math.max(0, nextComments),
