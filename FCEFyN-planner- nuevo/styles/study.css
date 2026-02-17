@@ -3845,7 +3845,7 @@ header{
   display: none;
 }
 /* Planner modal + chips sobre agenda */
-.preset-chips-row{ display:flex; flex-wrap:wrap; gap:12px; }
+.preset-chips-row{ display:flex; flex-wrap:wrap; gap: 0.5em; }
 .preset-chip{
   display:inline-flex;
   align-items:center;
@@ -3855,15 +3855,26 @@ header{
   background:#f3f3f3;
   color:var(--color-text);
   border-radius:20px;
-  padding:0px 14px;
-  font-size:14px;
+  padding:0rem 0.5rem;
+  font-size:0.9rem;
   font-weight:700;
   cursor:pointer;
   transition:all .2s ease;
 }
 .preset-chip.active{ background:var(--accent-15); border-color:var(--accent-60); }
 .preset-chip.add{ width:2rem; min-width:2rem; padding:.36rem 0; justify-content:center; text-align:center; border-radius:999px; }
+.preset-chip.add:disabled{ opacity:.45; cursor:not-allowed; }
 .preset-name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.preset-rename-input{
+  width:8.5rem;
+  border:1px solid var(--accent-60);
+  border-radius:999px;
+  padding:.2rem .55rem;
+  font-size:14px;
+  font-weight:700;
+  background:#fff;
+  color:var(--color-text);
+}
 .preset-chip-edit{ border:1px solid var(--border-60); background:transparent; color:var(--text-soft); border-radius:999px; padding:.2rem .45rem; }
 .preset-delete{
   background:transparent;
@@ -3882,8 +3893,8 @@ header{
   align-items:stretch;
   justify-content:flex-end;
   z-index:150;
-  background:rgba(0, 0, 0, .25);
-  backdrop-filter:blur(2px);
+  background:transparent;
+  backdrop-filter:none;
   animation:plannerFadeIn .2s ease;
 }
 
@@ -4015,6 +4026,11 @@ body[data-theme="light"] .planner-modal{
 }
 .btn-plan-apply:active,
 .btn-plan-add:active{ transform:translateY(0); }
+.btn-plan-apply:disabled{
+  opacity:.65;
+  cursor:default;
+  transform:none;
+}
 
 @keyframes plannerModalIn{
   from{ opacity:0; transform:translateY(8px) scale(.985); }

@@ -10,9 +10,70 @@ const subjectColorCtx = subjectColorCanvas.getContext("2d");
 let didBindSubjectsModalForm = false;
 let plannerSearchQuery = "";
 const PLANNER_COLOR_COUNT = 7;
+const MAX_PLANS = 4;
+const MAX_PLAN_NAME_LENGTH = 24;
 const COLOR_KEY = "planner_subject_colors_v1";
 const CURSOR_KEY = "planner_color_cursor_v1";
 let plannerColorState = { map: {}, cursor: 0 };
+let plannerModalSnapshot = null;
+
+function cloneStateValue(value){
+  return JSON.parse(JSON.stringify(value));
+}
+
+function makeDefaultPlanName(){
+  const usedNames = new Set((CTX.aulaState.presets || []).map((preset) => (preset?.name || "").trim().toLowerCase()));
+  for (let index = 1; index <= MAX_PLANS + 8; index += 1){
+    const candidate = `Plan ${index}`;
+    if (!usedNames.has(candidate.toLowerCase())) return candidate;
+  }
+  return `Plan ${Date.now()}`;
+}
+
+function getPlanSectionIds(plan){
+  if (!plan || typeof plan !== "object") return [];
+  if (Array.isArray(plan.sectionIds)) return plan.sectionIds.slice();
+  if (Array.isArray(plan.selectedComisiones)) return plan.selectedComisiones.slice();
+  return [];
+}
+
+function setPlanSectionIds(plan, sectionIds){
+  const normalizedIds = Array.isArray(sectionIds) ? sectionIds.slice() : [];
+  plan.sectionIds = normalizedIds;
+  plan.selectedComisiones = normalizedIds.slice();
+}
+
+function normalizePlansState(){
+  const rawPresets = Array.isArray(CTX.aulaState.presets) ? CTX.aulaState.presets : [];
+  const normalized = rawPresets.map((preset, index) => ({
+    id: preset?.id || makeId(),
+    name: (preset?.name || `Plan ${index + 1}`).trim() || `Plan ${index + 1}`,
+    sectionIds: getPlanSectionIds(preset),
+    selectedComisiones: getPlanSectionIds(preset),
+    createdAt: preset?.createdAt || Date.now(),
+    updatedAt: preset?.updatedAt || Date.now()
+  }));
+
+  if (!normalized.length){
+    normalized.push({
+      id: makeId(),
+      name: makeDefaultPlanName(),
+      sectionIds: [],
+      selectedComisiones: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+  }
+
+  CTX.aulaState.presets = normalized.slice(0, MAX_PLANS);
+  if (!CTX.aulaState.presets.some((plan) => plan.id === CTX.aulaState.activePresetId)){
+    CTX.aulaState.activePresetId = CTX.aulaState.presets[0].id;
+  }
+
+  const activePlan = CTX.aulaState.presets.find((plan) => plan.id === CTX.aulaState.activePresetId);
+  CTX.aulaState.activePresetName = activePlan?.name || "";
+  CTX.aulaState.activeSelectedSectionIds = getPlanSectionIds(activePlan);
+}
 
 function normalizeColorMap(rawMap){
   if (!rawMap || typeof rawMap !== "object") return {};
@@ -373,7 +434,7 @@ function renderPresetsList(){
   const outside = document.getElementById("agendaPresetChips");
   if (outside) outside.innerHTML = "";
 
-  const presets = CTX.aulaState.presets.slice().sort((a,b)=> (a.name || "").localeCompare(b.name || "", "es"));
+  const presets = CTX.aulaState.presets.slice();
   presets.forEach(p => {
     if (!outside) return;
     const chip = document.createElement("div");
@@ -386,6 +447,11 @@ function renderPresetsList(){
     const name = document.createElement("span");
     name.className = "preset-name";
     name.textContent = p.name || "Sin nombre";
+    name.title = "Doble click para renombrar";
+    name.addEventListener("dblclick", (event) => {
+      event.stopPropagation();
+      startInlineRenamePlan(p.id, name);
+    });
     chip.appendChild(name);
 
     chip.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
@@ -398,6 +464,65 @@ function renderPresetsList(){
 
     outside.appendChild(chip);
   });
+
+  if (!outside) return;
+  const addBtn = document.createElement("button");
+  const reachedMaxPlans = CTX.aulaState.presets.length >= MAX_PLANS;
+  addBtn.type = "button";
+  addBtn.className = "preset-chip add";
+  addBtn.id = "btnAddPlanChip";
+  addBtn.textContent = "+";
+  addBtn.title = reachedMaxPlans ? "Límite de 4 planes alcanzado" : "Crear plan";
+  addBtn.disabled = reachedMaxPlans;
+  addBtn.setAttribute("aria-label", addBtn.title);
+  addBtn.addEventListener("click", () => {
+    createPlan().catch(() => {});
+  });
+  outside.appendChild(addBtn);
+}
+
+function startInlineRenamePlan(planId, nameNode){
+  const plan = CTX.aulaState.presets.find((item) => item.id === planId);
+  if (!plan || !nameNode) return;
+
+  const previousName = plan.name || "Sin nombre";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = previousName;
+  input.maxLength = MAX_PLAN_NAME_LENGTH;
+  input.className = "preset-rename-input";
+  nameNode.replaceWith(input);
+  input.focus();
+  input.select();
+
+  let didFinish = false;
+  const finishRename = async (commitRename) => {
+    if (didFinish) return;
+    didFinish = true;
+
+    if (commitRename){
+      const nextName = input.value.trim().slice(0, MAX_PLAN_NAME_LENGTH);
+      if (!nextName){
+        CTX?.notifyWarn?.("El nombre del plan no puede estar vacío.");
+      } else {
+        await renamePlan(planId, nextName);
+        return;
+      }
+    }
+    renderPresetsList();
+  };
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter"){
+      event.preventDefault();
+      finishRename(true).catch(() => {});
+    }
+    if (event.key === "Escape"){
+      event.preventDefault();
+      finishRename(false).catch(() => {});
+    }
+  });
+  input.addEventListener("blur", () => { finishRename(true).catch(() => {}); });
 }
 
 function renderSelectedSectionsList(){
@@ -523,10 +648,15 @@ async function persistPresetsToFirestore(){
   const ref = doc(CTX.db, "planner", currentUser.uid);
   const snap = await getDoc(ref);
   const data = snap.exists() ? snap.data() : {};
-  data.schedulePresets = CTX.aulaState.presets;
+  data.schedulePresets = CTX.aulaState.presets.map((plan) => ({
+    ...plan,
+    sectionIds: getPlanSectionIds(plan),
+    selectedComisiones: getPlanSectionIds(plan)
+  }));
   data.activePresetId = CTX.aulaState.activePresetId || "";
   data.plannerSubjectColors = plannerColorState.map;
   data.plannerColorCursor = plannerColorState.cursor;
+  data.agenda = buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
   await setDoc(ref, data);
 }
 
@@ -535,21 +665,22 @@ function loadPreset(id){
   if (!p) return;
   CTX.aulaState.activePresetId = p.id;
   CTX.aulaState.activePresetName = p.name || "";
-  CTX.aulaState.activeSelectedSectionIds = Array.isArray(p.sectionIds) ? p.sectionIds.slice() : [];
-  renderPlannerAll();
+  CTX.aulaState.activeSelectedSectionIds = getPlanSectionIds(p);
 }
 
 async function upsertActivePreset(silentName = ""){
-  const name = (silentName || CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`).trim();
+  const name = (silentName || CTX.aulaState.activePresetName || makeDefaultPlanName()).trim();
   CTX.aulaState.activePresetName = name;
   if (!CTX.aulaState.activePresetId){
     CTX.aulaState.activePresetId = makeId();
-    CTX.aulaState.presets.push({ id: CTX.aulaState.activePresetId, name, sectionIds: CTX.aulaState.activeSelectedSectionIds.slice(), createdAt: Date.now() });
+    const newPlan = { id: CTX.aulaState.activePresetId, name, sectionIds: [], selectedComisiones: [], createdAt: Date.now() };
+    setPlanSectionIds(newPlan, CTX.aulaState.activeSelectedSectionIds);
+    CTX.aulaState.presets.push(newPlan);
   } else {
     const p = CTX.aulaState.presets.find(x => x.id === CTX.aulaState.activePresetId);
     if (p){
       p.name = name;
-      p.sectionIds = CTX.aulaState.activeSelectedSectionIds.slice();
+      setPlanSectionIds(p, CTX.aulaState.activeSelectedSectionIds);
       p.updatedAt = Date.now();
     }
   }
@@ -570,8 +701,14 @@ async function saveActivePreset(){
 async function duplicatePreset(){
   const current = CTX.aulaState.presets.find(x => x.id === CTX.aulaState.activePresetId);
   if (!current){ CTX?.notifyWarn?.("No hay preset activo para duplicar."); return; }
+  if (CTX.aulaState.presets.length >= MAX_PLANS){
+    CTX?.notifyWarn?.("Límite de 4 planes alcanzado.");
+    return;
+  }
   const id = makeId();
-  CTX.aulaState.presets.push({ id, name: `${current.name || "Preset"} (copia)`, sectionIds: (current.sectionIds || []).slice(), createdAt: Date.now() });
+  const duplicated = { id, name: `${current.name || "Plan"} (copia)`, sectionIds: [], selectedComisiones: [], createdAt: Date.now() };
+  setPlanSectionIds(duplicated, getPlanSectionIds(current));
+  CTX.aulaState.presets.push(duplicated);
   loadPreset(id);
   await persistPresetsToFirestore();
 }
@@ -586,6 +723,35 @@ async function deletePreset(){
   renderPlannerAll();
 }
 
+async function commitPlanState(options = {}){
+  const { closePlanner = false } = options;
+  CTX.aulaState.agendaData = buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
+  await persistPresetsToFirestore();
+  refreshAgendaUI();
+  if (closePlanner) closePlannerModal();
+}
+
+function refreshAgendaUI(){
+  CTX.renderAgenda?.();
+  renderPlannerAll();
+  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
+    detail: {
+      source: "planner",
+      presetId: CTX.aulaState.activePresetId,
+      agenda: CTX.aulaState.agendaData
+    }
+  }));
+}
+
+async function applyLiveChange(){
+  const activePreset = CTX.aulaState.presets.find((plan) => plan.id === CTX.aulaState.activePresetId);
+  if (activePreset){
+    setPlanSectionIds(activePreset, CTX.aulaState.activeSelectedSectionIds);
+    activePreset.updatedAt = Date.now();
+  }
+  await commitPlanState();
+}
+
 function toggleSectionInPreset(sectionId){
   const idx = CTX.aulaState.activeSelectedSectionIds.indexOf(sectionId);
   if (idx >= 0){
@@ -598,49 +764,59 @@ function toggleSectionInPreset(sectionId){
     ensureColorForSubject(getSectionSubjectSlug(sec));
     CTX.aulaState.activeSelectedSectionIds.push(sectionId);
   }
-
-  const activePreset = CTX.aulaState.presets.find(p => p.id === CTX.aulaState.activePresetId);
-  if (activePreset){
-    activePreset.sectionIds = CTX.aulaState.activeSelectedSectionIds.slice();
-    activePreset.updatedAt = Date.now();
-  }
-
-  renderSectionsList();
-  renderSelectedSectionsList();
-  renderPlannerPreview();
+  applyLiveChange().catch(() => {});
 }
 
 async function applyPresetToAgendaDirect(presetId, notify = false){
-  const currentUser = CTX?.getCurrentUser?.();
-  if (!currentUser) return;
   const p = CTX.aulaState.presets.find(x => x.id === presetId);
   if (!p) return;
   CTX.aulaState.activePresetId = p.id;
   CTX.aulaState.activePresetName = p.name || "";
-  CTX.aulaState.activeSelectedSectionIds = (p.sectionIds || []).slice();
-
-  CTX.aulaState.agendaData = buildWeeklyDataFromSectionIds(p.sectionIds || []);
-  const ref = doc(CTX.db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
-  data.agenda = CTX.aulaState.agendaData;
-  data.activePresetId = p.id;
-  await setDoc(ref, data);
-
-  CTX.renderAgenda?.();
-  renderPlannerAll();
-  window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT, {
-    detail: {
-      source: "planner",
-      presetId: p.id,
-      agenda: CTX.aulaState.agendaData
-    }
-  }));
+  CTX.aulaState.activeSelectedSectionIds = getPlanSectionIds(p);
+  await commitPlanState();
   void notify;
 }
 
 function selectPresetAndRefreshAgenda(id){
   applyPresetToAgendaDirect(id).catch(() => {});
+}
+
+async function createPlan(){
+  if (CTX.aulaState.presets.length >= MAX_PLANS){
+    CTX?.notifyWarn?.("Límite de 4 planes alcanzado.");
+    renderPresetsList();
+    return;
+  }
+  const newPlan = {
+    id: makeId(),
+    name: makeDefaultPlanName(),
+    sectionIds: [],
+    selectedComisiones: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+  CTX.aulaState.presets.push(newPlan);
+  CTX.aulaState.activePresetId = newPlan.id;
+  CTX.aulaState.activePresetName = newPlan.name;
+  CTX.aulaState.activeSelectedSectionIds = [];
+  await commitPlanState();
+}
+
+async function renamePlan(planId, nextName){
+  const normalizedName = String(nextName || "").trim().slice(0, MAX_PLAN_NAME_LENGTH);
+  if (!normalizedName){
+    CTX?.notifyWarn?.("El nombre del plan no puede quedar vacío.");
+    return;
+  }
+  const plan = CTX.aulaState.presets.find((item) => item.id === planId);
+  if (!plan) return;
+  plan.name = normalizedName;
+  plan.updatedAt = Date.now();
+  if (plan.id === CTX.aulaState.activePresetId){
+    CTX.aulaState.activePresetName = normalizedName;
+  }
+  await persistPresetsToFirestore();
+  renderPresetsList();
 }
 
 function togglePlannerStyleModal(modalId, open){
@@ -651,11 +827,31 @@ function togglePlannerStyleModal(modalId, open){
 }
 
 function openPlannerModal(){
+  plannerModalSnapshot = {
+    activePresetId: CTX.aulaState.activePresetId,
+    activePresetName: CTX.aulaState.activePresetName,
+    activeSelectedSectionIds: cloneStateValue(CTX.aulaState.activeSelectedSectionIds),
+    presets: cloneStateValue(CTX.aulaState.presets),
+    agendaData: cloneStateValue(CTX.aulaState.agendaData)
+  };
   togglePlannerStyleModal("plannerModalBg", true);
 }
 
 function closePlannerModal(){
   togglePlannerStyleModal("plannerModalBg", false);
+}
+
+async function cancelPlannerChanges(){
+  if (plannerModalSnapshot){
+    CTX.aulaState.activePresetId = plannerModalSnapshot.activePresetId;
+    CTX.aulaState.activePresetName = plannerModalSnapshot.activePresetName;
+    CTX.aulaState.activeSelectedSectionIds = cloneStateValue(plannerModalSnapshot.activeSelectedSectionIds);
+    CTX.aulaState.presets = cloneStateValue(plannerModalSnapshot.presets);
+    CTX.aulaState.agendaData = cloneStateValue(plannerModalSnapshot.agendaData);
+    await persistPresetsToFirestore();
+    refreshAgendaUI();
+  }
+  closePlannerModal();
 }
 
 
@@ -850,20 +1046,8 @@ function closeSubjectsModal(){
   togglePlannerStyleModal("subjectsModalBg", false);
 }
 
-async function applyPlannerChanges(){
-  if (!CTX.aulaState.activePresetId && CTX.aulaState.activeSelectedSectionIds.length){
-    CTX.aulaState.activePresetName = CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`;
-    await upsertActivePreset(CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`);
-  } else if (CTX.aulaState.activePresetId){
-    await upsertActivePreset(CTX.aulaState.activePresetName || `Preset ${CTX.aulaState.presets.length + 1}`);
-  }
-  if (CTX.aulaState.activePresetId){
-    await applyPresetToAgendaDirect(CTX.aulaState.activePresetId);
-  }
-  closePlannerModal();
-}
-
 function initPlanificadorUI(){
+  normalizePlansState();
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
   const plannerSearchInput = document.getElementById("plannerSearch");
 
@@ -877,8 +1061,7 @@ function initPlanificadorUI(){
   document.getElementById("btnPlanificadorAgenda")?.addEventListener("click", openPlannerModal);
   document.getElementById("btnOpenSubjectsModal")?.addEventListener("click", openSubjectsModal);
   document.getElementById("btnPlannerClose")?.addEventListener("click", closePlannerModal);
-  document.getElementById("btnPlannerCancel")?.addEventListener("click", closePlannerModal);
-  document.getElementById("btnPlannerApplyToAgenda")?.addEventListener("click", () => applyPlannerChanges().catch(()=>{}));
+  document.getElementById("btnPlannerCancel")?.addEventListener("click", () => cancelPlannerChanges().catch(() => {}));
   document.getElementById("plannerModalBg")?.addEventListener("click", (e) => { if (e.target.id === "plannerModalBg") closePlannerModal(); });
   document.getElementById("btnSubjectsClose")?.addEventListener("click", closeSubjectsModal);
   document.getElementById("btnSubjectsCancel")?.addEventListener("click", closeSubjectsModal);
@@ -938,6 +1121,7 @@ const Planner = {
   init(ctx){
     CTX = ctx;
     console.log("🛠️ Planner.init ejecutándose");
+    normalizePlansState();
     plannerColorState = loadColorStateFromLocalStorage();
     hydratePlannerColorStateFromRemote();
     initPresetToAgendaModalUI();
