@@ -2678,16 +2678,6 @@ body[data-theme="light"] .event{
   width:100%;
   padding:.6rem 0;
 }
-.prof-search-input > span{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  line-height:1;
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-}
 
 .prof-grid{
   display:grid;
@@ -2905,46 +2895,6 @@ body[data-theme="light"] .event{
   background:var(--input-bg);
   color:var(--color-text);
   padding:.65rem .75rem;
-}
-
-body.dark-mode .prof-subject-chip,
-body[data-theme="dark"] .prof-subject-chip{
-  background:color-mix(in srgb, var(--card-bg) 82%, #ffffff 18%);
-  border-color:color-mix(in srgb, var(--color-accent) 48%, #ffffff 18%);
-  color:#fff;
-}
-
-body.dark-mode .prof-filters-modal-content,
-body[data-theme="dark"] .prof-filters-modal-content,
-body.dark-mode #profAdvancedFiltersModal .prof-modal-content,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-modal-content{
-  background:var(--card-bg);
-  border-color:var(--border-35);
-  color:var(--color-text);
-}
-
-body.dark-mode #profAdvancedFiltersModal .prof-filter-field label,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field label,
-body.dark-mode #profAdvancedFiltersModal .prof-modal-header,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-modal-header{
-  color:var(--color-text);
-}
-
-body.dark-mode #profAdvancedFiltersModal .prof-filter-field select,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select,
-body.dark-mode #profAdvancedFiltersModal .prof-filter-field input,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field input{
-  background:var(--input-bg);
-  border:1px solid var(--input-border);
-  color:var(--color-text);
-}
-
-body.dark-mode #profAdvancedFiltersModal .prof-filter-field select:focus,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select:focus,
-body.dark-mode #profAdvancedFiltersModal .prof-filter-field input:focus,
-body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field input:focus{
-  border-color:var(--accent-80);
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-60) 25%, transparent);
 }
 
 @media(max-width:920px){
