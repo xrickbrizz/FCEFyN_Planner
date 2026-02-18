@@ -41,7 +41,9 @@ function mapPlanDocument(docSnap){
 
 export async function getPlansIndex(){
   if (cachedIndex) return cachedIndex;
+  console.log("[Materias] loadStudyPlan() collectionPath:", "plans");
   const snapshot = await getDocs(collection(db, "plans"));
+  console.log("[Materias] planDocs:", snapshot.docs.length);
   const plans = snapshot.docs
     .map((docSnap) => mapPlanDocument(docSnap))
     .filter((plan) => !!plan.slug)
@@ -64,13 +66,16 @@ export async function getPlanWithSubjects(slug){
   if(cachedSubjects.has(slug)) return { plan: plan || null, ...cachedSubjects.get(slug) };
 
   const planRef = doc(db, "plans", slug);
+  console.log("[Materias] loadStudyPlan() docPath:", `plans/${slug}`);
   const snap = await getDoc(planRef);
   if (!snap.exists()){
+    console.warn("[Materias] plan no encontrado para careerSlug:", slug);
     return { plan: plan || null, subjects: [], raw: {} };
   }
 
   const rawPlan = snap.data() || {};
   const subjects = Array.isArray(rawPlan.materias) ? rawPlan.materias : [];
+  console.log("[Materias] planDocs:", subjects.length, "careerSlug:", slug);
   const payload = { subjects, raw: rawPlan };
   cachedSubjects.set(slug, payload);
   return { plan: plan || { slug, nombre: rawPlan.nombre || slug, version: Number(rawPlan.version || 1) }, ...payload };

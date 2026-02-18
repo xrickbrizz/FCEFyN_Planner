@@ -578,6 +578,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadPlan(slug) {
+    console.log("[Materias] loadStudyPlan() [correlativas]");
     const resolved = resolvePlanSlug(slug || "");
     if (!resolved) {
       state.materias = [];
@@ -617,6 +618,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadStates() {
+    console.log("[Materias] loadCorrelativasOrStates() [correlativas]");
     try {
       const localRaw = localStorage.getItem(state.storageKey);
       if (localRaw) setEstadoSimpleMap(JSON.parse(localRaw));
@@ -629,8 +631,10 @@ export async function mountPlansEmbedded({
   function startPlannerSubscription() {
     if (!state.plannerRef) return;
     state.plannerUnsubscribe?.();
+    console.log("[Materias] loadCorrelativasOrStates() plannerPath:", `planner/${state.userUid}`);
     state.plannerUnsubscribe = onSnapshot(state.plannerRef, (snap) => {
       const remote = snap.exists() ? (snap.data()?.subjectStates || {}) : {};
+      console.log("[Materias] states keys:", Object.keys(remote || {}).length);
       const normalizedRemote = normalizeRemoteSubjectStates(remote);
       setEstadoSimpleMap(normalizedRemote);
       persistLocal();

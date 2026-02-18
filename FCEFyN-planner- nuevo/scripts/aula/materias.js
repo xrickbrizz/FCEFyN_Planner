@@ -198,6 +198,9 @@ function updateSubjectPlanHint(){
 
 function updateCareerFallbackUI(hasProfileCareer){
   if (subjectCareerNotice) subjectCareerNotice.style.display = hasProfileCareer ? "none" : "block";
+  if (!hasProfileCareer && subjectCareerNotice) {
+    subjectCareerNotice.childNodes[0].textContent = "Elegí tu carrera en Perfil para ver materias. ";
+  }
   if (catalogCareerLabel){
     const profileCareer = getProfileCareer();
     catalogCareerLabel.textContent = profileCareer?.name || "Seleccioná tu carrera en Perfil.";
@@ -319,6 +322,9 @@ function startPlannerStateSubscription(){
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser?.uid) return;
 
+  console.log("[Materias] uid:", currentUser.uid);
+  console.log("[Materias] loadCorrelativasOrStates() plannerPath:", `planner/${currentUser.uid}`);
+
   plannerStateUnsubscribe = onSnapshot(doc(CTX.db, "planner", currentUser.uid), (snap) => {
     const data = snap.exists() ? (snap.data() || {}) : {};
     const states = data.subjectStates || {};
@@ -350,7 +356,11 @@ function renderCatalog(){
   if (!subjectCatalogList) return;
   subjectCatalogList.innerHTML = "";
 
+  const beforeFilters = (CTX?.aulaState?.careerSubjects || []).length;
   const catalog = getCatalogSubjects();
+  console.log("[Materias] before filters:", beforeFilters);
+  console.log("[Materias] after filters:", catalog.length);
+  console.log("[Materias] renderAvailableSubjects(count):", catalog.length);
   if (!catalog.length){
     const empty = document.createElement("div");
     empty.className = "subjects-empty-msg";
@@ -816,11 +826,17 @@ async function setActiveCareer(slug, persist){
 
   if (needsReload){
     try{
+      console.log("[Materias] loadStudyPlan() planDocPath:", `plans/${canonicalSlug}`);
       const data = await getPlanWithSubjects(canonicalSlug);
-      console.log("[materias] subjects cargadas:", data.subjects?.length, "primeros ids:", (data.subjects || []).slice(0, 5).map((s) => s.id || s.slug || s.nombre));
+      const samplePlanIds = (data.subjects || []).slice(0, 10).map((s) => s.id || s.slug || s.subjectSlug || s.nombre);
+      const sampleStateKeys = Object.keys(plannerState || {}).slice(0, 10);
+      console.log("[Materias] planDocs:", data.subjects?.length || 0, "careerSlug:", canonicalSlug);
+      console.log("[Materias] sample plan ids:", samplePlanIds);
+      console.log("[Materias] sample state keys:", sampleStateKeys);
       CTX.aulaState.careerSubjects = Array.isArray(data.subjects) ? data.subjects : [];
       rebuildPlannerKeyAliases();
-    }catch (_error){
+    }catch (error){
+      console.error("[Materias] Firestore error:", error?.code, error?.message, error);
       CTX.aulaState.careerSubjects = [];
       rebuildPlannerKeyAliases();
       CTX?.notifyWarn?.("No se pudieron cargar las materias de la carrera.");
@@ -844,21 +860,44 @@ async function setActiveCareer(slug, persist){
 }
 
 async function syncCareerFromProfile({ forceReload = false } = {}){
+  console.log("[Materias] init()");
   resolveSubjectsUI();
   if (!Array.isArray(CTX.aulaState.careerPlans) || !CTX.aulaState.careerPlans.length){
     await loadCareerPlans();
   }
 
+  const currentUser = CTX?.getCurrentUser?.();
+  const userData = CTX?.AppState?.userProfile || {};
+  console.log("[Materias] uid:", currentUser?.uid || "");
+  console.log("[Materias] user career:", userData?.career, "careerSlug:", userData?.careerSlug);
+
   const profileCareer = getProfileCareer();
   const hasProfileCareer = !!profileCareer?.slug;
   updateCareerFallbackUI(hasProfileCareer);
-  const storedPlannerSlug = CTX.aulaState.plannerCareer?.slug || "";
-  const resolvedSlug = storedPlannerSlug || profileCareer?.slug || "";
-  const changed = CTX.aulaState.plannerCareer?.slug !== resolvedSlug;
-  if (resolvedSlug && (changed || forceReload)) {
-    await setActiveCareer(resolvedSlug, false);
+  if (!hasProfileCareer) {
+    console.error("[Materias] careerSlug ausente. Elegí tu carrera en Perfil.", new Error("Missing careerSlug"));
   }
-  if (!resolvedSlug) {
+  const storedPlannerSlug = CTX.aulaState.plannerCareer?.slug || "";
+  const selectedCareerSlug = profileCareer?.slug || storedPlannerSlug || "";
+  const canonicalSelectedSlug = resolvePlanSlug(selectedCareerSlug);
+  console.log("[Materias] selectedCareerSlug:", selectedCareerSlug, "canonical:", canonicalSelectedSlug);
+
+  const hasSubjectsLoaded = Array.isArray(CTX.aulaState.careerSubjects) && CTX.aulaState.careerSubjects.length > 0;
+  const changed = CTX.aulaState.plannerCareer?.slug !== canonicalSelectedSlug;
+  const slugNeedsCanonicalization = !!selectedCareerSlug && canonicalSelectedSlug !== selectedCareerSlug;
+
+  if (canonicalSelectedSlug && (changed || forceReload || !hasSubjectsLoaded || slugNeedsCanonicalization)) {
+    console.log("[Materias] loadStudyPlan() trigger", {
+      changed,
+      forceReload,
+      hasSubjectsLoaded,
+      slugNeedsCanonicalization
+    });
+    console.log("[Materias] loadStudyPlan()");
+    console.log("[Materias] loadCorrelativasOrStates()");
+    await setActiveCareer(canonicalSelectedSlug, false);
+  }
+  if (!canonicalSelectedSlug) {
     await setActiveCareer("", false);
   }
 

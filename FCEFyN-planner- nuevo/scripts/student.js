@@ -705,7 +705,9 @@ const helpContent = {
 };
 
 function getProfileCareerSlug(){
-  return getCurrentCareer() || AppState?.userProfile?.careerSlug || "";
+  const selectedCareerSlug = getCurrentCareer() || AppState?.userProfile?.careerSlug || "";
+  console.log("[Materias] selectedCareerSlug:", selectedCareerSlug);
+  return selectedCareerSlug;
 }
 
 function getProfileCareerName(){
@@ -730,6 +732,7 @@ function updatePlanTab(){
   if (!root) return;
   const rawSlug = getProfileCareerSlug();
   const slug = resolvePlanSlug(rawSlug);
+  console.log("[Materias] loadStudyPlan() correlativas rawSlug:", rawSlug, "resolved:", slug);
   if (!slug){
     if (notice) notice.style.display = "block";
     root.style.display = "none";
