@@ -1574,20 +1574,44 @@ body[data-theme="light"] .event{
       align-items:flex-start;
       gap:.6rem;
     }
-    .activity-check {
+    .activity-check,
+    .record-check {
       width: 18px;
       height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border-soft);
-      background: transparent;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, .15);
+      background: var(--cardBg, var(--card, #fff));
+      color: transparent;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color .2s ease, border-color .2s ease, color .2s ease;
       flex: 0 0 18px;
       margin-top: .2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
-    .activity-check.completed {
-      background: var(--primary);
-      border-color: var(--primary);
+    .activity-check::after,
+    .record-check::after {
+      content: "✓";
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 700;
+      color: transparent;
+      transform: translateY(-0.5px);
+    }
+    .activity-check.completed,
+    .activity-check.is-checked,
+    .record-check.completed,
+    .record-check.is-checked {
+      border-color: rgba(28, 160, 90, .45);
+      background: rgba(28, 160, 90, .08);
+    }
+    .activity-check.completed::after,
+    .activity-check.is-checked::after,
+    .record-check.completed::after,
+    .record-check.is-checked::after {
+      color: rgba(28, 160, 90, .95);
     }
     .activity-item.completed {
       opacity: 0.6;

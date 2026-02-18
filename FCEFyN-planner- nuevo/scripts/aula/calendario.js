@@ -1321,7 +1321,7 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
 
     const checkBtn = document.createElement("button");
     checkBtn.type = "button";
-    checkBtn.className = `activity-check${completed ? " completed" : ""}`;
+    checkBtn.className = `activity-check record-check${completed ? " completed is-checked" : ""}`;
     checkBtn.setAttribute("aria-label", completed ? "Marcar como pendiente" : "Marcar como completada");
     checkBtn.addEventListener("click", async (e)=>{
       e.stopPropagation();
@@ -1416,7 +1416,7 @@ function openAcadDayModal(dateKey, focusIndex = -1){
 
       const checkBtn = document.createElement("button");
       checkBtn.type = "button";
-      checkBtn.className = `activity-check${completed ? " completed" : ""}`;
+      checkBtn.className = `activity-check record-check${completed ? " completed is-checked" : ""}`;
       checkBtn.setAttribute("aria-label", completed ? "Marcar como pendiente" : "Marcar como completada");
       checkBtn.addEventListener("click", async (e)=>{
         e.stopPropagation();
