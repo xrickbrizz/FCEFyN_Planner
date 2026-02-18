@@ -3883,6 +3883,13 @@ body.modal-open{
   font-weight:600;
 }
 
+body.dark-mode #tab-perfil.profile-page .profile-field label,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-field label,
+body.dark-mode #tab-perfil.profile-page .profile-grid .form-group label,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label{
+  color:var(--accent-gold);
+}
+
 #tab-perfil.profile-page .profile-field input,
 #tab-perfil.profile-page .profile-field select{
   width: 100%;
