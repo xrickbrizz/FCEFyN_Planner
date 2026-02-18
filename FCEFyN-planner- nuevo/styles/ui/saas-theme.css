@@ -734,11 +734,12 @@ body[data-theme="dark"] .quick-toggle-btn{
   background: var(--card-bg, var(--card));
 }
 
+.acad-pending-item-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:.45rem; }
 .acad-pending-item-title{ font-weight:700; color:var(--text); }
 .acad-pending-item-meta{ font-size:.82rem; color:var(--color-muted); }
 .acad-pending-item-time{ font-size:.8rem; color:var(--color-muted); margin-top:.2rem; }
 
-.acad-overdue-badge{ display:inline-flex; align-items:center; margin-top:.4rem; padding:.14rem .48rem; border-radius:999px; border:1px solid #fca5a5; background:#fee2e2; color:#991b1b; font-size:.72rem; font-weight:700; }
+.badge-overdue,.acad-overdue-badge{ display:inline-flex; align-items:center; background:#FEE2E2; color:#991B1B; border:1px solid #FCA5A5; font-size:12px; padding:2px 8px; border-radius:999px; font-weight:600; white-space:nowrap; }
 .acad-pending-item.priority-alta{ border-color: color-mix(in srgb, #c44 35%, var(--color-border)); background: color-mix(in srgb, #c44 8%, var(--card-bg, var(--card))); }
 .acad-pending-item.priority-media{ border-color: color-mix(in srgb, #d6ab3b 45%, var(--color-border)); background: color-mix(in srgb, #d6ab3b 10%, var(--card-bg, var(--card))); }
 .acad-pending-item.priority-baja{ border-color: var(--color-border); background: var(--card-bg, var(--card)); }

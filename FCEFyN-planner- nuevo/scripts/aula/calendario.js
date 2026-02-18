@@ -1851,13 +1851,16 @@ function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false, reference
   if (!start) return items;
   const end = new Date(start);
   end.setDate(end.getDate() + daysAhead);
+  const startTime = start.getTime();
+  const endTime = end.getTime();
 
   Object.keys(academicoCache).forEach(storageKey =>{
     const normalizedKey = getDayKey(storageKey);
     if (!normalizedKey) return;
     const date = getStartOfDayFromKey(normalizedKey);
     if (!date) return;
-    if (date.getTime() <= start.getTime() || date > end) return;
+    const dueTime = date.getTime();
+    if (dueTime <= startTime || dueTime > endTime) return;
 
     const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
     entries.forEach((item, index)=>{
@@ -1910,9 +1913,11 @@ function renderAcadPendingWidget(items){
     const row = document.createElement("article");
     row.className = `acad-pending-item priority-${priority}`;
     row.innerHTML = `
-      <div class="acad-pending-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+      <div class="acad-pending-item-head">
+        <div class="acad-pending-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+        ${isOverdue ? '<span class="badge-overdue acad-overdue-badge">Vencida</span>' : ""}
+      </div>
       <div class="acad-pending-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(dateLabel)}</div>
-      ${isOverdue ? '<span class="acad-overdue-badge">Vencida</span>' : ""}
       ${relative ? `<div class="acad-pending-item-time">${escapeHtml(relative)}</div>` : ""}
     `;
     list.appendChild(row);
@@ -1922,6 +1927,7 @@ function renderAcadPendingWidget(items){
 function renderAcadUpcomingWidget(items = []){
   if (!acadUpcomingWidget) return;
 
+  const selectedDate = getStartOfDayFromKey(acadSelectedDateKey || getTodayKey());
   const monthFmt = new Intl.DateTimeFormat("es-AR", { month: "short" });
   const visibleItems = items.slice(0, 4);
   acadUpcomingWidget.innerHTML = `
@@ -1934,12 +1940,13 @@ function renderAcadUpcomingWidget(items = []){
   if (!list) return;
 
   visibleItems.forEach(({ item, dateKey })=>{
-    const parts = ymdFromDateKey(dateKey);
-    const dueDate = parts ? new Date(parts.y, parts.m - 1, parts.d) : null;
+    const dueDate = getStartOfDayFromKey(dateKey);
     const day = dueDate ? String(dueDate.getDate()) : "—";
     const month = dueDate ? monthFmt.format(dueDate).replace(".", "") : "---";
-    const daysLeft = dueDate ? Math.ceil((dueDate.setHours(23,59,59,999) - Date.now()) / (1000 * 60 * 60 * 24)) : null;
-    const secondary = Number.isFinite(daysLeft) ? (daysLeft > 0 ? `Faltan ${daysLeft} días` : daysLeft === 0 ? "Vence hoy" : "Vencido") : "";
+    const daysLeft = (dueDate && selectedDate)
+      ? Math.round((dueDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24))
+      : null;
+    const secondary = Number.isFinite(daysLeft) && daysLeft > 0 ? `Faltan ${daysLeft} días` : "";
 
     const row = document.createElement("article");
     row.className = "upcoming-row upcoming-row--timeline";
