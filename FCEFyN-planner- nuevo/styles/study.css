@@ -4112,6 +4112,40 @@ header{
 }
 .preset-delete:hover{ color:#e53935; transform:scale(1.1); }
 
+body.dark-mode .preset-chip,
+body[data-theme="dark"] .preset-chip,
+body.dark-mode .preset-btn,
+body[data-theme="dark"] .preset-btn{
+  background:rgba(255, 255, 255, 0.12);
+  border-color:rgba(255, 255, 255, 0.34);
+  color:rgba(248, 250, 252, 0.94);
+}
+
+body.dark-mode .preset-chip:hover,
+body[data-theme="dark"] .preset-chip:hover,
+body.dark-mode .preset-btn:hover,
+body[data-theme="dark"] .preset-btn:hover{
+  background:rgba(255, 255, 255, 0.18);
+  border-color:rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .preset-chip:focus-visible,
+body[data-theme="dark"] .preset-chip:focus-visible,
+body.dark-mode .preset-btn:focus-visible,
+body[data-theme="dark"] .preset-btn:focus-visible{
+  outline:2px solid rgba(173, 216, 255, 0.95);
+  outline-offset:2px;
+}
+
+body.dark-mode .preset-chip.active,
+body[data-theme="dark"] .preset-chip.active,
+body.dark-mode .preset-btn.active,
+body[data-theme="dark"] .preset-btn.active{
+  background:rgba(111, 179, 255, 0.28);
+  border-color:rgba(139, 195, 255, 0.9);
+  color:#ffffff;
+}
+
 #plannerModalBg{
   position:fixed;
   inset:0;
