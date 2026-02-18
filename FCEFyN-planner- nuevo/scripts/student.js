@@ -192,6 +192,34 @@ function initHomeModules(){
   });
 }
 
+function renderHomeSkeleton(){
+  const grid = document.getElementById("homeModulesGrid");
+  if (grid && !grid.children.length) {
+    const skeletonCards = Array.from({ length: 6 }, () => `
+      <article class="home-card home-card-skeleton" aria-hidden="true">
+        <div class="home-card-icon home-card-skeleton-icon"></div>
+        <div class="home-card-body">
+          <div class="home-skeleton-line home-skeleton-line-title"></div>
+          <div class="home-skeleton-line"></div>
+        </div>
+      </article>
+    `).join("");
+    grid.innerHTML = skeletonCards;
+  }
+
+  const listEl = document.getElementById("homeNoticesList");
+  const emptyEl = document.getElementById("homeNoticesEmpty");
+  const rangeEl = document.getElementById("homeNoticesRange");
+  if (listEl && !listEl.children.length) {
+    listEl.innerHTML = Array.from({ length: 4 }, () => '<div class="home-notice-skeleton"></div>').join("");
+  }
+  if (emptyEl) {
+    emptyEl.hidden = false;
+    emptyEl.textContent = "Cargando avisos…";
+  }
+  if (rangeEl) rangeEl.textContent = "…";
+}
+
 function initHomeNotices(){
   const panel = document.getElementById("homeNoticesPanel");
   if (!panel) return;
@@ -215,7 +243,8 @@ function initHomeNotices(){
     query: "",
     page: 0,
     selectedId: null,
-    items: []
+    items: [],
+    loading: true
   };
 
   const setMode = (mode) => {
@@ -244,6 +273,16 @@ function initHomeNotices(){
   };
 
   const renderList = () => {
+    if (state.loading) {
+      listEl.innerHTML = Array.from({ length: 4 }, () => '<div class="home-notice-skeleton"></div>').join("");
+      emptyEl.hidden = false;
+      emptyEl.textContent = "Cargando avisos…";
+      rangeEl.textContent = "…";
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
     const filtered = getFilteredNotices();
     const total = filtered.length;
     const totalPages = Math.max(1, Math.ceil(total / HOME_NOTICE_PAGE_SIZE));
@@ -321,6 +360,7 @@ function initHomeNotices(){
   backBtn.addEventListener("click", returnToList);
 
   const handleSnapshot = (snap) => {
+    state.loading = false;
     const now = new Date();
     const items = snap.docs.map(docSnap => {
       const data = docSnap.data() || {};
@@ -362,8 +402,10 @@ function initHomeNotices(){
   };
 
   const handleSnapshotError = (err) => {
+    state.loading = false;
     console.error("[home-notices] snapshot error", err);
     notifyError("No se pudieron cargar los avisos.");
+    renderList();
   };
 
   const announcementsRef = collection(db, "announcements");
@@ -456,7 +498,58 @@ window.addEventListener("careerChanged", () => {
   syncCareerDependentViews({ forceReload:true, source:"career-changed" });
 });
 
-onSessionReady(async (user) => {
+async function initStudentModulesInBackground(user, ctx){
+  const [aulaInit, socialInit] = await Promise.allSettled([
+    Aula.init(ctx),
+    Social.init(ctx)
+  ]);
+
+  if (aulaInit.status === "rejected") {
+    console.error("[bootstrap] Aula.init error", aulaInit.reason);
+    notifyWarn("Algunas vistas de aula tardaron en iniciar.");
+  }
+  if (socialInit.status === "rejected") {
+    console.error("[bootstrap] Social.init error", socialInit.reason);
+    notifyWarn("Algunas vistas sociales tardaron en iniciar.");
+  }
+
+  initCalendario({
+    db,
+    doc,
+    getDoc,
+    setDoc,
+    onSnapshot,
+    currentUser: user,
+    getCurrentUser,
+    getSubjects: () => ctx.aulaState?.subjects || [],
+    renderSubjectsOptions: ctx.renderSubjectsOptions,
+    notifyError,
+    notifyWarn,
+    notifySuccess,
+    showConfirm
+  });
+
+  Aula.open("agenda");
+  Social.open("perfil");
+  bindProfileShortcuts();
+
+  const correlativasRoot = document.getElementById("correlativasPlansRoot");
+  if (correlativasRoot){
+    plansEmbeddedController = await mountPlansEmbedded({
+      containerEl: correlativasRoot,
+      careerSlug: getProfileCareerSlug(),
+      initialPlanSlug: getProfileCareerSlug(),
+      getCareerName: getProfileCareerName,
+      userUid: getUid(),
+      db,
+      embedKey: "correlativas"
+    });
+  }
+
+  restoreLastSection();
+}
+
+onSessionReady((user) => {
   AppState.currentUser = user;
 
   const emailLabel = document.getElementById("userEmailLabel");
@@ -500,45 +593,14 @@ onSessionReady(async (user) => {
   };
   appCtx = ctx;
 
-  await Aula.init(ctx);
-  await Social.init(ctx);
-
-  initCalendario({
-    db,
-    doc,
-    getDoc,
-    setDoc,
-    onSnapshot,
-    currentUser: user,
-    getCurrentUser,
-    getSubjects: () => ctx.aulaState?.subjects || [],
-    renderSubjectsOptions: ctx.renderSubjectsOptions,
-    notifyError,
-    notifyWarn,
-    notifySuccess,
-    showConfirm
-  });
-
-  Aula.open("agenda");
-  Social.open("perfil");
-  bindProfileShortcuts();
-
-  const correlativasRoot = document.getElementById("correlativasPlansRoot");
-  if (correlativasRoot){
-    plansEmbeddedController = await mountPlansEmbedded({
-      containerEl: correlativasRoot,
-      careerSlug: getProfileCareerSlug(),
-      initialPlanSlug: getProfileCareerSlug(),
-      getCareerName: getProfileCareerName,
-      userUid: getUid(),
-      db,
-      embedKey: "correlativas"
-    });
-  }
-
+  renderHomeSkeleton();
+  window.showTab?.("inicio");
   initHomeModules();
   initHomeNotices();
-  restoreLastSection();
+
+  initStudentModulesInBackground(user, ctx).catch((error) => {
+    console.error("[bootstrap] initStudentModulesInBackground error", error);
+  });
 });
 
 window.logout = async function(){

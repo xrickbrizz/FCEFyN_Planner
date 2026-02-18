@@ -9,6 +9,61 @@ let profileUid = "";
 let didLoadProfile = false;
 const readyCallbacks = [];
 const profileCallbacks = [];
+const PROFILE_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+
+const getProfileCacheKey = (uid) => `profileCache:${uid}`;
+const getAvatarCacheKey = (uid) => `avatarUrl:${uid}`;
+
+const safeReadJSON = (key) => {
+  if (typeof localStorage === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (_error) {
+    return null;
+  }
+};
+
+const safeWriteJSON = (key, value) => {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (_error) {}
+};
+
+const cacheProfile = (uid, profile = null) => {
+  if (!uid || !profile) return;
+  const avatarUrl = profile?.photoURL || "";
+  safeWriteJSON(getProfileCacheKey(uid), {
+    name: profile?.name || "",
+    career: profile?.career || "",
+    avatarUrl,
+    profile,
+    updatedAt: Date.now()
+  });
+  if (avatarUrl) {
+    safeWriteJSON(getAvatarCacheKey(uid), {
+      url: avatarUrl,
+      updatedAt: Date.now()
+    });
+  }
+};
+
+const getCachedAvatarUrl = (uid) => {
+  if (!uid) return "";
+  const cache = safeReadJSON(getAvatarCacheKey(uid));
+  if (!cache?.url) return "";
+  return cache.url;
+};
+
+const getCachedProfile = (uid) => {
+  if (!uid) return null;
+  const cache = safeReadJSON(getProfileCacheKey(uid));
+  if (!cache?.profile) return null;
+  const updatedAt = Number(cache.updatedAt || 0);
+  if (updatedAt && Date.now() - updatedAt > PROFILE_CACHE_TTL_MS) return null;
+  return cache.profile;
+};
 
 const notifyUserPanelAvatar = (photoURL = "") => {
   if (typeof window === "undefined") return;
@@ -22,6 +77,9 @@ const notifyProfile = (profile) => {
   didLoadProfile = true;
   const photoURL = profile?.photoURL || currentUser?.photoURL || "";
   notifyUserPanelAvatar(photoURL);
+  if (currentUser?.uid && profile) {
+    cacheProfile(currentUser.uid, profile);
+  }
   const callbacks = profileCallbacks.slice();
   callbacks.forEach(cb => cb(profile));
 };
@@ -103,6 +161,12 @@ export function initSession({ onMissingUser } = {}){
     }
 
     currentUser = user;
+    const cachedProfile = getCachedProfile(user.uid);
+    if (cachedProfile) {
+      notifyProfile(cachedProfile);
+    } else {
+      notifyUserPanelAvatar(getCachedAvatarUrl(user.uid) || user.photoURL || "");
+    }
     startProfileListener(user);
 
     if (!didBoot){

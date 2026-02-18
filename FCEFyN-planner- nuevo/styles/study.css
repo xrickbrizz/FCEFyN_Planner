@@ -616,6 +616,26 @@ body[data-theme="light"] .tab-card{
     }
     .home-card-title{ font-weight:800; margin-bottom:.2rem; }
     .home-card-desc{ color:var(--text-soft); line-height:1.4; }
+    .home-card-skeleton{
+      pointer-events:none;
+      opacity:.75;
+    }
+    .home-card-skeleton-icon{
+      background:linear-gradient(90deg, #edf0f3 20%, #f8fafc 45%, #edf0f3 70%);
+      background-size:200% 100%;
+      border:none;
+      animation:skeletonPulse 1.1s ease infinite;
+    }
+    .home-skeleton-line{
+      height:.72rem;
+      border-radius:999px;
+      background:linear-gradient(90deg, #edf0f3 20%, #f8fafc 45%, #edf0f3 70%);
+      background-size:200% 100%;
+      animation:skeletonPulse 1.1s ease infinite;
+      margin:.25rem 0;
+      width:100%;
+    }
+    .home-skeleton-line-title{ width:65%; height:.9rem; }
     .home-card-badge{
       position:absolute;
       top:.55rem;
@@ -785,6 +805,14 @@ body[data-theme="light"] .tab-card{
       color:var(--text-soft);
       font-size: .9rem;
       padding: .6rem 0;
+    }
+    .home-notice-skeleton{
+      height:3.4rem;
+      border-radius:.9rem;
+      background:linear-gradient(90deg, #edf0f3 20%, #f8fafc 45%, #edf0f3 70%);
+      background-size:200% 100%;
+      animation:skeletonPulse 1.1s ease infinite;
+      border:1px solid var(--border-18);
     }
     .home-notice-item{
       display:grid;
