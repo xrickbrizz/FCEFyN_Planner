@@ -1089,6 +1089,29 @@ body[data-theme="light"] .tab-card{
       white-space:nowrap;
     }
 
+    body.dark-mode .streak-overlay,
+    body[data-theme="dark"] .streak-overlay{
+      background:color-mix(in srgb, #0b1220 82%, transparent);
+      border-color:color-mix(in srgb, #cbd5e1 32%, transparent);
+      box-shadow:0 10px 24px rgba(0,0,0,.42);
+    }
+    body.dark-mode .streak-overlay__label,
+    body[data-theme="dark"] .streak-overlay__label{
+      color:rgba(248,250,252,.9);
+    }
+    body.dark-mode .streak-overlay__value,
+    body[data-theme="dark"] .streak-overlay__value{
+      color:#fff;
+    }
+    body.dark-mode .streak-overlay i,
+    body.dark-mode .streak-overlay svg,
+    body[data-theme="dark"] .streak-overlay i,
+    body[data-theme="dark"] .streak-overlay svg{
+      color:#f8fafc;
+      fill:currentColor;
+      opacity:.95;
+    }
+
     .streak-tiles,
     .streak-strip,
     #streakBar{
@@ -1261,6 +1284,13 @@ body[data-theme="light"] .tab-card{
       border:1px dashed var(--border);
       cursor:default;
     }
+    .day-muted .day-number,
+    .day-muted .day-number span,
+    .day-muted .today-dot,
+    .day-muted .event-dots,
+    .day-muted .event-dot{
+      opacity:.5;
+    }
 body.light-mode .calendar-container,
 body[data-theme="light"] .calendar-container{
   background:var(--card);
@@ -1275,6 +1305,23 @@ body[data-theme="light"] .day{
 body.light-mode .day-muted,
 body[data-theme="light"] .day-muted{
   background:var(--border-50);
+}
+body.dark-mode .day-muted,
+body[data-theme="dark"] .day-muted{
+  background:color-mix(in srgb, var(--card) 70%, transparent);
+  border-color:color-mix(in srgb, var(--border) 45%, transparent);
+}
+body.dark-mode .day-muted .day-number,
+body.dark-mode .day-muted .day-number span,
+body.dark-mode .day-muted .today-dot,
+body.dark-mode .day-muted .event-dots,
+body.dark-mode .day-muted .event-dot,
+body[data-theme="dark"] .day-muted .day-number,
+body[data-theme="dark"] .day-muted .day-number span,
+body[data-theme="dark"] .day-muted .today-dot,
+body[data-theme="dark"] .day-muted .event-dots,
+body[data-theme="dark"] .day-muted .event-dot{
+  opacity:.3;
 }
 body.light-mode .event,
 body[data-theme="light"] .event{
@@ -1353,6 +1400,13 @@ body[data-theme="light"] .event{
       line-height:1.3;
       letter-spacing:.02em;
       margin-bottom:.35rem;
+    }
+    .modal-field-hint{
+      margin-top:.35rem;
+      font-size:.78rem;
+      line-height:1.35;
+      color:var(--muted);
+      letter-spacing:.01em;
     }
     .modal input, .modal textarea, .modal select{
       width: 100%;
