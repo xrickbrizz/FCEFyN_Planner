@@ -34,6 +34,9 @@ const profileDocumentInput = document.getElementById("profileDocument");
 const profileCareer2Select = document.getElementById("profileCareer2");
 const profileYearIn2Input = document.getElementById("profileYearIn2");
 const profileStatusEl = document.getElementById("profileStatus");
+const profileSocialInstagramInput = document.getElementById("profileSocialInstagram");
+const profileSocialTiktokInput = document.getElementById("profileSocialTiktok");
+const profileSocialXInput = document.getElementById("profileSocialX");
 const passwordStatusEl = document.getElementById("passwordStatus");
 const btnProfileSave = document.getElementById("btnProfileSave");
 const btnPasswordReset = document.getElementById("btnPasswordReset");
@@ -53,7 +56,10 @@ const profileDirtyFields = [
   profileYearInInput,
   profileDocumentInput,
   profileCareer2Select,
-  profileYearIn2Input
+  profileYearIn2Input,
+  profileSocialInstagramInput,
+  profileSocialTiktokInput,
+  profileSocialXInput
 ].filter(Boolean);
 
 const avatarFallback = (() => {
@@ -72,6 +78,66 @@ const avatarFallback = (() => {
 })();
 
 const resolveAvatarUrl = (url) => url || avatarFallback;
+
+
+const socialInputMap = {
+  instagram: profileSocialInstagramInput,
+  tiktok: profileSocialTiktokInput,
+  x: profileSocialXInput
+};
+
+function updateSocialRowState(inputEl){
+  if (!inputEl) return;
+  const row = inputEl.closest?.(".social-row");
+  if (!row) return;
+  row.classList.toggle("is-active", Boolean((inputEl.value || "").trim()));
+}
+
+function normalizeSocialValue(platform, rawValue){
+  const cleaned = (rawValue || "").trim().replace(/\s+/g, "");
+  if (!cleaned) return "";
+  const withoutAt = cleaned.startsWith("@") ? cleaned.slice(1) : cleaned;
+  const normalizedPlatform = (platform || "").toLowerCase();
+
+  if (/^https?:\/\//i.test(cleaned)){
+    try{
+      const parsedUrl = new URL(cleaned);
+      const host = parsedUrl.hostname.toLowerCase();
+      const pathSegments = parsedUrl.pathname.split("/").filter(Boolean);
+      const candidate = pathSegments[0]?.replace(/^@/, "") || "";
+      const hostMap = {
+        instagram: ["instagram.com", "www.instagram.com"],
+        tiktok: ["tiktok.com", "www.tiktok.com", "m.tiktok.com"],
+        x: ["x.com", "www.x.com", "twitter.com", "www.twitter.com", "mobile.twitter.com"]
+      };
+      const isExpectedHost = (hostMap[normalizedPlatform] || []).some((entry) => host === entry || host.endsWith(`.${entry}`));
+      if (isExpectedHost && candidate && !["explore", "home", "i", "share", "intent"].includes(candidate.toLowerCase())){
+        return candidate;
+      }
+      return cleaned;
+    }catch(_error){
+      return cleaned;
+    }
+  }
+
+  return withoutAt;
+}
+
+function getNormalizedSocialLinks(){
+  return {
+    instagram: normalizeSocialValue("instagram", profileSocialInstagramInput?.value || ""),
+    tiktok: normalizeSocialValue("tiktok", profileSocialTiktokInput?.value || ""),
+    x: normalizeSocialValue("x", profileSocialXInput?.value || "")
+  };
+}
+
+function setSocialLinksInputs(socialLinks){
+  const links = socialLinks || {};
+  if (profileSocialInstagramInput) profileSocialInstagramInput.value = links.instagram || "";
+  if (profileSocialTiktokInput) profileSocialTiktokInput.value = links.tiktok || "";
+  if (profileSocialXInput) profileSocialXInput.value = links.x || "";
+  Object.values(socialInputMap).forEach(updateSocialRowState);
+}
 
 const updateUserPanelAvatar = (url) => {
   const finalUrl = resolveAvatarUrl(url);
@@ -156,7 +222,10 @@ function getProfileFormValues(){
     yearIn: profileYearInInput?.value?.trim() || "",
     documento: profileDocumentInput?.value?.trim() || "",
     career2: profileCareer2Select?.value?.trim() || "",
-    yearIn2: profileYearIn2Input?.value?.trim() || ""
+    yearIn2: profileYearIn2Input?.value?.trim() || "",
+    socialInstagram: normalizeSocialValue("instagram", profileSocialInstagramInput?.value || ""),
+    socialTiktok: normalizeSocialValue("tiktok", profileSocialTiktokInput?.value || ""),
+    socialX: normalizeSocialValue("x", profileSocialXInput?.value || "")
   };
 }
 
@@ -186,6 +255,10 @@ function restoreProfileSnapshot(){
   if (profileDocumentInput) profileDocumentInput.value = profileSnapshot.documento || "";
   if (profileCareer2Select) profileCareer2Select.value = profileSnapshot.career2 || "";
   if (profileYearIn2Input) profileYearIn2Input.value = profileSnapshot.yearIn2 || "";
+  if (profileSocialInstagramInput) profileSocialInstagramInput.value = profileSnapshot.socialInstagram || "";
+  if (profileSocialTiktokInput) profileSocialTiktokInput.value = profileSnapshot.socialTiktok || "";
+  if (profileSocialXInput) profileSocialXInput.value = profileSnapshot.socialX || "";
+  Object.values(socialInputMap).forEach(updateSocialRowState);
   suppressDirtyTracking = false;
   isProfileDirty = false;
 }
@@ -194,8 +267,14 @@ function bindProfileDirtyWatchers(){
   if (dirtyWatchersBound) return;
   dirtyWatchersBound = true;
   profileDirtyFields.forEach((field) => {
-    field.addEventListener("input", updateProfileDirtyState);
-    field.addEventListener("change", updateProfileDirtyState);
+    field.addEventListener("input", () => {
+      updateProfileDirtyState();
+      updateSocialRowState(field);
+    });
+    field.addEventListener("change", () => {
+      updateProfileDirtyState();
+      updateSocialRowState(field);
+    });
   });
 }
 
@@ -410,6 +489,7 @@ function renderProfileSection(){
   if (profileDocumentInput){
     profileDocumentInput.value = userProfile?.documento || userProfile?.dni || userProfile?.legajo || "";
   }
+  setSocialLinksInputs(userProfile?.socialLinks || {});
   setProfileStatus(profileStatusEl, "");
   setProfileStatus(passwordStatusEl, "");
   setProfileAvatarStatus("");
@@ -485,6 +565,7 @@ async function saveProfileChanges(){
   const yearRaw = profileYearInInput?.value.trim() || "";
   const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
   const documento = profileDocumentInput?.value.trim() || "";
+  const socialLinks = getNormalizedSocialLinks();
 
   if (!careerSlug){
     notifyWarn?.("Seleccioná una carrera antes de guardar.");
@@ -528,6 +609,7 @@ async function saveProfileChanges(){
       documento,
       dni: documento,
       legajo: documento,
+      socialLinks,
       ...baseAcademicState,
       createdAt: cachedProfile?.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -543,6 +625,7 @@ async function saveProfileChanges(){
       documento,
       dni: documento,
       legajo: documento,
+      socialLinks,
       ...baseAcademicState
     });
     await ensurePublicUserProfile(db, currentUser, nextProfile);

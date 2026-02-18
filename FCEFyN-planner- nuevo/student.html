@@ -110,11 +110,7 @@
     <div id="tab-estudio" class="tab-card" style="display:none;">
       <div class="tab-estudio-layout">
         <div class="study-main-column">
-                    <section class="study-stats-grid" aria-label="Resumen de estudio">
-            <article class="study-stat-card">
-              <div class="study-stat-label">🔥 Racha</div>
-              <div class="study-stat-value" id="studyStreakValue">0 días</div>
-            </article>
+          <section class="study-stats-grid" aria-label="Resumen de estudio">
             <article class="study-stat-card">
               <div class="study-stat-label">⏱ Horas hoy</div>
               <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
@@ -165,6 +161,10 @@
 
         <aside class="study-side-column">
           <div class="calendar-container study-calendar-compact">
+            <div class="streak-overlay" aria-label="Racha de estudio">
+              <span class="streak-overlay__label">🔥 Racha</span>
+              <span class="streak-overlay__value" id="studyStreakValue">0 días</span>
+            </div>
             <div class="calendar-header">
               <div class="cal-title">
                 <h2 id="monthTitle"></h2>
@@ -192,11 +192,6 @@
             </div>
             <div class="grid" id="calendarGrid"></div>
           </div>
-
-          <section class="streak-tiles" aria-label="Racha de estudio por días">
-            <h3 class="streak-tiles__title">Racha de estudio</h3>
-            <div class="streak-grid" id="streakGrid"></div>
-          </section>
 
         </aside>
       </div>
@@ -656,8 +651,31 @@
 
           <div class="profile-avatar profile-avatar-centered">
             <div class="profile-header">
-              <img id="profileAvatarImg" alt="Foto de perfil" />
-              <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
+              <div class="profile-header-main">
+                <img id="profileAvatarImg" alt="Foto de perfil" />
+                <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
+              </div>
+              <div id="socialLinksPanel" class="social-links-panel" aria-label="Redes sociales">
+                <div class="social-links-title">Redes sociales</div>
+                <div class="social-row">
+                  <span class="social-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
+                  </span>
+                  <input id="profileSocialInstagram" class="social-input" placeholder="Instagram: @usuario o URL" autocomplete="off" />
+                </div>
+                <div class="social-row">
+                  <span class="social-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M18.7 6.8a4.8 4.8 0 0 0 2.4-.6v3.8a7.8 7.8 0 0 1-3.6-.8v5.7A6.9 6.9 0 1 1 10.7 8c.2 0 .4 0 .6.1v3.4a3.5 3.5 0 1 0 2.8 3.4V2h3.4a4.8 4.8 0 0 0 1.2 3.2Z"/></svg>
+                  </span>
+                  <input id="profileSocialTiktok" class="social-input" placeholder="TikTok: @usuario o URL" autocomplete="off" />
+                </div>
+                <div class="social-row">
+                  <span class="social-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M18.5 3h2.8l-6.2 7.1L22 21h-5.5l-4.3-5.8L7.1 21H4.3l6.7-7.7L2 3h5.6l3.9 5.2L18.5 3Zm-1 16h1.5L6.8 4.9H5.2L17.5 19Z"/></svg>
+                  </span>
+                  <input id="profileSocialX" class="social-input" placeholder="X: @usuario o URL" autocomplete="off" />
+                </div>
+              </div>
             </div>
                 <label class="toggle-line">
                 <input type="checkbox" id="toggleLastSeen" />
@@ -1148,35 +1166,7 @@
     <span aria-hidden="true">↑</span>
   </button>
 <script>
-  (() => {
-    const grid = document.getElementById('streakGrid');
-    if (!grid) return;
-
-    const days = [
-      { day: 3, streak: false, active: false, hasActivity: true },
-      { day: 4, streak: true, active: false, hasActivity: true },
-      { day: 5, streak: true, active: true, hasActivity: true }
-    ];
-
-    const dayTemplate = ({ day, streak, active, hasActivity }) => `
-      <article class="day${streak ? ' day--streak' : ''}${active ? ' day--active' : ''}" role="listitem" aria-label="Día ${day}">
-        <span class="day__num">${day}</span>
-        ${hasActivity ? '<span class="day__dot" aria-hidden="true"></span>' : ''}
-        ${active ? '<span class="day__activeDot" aria-hidden="true"></span>' : ''}
-        ${streak ? `
-          <span class="day__flame" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="flame">
-              <path class="flame__outer" d="M12 2c.7 3-1.3 4.6-2.8 6.1C7.6 9.7 6.5 11.4 6.5 14A5.5 5.5 0 0 0 12 19.5 5.5 5.5 0 0 0 17.5 14c0-3.6-2.2-5.7-4.2-7.8C12.7 5.5 12.2 4.8 12 2z"/>
-              <path class="flame__inner" d="M12.2 9.2c.3 1.4-.5 2.2-1.2 3-.7.8-1.2 1.6-1.2 2.8 0 1.6 1.2 2.8 2.7 2.8s2.7-1.2 2.7-2.8c0-1.6-1-2.6-1.9-3.5-.6-.6-1-1.1-1.1-2.3z"/>
-            </svg>
-          </span>
-        ` : ''}
-      </article>
-    `;
-
-    grid.setAttribute('role', 'list');
-    grid.innerHTML = days.map(dayTemplate).join('');
-  })();
+  // Deshabilitado: la tira inferior 3/4/5 ya no se muestra; la racha ahora es overlay.
 
   (() => {
     const scrollTopBtn = document.getElementById('scrollTopBtn');

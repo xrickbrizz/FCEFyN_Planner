@@ -1023,96 +1023,50 @@ body[data-theme="light"] .tab-card{
     .timer-actions-dashboard{
       justify-content:center;
     }
+    .study-calendar-compact{
+      padding-top: 4.2rem;
+    }
     .study-calendar-compact #calendarGrid{ margin-top: .5rem; }
 
-    .streak-tiles{
-      margin-top: .9rem;
-      padding: .95rem;
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-    }
-    .streak-tiles__title{
-      margin: 0 0 .75rem;
-      color: var(--text);
-      font-size: .95rem;
-      font-weight: 700;
-      letter-spacing:.01em;
-    }
-    .streak-grid{
-      display:grid;
-      grid-template-columns: repeat(7, 56px);
-      gap: 12px;
-      align-items: start;
-    }
-    .streak-grid .day{
-      width:56px;
-      height:56px;
-      border:2px solid #f2f3f5;
-      background:#fff;
-      border-radius:14px;
-      position:relative;
-      padding:0;
-      min-height:56px;
-      min-width:56px;
-      box-shadow:none;
-      overflow:visible;
-      cursor:default;
-      pointer-events:none;
-    }
-    .streak-grid .day__num{
+    .streak-overlay{
       position:absolute;
-      top:7px;
-      left:8px;
-      font-size:14px;
-      line-height:1;
-      font-weight:700;
-      color:#ff7a1a;
-    }
-    .streak-grid .day__dot{
-      position:absolute;
-      left:8px;
-      bottom:8px;
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      background:#ffb065;
-    }
-    .streak-grid .day__activeDot{
-      position:absolute;
-      top:7px;
-      right:7px;
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:#3b82f6;
-    }
-    .streak-grid .day__flame{
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform:translate(-50%, -44%);
-      width:22px;
-      height:22px;
+      top:12px;
+      left:12px;
+      z-index:5;
       display:inline-flex;
       align-items:center;
-      justify-content:center;
+      gap:10px;
+      padding:8px 10px;
+      background:rgba(255,255,255,.85);
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      backdrop-filter:blur(6px);
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+      pointer-events:auto;
     }
-    .streak-grid .flame{
-      width:22px;
-      height:22px;
-      display:block;
+    .streak-overlay__label{
+      color:var(--text-soft);
+      font-size:.8rem;
+      font-weight:700;
+      letter-spacing:.01em;
+      white-space:nowrap;
     }
-    .streak-grid .flame__outer{ fill:#ff4b3a; }
-    .streak-grid .flame__inner{ fill:#ff9a3a; }
-    .streak-grid .day--active{
-      border-color:#3b82f6;
-      box-shadow: 0 0 0 4px rgba(59,130,246,.14);
+    .streak-overlay__value{
+      color:var(--text);
+      font-size:.9rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .streak-tiles,
+    .streak-strip,
+    #streakBar{
+      display:none !important;
     }
 
     .study-stats-grid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:.85rem;
     }
     .study-stat-card{
@@ -1154,6 +1108,19 @@ body[data-theme="light"] .tab-card{
     @media(max-width:900px){
       .tab-estudio-layout{ grid-template-columns:1fr; }
       .study-stats-grid{ grid-template-columns:1fr; }
+      .study-calendar-compact{
+        padding-top: 4rem;
+      }
+      .streak-overlay{
+        top:8px;
+        left:8px;
+        gap:8px;
+        padding:6px 8px;
+      }
+      .streak-overlay__label,
+      .streak-overlay__value{
+        font-size:.78rem;
+      }
     }
 
     .calendar-container{
@@ -3614,10 +3581,79 @@ body.modal-open{
 }
 
 #tab-perfil.profile-page .profile-avatar .profile-header{
-  position:relative;
-  width:8.25rem;
+  width:min(100%, 41rem);
   min-height:8.25rem;
   margin:0 auto;
+}
+
+#tab-perfil.profile-page .profile-avatar .profile-header-main{
+  position:relative;
+  width:8.25rem;
+}
+
+#tab-perfil.profile-page .social-links-panel{
+  width:min(100%, 21rem);
+  text-align:left;
+  background:var(--surface-98);
+  border:1px solid var(--border-35);
+  border-radius:.95rem;
+  box-shadow:var(--shadow-soft);
+  padding:.75rem;
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+}
+
+#tab-perfil.profile-page .social-links-title{
+  font-size:.86rem;
+  font-weight:700;
+  color:var(--text-main);
+}
+
+#tab-perfil.profile-page .social-row{
+  display:grid;
+  grid-template-columns:1.25rem minmax(0, 1fr);
+  align-items:center;
+  gap:.55rem;
+}
+
+#tab-perfil.profile-page .social-icon{
+  width:1.25rem;
+  height:1.25rem;
+  color:var(--text-soft);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:color .2s ease;
+  margin-left: auto;
+}
+
+#tab-perfil.profile-page .social-icon svg{
+  width:100%;
+  height:100%;
+  display:block;
+  fill:currentColor;
+}
+
+#tab-perfil.profile-page .social-row.is-active .social-icon{
+  color:var(--accent-border-strong);
+}
+
+#tab-perfil.profile-page .social-input{
+  width:100%;
+  min-height:2.3rem;
+  border-radius:.62rem;
+  border:1px solid var(--input-border);
+  background:var(--input-bg);
+  color:var(--color-text);
+  padding:.45rem .65rem;
+  font-size:.88rem;
+}
+
+#tab-perfil.profile-page .social-input:focus{
+  outline:none;
+  border-color:var(--accent-border-strong);
+  box-shadow:0 0 0 3px var(--accent-outline);
 }
 
 #tab-perfil.profile-page #btnProfileLogout{
@@ -3630,6 +3666,28 @@ body.modal-open{
   padding:.4rem .7rem;
   min-height:auto;
   white-space:nowrap;
+}
+
+@media (min-width:900px){
+  #tab-perfil.profile-page .profile-avatar .profile-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:1rem;
+  }
+}
+
+@media (max-width:899px){
+  #tab-perfil.profile-page .profile-avatar .profile-header{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.75rem;
+  }
+
+  #tab-perfil.profile-page .social-links-panel{
+    width:min(100%, 26rem);
+  }
 }
 
 #tab-perfil.profile-page .profile-email{
