@@ -1262,12 +1262,12 @@ function countPendingForVisibleMonth(firstDay, lastDay){
 }
 
 async function updateMonthlyPendingList(firstDay, lastDay){
-  const items = getVisibleMonthPendingItems(firstDay, lastDay);
+  const items = buildPendingAcadItems({ referenceDateKey: acadSelectedDateKey || getTodayKey() });
   renderAcadPendingWidget(items);
 }
 
 async function updateUpcomingDeadlines(firstDay, lastDay){
-  const items = getVisibleMonthPendingItems(firstDay, lastDay);
+  const items = buildUpcomingAcadItems({ referenceDateKey: acadSelectedDateKey || getTodayKey() });
   renderAcadUpcomingWidget(items);
 }
 
@@ -1292,6 +1292,7 @@ function renderRightPanel(dateKey, { isHover = false } = {}){
   if (!isHover){
     acadSelectedDateKey = normalizedKey;
     highlightAcadSelection(normalizedKey);
+    updateMonthPanels();
   }
 
   const { items, storageKey } = getAcadItemsWithKey(normalizedKey);
@@ -1805,22 +1806,58 @@ function getRelativePastLabel(dateKey, minutes){
   return "";
 }
 
-function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false } = {}){
+function getStartOfDayFromKey(dateKey){
+  const normalizedKey = getDayKey(dateKey);
+  const parts = ymdFromDateKey(normalizedKey);
+  if (!parts) return null;
+  return new Date(parts.y, parts.m - 1, parts.d, 0, 0, 0, 0);
+}
+
+function buildPendingAcadItems({ referenceDateKey = acadSelectedDateKey || getTodayKey(), includeDone = false } = {}){
   const items = [];
   if (!academicoCache) return items;
 
-  const start = new Date();
-  start.setHours(0,0,0,0);
+  const referenceDate = getStartOfDayFromKey(referenceDateKey);
+
+  Object.keys(academicoCache).forEach(storageKey => {
+    const normalizedKey = getDayKey(storageKey);
+    const taskDate = getStartOfDayFromKey(normalizedKey);
+    if (!normalizedKey || !taskDate) return;
+
+    const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
+    entries.forEach((item, index) => {
+      if (!includeDone && isAcadItemCompleted(item)) return;
+      const minutes = getAcadItemMinutes(item);
+      const isOverdue = referenceDate ? taskDate.getTime() < referenceDate.getTime() : false;
+      items.push({ dateKey: normalizedKey, item, index, minutes, storageKey, priority: getAcadPriority(item), isOverdue });
+    });
+  });
+
+  items.sort((a, b) => {
+    if (a.dateKey !== b.dateKey) return a.dateKey.localeCompare(b.dateKey);
+    const am = a.minutes ?? 9999;
+    const bm = b.minutes ?? 9999;
+    return am - bm;
+  });
+
+  return items;
+}
+
+function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false, referenceDateKey = acadSelectedDateKey || getTodayKey() } = {}){
+  const items = [];
+  if (!academicoCache) return items;
+
+  const start = getStartOfDayFromKey(referenceDateKey);
+  if (!start) return items;
   const end = new Date(start);
   end.setDate(end.getDate() + daysAhead);
 
   Object.keys(academicoCache).forEach(storageKey =>{
     const normalizedKey = getDayKey(storageKey);
     if (!normalizedKey) return;
-    const parts = ymdFromDateKey(normalizedKey);
-    if (!parts) return;
-    const date = new Date(parts.y, parts.m - 1, parts.d);
-    if (date < start || date > end) return;
+    const date = getStartOfDayFromKey(normalizedKey);
+    if (!date) return;
+    if (date.getTime() <= start.getTime() || date > end) return;
 
     const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
     entries.forEach((item, index)=>{
@@ -1864,7 +1901,7 @@ function renderAcadPendingWidget(items){
   const list = acadPendingWidget.querySelector(".acad-pending-list");
   if (!list) return;
 
-  visibleItems.forEach(({ item, dateKey, minutes, priority })=>{
+  visibleItems.forEach(({ item, dateKey, minutes, priority, isOverdue })=>{
     const dateLabel = (()=>{
       const parts = ymdFromDateKey(dateKey);
       return parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
@@ -1875,6 +1912,7 @@ function renderAcadPendingWidget(items){
     row.innerHTML = `
       <div class="acad-pending-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
       <div class="acad-pending-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(dateLabel)}</div>
+      ${isOverdue ? '<span class="acad-overdue-badge">Vencida</span>' : ""}
       ${relative ? `<div class="acad-pending-item-time">${escapeHtml(relative)}</div>` : ""}
     `;
     list.appendChild(row);
@@ -1888,7 +1926,7 @@ function renderAcadUpcomingWidget(items = []){
   const visibleItems = items.slice(0, 4);
   acadUpcomingWidget.innerHTML = `
     <div class="widget-title">🔔 Próximos vencimientos</div>
-    ${visibleItems.length ? '<div class="upcoming-list upcoming-list--timeline"></div>' : '<div class="small-muted">No hay vencimientos próximos.</div>'}
+    ${visibleItems.length ? '<div class="upcoming-list upcoming-list--timeline"></div>' : '<div class="small-muted">No hay próximos vencimientos.</div>'}
   `;
   if (!visibleItems.length) return;
 
