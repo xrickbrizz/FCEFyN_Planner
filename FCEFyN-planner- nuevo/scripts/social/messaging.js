@@ -125,24 +125,34 @@ function normalizeHexColor(color){
   return "";
 }
 
-function hexToLuminance(hex){
+function hexToRgb(hex){
   const normalized = normalizeHexColor(hex);
   if (!normalized) return null;
   const value = normalized.slice(1);
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  };
+}
+
+function relativeLuminance(hex){
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
   const toLinear = (componentHex) => {
-    const normalizedComponent = parseInt(componentHex, 16) / 255;
+    const normalizedComponent = componentHex / 255;
     return normalizedComponent <= 0.03928
       ? normalizedComponent / 12.92
       : ((normalizedComponent + 0.055) / 1.055) ** 2.4;
   };
-  const r = toLinear(value.slice(0, 2));
-  const g = toLinear(value.slice(2, 4));
-  const b = toLinear(value.slice(4, 6));
+  const r = toLinear(rgb.r);
+  const g = toLinear(rgb.g);
+  const b = toLinear(rgb.b);
   return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
 }
 
-function getContrastTextColor(backgroundHex){
-  const luminance = hexToLuminance(backgroundHex);
+function pickTextColor(backgroundHex){
+  const luminance = relativeLuminance(backgroundHex);
   if (luminance === null) return "";
   return luminance >= 0.5 ? "#0B0C10" : "#F5F7FA";
 }
@@ -463,8 +473,8 @@ function renderMessages(){
     const bubbleThemeColor = resolveMessageBubbleThemeColor(m, pref, me);
     if (bubbleThemeColor){
       bubble.style.background = bubbleThemeColor;
-      const bubbleTextColor = getContrastTextColor(bubbleThemeColor);
-      if (bubbleTextColor){
+      const bubbleTextColor = pickTextColor(bubbleThemeColor);
+      if (bubbleTextColor && !me){
         bubble.style.color = bubbleTextColor;
       }
     }
@@ -476,6 +486,14 @@ function renderMessages(){
     const meta = document.createElement("div");
     meta.className = "msg-meta";
     meta.textContent = formatTimeHHmm(m.createdAt);
+    if (bubbleThemeColor && !me){
+      const bubbleTextColor = pickTextColor(bubbleThemeColor);
+      if (bubbleTextColor){
+        meta.style.color = bubbleTextColor === "#0B0C10"
+          ? "rgba(11, 12, 16, .72)"
+          : "rgba(245, 247, 250, .82)";
+      }
+    }
 
     bubble.appendChild(textEl);
     bubble.appendChild(meta);

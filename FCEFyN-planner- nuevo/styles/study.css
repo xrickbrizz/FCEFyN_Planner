@@ -4713,9 +4713,28 @@ body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
 #tab-mensajes .chat-menu-button{
   border:1px solid var(--border-30);
   background:#fff;
+  color:var(--text-color, #111827);
   border-radius:999px;
   font-size:1.1rem;
+  min-width:2.1rem;
+  min-height:2.1rem;
+  padding:0 .55rem;
   cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+#tab-mensajes .chat-menu-button:hover{
+  background:#f8fafc;
+  border-color:var(--border-40);
+  box-shadow:0 6px 16px rgba(15,23,42,.1);
+}
+
+#tab-mensajes .chat-menu-button:focus-visible{
+  outline:2px solid color-mix(in srgb, var(--chat-accent, #7CC7A0) 35%, #ffffff);
+  outline-offset:2px;
 }
 
 #tab-mensajes .chat-context-menu{
@@ -4869,6 +4888,37 @@ body[data-theme="dark"] #tab-mensajes .chat-settings-modal h3{
 body.dark-mode #tab-mensajes .chat-settings-section input[type="checkbox"],
 body[data-theme="dark"] #tab-mensajes .chat-settings-section input[type="checkbox"]{
   accent-color:var(--chat-accent, #7CC7A0);
+}
+
+body.dark-mode #tab-mensajes .chat-menu-button,
+body[data-theme="dark"] #tab-mensajes .chat-menu-button{
+  background:var(--glass-soft);
+  border:1px solid var(--color-border);
+  color:var(--color-text);
+  box-shadow:0 8px 22px rgba(0, 0, 0, .22);
+}
+
+body.dark-mode #tab-mensajes .chat-menu-button:hover,
+body[data-theme="dark"] #tab-mensajes .chat-menu-button:hover{
+  background:color-mix(in srgb, var(--glass-soft) 80%, #ffffff 20%);
+  border-color:color-mix(in srgb, var(--color-border) 70%, #ffffff 30%);
+}
+
+body.dark-mode #tab-mensajes .chat-menu-button:focus-visible,
+body[data-theme="dark"] #tab-mensajes .chat-menu-button:focus-visible{
+  outline:2px solid color-mix(in srgb, var(--chat-accent, #7CC7A0) 45%, #ffffff 55%);
+}
+
+body.dark-mode #tab-mensajes .msg-row.other .msg-bubble,
+body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-bubble{
+  background:color-mix(in srgb, var(--card-bg) 92%, #ffffff 8%);
+  border:1px solid var(--color-border);
+  color:var(--color-text);
+}
+
+body.dark-mode #tab-mensajes .msg-row.other .msg-meta,
+body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
+  color:var(--color-muted);
 }
 #tab-mensajes .chat-settings-header{
   display:flex;
