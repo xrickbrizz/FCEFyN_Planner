@@ -4193,7 +4193,31 @@ body[data-theme="light"] .planner-modal{
 }
 .subject-inline-color.is-selected{ border-color:var(--text-strong); box-shadow:0 0 0 2px var(--accent-15); }
 .subject-remove-btn{
-  border:1px solid var(--border-85); background:transparent; color:var(--color-muted-2); border-radius:8px; padding:.15rem .35rem; cursor:pointer;
+  width:30px;
+  height:30px;
+  border:1px solid transparent;
+  background:transparent;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:rgba(60, 60, 60, 0.55);
+  padding:0;
+  transition:background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+.subject-remove-btn:hover{
+  background:rgba(0, 0, 0, 0.04);
+  border-color:rgba(0, 0, 0, 0.06);
+  color:rgba(60, 60, 60, 0.85);
+}
+.subject-remove-btn:active{
+  transform:scale(0.98);
+}
+.subject-remove-btn .icon-x{
+  width:16px;
+  height:16px;
+  display:block;
 }
 .subjects-apply-hint{
   margin-top:.7rem; border:1px dashed var(--border-85); border-radius:12px; padding:.75rem;

@@ -518,9 +518,14 @@ function renderUserSubjects(){
     const colors = renderColorPicker(subject.color, (color) => handleColorChange(subject.name, color));
     const remove = document.createElement("button");
     remove.type = "button";
-    remove.className = "subject-remove-btn";
-    remove.textContent = "🗑";
-    remove.setAttribute("aria-label", `Eliminar ${subject.name}`);
+    remove.className = "subject-remove-btn btn-remove";
+    remove.setAttribute("aria-label", "Quitar");
+    remove.setAttribute("title", "Quitar");
+    remove.innerHTML = `
+      <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    `;
     remove.addEventListener("click", () => {
       removeSubjectFromUser(subject).catch((error) => {
         console.error("[materias] Error inesperado al quitar materia:", error);
@@ -640,7 +645,9 @@ function handleColorChange(subjectName, color){
   syncSubjectsStateFromStaged();
   renderUserSubjects();
   scheduleAutoSave({
+    // Notificación deshabilitada en Mis Materias (no mostrar toast al cambiar/quitar color).
     successMessage: "Color actualizado (guardado automático).",
+    notifyOnSuccess: false,
     errorMessage: "No se pudo guardar el color de la materia."
   });
 }
