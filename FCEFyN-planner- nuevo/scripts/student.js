@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc, onSnapshot, signOut, db, auth, storage, collection, query, orderBy } from "./core/firebase.js";
 import { initSession, onSessionReady, getUid, getCurrentUser, onProfileUpdated, getUserProfile } from "./core/session.js";
 import { showToast, showConfirm } from "./ui/notifications.js";
-import { initNav, navItems, ICONS } from "./core/nav.js";
+import { initNav, navItems, ICONS, getSectionMeta } from "./core/nav.js";
 import { initCalendario, renderStudyCalendar, renderAcadCalendar, setCalendarioCaches, getCalendarioCaches, paintStudyEvents } 
 from "./aula/calendario.js";
 import Social from "./social/index.js";
@@ -790,11 +790,16 @@ window.showTab = async function(name){
 
   if (sidebarCtrl) sidebarCtrl.setActive(name);
   const label = document.getElementById("currentSectionLabel");
-  const nav = (Array.isArray(navItems) ? navItems : []).find(n => n.id === name) || null;
+  const sectionMeta = getSectionMeta(name);
+  const fallbackTitle = activeTab?.dataset?.title || "";
 
-  if (label && nav){
-    const iconHtml = nav.icon ? `<span class="section-icon" aria-hidden="true">${nav.icon}</span>` : "";
-    label.innerHTML = `${iconHtml}<span>${nav.label || ""}</span>`;
+  if (label){
+    const currentText = label.querySelector("span")?.textContent || "";
+    const resolvedTitle = sectionMeta?.label || fallbackTitle || currentText;
+    if (resolvedTitle) {
+      const iconHtml = sectionMeta?.icon ? `<span class="section-icon" aria-hidden="true">${sectionMeta.icon}</span>` : "";
+      label.innerHTML = `${iconHtml}<span>${resolvedTitle}</span>`;
+    }
   }
 
   return true;

@@ -3,6 +3,7 @@ import { collection, getDocs, getDoc, doc } from "../core/firebase.js";
 let CTX = null;
 let previousFocusedElement = null;
 let friendSearchKeydownHandler = null;
+const searchAvatarUrlCache = new Map();
 
 const FRIEND_SEARCH_DOMAIN = "@mi.unc.edu.ar";
 
@@ -146,8 +147,9 @@ function renderUsersSearchList(){
     const item = document.createElement("div");
     item.className = "friend-search-item";
     const labelName = user.name || user.fullName || user.firstName || "Usuario";
+    const initial = (labelName || "U").charAt(0).toUpperCase();
     item.innerHTML = `
-      <div class="friend-search-avatar" aria-hidden="true">${(labelName || "U").charAt(0).toUpperCase()}</div>
+      <div class="friend-search-avatar" aria-hidden="true">${initial}</div>
       <div class="friend-search-user">
         <div class="friend-search-name">${labelName}</div>
         <div class="friend-search-email">${user.email || "-"}</div>
@@ -157,7 +159,50 @@ function renderUsersSearchList(){
     renderResultAction(item, user, status);
 
     state.usersSearchList.appendChild(item);
+    hydrateSearchResultAvatar(item, user, labelName, initial);
   });
+}
+
+function getCachedSearchAvatarUrl(uid){
+  if (!uid || !searchAvatarUrlCache.has(uid)) return "";
+  return searchAvatarUrlCache.get(uid) || "";
+}
+
+function buildAvatarImgElement(avatarUrl, labelName){
+  const img = document.createElement("img");
+  img.className = "friend-search-avatar";
+  img.src = avatarUrl;
+  img.alt = `Avatar de ${labelName}`;
+  img.loading = "lazy";
+  img.decoding = "async";
+  return img;
+}
+
+async function hydrateSearchResultAvatar(item, user, labelName, initial){
+  const avatarEl = item.querySelector(".friend-search-avatar");
+  if (!avatarEl) return;
+
+  const cachedUrl = getCachedSearchAvatarUrl(user?.uid);
+  if (cachedUrl){
+    avatarEl.replaceWith(buildAvatarImgElement(cachedUrl, labelName));
+    return;
+  }
+
+  try{
+    // Reutilizamos exactamente la misma resolución usada por la lista de amigos:
+    // Directory.getUserProfile(uid) + CTX.resolveAvatarUrl(profile.photoURL).
+    const profile = await getUserProfile(user?.uid);
+    const avatarUrl = CTX.resolveAvatarUrl?.(profile?.photoURL) || "";
+    if (!avatarUrl) return;
+    searchAvatarUrlCache.set(user.uid, avatarUrl);
+    if (!item.isConnected) return;
+    const currentAvatarEl = item.querySelector(".friend-search-avatar");
+    if (!currentAvatarEl) return;
+    currentAvatarEl.replaceWith(buildAvatarImgElement(avatarUrl, labelName));
+  }catch(error){
+    console.warn("[Mensajeria] No se pudo resolver avatar en buscar amigos", error);
+    if (avatarEl.textContent !== initial) avatarEl.textContent = initial;
+  }
 }
 
 function ensureUsersSearchUI(){
@@ -219,6 +264,7 @@ async function loadUsersDirectory(){
   ensureUsersSearchUI();
   state.usersLoading = true;
   state.usersError = "";
+  searchAvatarUrlCache.clear();
   renderUsersSearchList();
   try{
     const snap = await getDocs(collection(CTX.db, "publicUsers"));

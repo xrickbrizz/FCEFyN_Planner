@@ -29,6 +29,29 @@ export const navItems = [
   //{ id:"perfil", label:"Perfil", icon:"👤" },
 ];
 
+const extraSectionMeta = {
+  mensajes: {
+    label: "Mensajes",
+    icon: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mensajes"><title>Mensajes</title><path d="M21 14a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`
+  },
+  perfil: {
+    label: "Perfil",
+    icon: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Perfil"><title>Perfil</title><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>`
+  }
+};
+
+const navMetaMap = new Map(
+  [
+    ...(Array.isArray(navItems) ? navItems : []),
+    ...Object.entries(extraSectionMeta).map(([id, meta]) => ({ id, ...meta }))
+  ].map((item) => [item.id, item])
+);
+
+export function getSectionMeta(sectionId) {
+  if (!sectionId || typeof sectionId !== "string") return null;
+  return navMetaMap.get(sectionId) || null;
+}
+
 console.log("[nav] loaded");
 
 export function initNav(ctx = {}) {

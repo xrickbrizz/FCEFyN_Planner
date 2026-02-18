@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="assets/css/mobile.css">
   <link rel="stylesheet" href="assets/css/mobile-home.css">
   <script src="scripts/ui/theme-toggle.js" defer></script>
+  <script src="scripts/ui/disable-form-tooltips.js" defer></script>
     <script src="scripts/ui/user-panel.js" defer></script>
 </head>
 
@@ -542,7 +543,7 @@
       </section>
     </div>
     <!-- MENSAJERÍA -->
-    <div id="tab-mensajes" class="tab-card" style="display:none;">
+    <div id="tab-mensajes" class="tab-card" data-title="Mensajes" style="display:none;">
       <section class="mensajeria-layout mensajeria-container" aria-label="Mensajería entre estudiantes">
         <aside class="mensajeria-sidebar messages-left sidebar-mensajes">
           <article class="card-block mensajeria-card add-amigo">
@@ -640,7 +641,7 @@
     </div>
 
     <!-- PERFIL -->
-    <div id="tab-perfil" class="tab-card profile-page" style="display:none;">
+    <div id="tab-perfil" class="tab-card profile-page" data-title="Perfil" style="display:none;">
       <div class="profile-page-shell">
         <section class="profile-card profile-main-card">
           <header class="profile-header profile-header-center">
