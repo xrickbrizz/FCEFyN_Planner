@@ -1025,6 +1025,91 @@ body[data-theme="light"] .tab-card{
     }
     .study-calendar-compact #calendarGrid{ margin-top: .5rem; }
 
+    .streak-tiles{
+      margin-top: .9rem;
+      padding: .95rem;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+    .streak-tiles__title{
+      margin: 0 0 .75rem;
+      color: var(--text);
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing:.01em;
+    }
+    .streak-grid{
+      display:grid;
+      grid-template-columns: repeat(7, 56px);
+      gap: 12px;
+      align-items: start;
+    }
+    .streak-grid .day{
+      width:56px;
+      height:56px;
+      border:2px solid #f2f3f5;
+      background:#fff;
+      border-radius:14px;
+      position:relative;
+      padding:0;
+      min-height:56px;
+      min-width:56px;
+      box-shadow:none;
+      overflow:visible;
+      cursor:default;
+      pointer-events:none;
+    }
+    .streak-grid .day__num{
+      position:absolute;
+      top:7px;
+      left:8px;
+      font-size:14px;
+      line-height:1;
+      font-weight:700;
+      color:#ff7a1a;
+    }
+    .streak-grid .day__dot{
+      position:absolute;
+      left:8px;
+      bottom:8px;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#ffb065;
+    }
+    .streak-grid .day__activeDot{
+      position:absolute;
+      top:7px;
+      right:7px;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#3b82f6;
+    }
+    .streak-grid .day__flame{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -44%);
+      width:22px;
+      height:22px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .streak-grid .flame{
+      width:22px;
+      height:22px;
+      display:block;
+    }
+    .streak-grid .flame__outer{ fill:#ff4b3a; }
+    .streak-grid .flame__inner{ fill:#ff9a3a; }
+    .streak-grid .day--active{
+      border-color:#3b82f6;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.14);
+    }
+
     .study-stats-grid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
