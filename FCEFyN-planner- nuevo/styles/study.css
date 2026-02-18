@@ -4520,7 +4520,10 @@ body[data-theme="light"] .planner-modal{
 .correlativas-plans .plans-embedded-root .subjects{ display:flex; flex-direction:column; gap:.35rem; margin-top:.45rem; overflow:visible; padding-right:0; }
 .correlativas-plans .plans-embedded-root .subject{ background:var(--cor-plan-card); padding:.55rem .6rem; border-radius:.625rem; font-weight:700; font-size:.92rem; text-align:center; cursor:pointer; transition:transform .12s, background .18s, border-color .12s; color:var(--color-text); border:1px solid transparent; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
 .correlativas-plans .plans-embedded-root .subject:hover{ transform:translateY(-4px); background:var(--primary-12); border-color:var(--accent-25); }
-.correlativas-plans .plans-embedded-root .subject.locked{ cursor:not-allowed; opacity:.62; transform:none; background:var(--primary-06); color:var(--cor-plan-muted); border-color:transparent; }
+.correlativas-plans .plans-embedded-root .subject.locked{opacity:.62; transform:none; background:var(--primary-06); color:var(--cor-plan-muted); border-color:transparent; }
+.correlativas-plans .plans-embedded-root .subject-inline-row{ display:flex; flex-direction:column; align-items:center; }
+.correlativas-plans .plans-embedded-root .subject-inline-row .subject{ width:100%; }
+.correlativas-plans .plans-embedded-root .status-chips{ display:none; align-items:center; gap:8px; flex-wrap:wrap; padding:6px 8px; border-radius:999px; border:1px solid var(--cor-plan-border); background:var(--card-bg); box-shadow:0 6px 20px rgba(15,23,42,.16); }
 .correlativas-plans .plans-embedded-root .promocionada{ background:var(--color-ok)!important; color:var(--color-primary-strong); }
 .correlativas-plans .plans-embedded-root .regular{ background:var(--color-warn)!important; color:var(--color-primary-strong)!important; }
 .correlativas-plans .plans-embedded-root .libre{ background:var(--color-danger)!important; color:var(--color-text-contrast); }

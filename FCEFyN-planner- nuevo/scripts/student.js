@@ -731,11 +731,29 @@ if (btnHelpClose) btnHelpClose.addEventListener("click", closeHelpModal);
 if (helpModalBg) helpModalBg.addEventListener("click", (e)=>{ if (e.target === helpModalBg) closeHelpModal(); });
 
 let sidebarCtrl = null;
+let isResolvingProfileNavigation = false;
 
 window.getCurrentCareer = getCurrentCareer;
 
-window.showTab = function(name){
+window.showTab = async function(name){
+  if (isResolvingProfileNavigation) return false;
+  const currentSection = navState.activeSection;
   const targetSection = resolveSectionId(name);
+  const isLeavingProfile = currentSection === "perfil" && targetSection !== "perfil";
+  if (isLeavingProfile){
+    const profileModule = appCtx?.socialModules?.Profile;
+    if (profileModule?.isDirty?.()){
+      isResolvingProfileNavigation = true;
+      let canContinue = false;
+      try{
+        canContinue = await profileModule.confirmNavigationFromProfile?.();
+      }finally{
+        isResolvingProfileNavigation = false;
+      }
+      if (!canContinue) return false;
+    }
+  }
+
   if (isValidSectionId(name)){
     sessionStorage.setItem(NAV_LAST_KEY, name);
     logNav("[nav] stored section", name);
@@ -778,6 +796,8 @@ window.showTab = function(name){
     const iconHtml = nav.icon ? `<span class="section-icon" aria-hidden="true">${nav.icon}</span>` : "";
     label.innerHTML = `${iconHtml}<span>${nav.label || ""}</span>`;
   }
+
+  return true;
 
 };
 

@@ -94,6 +94,7 @@ export async function mountPlansEmbedded({
     planData: null,
     subjectStates: {},
     selectedSubjectId: "",
+    openedInlineSelectorId: "",
     selectedAnchorEl: null,
     previousFocus: null,
     storageKey: "",
@@ -173,6 +174,18 @@ export async function mountPlansEmbedded({
     const options = modalActionsEl?.querySelectorAll(".status-pill-option") || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.statusValue || "");
+      const isApprovalOption = !!value && APPROVED_STATUSES.includes(value);
+      buttonEl.disabled = isApprovalOption && !gate.ok;
+      if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
+      else buttonEl.removeAttribute("title");
+    });
+  }
+
+  function updateInlineStatusButtonsGate(subjectKey) {
+    const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
+    const options = gridEl?.querySelectorAll(`.status-chips[data-subject-id="${subjectKey}"] .status-pill-option`) || [];
+    options.forEach((buttonEl) => {
+      const value = normalizeStatus(buttonEl.dataset.inlineStatusValue || "");
       const isApprovalOption = !!value && APPROVED_STATUSES.includes(value);
       buttonEl.disabled = isApprovalOption && !gate.ok;
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
@@ -290,6 +303,9 @@ export async function mountPlansEmbedded({
       const listEl = gridEl.querySelector(`.subjects[data-sem="${sem}"]`);
       if (!listEl) return;
 
+      const row = document.createElement("div");
+      row.className = "subject-inline-row";
+
       const item = document.createElement("button");
       item.type = "button";
       item.className = "subject";
@@ -310,8 +326,56 @@ export async function mountPlansEmbedded({
       }
       if (isApproved(status)) item.classList.add("subject-approved");
 
-      listEl.appendChild(item);
+      row.appendChild(item);
+
+      const chips = document.createElement("div");
+      chips.className = "status-chips";
+      chips.dataset.subjectId = subject.subjectSlug;
+      chips.style.display = state.openedInlineSelectorId === subject.subjectSlug ? "inline-flex" : "none";
+      chips.innerHTML = `
+        <button class="status-pill-option status-pill-pro" type="button" data-inline-status-value="promocionada">PRO</button>
+        <button class="status-pill-option status-pill-reg" type="button" data-inline-status-value="regular">REG</button>
+        <button class="status-pill-option status-pill-lib" type="button" data-inline-status-value="libre">LIB</button>
+        <button class="status-pill-option status-pill-cur" type="button" data-inline-status-value="en_curso">CUR</button>
+        <button class="status-pill-option status-pill-clear" type="button" data-inline-status-value="ninguno" data-inline-action="clear-status">Quitar</button>
+      `;
+      row.appendChild(chips);
+
+      listEl.appendChild(row);
     });
+
+    if (state.openedInlineSelectorId) {
+      updateInlineStatusButtonsGate(state.openedInlineSelectorId);
+    }
+  }
+
+
+  function closeInlineStatusSelector() {
+    state.openedInlineSelectorId = "";
+    state.selectedSubjectId = "";
+    gridEl.querySelectorAll(".status-chips").forEach((chipsEl) => {
+      chipsEl.style.display = "none";
+    });
+  }
+
+  function toggleInlineStatusSelector(subjectEl, subjectId) {
+    const chipsEl = subjectEl.parentElement?.querySelector(`.status-chips[data-subject-id="${subjectId}"]`);
+    if (!(chipsEl instanceof HTMLElement)) return;
+
+    gridEl.querySelectorAll(".status-chips").forEach((entry) => {
+      if (entry !== chipsEl) entry.style.display = "none";
+    });
+
+    const isOpen = state.openedInlineSelectorId === subjectId && chipsEl.style.display !== "none";
+    if (isOpen) {
+      closeInlineStatusSelector();
+      return;
+    }
+
+    state.openedInlineSelectorId = subjectId;
+    state.selectedSubjectId = subjectId;
+    chipsEl.style.display = "inline-flex";
+    updateInlineStatusButtonsGate(subjectId);
   }
 
   function updateUI() {
@@ -476,6 +540,7 @@ export async function mountPlansEmbedded({
       persistLocal();
       dispatchSubjectStatesChanged();
     }
+    closeInlineStatusSelector();
     closeStatusPillModal();
     updateUI();
   }
@@ -601,13 +666,22 @@ export async function mountPlansEmbedded({
       return;
     }
 
+    const inlineStatusBtn = target.closest("[data-inline-status-value]");
+    if (inlineStatusBtn) {
+      await applyStatus(inlineStatusBtn.dataset.inlineStatusValue || "");
+      return;
+    }
+
     const subjectEl = target.closest(".subject");
     if (!subjectEl || !containerEl.contains(subjectEl)) return;
 
     if (subjectEl.classList.contains("locked")) return;
 
     const subjectId = String(subjectEl.dataset.subjectSlug || "");
-    openStatusPillModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
+    // Flujo solicitado: en Correlativas se usan chips inline debajo de la materia,
+    // por eso evitamos abrir el modal legado en este click.
+    // openStatusPillModal(subjectEl, subjectId, subjectEl.dataset.subjectName || subjectEl.textContent || "Materia");
+    toggleInlineStatusSelector(subjectEl, subjectId);
   });
 
 

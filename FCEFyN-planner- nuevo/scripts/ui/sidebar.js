@@ -77,9 +77,12 @@ export function createQuickSidebar(options){
     }
 
     row.addEventListener("click", ()=>{
-      if (typeof onSelect === "function") onSelect(it.id);
-      setActive(it.id);
-      close();
+      const result = typeof onSelect === "function" ? onSelect(it.id) : true;
+      Promise.resolve(result).then((canNavigate)=>{
+        if (canNavigate === false) return;
+        setActive(it.id);
+        close();
+      });
     });
 
     list.appendChild(row);

@@ -20,6 +20,10 @@ let profileUnsubscribe = null;
 let didRenderProfile = false;
 let didEnsurePublicProfile = false;
 let profileHandlersBound = false;
+let profileSnapshot = null;
+let isProfileDirty = false;
+let suppressDirtyTracking = false;
+let dirtyWatchersBound = false;
 
 const profileEmailEl = document.getElementById("profileEmail");
 const profileFirstNameInput = document.getElementById("profileFirstName");
@@ -27,6 +31,8 @@ const profileLastNameInput = document.getElementById("profileLastName");
 const careerSelect = document.getElementById("inpCareer");
 const profileYearInInput = document.getElementById("profileYearIn");
 const profileDocumentInput = document.getElementById("profileDocument");
+const profileCareer2Select = document.getElementById("profileCareer2");
+const profileYearIn2Input = document.getElementById("profileYearIn2");
 const profileStatusEl = document.getElementById("profileStatus");
 const passwordStatusEl = document.getElementById("passwordStatus");
 const btnProfileSave = document.getElementById("btnProfileSave");
@@ -39,6 +45,16 @@ const profileAvatarInput = document.getElementById("inpAvatar");
 const btnUploadAvatar = document.getElementById("btnUploadAvatar");
 const btnRemoveAvatar = document.getElementById("btnRemoveAvatar");
 const profileAvatarStatusEl = document.getElementById("profileAvatarStatus");
+
+const profileDirtyFields = [
+  profileFirstNameInput,
+  profileLastNameInput,
+  careerSelect,
+  profileYearInInput,
+  profileDocumentInput,
+  profileCareer2Select,
+  profileYearIn2Input
+].filter(Boolean);
 
 const avatarFallback = (() => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -130,6 +146,120 @@ function renderProfileAvatar(previewUrl = ""){
 
 function setProfileStatus(target, message){
   if (target) target.textContent = message || "";
+}
+
+function getProfileFormValues(){
+  return {
+    firstName: profileFirstNameInput?.value?.trim() || "",
+    lastName: profileLastNameInput?.value?.trim() || "",
+    careerSlug: careerSelect?.value?.trim() || "",
+    yearIn: profileYearInInput?.value?.trim() || "",
+    documento: profileDocumentInput?.value?.trim() || "",
+    career2: profileCareer2Select?.value?.trim() || "",
+    yearIn2: profileYearIn2Input?.value?.trim() || ""
+  };
+}
+
+function takeProfileSnapshot(){
+  profileSnapshot = getProfileFormValues();
+  isProfileDirty = false;
+}
+
+function isDifferentFromSnapshot(){
+  if (!profileSnapshot) return false;
+  const current = getProfileFormValues();
+  return Object.keys(profileSnapshot).some((key) => profileSnapshot[key] !== current[key]);
+}
+
+function updateProfileDirtyState(){
+  if (suppressDirtyTracking) return;
+  isProfileDirty = isDifferentFromSnapshot();
+}
+
+function restoreProfileSnapshot(){
+  if (!profileSnapshot) return;
+  suppressDirtyTracking = true;
+  if (profileFirstNameInput) profileFirstNameInput.value = profileSnapshot.firstName || "";
+  if (profileLastNameInput) profileLastNameInput.value = profileSnapshot.lastName || "";
+  if (careerSelect) careerSelect.value = profileSnapshot.careerSlug || "";
+  if (profileYearInInput) profileYearInInput.value = profileSnapshot.yearIn || "";
+  if (profileDocumentInput) profileDocumentInput.value = profileSnapshot.documento || "";
+  if (profileCareer2Select) profileCareer2Select.value = profileSnapshot.career2 || "";
+  if (profileYearIn2Input) profileYearIn2Input.value = profileSnapshot.yearIn2 || "";
+  suppressDirtyTracking = false;
+  isProfileDirty = false;
+}
+
+function bindProfileDirtyWatchers(){
+  if (dirtyWatchersBound) return;
+  dirtyWatchersBound = true;
+  profileDirtyFields.forEach((field) => {
+    field.addEventListener("input", updateProfileDirtyState);
+    field.addEventListener("change", updateProfileDirtyState);
+  });
+}
+
+function showUnsavedChangesModal(){
+  return new Promise((resolve) => {
+    const backdrop = document.createElement("div");
+    backdrop.className = "toast-dialog-backdrop";
+
+    const dialog = document.createElement("div");
+    dialog.className = "toast-dialog";
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+
+    const title = document.createElement("div");
+    title.className = "dialog-title";
+    title.textContent = "Cambios sin guardar";
+
+    const message = document.createElement("div");
+    message.className = "dialog-msg";
+    message.textContent = "Tenés cambios sin guardar. ¿Deseas guardar cambios antes de salir?";
+
+    const actions = document.createElement("div");
+    actions.className = "dialog-actions";
+
+    const btnDiscard = document.createElement("button");
+    btnDiscard.className = "dialog-btn ghost";
+    btnDiscard.type = "button";
+    btnDiscard.textContent = "No, descartar";
+
+    const btnSave = document.createElement("button");
+    btnSave.className = "dialog-btn primary";
+    btnSave.type = "button";
+    btnSave.textContent = "Sí, guardar";
+
+    actions.appendChild(btnDiscard);
+    actions.appendChild(btnSave);
+    dialog.appendChild(title);
+    dialog.appendChild(message);
+    dialog.appendChild(actions);
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+
+    const cleanup = (action) => {
+      document.removeEventListener("keydown", onKeyDown);
+      backdrop.remove();
+      resolve(action);
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape"){
+        event.preventDefault();
+        cleanup("stay");
+      }
+    };
+
+    btnSave.addEventListener("click", () => cleanup("save"));
+    btnDiscard.addEventListener("click", () => cleanup("discard"));
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) cleanup("stay");
+    });
+
+    document.addEventListener("keydown", onKeyDown);
+    btnSave.focus();
+  });
 }
 
 function renderCareerOptions(selectEl, selectedSlug){
@@ -284,6 +414,7 @@ function renderProfileSection(){
   setProfileStatus(passwordStatusEl, "");
   setProfileAvatarStatus("");
   renderProfileAvatar();
+  takeProfileSnapshot();
 }
 
 async function loadUserCareer(uid){
@@ -309,11 +440,11 @@ async function loadUserCareer(uid){
 
 async function syncCareerSlugFromSelect(){
   const ready = getReadyProfileContext("Actualizar carrera", { requireDB: true, profileStatus: true });
-  if (!ready) return;
+  if (!ready) return false;
   const { currentUser, db, notifyError } = ready;
-  if (!careerSelect) return;
+  if (!careerSelect) return false;
   const careerSlug = (careerSelect.value || "").trim();
-  if (!careerSlug) return;
+  if (!careerSlug) return false;
   try{
     const plan = (CTX?.getCareerPlans?.() || []).find((item) => item.slug === careerSlug);
     const planVersion = Number(plan?.version || 1);
@@ -331,11 +462,125 @@ async function syncCareerSlugFromSelect(){
     updateUserProfileCache({ careerSlug, planVersion });
     window.dispatchEvent(new CustomEvent("careerChanged", { detail: { careerSlug } }));
     setProfileStatus(profileStatusEl, "Carrera actualizada automáticamente.");
+    return true;
   }catch(error){
     console.error("[Perfil] Error actualizando careerSlug en publicUsers", error);
     notifyError?.("No se pudo actualizar la carrera.");
     setProfileStatus(profileStatusEl, "No se pudo actualizar la carrera automáticamente.");
+    return false;
   }
+}
+
+async function saveProfileChanges(){
+  const ready = getReadyProfileContext("Guardar perfil", { profileStatus: true, requireDB: true });
+  if (!ready) return false;
+  const { currentUser, db, notifyWarn, notifySuccess, notifyError, showConfirm } = ready;
+  const firstName = profileFirstNameInput?.value.trim() || "";
+  const lastName = profileLastNameInput?.value.trim() || "";
+  const name = `${firstName} ${lastName}`.trim();
+  const careerSlug = CTX?.getCurrentCareer?.() || "";
+  const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
+  const cachedProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
+  const careerName = plan?.nombre || (careerSlug ? (cachedProfile?.career || careerSlug) : "");
+  const yearRaw = profileYearInInput?.value.trim() || "";
+  const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
+  const documento = profileDocumentInput?.value.trim() || "";
+
+  if (!careerSlug){
+    notifyWarn?.("Seleccioná una carrera antes de guardar.");
+    setProfileStatus(profileStatusEl, "Debés elegir una carrera para guardar.");
+    return false;
+  }
+
+  const previousCareerSlug = cachedProfile?.careerSlug || "";
+  const previousCareer = cachedProfile?.career || "";
+  if ((previousCareerSlug || previousCareer) && careerSlug !== previousCareerSlug){
+    const ok = await showConfirm?.({
+      title:"Cambiar carrera",
+      message:"Cambiar la carrera afecta Materias y Plan de estudios. ¿Continuar?",
+      confirmText:"Cambiar",
+      cancelText:"Cancelar",
+      danger:true
+    });
+    if (!ok) return false;
+  }
+
+  if (yearRaw && (!Number.isFinite(yearIn) || yearIn < 1900 || yearIn > 2100)){
+    notifyWarn?.("El año de ingreso debe ser un número válido.");
+    setProfileStatus(profileStatusEl, "Revisá el año de ingreso.");
+    return false;
+  }
+
+  try{
+    const planVersion = Number(plan?.version || 1);
+    const baseAcademicState = {
+      approvedSubjects: Array.isArray(cachedProfile?.approvedSubjects) ? cachedProfile.approvedSubjects : [],
+      currentSubjects: Array.isArray(cachedProfile?.currentSubjects) ? cachedProfile.currentSubjects : []
+    };
+    await setDoc(doc(db, "users", currentUser.uid), {
+      firstName,
+      lastName,
+      name,
+      career: careerSlug ? careerName : "",
+      careerSlug,
+      planVersion,
+      yearIn: yearIn || "",
+      documento,
+      dni: documento,
+      legajo: documento,
+      ...baseAcademicState,
+      createdAt: cachedProfile?.createdAt || serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge:true });
+    const nextProfile = updateUserProfileCache({
+      firstName,
+      lastName,
+      name,
+      career: careerSlug ? careerName : "",
+      careerSlug,
+      planVersion,
+      yearIn: yearIn || "",
+      documento,
+      dni: documento,
+      legajo: documento,
+      ...baseAcademicState
+    });
+    await ensurePublicUserProfile(db, currentUser, nextProfile);
+    notifySuccess?.("Perfil actualizado.");
+    setProfileStatus(profileStatusEl, "Cambios guardados correctamente.");
+    takeProfileSnapshot();
+    return true;
+  }catch(e){
+    notifyError?.("No se pudo guardar el perfil.");
+    setProfileStatus(profileStatusEl, "No se pudo guardar. Intentá nuevamente.");
+    return false;
+  }
+}
+
+function discardProfileChanges(){
+  restoreProfileSnapshot();
+}
+
+async function confirmNavigationFromProfile(){
+  if (!isProfileDirty) return true;
+  const action = await showUnsavedChangesModal();
+  if (action === "stay") return false;
+  if (action === "discard"){
+    discardProfileChanges();
+    return true;
+  }
+  const didSave = await saveProfileChanges();
+  return didSave;
+}
+
+function bindProfileBeforeUnload(){
+  if (window.__profileBeforeUnloadBound) return;
+  window.__profileBeforeUnloadBound = true;
+  window.addEventListener("beforeunload", (event) => {
+    if (!isProfileDirty) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
 }
 
 function bindProfileHandlers(){
@@ -345,86 +590,7 @@ function bindProfileHandlers(){
   if (btnProfileSave){
     btnProfileSave.addEventListener("click", async (event)=>{
       event?.preventDefault?.();
-      const ready = getReadyProfileContext("Guardar perfil", { profileStatus: true, requireDB: true });
-      if (!ready) return;
-      const { currentUser, db, notifyWarn, notifySuccess, notifyError, showConfirm } = ready;
-      const firstName = profileFirstNameInput?.value.trim() || "";
-      const lastName = profileLastNameInput?.value.trim() || "";
-      const name = `${firstName} ${lastName}`.trim();
-      const careerSlug = CTX?.getCurrentCareer?.() || "";
-      const plan = careerSlug ? (CTX?.getCareerPlans?.() || []).find(p => p.slug === careerSlug) : null;
-      const cachedProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
-      const careerName = plan?.nombre || (careerSlug ? (cachedProfile?.career || careerSlug) : "");
-      const yearRaw = profileYearInInput?.value.trim() || "";
-      const yearIn = yearRaw ? parseInt(yearRaw, 10) : "";
-      const documento = profileDocumentInput?.value.trim() || "";
-
-      if (!careerSlug){
-        notifyWarn?.("Seleccioná una carrera antes de guardar.");
-        setProfileStatus(profileStatusEl, "Debés elegir una carrera para guardar.");
-        return;
-      }
-
-      const previousCareerSlug = cachedProfile?.careerSlug || "";
-      const previousCareer = cachedProfile?.career || "";
-      if ((previousCareerSlug || previousCareer) && careerSlug !== previousCareerSlug){
-        const ok = await showConfirm?.({
-          title:"Cambiar carrera",
-          message:"Cambiar la carrera afecta Materias y Plan de estudios. ¿Continuar?",
-          confirmText:"Cambiar",
-          cancelText:"Cancelar",
-          danger:true
-        });
-        if (!ok) return;
-      }
-
-      if (yearRaw && (!Number.isFinite(yearIn) || yearIn < 1900 || yearIn > 2100)){
-        notifyWarn?.("El año de ingreso debe ser un número válido.");
-        setProfileStatus(profileStatusEl, "Revisá el año de ingreso.");
-        return;
-      }
-
-      try{
-        const planVersion = Number(plan?.version || 1);
-        const baseAcademicState = {
-          approvedSubjects: Array.isArray(cachedProfile?.approvedSubjects) ? cachedProfile.approvedSubjects : [],
-          currentSubjects: Array.isArray(cachedProfile?.currentSubjects) ? cachedProfile.currentSubjects : []
-        };
-        await setDoc(doc(db, "users", currentUser.uid), {
-          firstName,
-          lastName,
-          name,
-          career: careerSlug ? careerName : "",
-          careerSlug,
-          planVersion,
-          yearIn: yearIn || "",
-          documento,
-          dni: documento,
-          legajo: documento,
-          ...baseAcademicState,
-          createdAt: cachedProfile?.createdAt || serverTimestamp(),
-          updatedAt: serverTimestamp()
-        }, { merge:true });
-        const nextProfile = updateUserProfileCache({
-          firstName,
-          lastName,
-          name,
-          career: careerSlug ? careerName : "",
-          careerSlug,
-          planVersion,
-          yearIn: yearIn || "",
-          documento,
-          dni: documento,
-          legajo: documento,
-          ...baseAcademicState
-        });
-        await ensurePublicUserProfile(db, currentUser, nextProfile);
-        notifySuccess?.("Perfil actualizado.");
-        setProfileStatus(profileStatusEl, "Cambios guardados correctamente.");
-      }catch(e){
-        notifyError?.("No se pudo guardar el perfil.");
-        setProfileStatus(profileStatusEl, "No se pudo guardar. Intentá nuevamente.");
-      }
+      await saveProfileChanges();
     });
   }
 
@@ -556,6 +722,8 @@ const Profile = {
     didRenderProfile = false;
     didEnsurePublicProfile = false;
     CTX.resolveAvatarUrl = resolveAvatarUrl;
+    bindProfileDirtyWatchers();
+    bindProfileBeforeUnload();
     bindProfileHandlers();
   },
   async load(){
@@ -570,6 +738,12 @@ const Profile = {
   renderProfileSection,
   resolveAvatarUrl,
   applyAvatarEverywhere,
+  saveProfileChanges,
+  discardProfileChanges,
+  confirmNavigationFromProfile,
+  isDirty(){
+    return isProfileDirty;
+  },
   getUserProfile(){
     return getSessionUserProfile() || CTX?.AppState?.userProfile || null;
   }
