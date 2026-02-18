@@ -329,6 +329,17 @@ body[data-theme="dark"] .hero-title{
   width: 1.2rem;
   height: 1.2rem;
 }
+body.dark-mode .feat-ico,
+body[data-theme="dark"] .feat-ico{
+  color: var(--color-text);
+}
+body.dark-mode .feat-ico svg,
+body[data-theme="dark"] .feat-ico svg,
+body.dark-mode .feat-ico svg *,
+body[data-theme="dark"] .feat-ico svg *{
+  stroke: currentColor !important;
+  fill: none !important;
+}
 .feat b{ display:block; font-size:.95rem; margin-bottom:.1rem; }
 .feat span{ color:var(--muted); font-size:.88rem; line-height:1.35; }
 .metric-row{
