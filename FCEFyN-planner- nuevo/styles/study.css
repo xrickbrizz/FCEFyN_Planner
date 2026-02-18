@@ -4655,6 +4655,22 @@ body[data-theme="light"] .planner-modal{
   border-color:color-mix(in srgb, var(--chat-accent, #7CC7A0) 45%, #d8e2dc);
 }
 
+body.dark-mode #tab-mensajes .friend-row.selected,
+body[data-theme="dark"] #tab-mensajes .friend-row.selected{
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 18%, var(--card-bg, var(--glass-soft)));
+  border-color:color-mix(in srgb, var(--chat-accent, #7CC7A0) 50%, var(--border-40));
+  color:var(--color-text);
+}
+
+body.dark-mode #tab-mensajes .friend-row.selected .friend-name,
+body.dark-mode #tab-mensajes .friend-row.selected .friend-meta,
+body.dark-mode #tab-mensajes .friend-row.selected .friend-chat-btn,
+body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-name,
+body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-meta,
+body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
+  color:var(--color-text);
+}
+
 #tab-mensajes .friend-copy{ min-width:0; }
 #tab-mensajes .friend-name-line{
   display:flex;
@@ -4784,6 +4800,75 @@ body[data-theme="light"] .planner-modal{
   box-shadow:0 22px 45px rgba(0,0,0,.14);
   padding:1rem;
   animation:slideFadeUp .18s ease;
+}
+
+body.dark-mode .friend-search-overlay,
+body.dark-mode .friend-requests-modal-overlay,
+body.dark-mode #tab-mensajes .chat-settings-overlay,
+body[data-theme="dark"] .friend-search-overlay,
+body[data-theme="dark"] .friend-requests-modal-overlay,
+body[data-theme="dark"] #tab-mensajes .chat-settings-overlay{
+  background:var(--overlay-soft);
+}
+
+body.dark-mode .friend-search-modal,
+body.dark-mode .friend-requests-modal,
+body.dark-mode #tab-mensajes .chat-settings-modal,
+body[data-theme="dark"] .friend-search-modal,
+body[data-theme="dark"] .friend-requests-modal,
+body[data-theme="dark"] #tab-mensajes .chat-settings-modal{
+  background:var(--card-bg);
+  color:var(--color-text);
+  border-color:var(--border-50);
+}
+
+body.dark-mode .friend-search-header,
+body.dark-mode .friend-requests-modal-header,
+body.dark-mode #tab-mensajes .chat-settings-header,
+body[data-theme="dark"] .friend-search-header,
+body[data-theme="dark"] .friend-requests-modal-header,
+body[data-theme="dark"] #tab-mensajes .chat-settings-header{
+  border-color:var(--border-35);
+}
+
+body.dark-mode #closeFriendSearch,
+body.dark-mode .friend-requests-close,
+body.dark-mode #tab-mensajes #closeChatSettings,
+body[data-theme="dark"] #closeFriendSearch,
+body[data-theme="dark"] .friend-requests-close,
+body[data-theme="dark"] #tab-mensajes #closeChatSettings{
+  background:var(--glass-soft);
+  color:var(--color-text);
+  border-color:var(--border-45);
+}
+
+body.dark-mode #friendSearchInput,
+body.dark-mode #tab-mensajes .theme-option,
+body[data-theme="dark"] #friendSearchInput,
+body[data-theme="dark"] #tab-mensajes .theme-option{
+  background:var(--glass-soft);
+  border-color:var(--border-45);
+  color:var(--color-text);
+}
+
+body.dark-mode #tab-mensajes .theme-option.active,
+body[data-theme="dark"] #tab-mensajes .theme-option.active{
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--glass-soft));
+  border-color:color-mix(in srgb, var(--chat-accent, #7CC7A0) 45%, var(--border-45));
+}
+
+body.dark-mode #tab-mensajes .chat-settings-section label,
+body.dark-mode #tab-mensajes .chat-settings-section small,
+body.dark-mode #tab-mensajes .chat-settings-modal h3,
+body[data-theme="dark"] #tab-mensajes .chat-settings-section label,
+body[data-theme="dark"] #tab-mensajes .chat-settings-section small,
+body[data-theme="dark"] #tab-mensajes .chat-settings-modal h3{
+  color:var(--color-text);
+}
+
+body.dark-mode #tab-mensajes .chat-settings-section input[type="checkbox"],
+body[data-theme="dark"] #tab-mensajes .chat-settings-section input[type="checkbox"]{
+  accent-color:var(--chat-accent, #7CC7A0);
 }
 #tab-mensajes .chat-settings-header{
   display:flex;
