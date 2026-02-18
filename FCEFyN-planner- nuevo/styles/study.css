@@ -2678,6 +2678,16 @@ body[data-theme="light"] .event{
   width:100%;
   padding:.6rem 0;
 }
+.prof-search-input > span{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  padding:0;
+  line-height:1;
+}
 
 .prof-grid{
   display:grid;
@@ -2895,6 +2905,40 @@ body[data-theme="light"] .event{
   background:var(--input-bg);
   color:var(--color-text);
   padding:.65rem .75rem;
+}
+
+body.dark-mode #profAdvancedFiltersModal .prof-modal-content,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-modal-content{
+  color-scheme:dark;
+}
+body.dark-mode #profAdvancedFiltersModal .prof-filter-field select,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select{
+  color-scheme:dark;
+  background:var(--card-bg);
+  color:var(--color-text);
+  border:1px solid var(--color-border);
+}
+body.dark-mode #profAdvancedFiltersModal .prof-filter-field select:hover,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select:hover{
+  border-color:color-mix(in srgb, var(--color-border) 50%, #fff 50%);
+}
+body.dark-mode #profAdvancedFiltersModal .prof-filter-field select:focus-visible,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select:focus-visible{
+  outline:2px solid color-mix(in srgb, var(--color-accent) 45%, #fff 55%);
+  outline-offset:2px;
+}
+body.dark-mode #profAdvancedFiltersModal .prof-filter-field select option,
+body.dark-mode #profAdvancedFiltersModal .prof-filter-field select optgroup,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select option,
+body[data-theme="dark"] #profAdvancedFiltersModal .prof-filter-field select optgroup{
+  background:#151a20;
+  color:#f5f7fa;
+}
+body.dark-mode .prof-subject-chip,
+body[data-theme="dark"] .prof-subject-chip{
+  background:color-mix(in srgb, var(--color-accent) 22%, #121821);
+  border-color:color-mix(in srgb, var(--color-accent) 45%, #6f7f95);
+  color:#f5f7fa;
 }
 
 @media(max-width:920px){
