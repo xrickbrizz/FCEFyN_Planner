@@ -8,6 +8,7 @@ import Social from "./social/index.js";
 import Aula from "./aula/index.js";
 import { resolvePlanSlug } from "./plans-data.js";
 import { mountPlansEmbedded } from "./plans/plansEmbedded.js";
+import { initWeatherWidget, destroyWeatherWidget } from "./widgets/weatherWidget.js";
 
 let html2canvasLib = null;
 let jsPDFLib = null;
@@ -15,6 +16,7 @@ let appCtx = null;
 let unsubscribeHomeNotices = null;
 let pendingCareerChangeSlug = "";
 let plansEmbeddedController = null;
+let weatherWidgetController = null;
 
 const AppState = {
   currentUser: null,
@@ -597,6 +599,7 @@ onSessionReady((user) => {
   window.showTab?.("inicio");
   initHomeModules();
   initHomeNotices();
+  weatherWidgetController = initWeatherWidget("inicio");
 
   initStudentModulesInBackground(user, ctx).catch((error) => {
     console.error("[bootstrap] initStudentModulesInBackground error", error);
@@ -609,6 +612,7 @@ window.logout = async function(){
       unsubscribeHomeNotices();
       unsubscribeHomeNotices = null;
     }
+    destroyWeatherWidget();
     await appCtx?.socialModules?.Messaging?.updatePresence?.(false);
     await signOut(auth);
     window.location.href = "app.html";
@@ -840,6 +844,7 @@ window.showTab = async function(name){
     activeTab.style.display = "block";
   }
   console.log("Tab activa:", name);
+  weatherWidgetController?.setActiveSection?.(name);
 
   if (name === "agenda") Aula.open("agenda");
   if (name === "estudio") renderStudyCalendar();
