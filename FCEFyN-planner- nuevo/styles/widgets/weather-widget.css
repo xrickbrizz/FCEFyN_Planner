@@ -102,12 +102,25 @@ body[data-theme="dark"] .weather-widget{
   margin-top:.4rem;
 }
 .weather-widget__hour{
+  appearance:none;
+  -webkit-appearance:none;
   background:var(--ww-item-bg);
   border:1px solid color-mix(in srgb, var(--ww-border) 70%, transparent);
   border-radius:.72rem;
   padding:.35rem .3rem;
   text-align:center;
   min-width:0;
+  color:inherit;
+}
+.weather-widget .wx-hour-card{ cursor:pointer; }
+.weather-widget .wx-hour-card.is-active{
+  border-color: color-mix(in srgb, var(--ww-border) 95%, var(--ww-text) 5%);
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.12);
+  background: color-mix(in srgb, var(--ww-item-bg) 80%, var(--ww-pill-active) 20%);
+}
+.weather-widget .wx-hour-card:focus-visible{
+  outline: 2px solid color-mix(in srgb, var(--ww-text) 45%, transparent);
+  outline-offset: 2px;
 }
 .weather-widget__hour-lbl{ font-size:.7rem; color:var(--ww-soft); font-weight:700; white-space:nowrap; }
 .weather-widget__hour-ico{ font-size:1.05rem; line-height:1; min-height:1rem; margin:.12rem auto .1rem; }

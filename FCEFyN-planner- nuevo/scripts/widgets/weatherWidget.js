@@ -6,7 +6,7 @@ const WEATHER_PARAMS = new URLSearchParams({
   longitude: "-64.193",
   timezone: "America/Argentina/Cordoba",
   current: "temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m,apparent_temperature,precipitation_probability",
-  hourly: "temperature_2m,precipitation_probability,weather_code,apparent_temperature",
+  hourly: "temperature_2m,precipitation_probability,weather_code,apparent_temperature,wind_speed_10m,relative_humidity_2m",
   daily: "temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,weather_code"
 });
 
@@ -19,6 +19,8 @@ const FETCH_TIMEOUT_MS = 8000;
 const WIDGET_STATE = {
   section: "",
   selectedTab: 0,
+  selectedHourIdx: 0,
+  selectedHourISO: "",
   data: null,
   container: null,
   refreshTimer: null,
@@ -157,6 +159,8 @@ function computeHourItems(payload, tabIndex){
       const hour = getHourInCordoba(time);
       const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[base + idx], hour);
       return {
+        hourIdx: idx,
+        time,
         label: idx === 0 ? "Ahora" : formatHour(time),
         iconKey: mapped.iconKey,
         temp: toInt(temperatures[base + idx])
@@ -172,11 +176,63 @@ function computeHourItems(payload, tabIndex){
     const hour = getHourInCordoba(time);
     const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[safeBase + idx], hour);
     return {
+      hourIdx: idx,
+      time,
       label: formatHour(time),
       iconKey: mapped.iconKey,
       temp: toInt(temperatures[safeBase + idx])
     };
   });
+}
+
+function getHourlyValue(hourly, keys, idx){
+  const key = keys.find((name) => Array.isArray(hourly?.[name]));
+  return key ? hourly[key][idx] : null;
+}
+
+function renderRightPanelForSelectedHour(selectedHourTime){
+  const root = WIDGET_STATE.container;
+  const payload = WIDGET_STATE.data;
+  if (!root || !payload?.hourly?.time?.length) return;
+
+  const rightPanel = root.querySelector("[data-weather-right-panel]");
+  if (!rightPanel) return;
+
+  const hourly = payload.hourly;
+  let index = hourly.time.indexOf(selectedHourTime);
+  if (index < 0) {
+    console.warn("weather_widget_hour_not_found", selectedHourTime);
+    index = 0;
+  }
+
+  const temp = toInt(getHourlyValue(hourly, ["temperature_2m"], index));
+  const apparentRaw = getHourlyValue(hourly, ["apparent_temperature"], index);
+  const apparent = toInt(apparentRaw != null ? apparentRaw : temp);
+  const rainProb = toInt(getHourlyValue(hourly, ["precipitation_probability"], index));
+  const wind = toInt(getHourlyValue(hourly, ["wind_speed_10m", "windspeed_10m"], index));
+  const humidity = toInt(getHourlyValue(hourly, ["relative_humidity_2m", "relativehumidity_2m"], index));
+  const code = getHourlyValue(hourly, ["weather_code", "weathercode"], index);
+  const localHour = getHourInCordoba(selectedHourTime);
+  const weather = mapWeatherCodeToIconAndLabelES(code, localHour);
+
+  const condEl = rightPanel.querySelector("[data-weather-cond]");
+  const apparentEl = rightPanel.querySelector("[data-weather-apparent]");
+  const rainEl = rightPanel.querySelector("[data-weather-rain]");
+  const windHumEl = rightPanel.querySelector("[data-weather-wind-humidity]");
+  if (condEl) condEl.textContent = weather.label;
+  if (apparentEl) apparentEl.textContent = `Sensación: ${apparent != null ? `${apparent}°C` : "--"}`;
+  if (rainEl) rainEl.textContent = `Probabilidad de lluvia: ${rainProb != null ? `${rainProb}%` : "--"}`;
+  if (windHumEl) {
+    const windText = wind != null ? `${wind} km/h` : "—";
+    const humidityText = humidity != null ? `${humidity}%` : "—";
+    windHumEl.textContent = `Viento: ${windText} · Humedad: ${humidityText}`;
+  }
+
+  const mainIcon = root.querySelector("[data-weather-icon-main]");
+  if (mainIcon) {
+    mainIcon.dataset.weatherIconMain = weather.iconKey;
+    renderWeatherIcon(mainIcon, weather.iconKey, { main: true });
+  }
 }
 
 function renderWeather(payload, selectedTab = 0){
@@ -200,6 +256,10 @@ function renderWeather(payload, selectedTab = 0){
   const apparent = tab.index === 0 ? toInt(current.apparent_temperature) : null;
   const rainProb = tab.index === 0 ? toInt(current.precipitation_probability) ?? daily.rain : daily.rain;
   const hourItems = computeHourItems(payload, tab.index);
+  const safeHourIdx = Math.min(Math.max(WIDGET_STATE.selectedHourIdx || 0, 0), Math.max(hourItems.length - 1, 0));
+  const selectedHour = hourItems[safeHourIdx] || hourItems[0] || null;
+  WIDGET_STATE.selectedHourIdx = safeHourIdx;
+  WIDGET_STATE.selectedHourISO = selectedHour?.time || "";
 
   root.innerHTML = `
     <div class="weather-widget__tabs" role="tablist" aria-label="Pronóstico por día">
@@ -216,22 +276,22 @@ function renderWeather(payload, selectedTab = 0){
             <span class="weather-widget__icon" data-weather-icon-main="${weatherMain.iconKey}" aria-hidden="true"></span>
           </div>
         </div>
-        <div class="weather-widget__right">
-          <div class="weather-widget__cond">${weatherMain.label}</div>
-          <div class="weather-widget__meta">Sensación: ${apparent != null ? `${apparent}°C` : "--"}</div>
-          <div class="weather-widget__meta">Probabilidad de lluvia: ${rainProb != null ? `${rainProb}%` : "--"}</div>
-          <div class="weather-widget__meta">Viento: ${toInt(current.wind_speed_10m) != null ? `${toInt(current.wind_speed_10m)} km/h` : "--"} · Humedad: ${toInt(current.relative_humidity_2m) != null ? `${toInt(current.relative_humidity_2m)}%` : "--"}</div>
+        <div class="weather-widget__right" data-weather-right-panel>
+          <div class="weather-widget__cond" data-weather-cond>${weatherMain.label}</div>
+          <div class="weather-widget__meta" data-weather-apparent>Sensación: ${apparent != null ? `${apparent}°C` : "--"}</div>
+          <div class="weather-widget__meta" data-weather-rain>Probabilidad de lluvia: ${rainProb != null ? `${rainProb}%` : "--"}</div>
+          <div class="weather-widget__meta" data-weather-wind-humidity>Viento: ${toInt(current.wind_speed_10m) != null ? `${toInt(current.wind_speed_10m)} km/h` : "--"} · Humedad: ${toInt(current.relative_humidity_2m) != null ? `${toInt(current.relative_humidity_2m)}%` : "--"}</div>
           ${daily.min != null && daily.max != null ? `<div class="weather-widget__meta">Mín ${daily.min}° · Máx ${daily.max}°</div>` : ""}
         </div>
       </div>
       <div class="weather-widget__hours-title">Pronóstico 12 horas:</div>
-      <div class="weather-widget__hours">
+      <div class="weather-widget__hours wx-hours-row">
         ${hourItems.map((item) => `
-          <div class="weather-widget__hour">
+          <button class="weather-widget__hour wx-hour-card ${item.hourIdx === safeHourIdx ? "is-active" : ""}" type="button" data-hour-idx="${item.hourIdx}" data-hour-time="${item.time}" aria-pressed="${item.hourIdx === safeHourIdx}">
             <div class="weather-widget__hour-lbl">${item.label}</div>
             <div class="weather-widget__hour-ico" data-weather-icon-hour="${item.iconKey}" aria-hidden="true"></div>
             <div class="weather-widget__hour-temp">(${item.temp ?? "--"}°)</div>
-          </div>
+          </button>
         `).join("")}
       </div>
     </div>
@@ -242,6 +302,8 @@ function renderWeather(payload, selectedTab = 0){
   root.querySelectorAll("[data-weather-icon-hour]").forEach((iconEl) => {
     renderWeatherIcon(iconEl, iconEl.dataset.weatherIconHour);
   });
+
+  if (selectedHour?.time) renderRightPanelForSelectedHour(selectedHour.time);
 }
 
 function renderSkeleton(){
@@ -299,9 +361,34 @@ function onClickRoot(event){
   const tabBtn = event.target.closest("[data-weather-tab]");
   if (tabBtn && WIDGET_STATE.data){
     WIDGET_STATE.selectedTab = Number(tabBtn.dataset.weatherTab) || 0;
+    WIDGET_STATE.selectedHourIdx = 0;
+    WIDGET_STATE.selectedHourISO = "";
     renderWeather(WIDGET_STATE.data, WIDGET_STATE.selectedTab);
     return;
   }
+
+  const hourCard = event.target.closest("[data-hour-idx]");
+  if (hourCard && WIDGET_STATE.data){
+    const nextTime = hourCard.dataset.hourTime;
+    const nextIdx = Number(hourCard.dataset.hourIdx);
+    if (!nextTime || Number.isNaN(nextIdx)) return;
+
+    if (WIDGET_STATE.selectedHourISO === nextTime && WIDGET_STATE.selectedHourIdx === nextIdx) return;
+
+    const previousActive = WIDGET_STATE.container?.querySelector(".wx-hour-card.is-active");
+    if (previousActive) {
+      previousActive.classList.remove("is-active");
+      previousActive.setAttribute("aria-pressed", "false");
+    }
+
+    hourCard.classList.add("is-active");
+    hourCard.setAttribute("aria-pressed", "true");
+    WIDGET_STATE.selectedHourIdx = nextIdx;
+    WIDGET_STATE.selectedHourISO = nextTime;
+    renderRightPanelForSelectedHour(nextTime);
+    return;
+  }
+
   const retryBtn = event.target.closest("[data-weather-retry]");
   if (retryBtn) refreshWeather({ background: false });
 }
