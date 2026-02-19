@@ -556,6 +556,23 @@ function getCurrentStudyStreakKeys(minMinutes = 30){
   return keys;
 }
 
+
+
+
+function setStreakIcon(box, isStreak){
+  if (!box) return;
+  const currentIcon = box.querySelector('.streak-icon');
+  if (!isStreak){
+    currentIcon?.remove();
+    return;
+  }
+  if (currentIcon) return;
+  const icon = document.createElement('span');
+  icon.className = 'streak-icon';
+  icon.innerHTML = STREAK_ICON_SVG;
+  box.appendChild(icon);
+}
+
 function paintStudyStreakDays(){
   if (!gridStudy) return;
   const streakKeys = new Set(getCurrentStudyStreakKeys(30));
@@ -563,7 +580,27 @@ function paintStudyStreakDays(){
     const key = box.dataset.dateKey;
     const dayNumber = box.querySelector(".day-number-value");
     const isStreak = !!key && streakKeys.has(key);
+    let streakIcon = box.querySelector(".streak-icon");
+
+    if (isStreak && !streakIcon){
+      streakIcon = document.createElement("span");
+      streakIcon.className = "streak-icon";
+      streakIcon.setAttribute("aria-hidden", "true");
+      streakIcon.innerHTML = `
+        <svg viewBox="0 0 24 24" class="flame">
+          <path class="flame-outer" d="M12 2c.7 3-1.3 4.6-2.8 6.1C7.6 9.7 6.5 11.4 6.5 14A5.5 5.5 0 0 0 12 19.5 5.5 5.5 0 0 0 17.5 14c0-3.6-2.2-5.7-4.2-7.8C12.7 5.5 12.2 4.8 12 2z"/>
+          <path class="flame-inner" d="M12.2 9.2c.3 1.4-.5 2.2-1.2 3-.7.8-1.2 1.6-1.2 2.8 0 1.6 1.2 2.8 2.7 2.8s2.7-1.2 2.7-2.8c0-1.6-1-2.6-1.9-3.5-.6-.6-1-1.1-1.1-2.3z"/>
+        </svg>
+      `;
+      box.appendChild(streakIcon);
+    }
+
+    if (!isStreak && streakIcon){
+      streakIcon.remove();
+    }
+
     box.classList.toggle("streak-day-cell", isStreak);
+    setStreakIcon(box, isStreak);
     if (dayNumber) dayNumber.classList.toggle("streak-day", isStreak);
   });
 }

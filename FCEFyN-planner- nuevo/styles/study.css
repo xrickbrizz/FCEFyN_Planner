@@ -1265,7 +1265,6 @@ body[data-theme="light"] .tab-card{
     .day-number span{ min-width:0; }
     .today-dot{
       width: 0.5rem; height:0.5rem; border-radius:50%;
-      background:var(--color-accent-2);
       opacity:0;
       transition:opacity .2s ease;
     }
@@ -5070,6 +5069,19 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
   align-items: stretch;
 }
 
+
+.streak-icon{
+  position:absolute;
+  top:.35rem;
+  right:.35rem;
+  width:1rem;
+  height:1rem;
+  color:#ff7a00;
+  pointer-events:none;
+  opacity:.95;
+}
+.streak-icon svg{ width:100%; height:100%; display:block; }
+
 .streak-day{
   color:#ff7a00;
   text-shadow:0 0 8px rgba(255,122,0,.6);
@@ -5079,3 +5091,20 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
   border:2px solid #ff7a00;
   box-shadow:0 0 6px rgba(255,122,0,.5);
 }
+.streak-icon{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:22px;
+  height:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+}
+.streak-icon .flame{
+  width:22px;
+  height:22px;
+}
+.streak-icon .flame-outer{ fill:#ff4b3a; }
+.streak-icon .flame-inner{ fill:#ff9a3a; }
