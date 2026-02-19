@@ -280,7 +280,7 @@ body[data-theme="dark"] .section-label{
 .friend-requests-modal{
   width:min(42rem, 92vw);
   max-height:70vh;
-  background:var(--surface-1);
+  background:var(--surface-94);
   border:1px solid var(--border-40);
   border-radius:1.3rem;
   box-shadow:0 20px 50px rgba(15, 23, 42, .16);
@@ -1037,12 +1037,12 @@ body[data-theme="light"] .tab-card{
       align-items:center;
       gap:10px;
       padding:8px 10px;
-      background:rgba(255,255,255,.85);
       border:1px solid #e5e7eb;
       border-radius:14px;
       backdrop-filter:blur(6px);
       box-shadow:0 6px 18px rgba(0,0,0,.06);
       pointer-events:auto;
+      left: 29rem;
     }
     .streak-overlay__label{
       color:var(--text-soft);
@@ -1945,9 +1945,9 @@ body[data-theme="light"] .event{
 
 .calendar-event{
   border-left:6px solid var(--accent);
-  background-color:color-mix(in srgb, var(--accent) 18%, white);
+  background-color:color-mix(in srgb, var(--accent) 18%, var(--color-surface-33));
   box-shadow:0 4px 10px color-mix(in srgb, var(--accent) 16%, transparent);
-}
+}    
 
     /* TAB MATERIAS */
     .subjects-layout{
@@ -3075,7 +3075,7 @@ body[data-theme="light"] .event{
   background:var(--color-surface-3);
 }
 .friend-row.friend-online{
-  border-color:var(--ok-5);
+ /* border-color:var(--ok-5); */
   box-shadow:none;
 }
 .friend-name{ font-weight:700; }
@@ -3270,7 +3270,7 @@ body.modal-open{
 .friend-search-modal{
   width:min(37.5rem, 92vw);
   max-height:70vh;
-  background:var(--surface-1);
+  background:var(--surface-94);
   border:1px solid var(--border-40);
   border-radius:1.3rem;
   box-shadow:0 20px 50px rgba(15, 23, 42, .16);
@@ -4047,7 +4047,7 @@ header{
   justify-content:center;
   gap:10px;
   border:1px solid var(--border-60);
-  background:#f3f3f3;
+  background:var(--surface-94);
   color:var(--color-text);
   border-radius:20px;
   padding:0rem 0.5rem;
@@ -4446,8 +4446,7 @@ body[data-theme="light"] .planner-modal{
 
 #tab-mensajes .chip-filter{
   border:1px solid var(--border-30);
-  background:#fff;
-  color:var(--text-main);
+  background:var(--surface-94);
   border-radius:999px;
   padding:.33rem .78rem;
   font-size:.82rem;
@@ -4456,7 +4455,7 @@ body[data-theme="light"] .planner-modal{
 }
 
 #tab-mensajes .chip-filter.active{
-  background:#dff3e9;
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3));
   border-color:#bfe7d6;
 }
 
@@ -4488,10 +4487,9 @@ body[data-theme="light"] .planner-modal{
 }
 
 #tab-mensajes .friend-row.selected{
-  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, #ffffff);
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3));
   border-color:color-mix(in srgb, var(--chat-accent, #7CC7A0) 45%, #d8e2dc);
 }
-
 #tab-mensajes .friend-copy{ min-width:0; }
 #tab-mensajes .friend-name-line{
   display:flex;
@@ -4533,7 +4531,7 @@ body[data-theme="light"] .planner-modal{
 #tab-mensajes .chat-header-actions{ position:relative; }
 #tab-mensajes .chat-menu-button{
   border:1px solid var(--border-30);
-  background:#fff;
+  background:var(--color-surface-3);
   border-radius:999px;
   font-size:1.1rem;
   cursor:pointer;
@@ -4546,7 +4544,7 @@ body[data-theme="light"] .planner-modal{
   width:13rem;
   border:1px solid var(--border-30);
   border-radius:1rem;
-  background:#fff;
+  background:var(--color-surface-3);
   box-shadow:0 12px 32px rgba(17,24,39,.12);
   padding:.35rem;
   display:flex;
@@ -4562,7 +4560,8 @@ body[data-theme="light"] .planner-modal{
   border-radius:.65rem;
   cursor:pointer;
 }
-#tab-mensajes .chat-context-menu button:hover{ background:#f3f4f6; }
+#tab-mensajes .chat-context-menu button:hover{    background: 
+color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3)); }
 
 #tab-mensajes .messages-box{
   border-radius:1.25rem;
@@ -4591,7 +4590,7 @@ body[data-theme="light"] .planner-modal{
   border-radius:1rem;
   box-shadow:0 3px 12px rgba(15,23,42,.05);
 }
-#tab-mensajes .msg-row.other .msg-bubble{ background:#f1f3f5; }
+#tab-mensajes .msg-row.other .msg-bubble{ background:var(--color-surface-3); }
 #tab-mensajes .msg-meta{ font-size:.74rem; }
 
 #tab-mensajes .chat-input-row.disabled{ opacity:.55; pointer-events:none; }
