@@ -1147,15 +1147,6 @@ body[data-theme="light"] .tab-card{
   box-shadow:0 0 0 2px color-mix(in srgb, var(--info-45) 28%, transparent);
 }
 
-.streak-day{
-  color:#ff7a00;
-  text-shadow:0 0 8px rgba(255,122,0,.6);
-  font-weight:700;
-}
-.streak-day-cell{
-  border:2px solid #ff7a00;
-  box-shadow:0 0 6px rgba(255,122,0,.5);
-}
 .study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
     .study-stat-value{ color:var(--text); font-size:1.15rem; font-weight:700; }
 
@@ -1300,7 +1291,6 @@ body[data-theme="light"] .calendar-container{
 body.light-mode .day,
 body[data-theme="light"] .day{
   background:var(--card);
-  border-color: var(--border);
 }
 body.light-mode .day-muted,
 body[data-theme="light"] .day-muted{
@@ -1859,7 +1849,6 @@ body[data-theme="light"] .event{
       line-height: 1.35;
     }
     .day.is-selected{
-      border-color:var(--info-45);
       background:var(--info-06);
     }
     .badge-soft{
@@ -2032,8 +2021,8 @@ body[data-theme="light"] .event{
   border-left:6px solid var(--accent);
   background-color:color-mix(in srgb, var(--accent) 18%, var(--color-surface-33));
   box-shadow:0 4px 10px color-mix(in srgb, var(--accent) 16%, transparent);
-}    
-
+  color:var(--text);
+}
     /* TAB MATERIAS */
     .subjects-layout{
       display:grid;
@@ -5079,4 +5068,14 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
+}
+
+.streak-day{
+  color:#ff7a00;
+  text-shadow:0 0 8px rgba(255,122,0,.6);
+  font-weight:700;
+}
+.streak-day-cell{
+  border:2px solid #ff7a00;
+  box-shadow:0 0 6px rgba(255,122,0,.5);
 }

@@ -44,7 +44,7 @@ rgb(43, 105, 96)
   /* este controla plan de estudio desde students*/
   --color-surface-2: var(--color-surface-3);
   --color-surface-3: #ffffff;
-  --color-surface-33: var(--color-surface-3);
+  --color-surface-33: #ffffff;
   
   --color-border: #c8d5d2;
   --color-border-strong: #b3c3bf;
@@ -306,7 +306,7 @@ body[data-theme="dark"]{
   --color-surface: #101216;
   --color-surface-2: #12151A;
   --color-surface-3: #171A20;
-  --color-surface-33: rgb(24 24 27 / var(1, 1));
+  --color-surface-33: #18181B;
   --color-border: #20242B;
   --color-border-strong: #2A2F38;
   --color-border-rgb: 32,36,43;
