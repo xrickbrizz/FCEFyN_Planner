@@ -114,6 +114,57 @@ function resolveThemeColor(theme){
   return CHAT_THEME_OPTIONS.find(t => t.key === theme)?.color || CHAT_THEME_OPTIONS[0].color;
 }
 
+function normalizeHexColor(color){
+  if (typeof color !== "string") return "";
+  const raw = color.trim().replace(/^#/, "");
+  if (!raw) return "";
+  if (/^[0-9a-f]{3}$/i.test(raw)){
+    return `#${raw.split("").map(ch => ch + ch).join("")}`.toUpperCase();
+  }
+  if (/^[0-9a-f]{6}$/i.test(raw)) return `#${raw}`.toUpperCase();
+  return "";
+}
+
+function hexToRgb(hex){
+  const normalized = normalizeHexColor(hex);
+  if (!normalized) return null;
+  const value = normalized.slice(1);
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  };
+}
+
+function relativeLuminance(hex){
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
+  const toLinear = (componentHex) => {
+    const normalizedComponent = componentHex / 255;
+    return normalizedComponent <= 0.03928
+      ? normalizedComponent / 12.92
+      : ((normalizedComponent + 0.055) / 1.055) ** 2.4;
+  };
+  const r = toLinear(rgb.r);
+  const g = toLinear(rgb.g);
+  const b = toLinear(rgb.b);
+  return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+}
+
+function pickTextColor(backgroundHex){
+  const luminance = relativeLuminance(backgroundHex);
+  if (luminance === null) return "";
+  return luminance >= 0.5 ? "#0B0C10" : "#F5F7FA";
+}
+
+function resolveMessageBubbleThemeColor(message, pref, me){
+  if (me) return resolveThemeColor(pref.theme);
+  const explicitColor = normalizeHexColor(message?.themeColor || "");
+  if (explicitColor) return explicitColor;
+  if (message?.theme) return resolveThemeColor(message.theme);
+  return "";
+}
+
 function setChatInputState(enabled, placeholder){
   const input = document.getElementById("messageInput");
   const btn = document.getElementById("btnSendMessage");
@@ -419,8 +470,13 @@ function renderMessages(){
 
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";
-    if (me){
-      bubble.style.background = resolveThemeColor(pref.theme);
+    const bubbleThemeColor = resolveMessageBubbleThemeColor(m, pref, me);
+    if (bubbleThemeColor){
+      bubble.style.background = bubbleThemeColor;
+      const bubbleTextColor = pickTextColor(bubbleThemeColor);
+      if (bubbleTextColor && !me){
+        bubble.style.color = bubbleTextColor;
+      }
     }
 
     const textEl = document.createElement("div");
@@ -430,6 +486,14 @@ function renderMessages(){
     const meta = document.createElement("div");
     meta.className = "msg-meta";
     meta.textContent = formatTimeHHmm(m.createdAt);
+    if (bubbleThemeColor && !me){
+      const bubbleTextColor = pickTextColor(bubbleThemeColor);
+      if (bubbleTextColor){
+        meta.style.color = bubbleTextColor === "#0B0C10"
+          ? "rgba(11, 12, 16, .72)"
+          : "rgba(245, 247, 250, .82)";
+      }
+    }
 
     bubble.appendChild(textEl);
     bubble.appendChild(meta);
