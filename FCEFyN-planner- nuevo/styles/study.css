@@ -3664,7 +3664,7 @@ body.modal-open{
 #tab-perfil.profile-page .profile-header strong{
   font-size: 1.35rem;
   line-height: 1.2;
-  color:var(--text-main);
+  color:var(--accent-gold);
 }
 
 #tab-perfil.profile-page .profile-header .small-muted,
@@ -3851,7 +3851,7 @@ body.modal-open{
 #tab-perfil.profile-page .profile-section-title{
   font-size: 1rem;
   font-weight:700;
-  color:var(--text-main);
+  color:var(--accent-gold);
   margin-bottom:.85rem;
 }
 
