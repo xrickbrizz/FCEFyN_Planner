@@ -1,3 +1,5 @@
+import { WEATHER_ICON_SVGS } from "./weatherIcons.js";
+
 const WEATHER_ENDPOINT = "https://api.open-meteo.com/v1/forecast";
 const WEATHER_PARAMS = new URLSearchParams({
   latitude: "-31.441",
@@ -40,17 +42,38 @@ const formatHour = (isoDateTime) => {
 };
 const toInt = (value) => Number.isFinite(Number(value)) ? Math.round(Number(value)) : null;
 
-function mapWeatherCodeToIconAndLabelES(code, hourLocal = 12){
-  const emoji = mapWeatherCodeToEmoji(code, hourLocal);
-  const isNight = hourLocal < 6 || hourLocal >= 20;
-  if (!Number.isFinite(Number(code))) return { label: "Condición desconocida", icon: "☁️" };
+function isNightHour(localHour) {
+  return localHour < 6 || localHour >= 20;
+}
 
-  if (code === 0) return { label: isNight ? "Despejado" : "Soleado", icon: emoji };
-  if (code >= 1 && code <= 3) return { label: "Parcialmente nublado", icon: emoji };
-  if (code >= 45 && code <= 48) return { label: "Niebla", icon: emoji };
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return { label: "Lluvia", icon: emoji };
-  if (code >= 95 && code <= 99) return { label: "Tormenta", icon: emoji };
-  return { label: "Nublado", icon: emoji };
+function mapWeatherCodeToIconKey(code, localHour) {
+  const night = isNightHour(localHour);
+
+  if (code === 0) return night ? "moon" : "sun";
+  if (code === 1 || code === 2) return night ? "cloud_night" : "partly_cloudy_day";
+  if (code === 3) return "cloudy";
+  if (code === 45 || code === 48) return "fog";
+
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return "snow";
+  if ([95, 96, 99].includes(code)) return "thunder";
+
+  if ([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)) return "rain";
+
+  return "cloudy";
+}
+
+function mapWeatherCodeToIconAndLabelES(code, hourLocal = 12){
+  const iconKey = mapWeatherCodeToIconKey(code, hourLocal);
+  const isNight = isNightHour(hourLocal);
+  if (!Number.isFinite(Number(code))) return { label: "Condición desconocida", iconKey: "cloudy" };
+
+  if (code === 0) return { label: isNight ? "Despejado" : "Soleado", iconKey };
+  if (code >= 1 && code <= 3) return { label: "Parcialmente nublado", iconKey };
+  if (code >= 45 && code <= 48) return { label: "Niebla", iconKey };
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return { label: "Lluvia", iconKey };
+  if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return { label: "Nieve", iconKey };
+  if (code >= 95 && code <= 99) return { label: "Tormenta", iconKey };
+  return { label: "Nublado", iconKey };
 }
 
 function getHourInCordoba(dateValue){
@@ -67,17 +90,12 @@ function getHourInCordoba(dateValue){
   return Number.isFinite(hour) ? hour : 12;
 }
 
-function mapWeatherCodeToEmoji(code, hourLocal = 12){
-  const isNight = hourLocal < 6 || hourLocal >= 20;
-
-  if (code === 0) return isNight ? "🌙" : "☀️";
-  if (code >= 1 && code <= 3) return isNight ? "☁️🌙" : "🌤️";
-  if (code >= 45 && code <= 48) return "🌫️";
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
-  if (code >= 95 && code <= 99) return "⛈️";
-  if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "🌨️";
-  if (code >= 4) return "☁️";
-  return "☁️";
+function renderWeatherIcon(targetEl, iconKey, opts = {}) {
+  if (!targetEl) return;
+  const svg = WEATHER_ICON_SVGS[iconKey] || WEATHER_ICON_SVGS.cloudy;
+  targetEl.innerHTML = svg;
+  targetEl.classList.add("wx-icon");
+  if (opts.main) targetEl.classList.add("wx-icon--main");
 }
 
 function getCachedWeather(){
@@ -140,7 +158,7 @@ function computeHourItems(payload, tabIndex){
       const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[base + idx], hour);
       return {
         label: idx === 0 ? "Ahora" : formatHour(time),
-        icon: mapped.icon,
+        iconKey: mapped.iconKey,
         temp: toInt(temperatures[base + idx])
       };
     });
@@ -155,7 +173,7 @@ function computeHourItems(payload, tabIndex){
     const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[safeBase + idx], hour);
     return {
       label: formatHour(time),
-      icon: mapped.icon,
+      iconKey: mapped.iconKey,
       temp: toInt(temperatures[safeBase + idx])
     };
   });
@@ -176,7 +194,8 @@ function renderWeather(payload, selectedTab = 0){
   };
 
   const currentHour = getHourInCordoba(current.time || Date.now());
-  const weatherMain = mapWeatherCodeToIconAndLabelES(tab.index === 0 ? current.weather_code : daily.code, currentHour);
+  const mainIconHour = tab.index === 0 ? currentHour : 12;
+  const weatherMain = mapWeatherCodeToIconAndLabelES(tab.index === 0 ? current.weather_code : daily.code, mainIconHour);
   const tempPrimary = tab.index === 0 ? toInt(current.temperature_2m) : daily.max;
   const apparent = tab.index === 0 ? toInt(current.apparent_temperature) : null;
   const rainProb = tab.index === 0 ? toInt(current.precipitation_probability) ?? daily.rain : daily.rain;
@@ -194,7 +213,7 @@ function renderWeather(payload, selectedTab = 0){
           <div class="weather-widget__city">Ciudad Universitaria</div>
           <div class="weather-widget__temp-wrap">
             <div class="weather-widget__temp">${tempPrimary ?? "--"}°C</div>
-            <span class="weather-widget__icon" aria-hidden="true">${weatherMain.icon}</span>
+            <span class="weather-widget__icon" data-weather-icon-main="${weatherMain.iconKey}" aria-hidden="true"></span>
           </div>
         </div>
         <div class="weather-widget__right">
@@ -210,13 +229,19 @@ function renderWeather(payload, selectedTab = 0){
         ${hourItems.map((item) => `
           <div class="weather-widget__hour">
             <div class="weather-widget__hour-lbl">${item.label}</div>
-            <div class="weather-widget__hour-ico" aria-hidden="true">${item.icon}</div>
+            <div class="weather-widget__hour-ico" data-weather-icon-hour="${item.iconKey}" aria-hidden="true"></div>
             <div class="weather-widget__hour-temp">(${item.temp ?? "--"}°)</div>
           </div>
         `).join("")}
       </div>
     </div>
   `;
+
+  const mainIcon = root.querySelector("[data-weather-icon-main]");
+  renderWeatherIcon(mainIcon, mainIcon?.dataset.weatherIconMain, { main: true });
+  root.querySelectorAll("[data-weather-icon-hour]").forEach((iconEl) => {
+    renderWeatherIcon(iconEl, iconEl.dataset.weatherIconHour);
+  });
 }
 
 function renderSkeleton(){
@@ -331,4 +356,4 @@ export function destroyWeatherWidget(){
   }
 }
 
-export { fetchWeatherCUC, getCachedWeather, setCachedWeather, mapWeatherCodeToIconAndLabelES, mapWeatherCodeToEmoji, renderWeather };
+export { fetchWeatherCUC, getCachedWeather, setCachedWeather, mapWeatherCodeToIconAndLabelES, mapWeatherCodeToIconKey, renderWeather };

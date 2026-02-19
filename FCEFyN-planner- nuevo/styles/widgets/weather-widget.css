@@ -83,6 +83,9 @@ body[data-theme="dark"] .weather-widget{
 .weather-widget__temp-wrap{ display:flex; align-items:center; gap:.45rem; margin-top:.12rem; }
 .weather-widget__temp{ font-size:3rem; font-weight:700; letter-spacing:-.04em; line-height:.95; }
 .weather-widget__icon{ width:2.35rem; height:2.35rem; display:inline-flex; align-items:center; justify-content:center; font-size:2rem; line-height:1; }
+.weather-widget .wx-icon{ width:22px; height:22px; display:inline-block; vertical-align:middle; }
+.weather-widget .wx-icon--main{ width:34px; height:34px; }
+.weather-widget .wx-icon svg{ width:100%; height:100%; display:block; }
 .weather-widget__right{ text-align:right; margin-top:.15rem; }
 .weather-widget__cond{ font-weight:700; }
 .weather-widget__meta{ color:var(--ww-soft); font-size:.93rem; }
