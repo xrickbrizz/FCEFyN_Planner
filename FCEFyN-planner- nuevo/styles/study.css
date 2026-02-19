@@ -4416,6 +4416,62 @@ body[data-theme="light"] .planner-modal{
 .acad-pending-item.priority-alta{ border-color: color-mix(in srgb, #c44 35%, var(--border)); background: color-mix(in srgb, #c44 10%, var(--card-bg, var(--card))); }
 .acad-pending-item.priority-media{ border-color: color-mix(in srgb, #d6ab3b 45%, var(--border)); background: color-mix(in srgb, #d6ab3b 10%, var(--card-bg, var(--card))); }
 .widget-link{ border:0; background:none; color:var(--accent-80); cursor:pointer; text-align:left; padding:0; font-weight:700; }
+body:not(.dark-mode):not([data-theme="dark"]) #acadCompletedLink.widget-link,
+body.light-mode #acadCompletedLink.widget-link,
+body[data-theme="light"] #acadCompletedLink.widget-link{
+  color:var(--color-primary-strong);
+  font-weight:600;
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-underline-offset:0.14em;
+}
+body:not(.dark-mode):not([data-theme="dark"]) #acadCompletedLink.widget-link:hover,
+body.light-mode #acadCompletedLink.widget-link:hover,
+body[data-theme="light"] #acadCompletedLink.widget-link:hover{
+  color:color-mix(in srgb, var(--color-primary-strong) 78%, #000 22%);
+  text-decoration-thickness:2px;
+}
+body:not(.dark-mode):not([data-theme="dark"]) #acadCompletedLink.widget-link:focus-visible,
+body.light-mode #acadCompletedLink.widget-link:focus-visible,
+body[data-theme="light"] #acadCompletedLink.widget-link:focus-visible{
+  outline:2px solid color-mix(in srgb, var(--color-primary-strong) 70%, #fff 30%);
+  outline-offset:3px;
+  border-radius:0.3rem;
+}
+
+body.dark-mode .coming-view h2,
+body[data-theme="dark"] .coming-view h2,
+body.dark-mode .home-card[data-coming-soon="true"] .home-card-title,
+body[data-theme="dark"] .home-card[data-coming-soon="true"] .home-card-title{
+  color:rgba(255,255,255,0.72);
+}
+body.dark-mode .coming-view p,
+body[data-theme="dark"] .coming-view p,
+body.dark-mode .home-card[data-coming-soon="true"] .home-card-desc,
+body[data-theme="dark"] .home-card[data-coming-soon="true"] .home-card-desc{
+  color:rgba(255,255,255,0.55);
+}
+
+body.dark-mode #tab-perfil.profile-page .profile-header strong,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-header strong,
+body.dark-mode #tab-perfil.profile-page .profile-email,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-email,
+body.dark-mode #tab-perfil.profile-page .social-links-title,
+body[data-theme="dark"] #tab-perfil.profile-page .social-links-title,
+body.dark-mode #tab-perfil.profile-page .profile-avatar-input,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-avatar-input,
+body.dark-mode #tab-perfil.profile-page .profile-avatar-input span,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-avatar-input span,
+body.dark-mode #tab-perfil.profile-page .profile-section-title,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-section-title,
+body.dark-mode #tab-perfil.profile-page .profile-section h2,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-section h2,
+body.dark-mode #tab-perfil.profile-page .profile-section h3,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-section h3,
+body.dark-mode #tab-perfil.profile-page .profile-section legend,
+body[data-theme="dark"] #tab-perfil.profile-page .profile-section legend{
+  color:var(--accent-gold);
+}
 .upcoming-row--timeline{ align-items:center; }
 .upcoming-date-block{ min-width:3rem; text-align:center; display:flex; flex-direction:column; }
 .upcoming-date-month{ font-size:.72rem; color:var(--text-soft); text-transform:uppercase; letter-spacing:.05em; }
