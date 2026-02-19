@@ -26,6 +26,7 @@ const WIDGET_STATE = {
 };
 
 const pad = (num) => String(num).padStart(2, "0");
+const CORDOBA_TIMEZONE = "America/Argentina/Cordoba";
 const formatTabDate = (isoDate) => {
   const date = new Date(`${isoDate}T12:00:00`);
   return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
@@ -39,23 +40,44 @@ const formatHour = (isoDateTime) => {
 };
 const toInt = (value) => Number.isFinite(Number(value)) ? Math.round(Number(value)) : null;
 
-function mapWeatherCodeToIconAndLabelES(code, isNight = false){
-  const icon = {
-    sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M4.7 4.7l1.7 1.7M17.6 17.6l1.7 1.7M2.5 12h2.3M19.2 12h2.3M4.7 19.3l1.7-1.7M17.6 6.4l1.7-1.7"/></svg>',
-    moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18.6 14.9A8.5 8.5 0 1 1 10 3.4a7.2 7.2 0 0 0 8.6 11.5z"/></svg>',
-    cloudSun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1.8M8 11.7v1.8M2.5 8h1.8M11.7 8h1.8"/><path d="M8 18h8a3.7 3.7 0 0 0 .4-7.4 5.1 5.1 0 0 0-9.7 1.6A3.3 3.3 0 0 0 8 18z"/></svg>',
-    cloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 18h10a4 4 0 0 0 .3-8 5.5 5.5 0 0 0-10.5 1.7A3.5 3.5 0 0 0 6.5 18z"/></svg>',
-    fog: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 10h14M4 14h16M6 18h12"/><path d="M7 10a3.5 3.5 0 1 1 7 0"/></svg>',
-    rain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 14h10a4 4 0 0 0 .3-8 5.5 5.5 0 0 0-10.5 1.7A3.5 3.5 0 0 0 6.5 14z"/><path d="M8 16.5l-1 3M12 16.5l-1 3M16 16.5l-1 3"/></svg>',
-    storm: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 13h10a4 4 0 0 0 .3-8 5.5 5.5 0 0 0-10.5 1.7A3.5 3.5 0 0 0 6.5 13z"/><path d="M12.5 13.5l-2 3h2.2l-1.5 3.2"/></svg>'
-  };
+function mapWeatherCodeToIconAndLabelES(code, hourLocal = 12){
+  const emoji = mapWeatherCodeToEmoji(code, hourLocal);
+  const isNight = hourLocal < 6 || hourLocal >= 20;
+  if (!Number.isFinite(Number(code))) return { label: "Condición desconocida", icon: "☁️" };
 
-  if (code === 0) return { label: isNight ? "Despejado" : "Soleado", icon: isNight ? icon.moon : icon.sun };
-  if (code >= 1 && code <= 3) return { label: "Parcialmente nublado", icon: isNight ? icon.moon : icon.cloudSun };
-  if (code >= 45 && code <= 48) return { label: "Niebla", icon: icon.fog };
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return { label: "Lluvia", icon: icon.rain };
-  if (code >= 95 && code <= 99) return { label: "Tormenta", icon: icon.storm };
-  return { label: "Nublado", icon: icon.cloud };
+  if (code === 0) return { label: isNight ? "Despejado" : "Soleado", icon: emoji };
+  if (code >= 1 && code <= 3) return { label: "Parcialmente nublado", icon: emoji };
+  if (code >= 45 && code <= 48) return { label: "Niebla", icon: emoji };
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return { label: "Lluvia", icon: emoji };
+  if (code >= 95 && code <= 99) return { label: "Tormenta", icon: emoji };
+  return { label: "Nublado", icon: emoji };
+}
+
+function getHourInCordoba(dateValue){
+  const sourceDate = dateValue ? new Date(dateValue) : new Date();
+  if (Number.isNaN(sourceDate.getTime())) return 12;
+
+  const hourPart = new Intl.DateTimeFormat("es-AR", {
+    hour: "2-digit",
+    hour12: false,
+    timeZone: CORDOBA_TIMEZONE
+  }).formatToParts(sourceDate).find((part) => part.type === "hour");
+
+  const hour = Number(hourPart?.value);
+  return Number.isFinite(hour) ? hour : 12;
+}
+
+function mapWeatherCodeToEmoji(code, hourLocal = 12){
+  const isNight = hourLocal < 6 || hourLocal >= 20;
+
+  if (code === 0) return isNight ? "🌙" : "☀️";
+  if (code >= 1 && code <= 3) return isNight ? "☁️🌙" : "🌤️";
+  if (code >= 45 && code <= 48) return "🌫️";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
+  if (code >= 95 && code <= 99) return "⛈️";
+  if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "🌨️";
+  if (code >= 4) return "☁️";
+  return "☁️";
 }
 
 function getCachedWeather(){
@@ -114,8 +136,8 @@ function computeHourItems(payload, tabIndex){
     const start = hourTimes.findIndex((entry) => new Date(entry).getTime() >= nowTs);
     const base = start >= 0 ? start : 0;
     return hourTimes.slice(base, base + 12).map((time, idx) => {
-      const hour = new Date(time).getHours();
-      const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[base + idx], hour < 7 || hour >= 20);
+      const hour = getHourInCordoba(time);
+      const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[base + idx], hour);
       return {
         label: idx === 0 ? "Ahora" : formatHour(time),
         icon: mapped.icon,
@@ -129,8 +151,8 @@ function computeHourItems(payload, tabIndex){
   const base = start >= 0 ? start : hourTimes.findIndex((time) => time.startsWith(`${targetDate}T`));
   const safeBase = base >= 0 ? base : 0;
   return hourTimes.slice(safeBase, safeBase + 12).map((time, idx) => {
-    const hour = new Date(time).getHours();
-    const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[safeBase + idx], hour < 7 || hour >= 20);
+    const hour = getHourInCordoba(time);
+    const mapped = mapWeatherCodeToIconAndLabelES(weatherCodes[safeBase + idx], hour);
     return {
       label: formatHour(time),
       icon: mapped.icon,
@@ -153,9 +175,8 @@ function renderWeather(payload, selectedTab = 0){
     code: payload?.daily?.weather_code?.[tab.index]
   };
 
-  const currentHour = new Date(current.time || Date.now()).getHours();
-  const isNight = currentHour < 7 || currentHour >= 20;
-  const weatherMain = mapWeatherCodeToIconAndLabelES(tab.index === 0 ? current.weather_code : daily.code, isNight);
+  const currentHour = getHourInCordoba(current.time || Date.now());
+  const weatherMain = mapWeatherCodeToIconAndLabelES(tab.index === 0 ? current.weather_code : daily.code, currentHour);
   const tempPrimary = tab.index === 0 ? toInt(current.temperature_2m) : daily.max;
   const apparent = tab.index === 0 ? toInt(current.apparent_temperature) : null;
   const rainProb = tab.index === 0 ? toInt(current.precipitation_probability) ?? daily.rain : daily.rain;
@@ -193,7 +214,6 @@ function renderWeather(payload, selectedTab = 0){
             <div class="weather-widget__hour-temp">(${item.temp ?? "--"}°)</div>
           </div>
         `).join("")}
-        <div class="weather-widget__chevron" aria-hidden="true">›</div>
       </div>
     </div>
   `;
@@ -311,4 +331,4 @@ export function destroyWeatherWidget(){
   }
 }
 
-export { fetchWeatherCUC, getCachedWeather, setCachedWeather, mapWeatherCodeToIconAndLabelES, renderWeather };
+export { fetchWeatherCUC, getCachedWeather, setCachedWeather, mapWeatherCodeToIconAndLabelES, mapWeatherCodeToEmoji, renderWeather };
