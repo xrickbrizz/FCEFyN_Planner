@@ -80,7 +80,7 @@ async function loadAllComisiones(){
   return comisionesCachePromise;
 }
 
-export async function getComisiones(filters = {}){
+//export async function getComisiones(filters = {}){
   const { career, anio, tipo, sede, subjectSlug, yearAcademic, semester } = filters;
   const careerSlug = normalizeCareerSlug(career);
 
@@ -102,4 +102,68 @@ export async function getComisiones(filters = {}){
     .filter((comision) => !hasValue(subjectSlug) || comision.subjectSlug === subjectSlug)
     .filter((comision) => !hasValue(yearAcademic) || comision.yearAcademic === yearAcademic)
     .filter((comision) => !hasValue(semester) || comision.semester === semester);
+//}
+
+export async function getComisiones(filters = {}){
+  const { career, anio, tipo, sede, subjectSlug, yearAcademic, semester } = filters;
+
+  if (!career){
+    throw new Error("El filtro 'career' es obligatorio.");
+  }
+
+  const careerSlug = normalizeCareerSlug(career);
+
+  const debug = shouldDebugCareerNormalization?.() || window.location.hostname === "localhost";
+  if (debug){
+    console.groupCollapsed("[comisiones] getComisiones()");
+    console.log("filters raw:", { career, anio, tipo, sede, subjectSlug, yearAcademic, semester });
+    console.log("career normalization:", { career, careerSlug });
+  }
+
+  const allComisiones = await loadAllComisiones();
+
+  if (debug){
+    console.log("allComisiones total:", allComisiones.length);
+
+    // muestra slugs reales presentes en el dataset (para detectar mismatch)
+    const slugsSet = new Set();
+    for (const c of allComisiones.slice(0, 150)){
+      (c?.careerSlugs || []).forEach((s) => slugsSet.add(s));
+    }
+    console.log("sample careerSlugs in dataset:", Array.from(slugsSet).slice(0, 40));
+  }
+
+  const stepCareer = allComisiones.filter((c) => Array.isArray(c.careerSlugs) && c.careerSlugs.includes(careerSlug));
+  const stepAnio = stepCareer.filter((c) => !hasValue(anio) || c.anio === anio);
+  const stepTipo = stepAnio.filter((c) => !hasValue(tipo) || c.tipo === tipo);
+  const stepSede = stepTipo.filter((c) => !hasValue(sede) || c.sede === sede);
+  const stepSubj = stepSede.filter((c) => !hasValue(subjectSlug) || c.subjectSlug === subjectSlug);
+  const stepAcad = stepSubj.filter((c) => !hasValue(yearAcademic) || c.yearAcademic === yearAcademic);
+  const stepSem = stepAcad.filter((c) => !hasValue(semester) || c.semester === semester);
+
+  if (debug){
+    console.log("counts by step:", {
+      career: stepCareer.length,
+      anio: stepAnio.length,
+      tipo: stepTipo.length,
+      sede: stepSede.length,
+      subjectSlug: stepSubj.length,
+      yearAcademic: stepAcad.length,
+      semester: stepSem.length
+    });
+
+    if (stepCareer.length){
+      console.log("career matches sample:", stepCareer.slice(0, 3));
+    } else {
+      // ayuda extra: buscar comisiones donde careerSlugs contenga algo parecido
+      const hint = allComisiones.find((c) =>
+        Array.isArray(c.careerSlugs) && c.careerSlugs.some((s) => String(s).includes("industrial") || String(s).includes("ingenieria"))
+      );
+      console.warn("NO MATCH for careerSlug:", careerSlug, "hint sample:", hint);
+    }
+
+    console.groupEnd();
+  }
+
+  return stepSem;
 }
