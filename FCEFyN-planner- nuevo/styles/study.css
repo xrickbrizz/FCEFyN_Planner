@@ -5300,7 +5300,7 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
   }
   #tab-inicio{
     width: 29rem;
-        background-color: red;
+        background-color: rgb(10, 23, 204);
 
   }
   .page-layout{
