@@ -178,11 +178,37 @@ function initSubjectColorPalette(){
 }
 
 function getProfileCareer(){
-  const slug = CTX?.getCurrentCareer?.() || "";
-  if (!slug) return null;
+  const userProfile = CTX?.AppState?.userProfile || {};
   const careerPlans = CTX?.aulaState?.careerPlans || [];
-  const plan = careerPlans.find((item) => item.slug === slug);
-  return { slug, name: plan?.nombre || slug };
+
+  const resolveFromCandidate = (candidate) => {
+    const rawValue = (candidate || "").trim();
+    if (!rawValue) return null;
+
+    const resolvedSlug = resolvePlanSlug(rawValue);
+    const candidateVariants = [rawValue, resolvedSlug].filter(Boolean);
+    const bySlug = careerPlans.find((item) => candidateVariants.includes(item.slug));
+    if (bySlug) return { slug: bySlug.slug, name: bySlug.nombre || bySlug.slug };
+
+    const byName = findPlanByName(rawValue) || findPlanByName(resolvedSlug);
+    if (byName?.slug) return { slug: byName.slug, name: byName.nombre || byName.slug };
+
+    if (!resolvedSlug.includes(" ")) {
+      return { slug: resolvedSlug, name: rawValue };
+    }
+    return null;
+  };
+
+  const profileCareer = resolveFromCandidate(userProfile?.careerSlug)
+    || resolveFromCandidate(userProfile?.career)
+    || resolveFromCandidate(userProfile?.careerName);
+  if (profileCareer?.slug) return profileCareer;
+
+  const currentCareerSlug = (CTX?.getCurrentCareer?.() || "").trim();
+  const legacyCareer = resolveFromCandidate(currentCareerSlug);
+  if (legacyCareer?.slug) return legacyCareer;
+
+  return null;
 }
 
 function updateSubjectPlanHint(){
@@ -882,7 +908,7 @@ async function syncCareerFromProfile({ forceReload = false } = {}){
   const hasProfileCareer = !!profileCareer?.slug;
   updateCareerFallbackUI(hasProfileCareer);
   if (!hasProfileCareer) {
-    console.error("[Materias] careerSlug ausente. Elegí tu carrera en Perfil.", new Error("Missing careerSlug"));
+    console.warn("[Materias] careerSlug ausente en perfil y fallback. Elegí tu carrera en Perfil.");
   }
   const storedPlannerSlug = CTX.aulaState.plannerCareer?.slug || "";
   const selectedCareerSlug = profileCareer?.slug || storedPlannerSlug || "";

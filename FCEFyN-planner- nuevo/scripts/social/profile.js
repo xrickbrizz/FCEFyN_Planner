@@ -631,6 +631,7 @@ async function saveProfileChanges(){
     await ensurePublicUserProfile(db, currentUser, nextProfile);
     notifySuccess?.("Perfil actualizado.");
     setProfileStatus(profileStatusEl, "Cambios guardados correctamente.");
+    window.dispatchEvent(new Event("careerChanged"));
     takeProfileSnapshot();
     return true;
   }catch(e){
