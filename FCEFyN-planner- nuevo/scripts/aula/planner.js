@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, where, limit } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
+import { resolvePlanSlug } from "../plans-data.js";
 
 let CTX = null;
 
@@ -19,6 +20,8 @@ let plannerModalSnapshot = null;
 let didBindPlannerGlobalListeners = false;
 let plannerSectionsUiState = "idle";
 let renamePresetDialogRef = null;
+const CAREER_SLUG_RETRY_ATTEMPTS = 5;
+const CAREER_SLUG_RETRY_DELAY_MS = 250;
 
 function norm(value){
   return String(value || "")
@@ -346,6 +349,58 @@ function getCareerSlug(){
   return CTX.normalizeStr(base);
 }
 
+function wait(ms){
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function normalizeCareerSlugCandidate(value){
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  return slugify(resolvePlanSlug(raw) || raw);
+}
+
+function readStoredCareerSlug(){
+  const keys = [
+    "selectedCareerSlug",
+    "careerSlug",
+    "plannerCareerSlug"
+  ];
+  for (const key of keys){
+    const value = localStorage.getItem(key);
+    const normalized = normalizeCareerSlugCandidate(value);
+    if (normalized) return normalized;
+  }
+  return "";
+}
+
+async function getCanonicalCareerSlug({ attempt = 0 } = {}){
+  const candidates = [
+    CTX?.careerState?.selectedCareerSlug,
+    CTX?.aulaState?.plannerCareer?.slug,
+    CTX?.careerSlug,
+    CTX?.aulaState?.careerSlug,
+    CTX?.getCurrentCareer?.(),
+    document.getElementById("inpCareer")?.value,
+    readStoredCareerSlug(),
+    CTX?.getUserProfile?.()?.careerSlug,
+    CTX?.getUserProfile?.()?.career
+  ];
+
+  for (const candidate of candidates){
+    const canonicalSlug = normalizeCareerSlugCandidate(candidate);
+    if (!canonicalSlug) continue;
+    CTX.aulaState.plannerCareer = {
+      ...(CTX.aulaState.plannerCareer || {}),
+      slug: canonicalSlug
+    };
+    return canonicalSlug;
+  }
+
+  if (attempt >= CAREER_SLUG_RETRY_ATTEMPTS - 1) return "";
+  await wait(CAREER_SLUG_RETRY_DELAY_MS);
+  return getCanonicalCareerSlug({ attempt: attempt + 1 });
+}
+
 function normalizeSectionItems(rawSection, idSeed = ""){
   const sectionId = String(rawSection?.sectionId || rawSection?.id || rawSection?.commission || idSeed || makeId()).trim();
   const subjectName = String(rawSection?.subjectName || rawSection?.subject || rawSection?.materia || rawSection?.name || rawSection?.subjectSlug || "").trim();
@@ -406,13 +461,17 @@ function convertPlannerSectionsToCourseSections(sections){
 }
 
 async function loadPlannerSections(){
-  const careerSlug = getCareerSlug();
-  console.debug("[planificador] careerSlug:", careerSlug);
+  const fallbackCareerSlug = getCareerSlug();
+  const careerSlug = await getCanonicalCareerSlug();
   if (!careerSlug){
     CTX.aulaState.plannerSections = [];
     CTX.aulaState.courseSections = [];
     plannerSectionsUiState = "ready";
-    console.debug("[planificador] sections loaded:", 0, { source: "missing-careerSlug" });
+    console.debug("[planificador] load", {
+      careerSlug: fallbackCareerSlug || "",
+      source: "missing-careerSlug",
+      count: 0
+    });
     return [];
   }
 
@@ -424,66 +483,81 @@ async function loadPlannerSections(){
     return list;
   };
 
-  let source = "courseSections";
+  let source = "none";
   let normalizedSections = [];
+  let firstError = null;
 
   try {
     const byCareerSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("careerSlug", "==", careerSlug)));
     normalizedSections = normalizeDocs(byCareerSnap);
+    source = normalizedSections.length ? "courseSections.careerSlug" : source;
+
     if (!normalizedSections.length){
       const byDegreeSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("degreeSlug", "==", careerSlug)));
       normalizedSections = normalizeDocs(byDegreeSnap);
+      if (normalizedSections.length) source = "courseSections.degreeSlug";
     }
+
     if (!normalizedSections.length){
       const sample = await getDocs(query(collection(CTX.db, "courseSections"), limit(80)));
       normalizedSections = normalizeDocs({
         forEach(callback){
           sample.forEach((docSnap) => {
             const data = docSnap.data() || {};
-            const candidate = slugify(data.careerSlug || data.degreeSlug || data.planSlug || data.career || data.degree || "");
+            const candidate = slugify(resolvePlanSlug(data.careerSlug || data.degreeSlug || data.planSlug || data.career || data.degree || ""));
             if (candidate === careerSlug) callback(docSnap);
           });
         }
       });
+      if (normalizedSections.length) source = "courseSections.sample";
+    }
+  } catch (error) {
+    firstError = error;
+    console.warn("[planificador] courseSections query error", error);
+  }
+
+  try {
+    if (!normalizedSections.length){
+      const byCareer = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", careerSlug)));
+      normalizedSections = normalizeDocs(byCareer);
+      if (normalizedSections.length) source = "comisiones.careerSlug";
     }
 
     if (!normalizedSections.length){
-      source = "comisiones";
-      const byCareer = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", careerSlug)));
-      normalizedSections = normalizeDocs(byCareer);
+      const byArray = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", careerSlug)));
+      normalizedSections = normalizeDocs(byArray);
+      if (normalizedSections.length) source = "comisiones.careerSlugs";
+    }
 
-      if (!normalizedSections.length){
-        const byArray = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", careerSlug)));
-        normalizedSections = normalizeDocs(byArray);
-      }
-
-      if (!normalizedSections.length){
-        const comisionDoc = await getDoc(doc(CTX.db, "comisiones", careerSlug));
-        if (comisionDoc.exists()){
-          const payload = comisionDoc.data() || {};
-          const nested = Array.isArray(payload.sections)
-            ? payload.sections
-            : Array.isArray(payload.items)
-              ? payload.items
-              : [];
-          normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
-          source = "comisiones-doc";
-        }
+    if (!normalizedSections.length){
+      const comisionDoc = await getDoc(doc(CTX.db, "comisiones", careerSlug));
+      if (comisionDoc.exists()){
+        const payload = comisionDoc.data() || {};
+        const nested = Array.isArray(payload.sections)
+          ? payload.sections
+          : Array.isArray(payload.items)
+            ? payload.items
+            : [];
+        normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
+        if (normalizedSections.length) source = "comisiones.doc";
       }
     }
   } catch (e) {
-    if (String(e?.code || "").includes("permission-denied")){
-      console.warn("[planificador] firestore error", e);
-    } else {
-      console.warn("[planificador] firestore error", e);
-    }
-    CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
-    normalizedSections = [];
+    console.warn("[planificador] comisiones query error", e);
+    if (!normalizedSections.length) firstError = firstError || e;
+  }
+
+  if (!normalizedSections.length && firstError){
+    CTX?.notifyError?.("Error al cargar comisiones: " + (firstError.message || firstError));
   }
 
   CTX.aulaState.plannerSections = normalizedSections;
   CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
-  console.debug("[planificador] sections loaded:", normalizedSections.length, { source });
+  console.debug("[planificador] load", {
+    careerSlug,
+    source,
+    count: normalizedSections.length
+  });
   return normalizedSections;
 }
 
