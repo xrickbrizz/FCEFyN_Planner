@@ -845,11 +845,11 @@ body[data-theme="light"] .quick-toggle-btn{
     transform:none;
     opacity:1;
     pointer-events:auto;
-  }
+  } 
   .quick-sidebar-wrap{
     position:static;
     z-index:2200;
-  }
+  } 
   .quick-sidebar-backdrop{
     display:none !important;
   }

@@ -4099,6 +4099,7 @@ header{
 
 .page-layout{
   padding-top:.35rem;
+  display: grid; 
 }
 
 .header-msg-btn{
