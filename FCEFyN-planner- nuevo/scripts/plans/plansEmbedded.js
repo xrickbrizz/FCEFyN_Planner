@@ -1,6 +1,7 @@
 import { doc, onSnapshot, setDoc, serverTimestamp, updateDoc, deleteField } from "../core/firebase.js";
 import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
 import { getPrereqsForSubject, normalizeSubjectKey } from "../core/prereqs.js";
+import { computeApproved, normalizeStatus, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
 
 const SEMESTER_LABELS = [
   "Ingreso",
@@ -17,58 +18,8 @@ const SEMESTER_LABELS = [
 ];
 
 const STATUS_VALUES = ["promocionada", "regular", "libre", "en_curso"];
-const APPROVED_STATUSES = ["promocionada", "regular", "aprobada"];
-
-function normalizeStatus(value) {
-  const raw = normalizeStr(value);
-  if (!raw) return null;
-  if (raw === "promocion" || raw === "promocionada") return "promocionada";
-  if (raw === "regular") return "regular";
-  if (raw === "aprobada" || raw === "aprobado") return "aprobada";
-  if (raw === "libre") return "libre";
-  if (raw === "en_curso" || raw === "encurso" || raw === "curso") return "en_curso";
-  return null;
-}
-
 function isApproved(status) {
-  return APPROVED_STATUSES.includes(status);
-}
-
-function computeApprovedFromStatus(status) {
-  const normalized = normalizeStatus(status);
-  return normalized === "promocionada" || normalized === "regular" || normalized === "aprobada";
-}
-
-function normalizeSubjectStateEntry(entry) {
-  const status = normalizeStatus(typeof entry === "string" ? entry : entry?.status);
-  if (!status) return null;
-  return {
-    status,
-    approved: computeApprovedFromStatus(status)
-  };
-}
-
-function normalizeRemoteSubjectStates(remoteStates) {
-  const normalizedStates = {};
-  const fixes = {};
-  Object.entries(remoteStates || {}).forEach(([slug, entry]) => {
-    const normalizedEntry = normalizeSubjectStateEntry(entry);
-    if (!normalizedEntry) return;
-    normalizedStates[slug] = normalizedEntry;
-
-    const currentStatus = typeof entry === "string" ? entry : entry?.status;
-    const currentApproved = typeof entry === "string" ? undefined : entry?.approved;
-    const normalizedCurrentStatus = normalizeStatus(currentStatus);
-    const expectedApproved = computeApprovedFromStatus(normalizedEntry.status);
-    if (normalizedCurrentStatus !== normalizedEntry.status || currentApproved !== expectedApproved) {
-      fixes[`subjectStates.${slug}`] = {
-        status: normalizedEntry.status,
-        approved: expectedApproved,
-        updatedAt: serverTimestamp()
-      };
-    }
-  });
-  return { normalizedStates, fixes };
+  return computeApproved(status);
 }
 
 function parseSemestre(raw) {
@@ -202,7 +153,7 @@ export async function mountPlansEmbedded({
     const options = modalActionsEl?.querySelectorAll(".status-pill-option") || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.statusValue || "");
-      const isApprovalOption = !!value && APPROVED_STATUSES.includes(value);
+      const isApprovalOption = !!value && computeApproved(value);
       buttonEl.disabled = isApprovalOption && !gate.ok;
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
@@ -214,7 +165,7 @@ export async function mountPlansEmbedded({
     const options = gridEl?.querySelectorAll(`.status-chips[data-subject-id="${subjectKey}"] .status-pill-option`) || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.inlineStatusValue || "");
-      const isApprovalOption = !!value && APPROVED_STATUSES.includes(value);
+      const isApprovalOption = !!value && computeApproved(value);
       buttonEl.disabled = isApprovalOption && !gate.ok;
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
@@ -501,7 +452,7 @@ export async function mountPlansEmbedded({
         await updateDoc(state.plannerRef, {
           [`subjectStates.${slug}`]: {
             status: normalizedStatus,
-            approved: computeApprovedFromStatus(normalizedStatus),
+            approved: computeApproved(normalizedStatus),
             updatedAt: serverTimestamp()
           },
           updatedAt: serverTimestamp()
@@ -543,7 +494,7 @@ export async function mountPlansEmbedded({
     if (!slug) return;
     const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
-    if (normalized && APPROVED_STATUSES.includes(normalized)) {
+    if (normalized && computeApproved(normalized)) {
       const gate = canApproveSubject(slug, state.subjectStates, state.planData || { materias: state.materias });
       if (!gate.ok) {
         console.warn("[gate] BLOQUEADO aprobar", slug, "missing:", gate.missing);
@@ -663,15 +614,18 @@ export async function mountPlansEmbedded({
     state.plannerUnsubscribe = onSnapshot(state.plannerRef, (snap) => {
       const remote = snap.exists() ? (snap.data()?.subjectStates || {}) : {};
       console.log("[Materias] states keys:", Object.keys(remote || {}).length);
-      const { normalizedStates, fixes } = normalizeRemoteSubjectStates(remote);
+      const { normalizedStates, fixes } = normalizeSubjectStatesWithFixes(remote);
       state.subjectStates = normalizedStates;
       persistLocal();
       dispatchSubjectStatesChanged();
       state.cloudBlocked = false;
       const fixKeys = Object.keys(fixes || {});
       if (fixKeys.length) {
+        if (window.location.hostname === "localhost") {
+          console.debug("[plansEmbedded] corrigiendo approved legacy", fixKeys);
+        }
         updateDoc(state.plannerRef, {
-          ...fixes,
+          ...Object.fromEntries(fixKeys.map((key) => [key, { ...fixes[key], updatedAt: serverTimestamp() }])),
           updatedAt: serverTimestamp()
         }).catch((error) => {
           console.warn("[plansEmbedded] No se pudo sanear subjectStates legacy", error);

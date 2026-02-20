@@ -1,6 +1,7 @@
 import { arrayRemove, deleteField, doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "../core/firebase.js";
 import { getPlansIndex, getPlanWithSubjects, findPlanByName, normalizeStr, resolvePlanSlug } from "../plans-data.js";
 import { PLAN_CHANGED_EVENT, LEGACY_PLAN_CHANGED_EVENT } from "../core/events.js";
+import { computeApproved, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
 
 let CTX = null;
 let didBindSubjectsUI = false;
@@ -74,7 +75,8 @@ function readSubjectsLocalFallback(){
 }
 
 function applyPlannerStateFromPayload(payload = {}, { render = true } = {}){
-  plannerState = payload && typeof payload === "object" ? payload : {};
+  const { normalizedStates } = normalizeSubjectStatesWithFixes(payload && typeof payload === "object" ? payload : {});
+  plannerState = normalizedStates;
   CTX.plannerState = { ...(CTX?.plannerState || {}), subjectStates: plannerState };
   if (render) renderSubjectsList();
 }
@@ -270,19 +272,7 @@ function rebuildPlannerKeyAliases(subjects = CTX?.aulaState?.careerSubjects || [
 }
 
 function normalizeState(entry){
-  if (typeof entry === "string") {
-    return {
-      status: entry,
-      approved: entry === "promocionada" || entry === "regular" || entry === "aprobada"
-    };
-  }
-  if (entry && typeof entry === "object") {
-    return {
-      ...entry,
-      approved: entry.approved === true
-    };
-  }
-  return { approved: false };
+  return normalizeSubjectStateEntry(entry) || { approved: false, status: null };
 }
 
 function getSubjectState(subjectSlugOrId){
@@ -312,7 +302,8 @@ function getSubjectState(subjectSlugOrId){
 
 function isSubjectPromotedOrApproved(subjectSlug){
   const state = getSubjectState(subjectSlug);
-  return state.approved === true;
+  const isApproved = state.approved === true || computeApproved(state.status);
+  return isApproved;
 }
 
 function startPlannerStateSubscription(){
@@ -328,12 +319,28 @@ function startPlannerStateSubscription(){
   plannerStateUnsubscribe = onSnapshot(doc(CTX.db, "planner", currentUser.uid), (snap) => {
     const data = snap.exists() ? (snap.data() || {}) : {};
     const states = data.subjectStates || {};
+    const { normalizedStates, fixes } = normalizeSubjectStatesWithFixes(states);
     console.log("[materias] planner snapshot subjectStates keys:", Object.keys(states).length, Object.keys(states).slice(0, 25));
-    const sampleKey = Object.keys(states)[0];
-    if (sampleKey) console.log("[materias] sample state:", sampleKey, states[sampleKey]);
-    applyPlannerStateFromPayload(states, { render: false });
+    const sampleKey = Object.keys(normalizedStates)[0];
+    if (sampleKey) console.log("[materias] sample state:", sampleKey, normalizedStates[sampleKey]);
+    applyPlannerStateFromPayload(normalizedStates, { render: false });
     console.log("[materias] plannerState aplicado. keys:", Object.keys(plannerState || {}).length);
     firestoreBlockedFallbackApplied = false;
+
+    const fixKeys = Object.keys(fixes || {});
+    if (fixKeys.length) {
+      if (window.location.hostname === "localhost") {
+        console.debug("[materias] corrigiendo approved legacy", fixKeys);
+      }
+      const patch = {};
+      fixKeys.forEach((key) => {
+        patch[key] = { ...fixes[key], updatedAt: serverTimestamp() };
+      });
+      patch.updatedAt = serverTimestamp();
+      updateDoc(doc(CTX.db, "planner", currentUser.uid), patch).catch((error) => {
+        console.warn("[materias] No se pudo persistir fix legacy de subjectStates", error);
+      });
+    }
 
     if (data.subjectCareer && typeof data.subjectCareer === "object"){
       CTX.aulaState.plannerCareer = data.subjectCareer;
@@ -427,7 +434,7 @@ function renderCatalog(){
       .sort((a, b) => a.name.localeCompare(b.name, "es"))
       .forEach((item) => {
         const st = getSubjectState(item.slug || item.id || item.key);
-        const isPromoted = st.approved === true;
+        const isPromoted = st.approved === true || computeApproved(st.status);
         const row = document.createElement("div");
         row.className = `catalog-subject-row catalog-item ${isPromoted ? "is-approved subject-approved" : ""}`.trim();
         row.dataset.subjectSlug = item.slug || item.key;
