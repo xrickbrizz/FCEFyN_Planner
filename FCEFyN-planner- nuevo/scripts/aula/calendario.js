@@ -1976,7 +1976,7 @@ function renderAcadPendingWidget(items){
   const list = acadPendingWidget.querySelector(".acad-pending-list");
   if (!list) return;
 
-  visibleItems.forEach(({ item, dateKey, minutes, priority, isOverdue })=>{
+  visibleItems.forEach(({ item, dateKey, minutes, priority, isOverdue, index })=>{
     const dateLabel = (()=>{
       const parts = ymdFromDateKey(dateKey);
       return parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
@@ -1984,6 +1984,18 @@ function renderAcadPendingWidget(items){
     const relative = getRelativePastLabel(dateKey, minutes);
     const row = document.createElement("article");
     row.className = `acad-pending-item priority-${priority}`;
+
+    const completed = isAcadItemCompleted(item);
+    const checkBtn = document.createElement("button");
+    checkBtn.type = "button";
+    checkBtn.className = `activity-check record-check${completed ? " completed is-checked" : ""}`;
+    checkBtn.setAttribute("aria-label", completed ? "Marcar como pendiente" : "Marcar como completada");
+    checkBtn.addEventListener("click", async (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      await toggleAcadCompleted(dateKey, index);
+    });
+
     row.innerHTML = `
       <div class="acad-pending-item-head">
         <div class="acad-pending-item-title">${escapeHtml(item.titulo || "(sin título)")}</div>
@@ -1992,6 +2004,7 @@ function renderAcadPendingWidget(items){
       <div class="acad-pending-item-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(dateLabel)}</div>
       ${relative ? `<div class="acad-pending-item-time">${escapeHtml(relative)}</div>` : ""}
     `;
+    row.prepend(checkBtn);
     list.appendChild(row);
   });
 }

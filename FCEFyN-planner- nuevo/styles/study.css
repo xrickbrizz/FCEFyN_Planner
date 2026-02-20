@@ -4452,7 +4452,8 @@ body[data-theme="light"] .planner-modal{
 
 .acad-pending-list{ display:flex; flex-direction:column; gap:.6rem; }
 .widget-title-row{ display:flex; justify-content:space-between; align-items:center; gap:.6rem; }
-.acad-pending-item{ border-radius:var(--radius-md); border:1px solid var(--border-85); background:var(--card-bg, var(--card)); padding:.65rem .75rem; }
+.acad-pending-item{ position:relative; border-radius:var(--radius-md); border:1px solid var(--border-85); background:var(--card-bg, var(--card)); padding:.65rem .75rem .65rem 2.35rem; }
+.acad-pending-item .activity-check{ position:absolute; top:.62rem; left:.62rem; }
 .acad-pending-item-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:.45rem; }
 .acad-pending-item-title{ font-weight:700; color:var(--color-text); }
 .acad-pending-item-meta,.acad-pending-item-time{ color:var(--text-soft); font-size:.82rem; }
