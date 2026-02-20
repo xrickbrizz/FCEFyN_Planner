@@ -108,7 +108,7 @@
     gap: 0.625rem;
   }
 
-  .home-card {
+  .home-card,.weather-widget ,.home-notices-panel {
     min-height: 8.25rem;
     align-items: flex-start;
     overflow: hidden;
