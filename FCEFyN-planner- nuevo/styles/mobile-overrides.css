@@ -1,0 +1,180 @@
+/* Mobile overrides que pisan study.css.
+   Objetivo: unificar escala visual en todas las tabs móviles (<= 650px)
+   tomando como referencia las proporciones de #tab-planestudios / Correlativas. */
+
+@media (max-width: 650px) {
+  :root {
+    --m-font-base: 14px;
+    --m-font-sm: 12px;
+    --m-font-lg: 18px;
+    --m-line: 1.4;
+    --m-card-pad: 14px;
+    --m-card-radius: 14px;
+    --m-gap: 10px;
+    --m-section-gap: 14px;
+    --m-control-h: 42px;
+    --m-control-pad: 0 12px;
+    --m-card-maxw: 620px;
+  }
+
+  body .main-shell > .tab-card,
+  body .tab-card {
+    width: 100% !important;
+    max-width: var(--m-card-maxw) !important;
+    margin: 0 auto !important;
+    padding: var(--m-card-pad) !important;
+    border-radius: var(--m-card-radius) !important;
+    font-size: var(--m-font-base) !important;
+    line-height: var(--m-line) !important;
+    box-sizing: border-box;
+  }
+
+  body .main-shell > .tab-card {
+    padding-bottom: calc(var(--m-card-pad) + 72px) !important;
+  }
+
+  body .tab-card h1,
+  body .tab-card h2,
+  body .tab-card h3,
+  body .tab-card .tab-title,
+  body .tab-card .section-title {
+    line-height: 1.25;
+    margin-block: 0 10px;
+  }
+
+  body .tab-card h1,
+  body .tab-card .tab-title {
+    font-size: var(--m-font-lg) !important;
+  }
+
+  body .tab-card h2,
+  body .tab-card h3,
+  body .tab-card .section-title {
+    font-size: 16px !important;
+  }
+
+  body .tab-card p,
+  body .tab-card li,
+  body .tab-card label,
+  body .tab-card .text,
+  body .tab-card .description {
+    font-size: var(--m-font-base);
+    line-height: var(--m-line);
+  }
+
+  body .tab-card .muted,
+  body .tab-card .hint,
+  body .tab-card .subtext,
+  body .tab-card .helper,
+  body .tab-card .caption {
+    font-size: var(--m-font-sm) !important;
+    opacity: .85;
+  }
+
+  body[data-theme="dark"] .tab-card .muted,
+  body[data-theme="dark"] .tab-card .hint,
+  body[data-theme="dark"] .tab-card .subtext,
+  body.dark-mode .tab-card .muted,
+  body.dark-mode .tab-card .hint,
+  body.dark-mode .tab-card .subtext {
+    opacity: .9;
+  }
+
+  body .tab-card > * + * {
+    margin-top: var(--m-section-gap);
+  }
+
+  body .tab-card .panel,
+  body .tab-card .card,
+  body .tab-card .box,
+  body .tab-card .widget-card,
+  body .tab-card .card-block,
+  body .tab-card .study-stat-card,
+  body .tab-card .stat-card {
+    border-radius: calc(var(--m-card-radius) - 4px) !important;
+    padding: 12px !important;
+  }
+
+  body .tab-card .stats-grid,
+  body .tab-card .study-stats-grid,
+  body .tab-card .profile-grid,
+  body .tab-card .grid {
+    gap: var(--m-gap) !important;
+  }
+
+  body .tab-card .stats-grid,
+  body .tab-card .study-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body .tab-card button,
+  body .tab-card input,
+  body .tab-card select,
+  body .tab-card textarea,
+  body .tab-card .btn,
+  body .tab-card .btn-small,
+  body .tab-card .btn-outline,
+  body .tab-card .btn-dark,
+  body .tab-card .btn-blue {
+    min-height: var(--m-control-h) !important;
+    font-size: var(--m-font-base) !important;
+    border-radius: 10px;
+  }
+
+  body .tab-card input,
+  body .tab-card select,
+  body .tab-card textarea,
+  body .tab-card button,
+  body .tab-card .btn,
+  body .tab-card .btn-small,
+  body .tab-card .btn-outline,
+  body .tab-card .btn-dark,
+  body .tab-card .btn-blue {
+    padding: var(--m-control-pad) !important;
+  }
+
+  body .tab-card textarea {
+    min-height: 96px;
+    padding: 10px 12px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --m-font-base: 13px;
+    --m-font-sm: 11px;
+    --m-font-lg: 17px;
+    --m-card-pad: 12px;
+    --m-gap: 8px;
+    --m-section-gap: 12px;
+    --m-control-h: 38px;
+    --m-control-pad: 0 10px;
+    --m-card-radius: 12px;
+  }
+
+  body .main-shell > .tab-card,
+  body .tab-card {
+    max-width: 100% !important;
+  }
+
+  body .tab-card h2,
+  body .tab-card h3,
+  body .tab-card .section-title {
+    font-size: 15px !important;
+  }
+
+  body .tab-card .panel,
+  body .tab-card .card,
+  body .tab-card .box,
+  body .tab-card .widget-card,
+  body .tab-card .card-block,
+  body .tab-card .study-stat-card,
+  body .tab-card .stat-card {
+    padding: 10px !important;
+  }
+
+  body .tab-card .stats-grid,
+  body .tab-card .study-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
