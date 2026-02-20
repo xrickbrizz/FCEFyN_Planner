@@ -76,7 +76,7 @@ export function initNav(ctx = {}) {
     let isPinned = false;
 
     const isMobile = () =>
-      window.matchMedia && window.matchMedia("(max-width: 1024px)").matches;
+      window.matchMedia && window.matchMedia("(max-width: 1000px)").matches;
 
     const sidebarCtrl = createQuickSidebar({
       mount,
@@ -132,6 +132,18 @@ export function initNav(ctx = {}) {
       });
     }
 
+
+    const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
+
+    if (viewportMq && sidebarCtrl) {
+      const syncSidebarMode = () => {
+        if (!viewportMq.matches) {
+          sidebarCtrl.close();
+        }
+      };
+      if (typeof viewportMq.addEventListener === "function") viewportMq.addEventListener("change", syncSidebarMode);
+      else if (typeof viewportMq.addListener === "function") viewportMq.addListener(syncSidebarMode);
+    }
     if (ctx.activeSection) sidebarCtrl.setActive(ctx.activeSection);
     collapseSidebar();
     console.log("[nav] init done");

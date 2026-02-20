@@ -820,44 +820,43 @@ body[data-theme="light"] .quick-toggle-btn{
   box-shadow:var(--shadow-btn);
 }
 
-@media(max-width:1024px){
+@media (min-width:769px) and (max-width:1000px){
   .quick-sidebar{
-    position:static;
-    left: auto;
-    top: auto;
+    position:fixed;
+    left: .8rem;
+    top: .8rem;
     width: 16.25rem;
-    max-height: calc(100vh - 2rem);
+    height: calc(100dvh - 1.6rem);
+    max-height: calc(100dvh - 1.6rem);
     overflow:auto;
-    z-index:1202;
-    transition:transform .22s ease, opacity .22s ease;
-    transform:none;
+    z-index:2200;
+    transition:transform .22s ease;
+    transform:translateX(calc(-100% - 1.2rem));
     opacity:1;
-    pointer-events:auto;
+    pointer-events:none;
+    border-radius: var(--radius-xl);
   }
   .quick-sidebar.collapsed{
     width: 16.25rem;
     padding: 0.9rem;
   }
   .quick-sidebar.open{
-    left:auto;
+    left:.8rem;
     transform:none;
     opacity:1;
     pointer-events:auto;
   }
-  .quick-sidebar-backdrop{
-    position:fixed;
-    inset:0;
-    background:var(--shadow-color-soft);
-    backdrop-filter: blur(2px);
-    z-index:1201;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s ease;
-    display:block;
+  .quick-sidebar-wrap{
+    position:static;
+    z-index:2200;
   }
-  .quick-sidebar-backdrop.visible{
-    opacity:1;
-    pointer-events:auto;
+  .quick-sidebar-backdrop{
+    display:none !important;
+  }
+
+  #pageLayout.sidebar-collapsed .quick-sidebar,
+  #pageLayout .quick-sidebar{
+    max-width:16.25rem;
   }
 }
 
