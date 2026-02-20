@@ -34,13 +34,41 @@ function isApproved(status) {
   return APPROVED_STATUSES.includes(status);
 }
 
+function computeApprovedFromStatus(status) {
+  const normalized = normalizeStatus(status);
+  return normalized === "promocionada" || normalized === "regular" || normalized === "aprobada";
+}
+
+function normalizeSubjectStateEntry(entry) {
+  const status = normalizeStatus(typeof entry === "string" ? entry : entry?.status);
+  if (!status) return null;
+  return {
+    status,
+    approved: computeApprovedFromStatus(status)
+  };
+}
+
 function normalizeRemoteSubjectStates(remoteStates) {
-  const simple = {};
+  const normalizedStates = {};
+  const fixes = {};
   Object.entries(remoteStates || {}).forEach(([slug, entry]) => {
-    const status = normalizeStatus(typeof entry === "string" ? entry : entry?.status);
-    if (status) simple[slug] = status;
+    const normalizedEntry = normalizeSubjectStateEntry(entry);
+    if (!normalizedEntry) return;
+    normalizedStates[slug] = normalizedEntry;
+
+    const currentStatus = typeof entry === "string" ? entry : entry?.status;
+    const currentApproved = typeof entry === "string" ? undefined : entry?.approved;
+    const normalizedCurrentStatus = normalizeStatus(currentStatus);
+    const expectedApproved = computeApprovedFromStatus(normalizedEntry.status);
+    if (normalizedCurrentStatus !== normalizedEntry.status || currentApproved !== expectedApproved) {
+      fixes[`subjectStates.${slug}`] = {
+        status: normalizedEntry.status,
+        approved: expectedApproved,
+        updatedAt: serverTimestamp()
+      };
+    }
   });
-  return simple;
+  return { normalizedStates, fixes };
 }
 
 function parseSemestre(raw) {
@@ -267,9 +295,9 @@ export async function mountPlansEmbedded({
   function setEstadoSimpleMap(simple) {
     const next = {};
     Object.entries(simple || {}).forEach(([slug, status]) => {
-      const normalized = normalizeStatus(status);
-      if (!normalized) return;
-      next[slug] = { status: normalized, approved: isApproved(normalized) };
+      const normalizedEntry = normalizeSubjectStateEntry(status);
+      if (!normalizedEntry) return;
+      next[slug] = normalizedEntry;
     });
     state.subjectStates = next;
   }
@@ -451,7 +479,7 @@ export async function mountPlansEmbedded({
     firstAction?.focus?.();
   }
 
-  function closeStatusPillModal() {
+  function closeStatusModal() {
     if (!modalEl) return;
     if (modalEl.contains(document.activeElement)) state.previousFocus?.focus?.();
     modalEl.hidden = true;
@@ -468,16 +496,16 @@ export async function mountPlansEmbedded({
     if (!state.plannerRef || !slug) return;
     try {
       if (typeof status === "string") {
-        await setDoc(state.plannerRef, {
-          subjectStates: {
-            [slug]: {
-              status,
-              approved: isApproved(status),
-              updatedAt: serverTimestamp()
-            }
+        const normalizedStatus = normalizeStatus(status);
+        if (!normalizedStatus) return;
+        await updateDoc(state.plannerRef, {
+          [`subjectStates.${slug}`]: {
+            status: normalizedStatus,
+            approved: computeApprovedFromStatus(normalizedStatus),
+            updatedAt: serverTimestamp()
           },
           updatedAt: serverTimestamp()
-        }, { merge: true });
+        });
       } else {
         await updateDoc(state.plannerRef, {
           [`subjectStates.${slug}`]: deleteField(),
@@ -541,7 +569,7 @@ export async function mountPlansEmbedded({
       dispatchSubjectStatesChanged();
     }
     closeInlineStatusSelector();
-    closeStatusPillModal();
+    closeStatusModal();
     updateUI();
   }
 
@@ -635,11 +663,20 @@ export async function mountPlansEmbedded({
     state.plannerUnsubscribe = onSnapshot(state.plannerRef, (snap) => {
       const remote = snap.exists() ? (snap.data()?.subjectStates || {}) : {};
       console.log("[Materias] states keys:", Object.keys(remote || {}).length);
-      const normalizedRemote = normalizeRemoteSubjectStates(remote);
-      setEstadoSimpleMap(normalizedRemote);
+      const { normalizedStates, fixes } = normalizeRemoteSubjectStates(remote);
+      state.subjectStates = normalizedStates;
       persistLocal();
       dispatchSubjectStatesChanged();
       state.cloudBlocked = false;
+      const fixKeys = Object.keys(fixes || {});
+      if (fixKeys.length) {
+        updateDoc(state.plannerRef, {
+          ...fixes,
+          updatedAt: serverTimestamp()
+        }).catch((error) => {
+          console.warn("[plansEmbedded] No se pudo sanear subjectStates legacy", error);
+        });
+      }
       hideSectionMsg();
       updateUI();
     }, (error) => {
@@ -705,7 +742,7 @@ export async function mountPlansEmbedded({
   modalEl?.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest("[data-status-modal-close]")) closeStatusPillModal();
+    if (target.closest("[data-status-modal-close]")) closeStatusModal();
   });
 
   containerEl.addEventListener("scroll", () => {
@@ -716,9 +753,30 @@ export async function mountPlansEmbedded({
     if (!modalEl?.hidden) positionModal();
   });
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && modalEl && !modalEl.hidden) closeStatusPillModal();
-  });
+  const handleDocumentClickCapture = (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const clickedSubjectTrigger = !!target.closest(".subject");
+    const clickedInsideInlineSelector = !!target.closest(".status-chips");
+    if (state.openedInlineSelectorId && !clickedInsideInlineSelector && !clickedSubjectTrigger) {
+      closeInlineStatusSelector();
+    }
+
+    if (!modalEl || modalEl.hidden) return;
+    if (target.closest(".status-pill-content")) return;
+    if (clickedSubjectTrigger) return;
+    closeStatusModal();
+  };
+
+  const handleDocumentKeydown = (event) => {
+    if (event.key !== "Escape") return;
+    if (state.openedInlineSelectorId) closeInlineStatusSelector();
+    if (modalEl && !modalEl.hidden) closeStatusModal();
+  };
+
+  document.addEventListener("click", handleDocumentClickCapture, true);
+  document.addEventListener("keydown", handleDocumentKeydown);
 
   await loadIndex();
 
@@ -730,6 +788,11 @@ export async function mountPlansEmbedded({
     },
     refreshCareerName() {
       renderTitleCareer();
+    },
+    destroy() {
+      state.plannerUnsubscribe?.();
+      document.removeEventListener("click", handleDocumentClickCapture, true);
+      document.removeEventListener("keydown", handleDocumentKeydown);
     }
   };
 }
