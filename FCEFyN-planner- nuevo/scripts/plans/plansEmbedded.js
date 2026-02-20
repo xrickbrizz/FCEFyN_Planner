@@ -1,7 +1,7 @@
 import { doc, onSnapshot, setDoc, serverTimestamp, updateDoc, deleteField } from "../core/firebase.js";
 import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
 import { getPrereqsForSubject, normalizeSubjectKey } from "../core/prereqs.js";
-import { computeApproved, normalizeStatus, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
+import { computeApproved, computeUnlocks, normalizeStatus, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
 
 const SEMESTER_LABELS = [
   "Ingreso",
@@ -143,7 +143,14 @@ export async function mountPlansEmbedded({
   function canApproveSubject(subjectKey, plannerStates, planData) {
     const normalized = normalizeSubjectKey(subjectKey);
     const reqs = getPrereqsForSubject(normalized, planData);
-    const missing = reqs.filter((req) => plannerStates?.[req]?.approved !== true);
+    const missing = reqs.filter((req) => {
+      const entry = plannerStates?.[req];
+      const reqOk =
+        entry?.unlocks === true
+        || (entry?.unlocks === undefined && entry?.approved === true)
+        || computeUnlocks(entry?.status ?? entry);
+      return !reqOk;
+    });
     return { ok: missing.length === 0, missing, reqs };
   }
 
@@ -153,8 +160,8 @@ export async function mountPlansEmbedded({
     const options = modalActionsEl?.querySelectorAll(".status-pill-option") || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.statusValue || "");
-      const isApprovalOption = !!value && computeApproved(value);
-      buttonEl.disabled = isApprovalOption && !gate.ok;
+      const isUnlockOption = !!value && computeUnlocks(value);
+      buttonEl.disabled = isUnlockOption && !gate.ok;
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
@@ -165,8 +172,8 @@ export async function mountPlansEmbedded({
     const options = gridEl?.querySelectorAll(`.status-chips[data-subject-id="${subjectKey}"] .status-pill-option`) || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.inlineStatusValue || "");
-      const isApprovalOption = !!value && computeApproved(value);
-      buttonEl.disabled = isApprovalOption && !gate.ok;
+      const isUnlockOption = !!value && computeUnlocks(value);
+      buttonEl.disabled = isUnlockOption && !gate.ok;
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
@@ -453,6 +460,7 @@ export async function mountPlansEmbedded({
           [`subjectStates.${slug}`]: {
             status: normalizedStatus,
             approved: computeApproved(normalizedStatus),
+            unlocks: computeUnlocks(normalizedStatus),
             updatedAt: serverTimestamp()
           },
           updatedAt: serverTimestamp()
@@ -494,7 +502,7 @@ export async function mountPlansEmbedded({
     if (!slug) return;
     const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
-    if (normalized && computeApproved(normalized)) {
+    if (normalized && computeUnlocks(normalized)) {
       const gate = canApproveSubject(slug, state.subjectStates, state.planData || { materias: state.materias });
       if (!gate.ok) {
         console.warn("[gate] BLOQUEADO aprobar", slug, "missing:", gate.missing);

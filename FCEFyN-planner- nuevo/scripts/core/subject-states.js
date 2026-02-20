@@ -1,4 +1,5 @@
-const APPROVED_STATUSES = new Set(["promocionada", "regular", "aprobada"]);
+const APPROVED_STATUSES = new Set(["promocionada", "aprobada"]);
+const UNLOCK_STATUSES = new Set(["promocionada", "regular", "aprobada"]);
 
 function normalizeToken(value) {
   return String(value ?? "")
@@ -25,6 +26,11 @@ export function computeApproved(status) {
   return APPROVED_STATUSES.has(normalized);
 }
 
+export function computeUnlocks(status) {
+  const normalized = normalizeStatus(status);
+  return UNLOCK_STATUSES.has(normalized);
+}
+
 export function normalizeSubjectStateEntry(entry) {
   const rawStatus = typeof entry === "string" ? entry : entry?.status;
   const status = normalizeStatus(rawStatus);
@@ -34,7 +40,8 @@ export function normalizeSubjectStateEntry(entry) {
       return {
         ...entry,
         status: "aprobada",
-        approved: true
+        approved: true,
+        unlocks: true
       };
     }
     return null;
@@ -43,7 +50,8 @@ export function normalizeSubjectStateEntry(entry) {
   return {
     ...(entry && typeof entry === "object" ? entry : {}),
     status,
-    approved: computeApproved(status)
+    approved: computeApproved(status),
+    unlocks: computeUnlocks(status)
   };
 }
 
@@ -58,14 +66,21 @@ export function normalizeSubjectStatesWithFixes(remoteStates) {
 
     const currentStatus = typeof entry === "string" ? entry : entry?.status;
     const currentApproved = typeof entry === "string" ? undefined : entry?.approved;
+    const currentUnlocks = typeof entry === "string" ? undefined : entry?.unlocks;
     const normalizedCurrentStatus = normalizeStatus(currentStatus);
     const expectedApproved = computeApproved(normalizedEntry.status);
+    const expectedUnlocks = computeUnlocks(normalizedEntry.status);
 
-    if (normalizedCurrentStatus !== normalizedEntry.status || currentApproved !== expectedApproved) {
+    if (
+      normalizedCurrentStatus !== normalizedEntry.status
+      || currentApproved !== expectedApproved
+      || currentUnlocks !== expectedUnlocks
+    ) {
       fixes[`subjectStates.${slug}`] = {
         ...(entry && typeof entry === "object" ? entry : {}),
         status: normalizedEntry.status,
-        approved: expectedApproved
+        approved: expectedApproved,
+        unlocks: expectedUnlocks
       };
     }
   });
