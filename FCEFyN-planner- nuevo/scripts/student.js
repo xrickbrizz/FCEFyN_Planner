@@ -544,6 +544,8 @@ async function initStudentModulesInBackground(user, ctx){
       getCareerName: getProfileCareerName,
       userUid: getUid(),
       db,
+      notifySuccess,
+      notifyError,
       embedKey: "correlativas"
     });
   }

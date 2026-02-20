@@ -60,6 +60,8 @@ export async function mountPlansEmbedded({
   plannerRef,
   initialPlanSlug,
   getCareerName,
+  notifySuccess,
+  notifyError,
   embedKey = "correlativas"
 }) {
   if (!(containerEl instanceof HTMLElement)) {
@@ -79,9 +81,12 @@ export async function mountPlansEmbedded({
     storageKey: "",
     cloudBlocked: false,
     plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null),
+    userUid: userUid || "",
     plannerUnsubscribe: null,
     getCareerName: typeof getCareerName === "function" ? getCareerName : () => "",
-    careerName: ""
+    careerName: "",
+    notifySuccess: typeof notifySuccess === "function" ? notifySuccess : null,
+    notifyError: typeof notifyError === "function" ? notifyError : null
   };
 
   containerEl.classList.add("plans-embedded-root");
@@ -536,30 +541,63 @@ export async function mountPlansEmbedded({
     await applyStatus("ninguno");
   }
 
-  async function resetAll() {
+  async function resetAllSubjectStates() {
+    const uid = String(state.userUid || "").trim() || state.plannerRef?.id;
+    if (!uid) throw new Error("No hay sesión iniciada.");
+
+    const plannerDocRef = state.plannerRef || doc(db, "planner", uid);
+    await updateDoc(plannerDocRef, {
+      subjectStates: deleteField(),
+      approvedSubjects: deleteField(),
+      currentSubjects: deleteField(),
+      subjectStats: deleteField(),
+      stats: deleteField(),
+      approvedCount: deleteField(),
+      updatedAt: serverTimestamp()
+    });
+
+    if (db) {
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, {
+        "academicState.approvedSubjects": deleteField(),
+        "academicState.currentSubjects": deleteField(),
+        "academicState.subjectStates": deleteField(),
+        "academicState.subjectStats": deleteField(),
+        "academicState.stats": deleteField(),
+        "academicState.approvedCount": deleteField(),
+        updatedAt: serverTimestamp()
+      }).catch((error) => {
+        if (window.location.hostname === "localhost") {
+          console.debug("[plansEmbedded] users/{uid} sin estado académico para limpiar", error);
+        }
+      });
+    }
+  }
+
+  async function resetAll(resetBtn) {
+    const confirmed = window.confirm("Esto borrará todos tus estados de materias. ¿Continuar?");
+    if (!confirmed) return;
+
+    if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = true;
     const previous = getEstadoSimpleMap();
     setEstadoSimpleMap({});
     persistLocal();
     dispatchSubjectStatesChanged();
-    if (state.plannerRef) {
-      try {
-        const payload = {
-          updatedAt: serverTimestamp()
-        };
-        state.materias.forEach((subject) => {
-          payload[`subjectStates.${subject.subjectSlug}`] = deleteField();
-        });
-        await updateDoc(state.plannerRef, payload);
-        state.cloudBlocked = false;
-        hideSectionMsg();
-      } catch (error) {
-        state.cloudBlocked = true;
-        showSectionMsg("No se pudo guardar en la nube. Revisá permisos / sesión.");
-        console.error("[plansEmbedded] Error al resetear estados en la nube", error);
-        setEstadoSimpleMap(previous);
-        persistLocal();
-        dispatchSubjectStatesChanged();
-      }
+    try {
+      await resetAllSubjectStates();
+      state.cloudBlocked = false;
+      hideSectionMsg();
+      state.notifySuccess?.("Estados reseteados");
+    } catch (error) {
+      state.cloudBlocked = true;
+      showSectionMsg("No se pudo guardar en la nube. Revisá permisos / sesión.");
+      console.error("[plansEmbedded] Error al resetear estados en la nube", error);
+      state.notifyError?.("No se pudieron resetear los estados.");
+      setEstadoSimpleMap(previous);
+      persistLocal();
+      dispatchSubjectStatesChanged();
+    } finally {
+      if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = false;
     }
     updateUI();
   }
@@ -665,7 +703,7 @@ export async function mountPlansEmbedded({
 
     const resetBtn = target.closest('[data-role="reset-states"]');
     if (resetBtn) {
-      await resetAll();
+      await resetAll(resetBtn);
       return;
     }
 
