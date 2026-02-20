@@ -265,5 +265,6 @@
 @media (max-width:500px){
   .weather-widget,.home-notices-panel{
     width: 20rem;
+    background: red;
   }
 }
