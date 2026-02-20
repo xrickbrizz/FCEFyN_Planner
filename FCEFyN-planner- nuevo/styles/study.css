@@ -4211,6 +4211,34 @@ header{
   background:#fff;
   color:var(--color-text);
 }
+.preset-rename-dialog{
+  width:min(92vw, 360px);
+  border:none;
+  border-radius:14px;
+  padding:0;
+  box-shadow:0 18px 48px rgba(20, 20, 30, 0.24);
+}
+.preset-rename-dialog::backdrop{
+  background:transparent;
+  backdrop-filter:none;
+}
+.preset-rename-form{ padding:1rem 1rem .9rem; }
+.preset-rename-title{ margin:0 0 .45rem; font-size:1.02rem; }
+.preset-rename-label{ display:block; font-size:.85rem; color:var(--text-soft); margin-bottom:.32rem; }
+.preset-rename-form .preset-rename-input{
+  width:100%;
+  border-radius:10px;
+  padding:.56rem .7rem;
+  font-size:.95rem;
+  font-weight:600;
+}
+.preset-rename-error{ margin:.4rem 0 0; color:#c62828; font-size:.8rem; }
+.preset-rename-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:.5rem;
+  margin-top:.85rem;
+}
 .preset-chip-edit{ border:1px solid var(--border-60); background:transparent; color:var(--text-soft); border-radius:999px; padding:.2rem .45rem; }
 .preset-delete{
   background:transparent;

@@ -18,6 +18,7 @@ let plannerColorState = { map: {}, cursor: 0 };
 let plannerModalSnapshot = null;
 let didBindPlannerGlobalListeners = false;
 let plannerSectionsUiState = "idle";
+let renamePresetDialogRef = null;
 
 function norm(value){
   return String(value || "")
@@ -518,7 +519,7 @@ function renderPresetsList(){
     name.title = "Doble click para renombrar";
     name.addEventListener("dblclick", (event) => {
       event.stopPropagation();
-      startInlineRenamePlan(p.id, name);
+      openRenamePresetDialog(p.id);
     });
     chip.appendChild(name);
 
@@ -571,48 +572,91 @@ function renderPresetsList(){
   outside.appendChild(addBtn);
 }
 
-function startInlineRenamePlan(planId, nameNode){
-  const plan = CTX.aulaState.presets.find((item) => item.id === planId);
-  if (!plan || !nameNode) return;
+function getRenamePresetDialog(){
+  if (renamePresetDialogRef?.isConnected) return renamePresetDialogRef;
 
-  const previousName = plan.name || "Sin nombre";
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = previousName;
-  input.maxLength = MAX_PLAN_NAME_LENGTH;
-  input.className = "preset-rename-input";
-  nameNode.replaceWith(input);
-  input.focus();
-  input.select();
+  const dialog = document.createElement("dialog");
+  dialog.className = "preset-rename-dialog";
+  dialog.innerHTML = `
+    <form method="dialog" class="preset-rename-form" novalidate>
+      <h3 class="preset-rename-title">Renombrar preset</h3>
+      <label class="preset-rename-label" for="presetRenameInput">Nombre</label>
+      <input id="presetRenameInput" name="presetName" type="text" maxlength="${MAX_PLAN_NAME_LENGTH}" class="preset-rename-input">
+      <p class="preset-rename-error" id="presetRenameError" hidden>El nombre del plan no puede estar vacío.</p>
+      <div class="preset-rename-actions">
+        <button type="button" class="btn-gray btn-small" data-action="cancel">Cancelar</button>
+        <button type="submit" class="btn-blue btn-small" value="save">Guardar</button>
+      </div>
+    </form>
+  `;
 
-  let didFinish = false;
-  const finishRename = async (commitRename) => {
-    if (didFinish) return;
-    didFinish = true;
+  const form = dialog.querySelector(".preset-rename-form");
+  const input = dialog.querySelector("#presetRenameInput");
+  const errorNode = dialog.querySelector("#presetRenameError");
+  const cancelBtn = dialog.querySelector('[data-action="cancel"]');
 
-    if (commitRename){
-      const nextName = input.value.trim().slice(0, MAX_PLAN_NAME_LENGTH);
-      if (!nextName){
-        CTX?.notifyWarn?.("El nombre del plan no puede estar vacío.");
-      } else {
-        await renamePlan(planId, nextName);
-        return;
-      }
-    }
-    renderPresetsList();
-  };
+  cancelBtn?.addEventListener("click", () => dialog.close("cancel"));
 
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter"){
-      event.preventDefault();
-      finishRename(true).catch(() => {});
-    }
-    if (event.key === "Escape"){
-      event.preventDefault();
-      finishRename(false).catch(() => {});
-    }
+  dialog.addEventListener("cancel", () => {
+    dialog.dataset.result = "cancel";
   });
-  input.addEventListener("blur", () => { finishRename(true).catch(() => {}); });
+
+  form?.addEventListener("submit", (event) => {
+    const trimmedName = input.value.trim().slice(0, MAX_PLAN_NAME_LENGTH);
+    if (!trimmedName){
+      event.preventDefault();
+      errorNode.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+      return;
+    }
+    dialog.dataset.nextName = trimmedName;
+    dialog.dataset.result = "save";
+  });
+
+  input?.addEventListener("input", () => {
+    if (!input.value.trim()) return;
+    errorNode.hidden = true;
+    input.removeAttribute("aria-invalid");
+  });
+
+  document.body.appendChild(dialog);
+  renamePresetDialogRef = dialog;
+  return dialog;
+}
+
+function openRenamePresetDialog(planId){
+  const plan = CTX.aulaState.presets.find((item) => item.id === planId);
+  if (!plan) return;
+
+  const dialog = getRenamePresetDialog();
+  const input = dialog.querySelector("#presetRenameInput");
+  const errorNode = dialog.querySelector("#presetRenameError");
+
+  dialog.dataset.planId = planId;
+  dialog.dataset.result = "cancel";
+  delete dialog.dataset.nextName;
+
+  if (input){
+    input.value = plan.name || "Sin nombre";
+    input.removeAttribute("aria-invalid");
+  }
+  if (errorNode) errorNode.hidden = true;
+
+  dialog.showModal();
+  requestAnimationFrame(() => {
+    input?.focus();
+    input?.select();
+  });
+
+  dialog.addEventListener("close", async () => {
+    if (dialog.dataset.result !== "save") return;
+    const nextName = (dialog.dataset.nextName || "").trim();
+    if (!nextName){
+      CTX?.notifyWarn?.("El nombre del plan no puede estar vacío.");
+      return;
+    }
+    await renamePlan(planId, nextName);
+  }, { once:true });
 }
 
 function renderSelectedSectionsList(){
