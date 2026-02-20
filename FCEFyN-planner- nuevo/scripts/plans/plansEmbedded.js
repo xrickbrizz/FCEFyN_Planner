@@ -212,15 +212,19 @@ export async function mountPlansEmbedded({
     statsCell.className = "cell";
     statsCell.innerHTML = `
       <h2>Panel de estadísticas</h2>
-      <div class=" stats-v1">
-        <div class="stats-grid">
+      <div class="stats-v1">
+        <div class="stats-cards stats-grid">
           <div class="stat-card"><strong data-stat="promocionada">0</strong><div class="stat-label">Promocionadas</div></div>
           <div class="stat-card"><strong data-stat="regular">0</strong><div class="stat-label">Regulares</div></div>
           <div class="stat-card"><strong data-stat="libre">0</strong><div class="stat-label">Libres</div></div>
           <div class="stat-card"><strong data-stat="en_curso">0</strong><div class="stat-label">En curso</div></div>
         </div>
-        <div class="stats-overview">
         <div class="stats-meta">
+          <div class="stats-actions plans-embedded-reset-wrap">
+            <button class="btn" type="button" data-role="reset-states">Resetear estados</button>
+            <div class="small-muted" data-role="autosave-hint">Cambios guardados automáticamente</div>
+            <div class="small-muted" data-role="cloud-warning" hidden>Guardado local: sincronización bloqueada.</div>
+          </div>
           <div class="progress-wrap">
             <div class="progress"><div class="fill" data-role="progress-fill"></div></div>
             <div class="progress-caption">
@@ -228,11 +232,6 @@ export async function mountPlansEmbedded({
               <div data-role="caption-right">0 total</div>
             </div>
           </div>
-          <div class="plans-embedded-reset-wrap">
-            <button class="btn" type="button" data-role="reset-states">Resetear estados</button>
-          </div>
-          <div class="small-muted" data-role="cloud-warning" hidden>Guardado local: sincronización bloqueada.</div>
-        </div>
         </div>
       </div>
     `;
@@ -399,7 +398,9 @@ export async function mountPlansEmbedded({
     if (capRightEl) capRightEl.textContent = `${total} total`;
 
     const cloudWarningEl = gridEl.querySelector('[data-role="cloud-warning"]');
+    const autosaveHintEl = gridEl.querySelector('[data-role="autosave-hint"]');
     if (cloudWarningEl) cloudWarningEl.hidden = !state.cloudBlocked;
+    if (autosaveHintEl) autosaveHintEl.hidden = !!state.cloudBlocked;
   }
 
   function positionModal() {

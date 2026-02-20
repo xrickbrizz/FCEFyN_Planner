@@ -25,6 +25,7 @@ const Social = {
         usersSearchList: null,
         usersSearchInput: null,
         usersLoading: false,
+        usersSearchResults: [],
         friendsFilter: "all",
         friendsSearch: ""
       };

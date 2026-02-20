@@ -1,5 +1,14 @@
 import { doc, getDoc, setDoc, serverTimestamp } from "./firebase.js";
 
+function normalizeForSearch(value){
+  return (value || "")
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 // publicUsers es directorio; users es privado.
 export async function ensurePublicUserProfile(db, currentUser, userProfile = null){
   if (!db || !currentUser) return;
@@ -14,6 +23,8 @@ export async function ensurePublicUserProfile(db, currentUser, userProfile = nul
     || currentUser.displayName
     || "";
   const photoURL = userProfile?.photoURL || currentUser.photoURL || "";
+  const searchName = normalizeForSearch(name);
+  const searchEmail = normalizeForSearch(emailLower || email);
   const ref = doc(db, "publicUsers", currentUser.uid);
 
   try{
@@ -24,6 +35,8 @@ export async function ensurePublicUserProfile(db, currentUser, userProfile = nul
       emailLower,
       name,
       photoURL,
+      searchName,
+      searchEmail,
       updatedAt: serverTimestamp()
     };
 

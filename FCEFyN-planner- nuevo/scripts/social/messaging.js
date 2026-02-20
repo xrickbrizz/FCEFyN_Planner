@@ -734,7 +734,6 @@ async function loadChatsFallback(options = {}){
 
 function initMessagingUI(){
   CTX.socialModules.Directory?.ensureUsersSearchUI?.();
-  CTX.socialModules.Directory?.loadUsersDirectory?.();
 
   const btnSendMsg = document.getElementById("btnSendMessage");
   if (btnSendMsg) btnSendMsg.addEventListener("click", sendMessage);

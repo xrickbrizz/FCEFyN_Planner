@@ -1,14 +1,21 @@
-import { collection, getDocs, getDoc, doc } from "../core/firebase.js";
+import { collection, getDocs, getDoc, doc, query, where, orderBy, limit } from "../core/firebase.js";
 
 let CTX = null;
 let previousFocusedElement = null;
 let friendSearchKeydownHandler = null;
+let friendSearchDebounceTimer = null;
+let activeSearchRequestId = 0;
 const searchAvatarUrlCache = new Map();
 
 const FRIEND_SEARCH_DOMAIN = "@mi.unc.edu.ar";
+const FRIEND_SEARCH_MIN_CHARS = 3;
+const FRIEND_SEARCH_DEBOUNCE_MS = 300;
+const FRIEND_SEARCH_MAX_RESULTS = 15;
 
 function normalizeText(value){
-  return (value || "").toString().trim().toLowerCase();
+  const raw = (value || "").toString().trim().toLowerCase();
+  if (typeof CTX?.normalizeStr === "function") return CTX.normalizeStr(raw);
+  return raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 function buildExcludedUserSet(){
@@ -26,11 +33,11 @@ function toggleSearchOverlay(isOpen){
   document.body.classList.toggle("modal-open", isOpen);
   if (isOpen){
     previousFocusedElement = document.activeElement;
+    resetSearchState();
     renderUsersSearchList();
     state.usersSearchInput?.focus();
   } else {
-    state.usersSearchInput && (state.usersSearchInput.value = "");
-    state.usersSearchInput && state.usersSearchInput.dispatchEvent(new Event("input"));
+    resetSearchState();
     previousFocusedElement?.focus?.();
   }
 }
@@ -103,11 +110,15 @@ function renderUsersSearchList(){
   const errorEl = document.getElementById("friendSearchError");
   if (errorEl) errorEl.hidden = true;
 
+  const queryText = normalizeText(state.usersSearchInput.value);
+  const clearButton = document.getElementById("clearFriendSearch");
+  if (clearButton) clearButton.hidden = !queryText;
+
   if (state.usersLoading){
     state.usersSearchList.innerHTML = `
-      <div class="friend-search-skeleton-row"></div>
-      <div class="friend-search-skeleton-row"></div>
-      <div class="friend-search-skeleton-row"></div>
+      <div class="friend-search-empty">
+        <div class="friend-search-empty-title">Buscando…</div>
+      </div>
     `;
     return;
   }
@@ -120,24 +131,32 @@ function renderUsersSearchList(){
     return;
   }
 
-  const queryText = normalizeText(state.usersSearchInput.value);
-  const clearButton = document.getElementById("clearFriendSearch");
-  if (clearButton) clearButton.hidden = !queryText;
-  const excluded = buildExcludedUserSet();
-  const matches = (state.allUsersCache || []).filter(user => {
-    if (!user?.uid || excluded.has(user.uid)) return false;
-    const name = normalizeText(user.name || user.fullName || user.firstName);
-    const email = normalizeText(user.email);
-    if (!email.endsWith(FRIEND_SEARCH_DOMAIN)) return false;
-    if (!queryText) return true;
-    return name.includes(queryText) || email.includes(queryText);
-  });
+  if (!queryText){
+    state.usersSearchList.innerHTML = `
+      <div class="friend-search-empty">
+        <div class="friend-search-empty-icon" aria-hidden="true">⌁</div>
+        <div class="friend-search-empty-title">Escribí para buscar usuarios (por nombre o correo)</div>
+      </div>
+    `;
+    return;
+  }
+
+  if (queryText.length < FRIEND_SEARCH_MIN_CHARS){
+    state.usersSearchList.innerHTML = `
+      <div class="friend-search-empty">
+        <div class="friend-search-empty-title">Escribí al menos ${FRIEND_SEARCH_MIN_CHARS} caracteres</div>
+      </div>
+    `;
+    return;
+  }
+
+  const matches = state.usersSearchResults || [];
 
   if (!matches.length){
     state.usersSearchList.innerHTML = `
       <div class="friend-search-empty">
         <div class="friend-search-empty-icon" aria-hidden="true">⌁</div>
-        <div class="friend-search-empty-title">No encontramos usuarios con ese correo</div>
+        <div class="friend-search-empty-title">Sin resultados</div>
       </div>
     `;
     return;
@@ -161,6 +180,130 @@ function renderUsersSearchList(){
     state.usersSearchList.appendChild(item);
     hydrateSearchResultAvatar(item, user, labelName, initial);
   });
+}
+
+function resetSearchState(){
+  const state = CTX?.socialState;
+  if (!state) return;
+  if (friendSearchDebounceTimer){
+    clearTimeout(friendSearchDebounceTimer);
+    friendSearchDebounceTimer = null;
+  }
+  activeSearchRequestId += 1;
+  state.usersLoading = false;
+  state.usersError = "";
+  state.usersSearchResults = [];
+  if (state.usersSearchInput) state.usersSearchInput.value = "";
+}
+
+function mergeUsersByUid(listA = [], listB = []){
+  const map = new Map();
+  [...listA, ...listB].forEach((user) => {
+    if (user?.uid && !map.has(user.uid)) map.set(user.uid, user);
+  });
+  return Array.from(map.values());
+}
+
+function shouldSearchAsEmail(queryText){
+  return queryText.includes("@");
+}
+
+function toSearchableProfile(docSnap){
+  const data = docSnap.data() || {};
+  return { uid: docSnap.id, ...data };
+}
+
+function excludeNotAllowedUsers(users = []){
+  const state = CTX?.socialState;
+  const excluded = buildExcludedUserSet();
+  (state?.friendsList || []).forEach((friend) => {
+    if (friend?.otherUid) excluded.add(friend.otherUid);
+  });
+  return users.filter((user) => {
+    if (!user?.uid || excluded.has(user.uid)) return false;
+    const email = normalizeText(user.email || user.emailLower || user.searchEmail);
+    if (!email.endsWith(FRIEND_SEARCH_DOMAIN)) return false;
+    return true;
+  });
+}
+
+async function runPrefixQuery(fieldName, normalizedQuery){
+  const usersRef = collection(CTX.db, "publicUsers");
+  const q = query(
+    usersRef,
+    where(fieldName, ">=", normalizedQuery),
+    where(fieldName, "<=", `${normalizedQuery}\uf8ff`),
+    orderBy(fieldName),
+    limit(FRIEND_SEARCH_MAX_RESULTS)
+  );
+  const snap = await getDocs(q);
+  const users = [];
+  snap.forEach((docSnap) => {
+    users.push(toSearchableProfile(docSnap));
+  });
+  return users;
+}
+
+async function performUsersSearch(rawInput, requestId){
+  const state = CTX?.socialState;
+  if (!state) return;
+  const normalizedQuery = normalizeText(rawInput);
+  if (!normalizedQuery || normalizedQuery.length < FRIEND_SEARCH_MIN_CHARS) return;
+
+  state.usersLoading = true;
+  state.usersError = "";
+  renderUsersSearchList();
+
+  try{
+    const searchByEmail = shouldSearchAsEmail(normalizedQuery);
+    const [nameMatches, emailMatches] = searchByEmail
+      ? [[], await runPrefixQuery("searchEmail", normalizedQuery)]
+      : await Promise.all([
+        runPrefixQuery("searchName", normalizedQuery),
+        runPrefixQuery("searchEmail", normalizedQuery)
+      ]);
+
+    if (requestId !== activeSearchRequestId) return;
+    const merged = mergeUsersByUid(nameMatches, emailMatches);
+    const filtered = excludeNotAllowedUsers(merged).slice(0, FRIEND_SEARCH_MAX_RESULTS);
+    filtered.forEach((profile) => state.userProfileCache.set(profile.uid, profile));
+    state.usersSearchResults = filtered;
+  }catch(error){
+    if (requestId !== activeSearchRequestId) return;
+    console.error("[Mensajeria] Error al buscar usuarios:", error);
+    state.usersError = "No pudimos completar la búsqueda. Probá de nuevo en unos segundos.";
+    state.usersSearchResults = [];
+  }finally{
+    if (requestId !== activeSearchRequestId) return;
+    state.usersLoading = false;
+    renderUsersSearchList();
+  }
+}
+
+function handleFriendSearchInput(){
+  const state = CTX?.socialState;
+  if (!state?.usersSearchInput) return;
+  const queryText = normalizeText(state.usersSearchInput.value);
+  state.usersError = "";
+
+  if (friendSearchDebounceTimer){
+    clearTimeout(friendSearchDebounceTimer);
+    friendSearchDebounceTimer = null;
+  }
+
+  if (!queryText || queryText.length < FRIEND_SEARCH_MIN_CHARS){
+    activeSearchRequestId += 1;
+    state.usersLoading = false;
+    state.usersSearchResults = [];
+    renderUsersSearchList();
+    return;
+  }
+
+  const requestId = ++activeSearchRequestId;
+  friendSearchDebounceTimer = setTimeout(() => {
+    performUsersSearch(state.usersSearchInput.value, requestId);
+  }, FRIEND_SEARCH_DEBOUNCE_MS);
+  renderUsersSearchList();
 }
 
 function getCachedSearchAvatarUrl(uid){
@@ -230,12 +373,10 @@ function ensureUsersSearchUI(){
     if (event.target === state.friendSearchOverlay) toggleSearchOverlay(false);
   });
 
-  state.usersSearchInput.addEventListener("input", () => {
-    renderUsersSearchList();
-  });
+  state.usersSearchInput.addEventListener("input", handleFriendSearchInput);
 
   clearButton?.addEventListener("click", () => {
-    state.usersSearchInput.value = "";
+    resetSearchState();
     renderUsersSearchList();
     state.usersSearchInput.focus();
   });
@@ -255,35 +396,6 @@ function ensureUsersSearchUI(){
   modal?.addEventListener("click", (event) => event.stopPropagation());
 
   state.friendSearchEventsBound = true;
-}
-
-async function loadUsersDirectory(){
-  const state = CTX?.socialState;
-  const currentUser = CTX?.getCurrentUser?.();
-  if (!currentUser) return;
-  ensureUsersSearchUI();
-  state.usersLoading = true;
-  state.usersError = "";
-  searchAvatarUrlCache.clear();
-  renderUsersSearchList();
-  try{
-    const snap = await getDocs(collection(CTX.db, "publicUsers"));
-    const users = [];
-    snap.forEach(docSnap => {
-      const data = docSnap.data() || {};
-      const profile = { uid: docSnap.id, ...data };
-      users.push(profile);
-      state.userProfileCache.set(profile.uid, profile);
-    });
-    state.allUsersCache = users;
-    console.log("[Mensajeria] Users loaded:", users.length);
-  }catch(error){
-    console.error("[Mensajeria] Error al cargar usuarios:", error);
-    state.usersError = "No pudimos cargar el buscador. Probá de nuevo en unos segundos.";
-  }finally{
-    state.usersLoading = false;
-    renderUsersSearchList();
-  }
 }
 
 async function getUserProfile(uid){
@@ -328,7 +440,7 @@ const Directory = {
   },
   ensureUsersSearchUI,
   renderUsersSearchList,
-  loadUsersDirectory,
+  handleFriendSearchInput,
   getUserProfile,
   normalizeText
 };
