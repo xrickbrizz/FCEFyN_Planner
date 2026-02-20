@@ -394,7 +394,6 @@ body[data-theme="dark"] .help-btn{
   grid-template-columns:var(--sidebar-collapsed) minmax(0,1fr);
 }
 .page-content{
-  min-width: 0;
   display:flex;
   flex-direction:column;
   margin: 0;
@@ -1937,7 +1936,6 @@ body[data-theme="light"] .event{
       display:grid;
       grid-template-columns:70px repeat(6,1fr);
       font-size: .8rem;
-      min-width: 41.25rem;
       position:relative;
     }
     .agenda-hour-spacer{
@@ -5240,6 +5238,9 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 
 /* <= 1000px: 2 columnas (izq cards / der cronómetro) */
 @media (max-width: 1000px){
+  #tab-perfil.profile-page .profile-avatar .profile-header{
+  display: block;
+}
   .study-top-layout{
     display: grid;
     grid-template-columns: 1fr minmax(260px, 360px);
@@ -5277,3 +5278,24 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 }
 }
 
+@media (max-width:500px) {
+  .agenda-day-col{
+    /*width: 3rem; */
+  }
+ .agenda-hour-col{
+    width: 3rem;
+}
+  .weather-widget{
+    width: 20rem;
+  }
+  .home-cards,.home-left,.page-layout,.home-card[data-coming-soon="false"],.home-card[data-coming-soon="true"] {
+    width: 20em;
+  }
+  #tab-inicio{
+    width: 23rem;
+  }
+  .page-layout{
+    margin : 0px ;
+  }
+  
+}

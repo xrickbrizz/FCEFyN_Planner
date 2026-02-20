@@ -69,7 +69,7 @@ function bindPlanChangedListener(){
 function renderAgendaGridInto(grid, data, allowEdit){
   if (!grid) return;
   grid.innerHTML = "";
-  grid.style.gridTemplateColumns = `70px repeat(${dayKeys.length},1fr)`;
+  grid.style.gridTemplateColumns = `42px repeat(${dayKeys.length},1fr)`;
 
   const hourCol = document.createElement("div");
   hourCol.className = "agenda-hour-col";

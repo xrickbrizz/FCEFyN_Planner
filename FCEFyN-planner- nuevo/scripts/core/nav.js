@@ -133,7 +133,7 @@ export function initNav(ctx = {}) {
     }
 
 
-    const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
+    /*const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null; */
 
     if (viewportMq && sidebarCtrl) {
       const syncSidebarMode = () => {
@@ -152,4 +152,4 @@ export function initNav(ctx = {}) {
     console.error("[nav] error", e);
     return null;
   }
-}
+} 

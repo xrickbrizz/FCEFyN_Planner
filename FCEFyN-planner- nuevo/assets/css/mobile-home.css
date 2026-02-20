@@ -262,3 +262,8 @@
     --mobile-bottom-active: #e2e8f0;
   }
 }
+@media (max-width:500px){
+  .weather-widget,.home-notices-panel{
+    width: 20rem;
+  }
+}
