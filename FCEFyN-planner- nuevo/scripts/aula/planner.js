@@ -597,6 +597,12 @@ function getRenamePresetDialog(){
 
   cancelBtn?.addEventListener("click", () => dialog.close("cancel"));
 
+  dialog.addEventListener("click", (event) => {
+    if (event.target !== dialog) return;
+    dialog.dataset.result = "cancel";
+    dialog.close("cancel");
+  });
+
   dialog.addEventListener("cancel", () => {
     dialog.dataset.result = "cancel";
   });
