@@ -112,7 +112,7 @@
     min-height: 8.25rem;
     align-items: flex-start;
     overflow: hidden;
-    width: 30rem; 
+    width: 27rem; 
     /* s*/
   }
 
@@ -264,7 +264,20 @@
 }
 @media (max-width:500px){
   .weather-widget,.home-notices-panel{
-    width: 20rem;
-    background: blue;
+    width: 27rem;
   }
+  .prof-grid{
+    width: 30rem;
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+  #tab-agenda,.acad-shell,.calendar-container,.tab-estudio-layout,#tab-mensajes,#tab-planestudios{
+    width: 30rem;
+  }
+    .streak-overlay{
+      top: 8px;
+      left: 158px;
+      gap: 8px;
+      padding: 6px 8px;
+    }
 }

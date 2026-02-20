@@ -5281,26 +5281,22 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 @media (max-width:500px) {
   .agenda-day-col{
     /*width: 3rem; */
-        background-color: red;
 
   }
  .agenda-hour-col{
     width: 3rem;
-        background-color: red;
+
 
 }
   .weather-widget{
-    width: 20rem;
-        background-color: red;
+    width: 27rem;
 
   }
   .home-cards,.home-left,.page-layout,.home-card[data-coming-soon="false"],.home-card[data-coming-soon="true"] {
     width: 27rem;
-    background-color: red;
   }
   #tab-inicio{
     width: 29rem;
-        background-color: rgb(10, 23, 204);
 
   }
   .page-layout{

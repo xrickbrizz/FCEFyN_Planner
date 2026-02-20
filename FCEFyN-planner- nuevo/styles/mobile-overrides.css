@@ -115,23 +115,9 @@
   body .tab-card .btn-outline,
   body .tab-card .btn-dark,
   body .tab-card .btn-blue {
-    min-height: var(--m-control-h) !important;
     font-size: var(--m-font-base) !important;
     border-radius: 10px;
   }
-
-  body .tab-card input,
-  body .tab-card select,
-  body .tab-card textarea,
-  body .tab-card button,
-  body .tab-card .btn,
-  body .tab-card .btn-small,
-  body .tab-card .btn-outline,
-  body .tab-card .btn-dark,
-  body .tab-card .btn-blue {
-    padding: var(--m-control-pad) !important;
-  }
-
   body .tab-card textarea {
     min-height: 96px;
     padding: 10px 12px !important;
