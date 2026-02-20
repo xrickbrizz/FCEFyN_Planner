@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, getDocs, query, where } from "../core/firebase.js";
+import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, where } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
@@ -454,6 +454,28 @@ function renderPresetsList(){
     });
     chip.appendChild(name);
 
+    const deleteControl = document.createElement("span");
+    deleteControl.className = "preset-x";
+    deleteControl.setAttribute("role", "button");
+    deleteControl.setAttribute("tabindex", "0");
+    deleteControl.setAttribute("aria-label", `Eliminar preset ${p.name || "Sin nombre"}`);
+    deleteControl.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    `;
+    const triggerDelete = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      deletePreset(p.id, p.name || "Sin nombre").catch(() => {});
+    };
+    deleteControl.addEventListener("click", triggerDelete);
+    deleteControl.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      triggerDelete(event);
+    });
+    chip.appendChild(deleteControl);
+
     chip.addEventListener("click", () => selectPresetAndRefreshAgenda(p.id));
     chip.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " "){
@@ -713,14 +735,64 @@ async function duplicatePreset(){
   await persistPresetsToFirestore();
 }
 
-async function deletePreset(){
-  if (!CTX.aulaState.activePresetId){ CTX?.notifyWarn?.("No hay preset activo para eliminar."); return; }
-  CTX.aulaState.presets = CTX.aulaState.presets.filter(p => p.id !== CTX.aulaState.activePresetId);
-  CTX.aulaState.activePresetId = null;
-  CTX.aulaState.activePresetName = "";
-  CTX.aulaState.activeSelectedSectionIds = [];
-  await persistPresetsToFirestore();
-  renderPlannerAll();
+async function deletePreset(presetId, presetName){
+  const currentUser = CTX?.getCurrentUser?.();
+  if (!currentUser || !presetId) return;
+
+  const ok = await CTX?.showConfirm?.({
+    title: "Eliminar preset",
+    message: `¿Seguro que querés eliminar "${presetName}"?`,
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    danger: true
+  });
+  if (!ok) return;
+
+  const ref = doc(CTX.db, "planner", currentUser.uid);
+
+  try {
+    const snap = await getDoc(ref);
+    const data = snap.exists() ? snap.data() : {};
+    const activeId = data.activePresetId || CTX.aulaState.activePresetId || null;
+
+    const remainingPresets = (CTX.aulaState.presets || []).filter((plan) => plan.id !== presetId);
+    const payload = {
+      [`presets.${presetId}`]: deleteField(),
+      schedulePresets: remainingPresets.map((plan) => ({
+        ...plan,
+        sectionIds: getPlanSectionIds(plan),
+        selectedComisiones: getPlanSectionIds(plan)
+      }))
+    };
+
+    let nextActivePreset = CTX.aulaState.activePresetId;
+    if (activeId === presetId || CTX.aulaState.activePresetId === presetId){
+      nextActivePreset = remainingPresets[0]?.id || null;
+      payload.activePresetId = nextActivePreset || deleteField();
+    }
+
+    await updateDoc(ref, payload);
+
+    CTX.aulaState.presets = remainingPresets;
+    CTX.aulaState.activePresetId = nextActivePreset;
+
+    if (nextActivePreset){
+      const fallbackPreset = remainingPresets.find((plan) => plan.id === nextActivePreset) || remainingPresets[0];
+      CTX.aulaState.activePresetName = fallbackPreset?.name || "";
+      CTX.aulaState.activeSelectedSectionIds = getPlanSectionIds(fallbackPreset);
+    } else {
+      CTX.aulaState.activePresetName = "";
+      CTX.aulaState.activeSelectedSectionIds = [];
+    }
+
+    CTX.aulaState.agendaData = buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
+    renderPlannerAll();
+    CTX.renderAgenda?.();
+    window.dispatchEvent(new CustomEvent(PLAN_CHANGED_EVENT));
+    CTX?.notifySuccess?.("Preset eliminado.");
+  } catch (error) {
+    CTX?.notifyError?.(`No se pudo eliminar: ${error?.message || error}`);
+  }
 }
 
 async function commitPlanState(options = {}){
