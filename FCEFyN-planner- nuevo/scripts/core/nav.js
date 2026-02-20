@@ -131,7 +131,9 @@ export function initNav(ctx = {}) {
         else collapseSidebar();
       });
     }
-    const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
+
+
+    /*const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null; */
 
     if (viewportMq && sidebarCtrl) {
       const syncSidebarMode = () => {
