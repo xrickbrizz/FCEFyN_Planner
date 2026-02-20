@@ -1177,7 +1177,7 @@ body[data-theme="light"] .tab-card{
         padding-top: 4rem;
       }
       .streak-overlay{
-        top:8px;
+        top:43px;
         left:8px;
         gap:8px;
         padding:6px 8px;
@@ -1201,7 +1201,7 @@ body[data-theme="light"] .tab-card{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:1rem;
+      margin-bottom:1.5rem;
       gap: .6rem;
       flex-wrap:wrap;
     }
@@ -5237,3 +5237,43 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 }
 .streak-icon .flame-outer{ fill:#ff4b3a; }
 .streak-icon .flame-inner{ fill:#ff9a3a; }
+
+/* <= 1000px: 2 columnas (izq cards / der cronómetro) */
+@media (max-width: 1000px){
+  .study-top-layout{
+    display: grid;
+    grid-template-columns: 1fr minmax(260px, 360px);
+    grid-template-areas: "left right";
+    gap: 12px;
+    align-items: start;
+  }
+
+  .study-top-left{
+    grid-area: left;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* si tu .study-stats-grid en desktop es multi-columna, acá lo forzamos a 1 columna
+     SOLO dentro de este wrapper (no afecta el resto del sitio) */
+  .study-top-left.study-stats-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .study-top-right{
+    grid-area: right;
+    align-self: start;
+  }
+  .study-top-layout{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "right"
+      "left";
+      margin: auto;
+  }
+  .home-left{
+  width: 39rem;
+}
+}
+
