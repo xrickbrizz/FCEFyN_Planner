@@ -274,7 +274,10 @@
   #tab-agenda,.acad-shell,.calendar-container,.tab-estudio-layout,#tab-mensajes,#tab-planestudios{
     width: 30rem;
   }
-    .streak-overlay{
+
+}
+@media (max-width:500px) {
+      .streak-overlay{
       top: 8px;
       left: 158px;
       gap: 8px;
