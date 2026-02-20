@@ -76,7 +76,7 @@ export function initNav(ctx = {}) {
     let isPinned = false;
 
     const isMobile = () =>
-      window.matchMedia && window.matchMedia("(max-width: 1000px)").matches;
+      window.matchMedia && window.matchMedia("(max-width: 650px)").matches;
 
     const sidebarCtrl = createQuickSidebar({
       mount,
