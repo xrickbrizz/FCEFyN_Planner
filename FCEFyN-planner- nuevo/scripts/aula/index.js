@@ -26,6 +26,7 @@ async function loadPlannerData(ctx){
   ctx.aulaState.activePresetId = null;
   ctx.aulaState.activePresetName = "";
   ctx.aulaState.activeSelectedSectionIds = [];
+  ctx.aulaState.plannerSections = [];
   ctx.aulaState.plannerSubjectColors = {};
   ctx.aulaState.plannerColorCursor = 0;
   setCalendarioCaches({ estudios: {}, academico: {} });
@@ -111,6 +112,7 @@ const Aula = {
         agendaEditDay: null,
         agendaEditIndex: -1,
         courseSections: [],
+        plannerSections: [],
         presets: [],
         activePresetId: null,
         activePresetName: "",

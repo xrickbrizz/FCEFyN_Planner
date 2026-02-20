@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, where } from "../core/firebase.js";
+import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, where, limit } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
@@ -16,6 +16,22 @@ const COLOR_KEY = "planner_subject_colors_v1";
 const CURSOR_KEY = "planner_color_cursor_v1";
 let plannerColorState = { map: {}, cursor: 0 };
 let plannerModalSnapshot = null;
+let didBindPlannerGlobalListeners = false;
+let plannerSectionsUiState = "idle";
+
+function norm(value){
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function slugify(value){
+  return norm(value)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
 function cloneStateValue(value){
   return JSON.parse(JSON.stringify(value));
@@ -291,7 +307,7 @@ function updateSectionsSubjectFilter(){
   const subjectsBySlug = new Map();
 
   CTX.aulaState.courseSections.forEach((section) => {
-    const slug = getSectionSubjectSlug(section);
+    const slug = slugify(getSectionSubjectSlug(section) || getSubjectNameFromSection(section));
     if (!slug) return;
     availableSubjectSlugs.add(slug);
     if (!subjectsBySlug.has(slug)) subjectsBySlug.set(slug, getSubjectNameFromSection(section));
@@ -312,122 +328,174 @@ function updateSectionsSubjectFilter(){
     opt.textContent = name;
     subjectFilter.appendChild(opt);
   });
-  subjectFilter.value = availableSubjectSlugs.has(current) ? current : "";
+
+  const currentSlug = slugify(current);
+  subjectFilter.value = availableSubjectSlugs.has(currentSlug) ? currentSlug : "";
   return availableSubjectSlugs;
 }
 
-function diagnoseCareerSlug(){
-  const selectedCareerSlug = CTX.normalizeStr(CTX.getCurrentCareer?.() || "");
-  const profileCareerSlug = CTX.normalizeStr(CTX.getUserProfile?.()?.careerSlug || "");
-  const resolvedCareerSlug = selectedCareerSlug || profileCareerSlug;
-  return {
-    selectedCareerSlug,
-    profileCareerSlug,
-    resolvedCareerSlug,
-    activeCareerSlug: resolvedCareerSlug
+function getCareerSlug(){
+  const base =
+    CTX?.careerSlug ||
+    CTX?.aulaState?.careerSlug ||
+    CTX?.getCurrentCareer?.() ||
+    document.getElementById("inpCareer")?.value ||
+    CTX?.getUserProfile?.()?.careerSlug ||
+    "";
+  return CTX.normalizeStr(base);
+}
+
+function normalizeSectionItems(rawSection, idSeed = ""){
+  const sectionId = String(rawSection?.sectionId || rawSection?.id || rawSection?.commission || idSeed || makeId()).trim();
+  const subjectName = String(rawSection?.subjectName || rawSection?.subject || rawSection?.materia || rawSection?.name || rawSection?.subjectSlug || "").trim();
+  const subjectSlug = slugify(rawSection?.subjectSlug || rawSection?.subjectId || rawSection?.code || subjectName);
+  const label = String(rawSection?.label || rawSection?.commission || rawSection?.comision || rawSection?.name || sectionId).trim();
+  const room = String(rawSection?.room || rawSection?.aula || "").trim();
+  const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
+  const daysRaw = Array.isArray(rawSection?.days)
+    ? rawSection.days
+    : Array.isArray(rawSection?.horarios)
+      ? rawSection.horarios
+      : (rawSection?.day || rawSection?.dia || rawSection?.start || rawSection?.inicio)
+        ? [rawSection]
+        : [];
+
+  return daysRaw
+    .map((slot, index) => {
+      const dayName = slot?.day || slot?.dia || slot?.weekday || "";
+      const dayKey = dayNameToKey(dayName) || dayNameToKey({ 1: "lunes", 2: "martes", 3: "miercoles", 4: "jueves", 5: "viernes", 6: "sabado" }[Number(dayName)] || "");
+      const start = String(slot?.start || slot?.inicio || "").trim();
+      const end = String(slot?.end || slot?.fin || "").trim();
+      if (!dayKey || !start || !end) return null;
+      return {
+        id: `${sectionId}_${index}`,
+        subjectName,
+        subjectSlug,
+        sectionId,
+        label,
+        day: dayKey,
+        start,
+        end,
+        location,
+        room
+      };
+    })
+    .filter(Boolean);
+}
+
+function convertPlannerSectionsToCourseSections(sections){
+  const grouped = new Map();
+  (sections || []).forEach((item) => {
+    const key = item.sectionId || item.id;
+    if (!grouped.has(key)){
+      grouped.set(key, {
+        id: key,
+        code: item.subjectSlug,
+        subjectSlug: item.subjectSlug,
+        subject: item.subjectName,
+        commission: item.label,
+        room: item.room,
+        campus: item.location,
+        days: []
+      });
+    }
+    grouped.get(key).days.push({ day: item.day, start: item.start, end: item.end });
+  });
+  return [...grouped.values()];
+}
+
+async function loadPlannerSections(){
+  const careerSlug = getCareerSlug();
+  console.debug("[planificador] careerSlug:", careerSlug);
+  if (!careerSlug){
+    CTX.aulaState.plannerSections = [];
+    CTX.aulaState.courseSections = [];
+    plannerSectionsUiState = "ready";
+    console.debug("[planificador] sections loaded:", 0, { source: "missing-careerSlug" });
+    return [];
+  }
+
+  const normalizeDocs = (snap) => {
+    const list = [];
+    snap.forEach((docSnap) => {
+      list.push(...normalizeSectionItems(docSnap.data(), docSnap.id));
+    });
+    return list;
   };
+
+  let source = "courseSections";
+  let normalizedSections = [];
+
+  try {
+    const byCareerSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("careerSlug", "==", careerSlug)));
+    normalizedSections = normalizeDocs(byCareerSnap);
+    if (!normalizedSections.length){
+      const byDegreeSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("degreeSlug", "==", careerSlug)));
+      normalizedSections = normalizeDocs(byDegreeSnap);
+    }
+    if (!normalizedSections.length){
+      const sample = await getDocs(query(collection(CTX.db, "courseSections"), limit(80)));
+      normalizedSections = normalizeDocs({
+        forEach(callback){
+          sample.forEach((docSnap) => {
+            const data = docSnap.data() || {};
+            const candidate = slugify(data.careerSlug || data.degreeSlug || data.planSlug || data.career || data.degree || "");
+            if (candidate === careerSlug) callback(docSnap);
+          });
+        }
+      });
+    }
+
+    if (!normalizedSections.length){
+      source = "comisiones";
+      const byCareer = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", careerSlug)));
+      normalizedSections = normalizeDocs(byCareer);
+
+      if (!normalizedSections.length){
+        const byArray = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", careerSlug)));
+        normalizedSections = normalizeDocs(byArray);
+      }
+
+      if (!normalizedSections.length){
+        const comisionDoc = await getDoc(doc(CTX.db, "comisiones", careerSlug));
+        if (comisionDoc.exists()){
+          const payload = comisionDoc.data() || {};
+          const nested = Array.isArray(payload.sections)
+            ? payload.sections
+            : Array.isArray(payload.items)
+              ? payload.items
+              : [];
+          normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
+          source = "comisiones-doc";
+        }
+      }
+    }
+  } catch (e) {
+    if (String(e?.code || "").includes("permission-denied")){
+      console.warn("[planificador] firestore error", e);
+    } else {
+      console.warn("[planificador] firestore error", e);
+    }
+    CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
+    normalizedSections = [];
+  }
+
+  CTX.aulaState.plannerSections = normalizedSections;
+  CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
+  console.debug("[planificador] sections loaded:", normalizedSections.length, { source });
+  return normalizedSections;
 }
 
 async function refreshPlannerSections(options = {}){
-  hydratePlannerColorStateFromRemote();
-  const slugDiagnostic = diagnoseCareerSlug();
-  console.log("careerSlug diagnóstico", slugDiagnostic);
-  const slug = slugDiagnostic.resolvedCareerSlug;
-  if (!slug || typeof slug !== "string"){
-    console.warn("Slug inválido:", slug);
-    CTX.aulaState.courseSections = [];
-    renderSectionsList();
-    renderSelectedSectionsList();
-    renderPlannerPreview();
-    return;
-  }
-  await loadCourseSections(slug, options);
-}
-
-async function loadCourseSections(slug, options = {}){
   void options;
-  console.log("🚀 loadCourseSections ejecutándose");
-  console.log("Slug recibido en loadCourseSections:", slug);
-  if (!slug || typeof slug !== "string"){
-    console.error("Slug indefinido en loadCourseSections");
-    return;
-  }
-  const dayMap = {
-    1: "Lunes",
-    2: "Martes",
-    3: "Miércoles",
-    4: "Jueves",
-    5: "Viernes"
-  };
-  const formatSlugLabel = (value) => {
-    const normalized = String(value || "").trim();
-    if (!normalized) return "";
-    return normalized
-      .split("-")
-      .filter(Boolean)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-  const formatDegreeLabel = (value) => {
-    const base = formatSlugLabel(value);
-    return base
-      .replace(/Ingenieria/g, "Ingeniería")
-      .replace(/Quimica/g, "Química");
-  };
-  CTX.aulaState.courseSections = [];
-  try{
-    console.log("🔥 Proyecto Firebase:", CTX.db.app.options.projectId);
-    const activeCareerSlug = CTX.normalizeStr(slug);
-    if (!activeCareerSlug){
-      console.warn("⚠️ No hay careerSlug activo para cargar comisiones.");
-      return;
-    }
-    console.log("🧭 Consultando colección Firestore: comisiones (filtrada por carrera)");
-    const comisionesQuery = query(
-      collection(CTX.db, "comisiones"),
-      where("careerSlugs", "array-contains", activeCareerSlug)
-    );
-    const snap = await getDocs(comisionesQuery);
-    console.log("📦 Snapshot recibido:", snap);
-    console.log("📊 Cantidad de documentos:", snap.size);
-    snap.forEach(d => {
-      console.log("📄 Documento encontrado:", d.id, d.data());
-      const data = d.data() || {};
-      const hasValidStructure =
-        typeof data.subjectSlug === "string" &&
-        Array.isArray(data.horarios) &&
-        data.horarios.every((slot) => slot && (slot.dia != null) && slot.inicio && slot.fin);
-      console.log("🧪 Estructura válida:", hasValidStructure, { id: d.id, subjectSlug: data.subjectSlug, horarios: data.horarios });
-      const subjectSlug = CTX.normalizeStr(data.subjectSlug || "");
-      const careerSlugs = Array.isArray(data.careerSlugs)
-        ? data.careerSlugs.map((slug) => CTX.normalizeStr(slug || "")).filter(Boolean)
-        : [];
-      const degreeSlug = careerSlugs[0] || "";
-      CTX.aulaState.courseSections.push({
-        id: d.id,
-        code: subjectSlug,
-        subject: formatSlugLabel(subjectSlug),
-        commission: d.id || "",
-        degreeSlug,
-        degree: formatDegreeLabel(degreeSlug),
-        room: "",
-        campus: String(data.sede || ""),
-        headEmail: "",
-        titular: "",
-        docentes: [],
-        days: Array.isArray(data.horarios)
-          ? data.horarios.map((slot) => ({
-              day: dayMap[Number(slot?.dia)] || "",
-              start: slot?.inicio || "",
-              end: slot?.fin || ""
-            })).filter((slot) => slot.day && slot.start && slot.end)
-          : []
-      });
-    });
-  }catch(e){
-    console.error("❌ Error Firestore:", e);
-    CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
-  }
+  hydratePlannerColorStateFromRemote();
+  plannerSectionsUiState = "loading";
+  renderSectionsList();
+  await loadPlannerSections();
+  plannerSectionsUiState = "ready";
+  renderSectionsList();
+  renderSelectedSectionsList();
+  renderPlannerPreview();
 }
 
 function renderPresetsList(){
@@ -573,22 +641,40 @@ function filterPlannerItems(query){
 }
 
 function renderSectionsList(){
-  console.log("🧩 renderSectionsList ejecutándose", {
-    totalComisiones: CTX?.aulaState?.courseSections?.length || 0
-  });
   const list = document.getElementById("sectionsList");
   if (!list) return;
-  const selectedSubjectSlug = document.getElementById("sectionsSubjectFilter")?.value || "";
+  const selectedSubjectValue = document.getElementById("sectionsSubjectFilter")?.value || "";
   list.innerHTML = "";
 
+  if (plannerSectionsUiState === "loading"){
+    list.innerHTML = '<div class="small-muted">Cargando comisiones…</div>';
+    return;
+  }
+
   const allSections = CTX.aulaState.courseSections.slice();
-  const availableSubjectSlugs = updateSectionsSubjectFilter();
+  updateSectionsSubjectFilter();
+  const selectedSlug = slugify(selectedSubjectValue);
+  const selectedName = norm(selectedSubjectValue);
 
   let filtered = allSections.slice();
-  if (selectedSubjectSlug && availableSubjectSlugs.has(selectedSubjectSlug)) filtered = filtered.filter(sec => getSectionSubjectSlug(sec) === selectedSubjectSlug);
+  if (selectedSubjectValue){
+    filtered = filtered.filter((section) => {
+      const sectionSubjectName = getSubjectNameFromSection(section);
+      const sectionSubjectSlug = slugify(section.subjectSlug || getSectionSubjectSlug(section) || sectionSubjectName);
+      return sectionSubjectSlug === selectedSlug
+        || norm(sectionSubjectName) === selectedName;
+    });
+  }
 
   if (!allSections.length){
-    list.innerHTML = '<div class="small-muted">No hay comisiones cargadas.</div>';
+    const careerSlug = getCareerSlug() || "(sin carrera)";
+    list.innerHTML = `<div class="small-muted">No hay comisiones cargadas para ${escapeHtml(careerSlug)}.</div>`;
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "btn-outline btn-small";
+    retry.textContent = "Reintentar";
+    retry.addEventListener("click", () => refreshPlannerSections().catch(() => {}));
+    list.appendChild(retry);
     return;
   }
 
@@ -1118,6 +1204,19 @@ function closeSubjectsModal(){
   togglePlannerStyleModal("subjectsModalBg", false);
 }
 
+function bindPlannerGlobalListeners(){
+  if (didBindPlannerGlobalListeners) return;
+  didBindPlannerGlobalListeners = true;
+
+  window.addEventListener(PLAN_CHANGED_EVENT, () => {
+    refreshPlannerSections().catch(() => {});
+  });
+
+  window.addEventListener("careerChanged", () => {
+    refreshPlannerSections().catch(() => {});
+  });
+}
+
 function initPlanificadorUI(){
   normalizePlansState();
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
@@ -1128,6 +1227,7 @@ function initPlanificadorUI(){
     plannerSearchQuery = e.target.value.toLowerCase();
     filterPlannerItems(plannerSearchQuery);
   });
+  bindPlannerGlobalListeners();
   document.getElementById("btnOpenPlannerModal")?.addEventListener("click", openPlannerModal);
   document.getElementById("btnGoMateriasFromAgenda")?.addEventListener("click", () => CTX.showTab?.("materias"));
   document.getElementById("btnPlanificadorAgenda")?.addEventListener("click", openPlannerModal);
@@ -1199,7 +1299,8 @@ const Planner = {
     initPresetToAgendaModalUI();
   },
   refreshPlannerSections,
-  loadCourseSections,
+  loadPlannerSections,
+  loadCourseSections: loadPlannerSections,
   initPlanificadorUI,
   renderPlannerAll,
   renderSectionsList,
