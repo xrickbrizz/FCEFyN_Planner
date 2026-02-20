@@ -121,7 +121,7 @@
   color:var(--text-subtle);
 }
 
-@media(max-width:720px){
+@media(max-width:650px){
   .ingreso-footer{
     flex-direction:column;
     align-items:flex-start;
