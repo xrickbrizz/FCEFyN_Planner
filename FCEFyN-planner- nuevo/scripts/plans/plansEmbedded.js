@@ -575,8 +575,6 @@ export async function mountPlansEmbedded({
   }
 
   async function resetAll(resetBtn) {
-    const confirmed = window.confirm("Esto borrará todos tus estados de materias. ¿Continuar?");
-    if (!confirmed) return;
 
     if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = true;
     const previous = getEstadoSimpleMap();
