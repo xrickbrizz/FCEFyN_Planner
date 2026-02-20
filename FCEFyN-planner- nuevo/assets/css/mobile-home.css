@@ -112,7 +112,8 @@
     min-height: 8.25rem;
     align-items: flex-start;
     overflow: hidden;
-    width: 30rem;
+    width: 30rem; 
+    /* s*/
   }
 
   .home-card-body {
