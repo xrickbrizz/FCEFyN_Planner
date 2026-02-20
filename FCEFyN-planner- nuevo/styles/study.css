@@ -5295,18 +5295,16 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 
   }
   .home-cards,.home-left,.page-layout,.home-card[data-coming-soon="false"],.home-card[data-coming-soon="true"] {
-    width: 20em;
+    width: 27rem;
     background-color: red;
   }
   #tab-inicio{
-    width: 23rem;
+    width: 29rem;
         background-color: red;
 
   }
   .page-layout{
     margin : 0px ;
-        background-color: red;
-
   }
   
 }

@@ -19,7 +19,6 @@
 
   body .main-shell > .tab-card,
   body .tab-card {
-    width: 100% !important;
     max-width: var(--m-card-maxw) !important;
     margin: 0 auto !important;
     padding: var(--m-card-pad) !important;
