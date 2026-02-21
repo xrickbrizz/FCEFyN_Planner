@@ -9,13 +9,22 @@ const MAX_COMMENT_LENGTH = 500;
 
 // ✅ CORS: permití tus orígenes de dev (agregá prod cuando tengas dominio)
 const ALLOWED_ORIGINS = [
+  // Dev local
   "http://127.0.0.1:5501",
   "http://localhost:5501",
-  // Si usás otros puertos en dev, agregalos acá:
-  // "http://127.0.0.1:5173",
-  // "http://localhost:5173",
-  // En producción:
-  // "https://tudominio.com"
+  "http://127.0.0.1:5500",
+  "http://localhost:5500",
+
+  // Si a veces probás con Vite
+  "http://127.0.0.1:5173",
+  "http://localhost:5173",
+
+  // GitHub Pages (si seguís probando ahí)
+  "https://xrickbrizz.github.io",
+
+  // Firebase Hosting (REEMPLAZAR por tu proyecto real)
+  "https://TU-PROYECTO.web.app",
+  "https://TU-PROYECTO.firebaseapp.com",
 ];
 
 // ✅ Config única para todas las callables
@@ -375,4 +384,134 @@ exports.updateCurrentSubjectsCallable = onCall(CALLABLE_OPTS, async (request) =>
     { merge: true }
   );
   return { ok: true, currentSubjects };
+});
+
+function getPairFromData(data) {
+  if (Array.isArray(data?.uids) && data.uids.length === 2) return data.uids;
+  if (Array.isArray(data?.users) && data.users.length === 2) return data.users;
+  return null;
+}
+
+async function deleteSubcollectionInChunks(colRef, chunkSize = 200) {
+  while (true) {
+    const snap = await colRef.limit(chunkSize).get();
+    if (snap.empty) break;
+
+    const batch = db.batch();
+    snap.docs.forEach((d) => batch.delete(d.ref));
+    await batch.commit();
+
+    if (snap.size < chunkSize) break;
+  }
+}
+
+async function deleteChatWithMessages(chatId) {
+  const chatRef = db.collection("chats").doc(chatId);
+
+  // 1) borrar subcolección messages
+  await deleteSubcollectionInChunks(chatRef.collection("messages"));
+
+  // 2) borrar chat
+  await chatRef.delete().catch(() => {});
+}
+
+exports.removeFriendshipCallable = onCall(CALLABLE_OPTS, async (request) => {
+  try {
+    const callerUid = request.auth?.uid;
+    if (!callerUid) {
+      throw new HttpsError("unauthenticated", "Debes iniciar sesión.");
+    }
+
+    const data = request.data || {};
+    const friendshipId = String(data.friendshipId || "").trim();
+    const friendUid = String(data.friendUid || "").trim();
+    const chatId = String(data.chatId || "").trim();
+    const deleteChat = data.deleteChat !== false; // por defecto true
+
+    if (!friendshipId) {
+      throw new HttpsError("invalid-argument", "friendshipId es obligatorio.");
+    }
+    if (!friendUid) {
+      throw new HttpsError("invalid-argument", "friendUid es obligatorio.");
+    }
+
+    const friendshipRef = db.collection("friends").doc(friendshipId);
+    const friendshipSnap = await friendshipRef.get();
+
+    if (!friendshipSnap.exists) {
+      throw new HttpsError("not-found", "La amistad no existe.");
+    }
+
+    const friendshipData = friendshipSnap.data() || {};
+    const pair = getPairFromData(friendshipData);
+
+    if (!pair || pair.length !== 2) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Documento de amistad inválido (falta uids/users)."
+      );
+    }
+
+    if (!pair.includes(callerUid)) {
+      throw new HttpsError("permission-denied", "No perteneces a esta amistad.");
+    }
+
+    const otherUid = pair.find((u) => u !== callerUid);
+    if (!otherUid) {
+      throw new HttpsError("failed-precondition", "No se pudo resolver el otro usuario.");
+    }
+
+    if (friendUid !== otherUid) {
+      throw new HttpsError("invalid-argument", "friendUid no coincide con la amistad.");
+    }
+
+    // Batch para docs simples
+    const batch = db.batch();
+
+    // A) Doc principal de amistad
+    batch.delete(friendshipRef);
+
+    // B) Índices espejo (si existen)
+    batch.delete(db.doc(`friends/${callerUid}/items/${otherUid}`));
+    batch.delete(db.doc(`friends/${otherUid}/items/${callerUid}`));
+
+    await batch.commit();
+
+    // C) Borrar chat + mensajes (si corresponde)
+    let chatDeleted = false;
+    if (deleteChat && chatId) {
+      const chatRef = db.collection("chats").doc(chatId);
+      const chatSnap = await chatRef.get();
+
+      if (chatSnap.exists) {
+        const chatData = chatSnap.data() || {};
+        const chatPair = getPairFromData(chatData);
+
+        // Validar que ese chat pertenece a los mismos 2 usuarios
+        const validChatPair =
+          chatPair &&
+          chatPair.length === 2 &&
+          chatPair.includes(callerUid) &&
+          chatPair.includes(otherUid);
+
+        if (validChatPair) {
+          await deleteChatWithMessages(chatId);
+          chatDeleted = true;
+        }
+      }
+    }
+
+    return {
+      ok: true,
+      friendshipId,
+      friendUid: otherUid,
+      chatDeleted,
+    };
+  } catch (err) {
+    console.error("removeFriendshipCallable error", err);
+    if (err instanceof HttpsError) throw err;
+    throw new HttpsError("internal", "No se pudo eliminar la amistad.", {
+      message: err?.message || String(err),
+    });
+  }
 });

@@ -1,5 +1,15 @@
 {
   "subjects": {
+    "agrimensura-legal-1": {
+      "name": "Agrimensura Legal 1",
+      "slug": "agrimensura-legal-1",
+      "createdAt": null
+    },
+    "agrimensura-y-geometria-territorial": {
+      "name": "Agrimensura y Geometría Territorial",
+      "slug": "agrimensura-y-geometria-territorial",
+      "createdAt": null
+    },
     "algebra-lineal": {
       "name": "Álgebra Lineal",
       "slug": "algebra-lineal",
@@ -20,9 +30,9 @@
       "slug": "analisis-matematico-3",
       "createdAt": null
     },
-    "anatomia-para-ingenieros": {
-      "name": "Anatomía para Ingenieros",
-      "slug": "anatomia-para-ingenieros",
+    "anatomia-para-ingeniero": {
+      "name": "Anatomia para Ingeniero",
+      "slug": "anatomia-para-ingeniero",
       "createdAt": null
     },
     "biologia-y-ambiente": {
@@ -70,14 +80,24 @@
       "slug": "electrotecnia-y-electricidad",
       "createdAt": null
     },
-    "estatica-estatica-y-resistencia-de-los-materiales-estructuras-isostaticas": {
-      "name": "Estática / Estática y Resistencia de los Materiales / Estructuras Isostáticas",
-      "slug": "estatica-estatica-y-resistencia-de-los-materiales-estructuras-isostaticas",
+    "estatica": {
+      "name": "Estática",
+      "slug": "estatica",
+      "createdAt": null
+    },
+    "estatica-y-resistencia-de-los-materiales": {
+      "name": "Estática y Resistencia de los Materiales",
+      "slug": "estatica-y-resistencia-de-los-materiales",
       "createdAt": null
     },
     "estructuras-discretas": {
       "name": "Estructuras Discretas",
       "slug": "estructuras-discretas",
+      "createdAt": null
+    },
+    "estructuras-isostaticas": {
+      "name": "Estructuras Isostaticas",
+      "slug": "estructuras-isostaticas",
       "createdAt": null
     },
     "fisica-1": {
@@ -100,6 +120,11 @@
       "slug": "fundamentos-de-programacion",
       "createdAt": null
     },
+    "informacion-rural-y-agrologica": {
+      "name": "Informacion Rural y Agrologica",
+      "slug": "informacion-rural-y-agrologica",
+      "createdAt": null
+    },
     "informatica-avanzada": {
       "name": "Informática Avanzada",
       "slug": "informatica-avanzada",
@@ -115,9 +140,9 @@
       "slug": "introduccion-a-la-ingenieria",
       "createdAt": null
     },
-    "materiales-tecnologia-de-los-materiales": {
-      "name": "Materiales / Tecnología de los Materiales",
-      "slug": "materiales-tecnologia-de-los-materiales",
+    "materiales": {
+      "name": "Materiales",
+      "slug": "materiales",
       "createdAt": null
     },
     "mecanica-de-las-estructuras": {
@@ -170,9 +195,29 @@
       "slug": "programacion-avanzada",
       "createdAt": null
     },
-    "quimica-general-fisica-inorganica-organica-y-biologica": {
-      "name": "Química (General, Física, Inorgánica, Orgánica y Biológica)",
-      "slug": "quimica-general-fisica-inorganica-organica-y-biologica",
+    "quimica": {
+      "name": "Química",
+      "slug": "quimica",
+      "createdAt": null
+    },
+    "quimica-fisica": {
+      "name": "Química Física",
+      "slug": "quimica-fisica",
+      "createdAt": null
+    },
+    "quimica-general": {
+      "name": "Química General",
+      "slug": "quimica-general",
+      "createdAt": null
+    },
+    "quimica-inorganica": {
+      "name": "Química Inorgánica",
+      "slug": "quimica-inorganica",
+      "createdAt": null
+    },
+    "quimica-organica-y-biologica": {
+      "name": "Química Orgánica y Biológica",
+      "slug": "quimica-organica-y-biologica",
       "createdAt": null
     },
     "senales-y-sistemas": {
@@ -184,37 +229,86 @@
       "name": "Sistemas de Representación",
       "slug": "sistemas-de-representacion",
       "createdAt": null
+    },
+    "taller-y-laboratorio": {
+      "name": "Taller y Laboratorio",
+      "slug": "taller-y-laboratorio",
+      "createdAt": null
+    },
+    "tecnologia-de-los-materiales": {
+      "name": "Tecnología de los Materiales",
+      "slug": "tecnologia-de-los-materiales",
+      "createdAt": null
+    },
+    "tecnologia-electronica": {
+      "name": "Tecnología Electrónica",
+      "slug": "tecnologia-electronica",
+      "createdAt": null
+    },
+    "teoria-de-circuitos": {
+      "name": "Teoría de Circuitos",
+      "slug": "teoria-de-circuitos",
+      "createdAt": null
+    },
+    "termodinamica": {
+      "name": "Termodinamica",
+      "slug": "termodinamica",
+      "createdAt": null
+    },
+    "termodinamica-quimica": {
+      "name": "Termodinamica Química",
+      "slug": "termodinamica-quimica",
+      "createdAt": null
+    },
+    "topografia-1-y-teoria-de-errores": {
+      "name": "Topografía 1 y Teoría de Errores",
+      "slug": "topografia-1-y-teoria-de-errores",
+      "createdAt": null
+    },
+    "topografia-basica": {
+      "name": "Topografía Basica",
+      "slug": "topografia-basica",
+      "createdAt": null
     }
   },
   "professors": {
-    "acosta-paula": {
-      "name": "Acosta Paula",
-      "slug": "acosta-paula",
+    "abud-daniel-juan": {
+      "name": "Abud Daniel Juan",
+      "slug": "abud-daniel-juan",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "biomateriales"
+        "economia"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "aguirre-maria-florencia": {
-      "name": "Aguirre María Florencia",
-      "slug": "aguirre-maria-florencia",
+    "adami-agustin": {
+      "name": "Adami Agustin",
+      "slug": "adami-agustin",
       "subjects": [
-        "biologia-y-ambiente",
-        "microbiologia-ambiental"
+        "mecanica-de-suelos-y-rocas",
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "ahumada-maria-alejandra": {
-      "name": "Ahumada María Alejandra",
-      "slug": "ahumada-maria-alejandra",
+    "agazzi-lucas-oscar": {
+      "name": "Agazzi Lucas Oscar",
+      "slug": "agazzi-lucas-oscar",
       "subjects": [
-        "economia",
-        "organizaciones-e-industrias"
+        "fundamentos-de-los-procesos-quimicos",
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "ahumada-raul-emilio": {
+      "name": "Ahumada Raul Emilio",
+      "slug": "ahumada-raul-emilio",
+      "subjects": [
+        "economia"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -224,7 +318,7 @@
       "name": "Aimar Mario Leandro",
       "slug": "aimar-mario-leandro",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -241,22 +335,11 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "albornoz-juan-pablo": {
-      "name": "Albornoz Juan Pablo",
-      "slug": "albornoz-juan-pablo",
+    "almiron-walter-ricardo": {
+      "name": "Almiron Walter Ricardo",
+      "slug": "almiron-walter-ricardo",
       "subjects": [
-        "economia",
-        "organizaciones-e-industrias"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "angaramo-ignacio": {
-      "name": "Angaramo Ignacio",
-      "slug": "angaramo-ignacio",
-      "subjects": [
-        "estatica-estatica-y-resistencia-de-los-materiales-estructuras-isostaticas"
+        "biologia-y-ambiente"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -272,11 +355,41 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "arguello-luna-diego-ivan": {
+      "name": "Arguello Luna Diego Ivan",
+      "slug": "arguello-luna-diego-ivan",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "arranz-pablo": {
+      "name": "Arranz Pablo",
+      "slug": "arranz-pablo",
+      "subjects": [
+        "economia"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "astini-maria-del-rosario": {
+      "name": "Astini Maria Del Rosario",
+      "slug": "astini-maria-del-rosario",
+      "subjects": [
+        "organizaciones-e-industrias"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "avendano-mara-constanza": {
       "name": "Avendaño Mara Constanza",
       "slug": "avendano-mara-constanza",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -286,30 +399,58 @@
       "name": "Baca Carlos Alberto",
       "slug": "baca-carlos-alberto",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-2",
         "fisica-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "baez-raquel": {
-      "name": "Baez Raquel",
-      "slug": "baez-raquel",
+    "bacile-osvaldo-luis-antonio": {
+      "name": "Bacile Osvaldo Luis Antonio",
+      "slug": "bacile-osvaldo-luis-antonio",
       "subjects": [
-        "sistemas-de-representacion"
+        "topografia-basica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "barotto-jesica": {
-      "name": "Barotto Jesica",
-      "slug": "barotto-jesica",
+    "barbero-alexis-damian": {
+      "name": "Barbero Alexis Damian",
+      "slug": "barbero-alexis-damian",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "biomateriales"
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "barbero-medina-gonzalo-pedro": {
+      "name": "Barbero Medina Gonzalo Pedro",
+      "slug": "barbero-medina-gonzalo-pedro",
+      "subjects": [
+        "fundamentos-de-los-procesos-quimicos",
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "barcena-carlos-osvaldo": {
+      "name": "Barcena Carlos Osvaldo",
+      "slug": "barcena-carlos-osvaldo",
+      "subjects": [
+        "electrotecnia-y-electricidad"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "baronetti-jose-luis": {
+      "name": "Baronetti José Luis",
+      "slug": "baronetti-jose-luis",
+      "subjects": [
+        "microbiologia-ambiental"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -319,11 +460,28 @@
       "name": "Barrera Vázquez María Fernanda",
       "slug": "barrera-vazquez-maria-fernanda",
       "subjects": [
-        "biologia-y-ambiente",
-        "economia",
-        "materiales-tecnologia-de-los-materiales",
-        "quimica-general-fisica-inorganica-organica-y-biologica",
-        "sistemas-de-representacion"
+        "quimica",
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "basso-ana-valentina": {
+      "name": "Basso Ana Valentina",
+      "slug": "basso-ana-valentina",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "beltramo-emmanuel": {
+      "name": "Beltramo Emmanuel",
+      "slug": "beltramo-emmanuel",
+      "subjects": [
+        "mecanica-de-las-estructuras"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -333,27 +491,19 @@
       "name": "Berardo Silvia Marina",
       "slug": "berardo-silvia-marina",
       "subjects": [
-        "analisis-matematico-1"
+        "analisis-matematico-1",
+        "estatica-y-resistencia-de-los-materiales",
+        "fisica-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "bernal-hugo-oscar": {
-      "name": "Bernal Hugo Oscar",
-      "slug": "bernal-hugo-oscar",
+    "bertolino-luis-a": {
+      "name": "Bertolino Luis A",
+      "slug": "bertolino-luis-a",
       "subjects": [
-        "mecanica-de-las-estructuras"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "bersetche-rios-dario-javier": {
-      "name": "Bersetche Ríos Darío Javier",
-      "slug": "bersetche-rios-dario-javier",
-      "subjects": [
-        "sistemas-de-representacion"
+        "termodinamica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -363,7 +513,18 @@
       "name": "Bia Gonzalo Luis",
       "slug": "bia-gonzalo-luis",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica",
+        "quimica-organica-y-biologica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "bianchotti-paola-andrea": {
+      "name": "Bianchotti Paola Andrea",
+      "slug": "bianchotti-paola-andrea",
+      "subjects": [
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -379,11 +540,11 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "boccardo-carlos": {
-      "name": "Boccardo Carlos",
-      "slug": "boccardo-carlos",
+    "boiola-jorge-eduardo": {
+      "name": "Boiola Jorge Eduardo",
+      "slug": "boiola-jorge-eduardo",
       "subjects": [
-        "electrotecnia-y-electricidad"
+        "economia"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -393,11 +554,7 @@
       "name": "Bordon Daniela Laura",
       "slug": "bordon-daniela-laura",
       "subjects": [
-        "biologia-y-ambiente",
-        "economia",
-        "materiales-tecnologia-de-los-materiales",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -407,7 +564,6 @@
       "name": "Borgnino Leandro Ezequiel",
       "slug": "borgnino-leandro-ezequiel",
       "subjects": [
-        "probabilidad-y-estadistica",
         "senales-y-sistemas"
       ],
       "ratingAvg": 0,
@@ -418,7 +574,7 @@
       "name": "Borneo Benista Rafael",
       "slug": "borneo-benista-rafael",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -428,8 +584,28 @@
       "name": "Bovina Walter Julio",
       "slug": "bovina-walter-julio",
       "subjects": [
-        "algebra-lineal",
         "fisica-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "bracamonte-juan-pablo": {
+      "name": "Bracamonte Juan Pablo",
+      "slug": "bracamonte-juan-pablo",
+      "subjects": [
+        "economia"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "briguera-daniel-enrique": {
+      "name": "Briguera Daniel Enrique",
+      "slug": "briguera-daniel-enrique",
+      "subjects": [
+        "agrimensura-legal-1",
+        "topografia-1-y-teoria-de-errores"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -439,18 +615,7 @@
       "name": "Bruni Cecilia Alejandra",
       "slug": "bruni-cecilia-alejandra",
       "subjects": [
-        "introduccion-a-la-ingenieria",
-        "probabilidad-y-estadistica"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "cabrera-cecilia": {
-      "name": "Cabrera Cecilia",
-      "slug": "cabrera-cecilia",
-      "subjects": [
-        "economia"
+        "introduccion-a-la-ingenieria"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -460,19 +625,48 @@
       "name": "Cabrera Enrique Ángel",
       "slug": "cabrera-enrique-angel",
       "subjects": [
-        "analisis-matematico-2",
-        "probabilidad-y-estadistica"
+        "algebra-lineal",
+        "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "cacciavillani-eva": {
-      "name": "Cacciavillani Eva",
-      "slug": "cacciavillani-eva",
+    "caffaro-geronimo": {
+      "name": "Caffaro Geronimo",
+      "slug": "caffaro-geronimo",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "economia"
+        "estatica-y-resistencia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "campasso-diego-esteban": {
+      "name": "Campasso Diego Esteban",
+      "slug": "campasso-diego-esteban",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "campos-dario": {
+      "name": "Campos Dario",
+      "slug": "campos-dario",
+      "subjects": [
+        "tecnologia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "canigia-ignacio": {
+      "name": "Canigia Ignacio",
+      "slug": "canigia-ignacio",
+      "subjects": [
+        "mecanica-de-las-estructuras"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -498,12 +692,41 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "carrara-ivana": {
+      "name": "Carrara Ivana",
+      "slug": "carrara-ivana",
+      "subjects": [
+        "topografia-basica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "carraro-paola-maria": {
+      "name": "Carraro Paola Maria",
+      "slug": "carraro-paola-maria",
+      "subjects": [
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "carrera-paul-alexis": {
       "name": "Carrera Paul Alexis",
       "slug": "carrera-paul-alexis",
       "subjects": [
-        "fisica-1",
-        "mecanica-de-los-fluidos"
+        "modulo-de-ingles"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "carreras-hebe-alejandra": {
+      "name": "Carreras Hebe Alejandra",
+      "slug": "carreras-hebe-alejandra",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -513,8 +736,7 @@
       "name": "Carubelli Marianela",
       "slug": "carubelli-marianela",
       "subjects": [
-        "fisica-1",
-        "modulo-de-ingles"
+        "fisica-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -524,7 +746,16 @@
       "name": "Casanova Guillermo Andrés",
       "slug": "casanova-guillermo-andres",
       "subjects": [
-        "fisica-2",
+        "fisica-2"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "castello-edgar-manuel": {
+      "name": "Castello Edgar Manuel",
+      "slug": "castello-edgar-manuel",
+      "subjects": [
         "mecanica-de-los-fluidos"
       ],
       "ratingAvg": 0,
@@ -541,23 +772,10 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "castro-pablo": {
-      "name": "Castro Pablo",
-      "slug": "castro-pablo",
-      "subjects": [
-        "economia",
-        "organizaciones-e-industrias"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
     "catan-julio-c": {
       "name": "Catan Julio C",
       "slug": "catan-julio-c",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-2",
         "fisica-1"
       ],
       "ratingAvg": 0,
@@ -578,7 +796,7 @@
       "name": "Chesini Ezequiel",
       "slug": "chesini-ezequiel",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "taller-y-laboratorio"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -594,21 +812,113 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "comin-romina": {
-      "name": "Comin Romina",
-      "slug": "comin-romina",
+    "cid-mariana-paula": {
+      "name": "Cid Mariana Paula",
+      "slug": "cid-mariana-paula",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica-organica-y-biologica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "coronel-bruno-ezequiel": {
-      "name": "Coronel Bruno Ezequiel",
-      "slug": "coronel-bruno-ezequiel",
+    "cocco-leonardo-jose": {
+      "name": "Cocco Leonardo Jose",
+      "slug": "cocco-leonardo-jose",
       "subjects": [
-        "mecanica-racional"
+        "estatica",
+        "mecanica-de-las-estructuras"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "coggiola-hugo-enrique": {
+      "name": "Coggiola Hugo Enrique",
+      "slug": "coggiola-hugo-enrique",
+      "subjects": [
+        "topografia-basica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "colasanto-carina-maria": {
+      "name": "Colasanto Carina Maria",
+      "slug": "colasanto-carina-maria",
+      "subjects": [
+        "fundamentos-de-los-procesos-quimicos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "comin-romina": {
+      "name": "Comin Romina",
+      "slug": "comin-romina",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "connor-eduardo-javier": {
+      "name": "Connor Eduardo Javier",
+      "slug": "connor-eduardo-javier",
+      "subjects": [
+        "agrimensura-y-geometria-territorial",
+        "topografia-basica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cordes-diego-dario": {
+      "name": "Cordes Diego Dario",
+      "slug": "cordes-diego-dario",
+      "subjects": [
+        "informacion-rural-y-agrologica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cordes-guillermo-gabriel": {
+      "name": "Cordes Guillermo Gabriel",
+      "slug": "cordes-guillermo-gabriel",
+      "subjects": [
+        "informacion-rural-y-agrologica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cordova-alfredo-daniel": {
+      "name": "Cordova Alfredo Daniel",
+      "slug": "cordova-alfredo-daniel",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "corral-mariano-andres": {
+      "name": "Corral Mariano Andres",
+      "slug": "corral-mariano-andres",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cortese-ignacio": {
+      "name": "Cortese Ignacio",
+      "slug": "cortese-ignacio",
+      "subjects": [
+        "biomateriales"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -624,13 +934,73 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "costero-jorge-dario": {
+      "name": "Costero Jorge Dario",
+      "slug": "costero-jorge-dario",
+      "subjects": [
+        "electrotecnia-y-electricidad"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cragnolini-andrea-beatriz": {
+      "name": "Cragnolini Andrea Beatriz",
+      "slug": "cragnolini-andrea-beatriz",
+      "subjects": [
+        "quimica-organica-y-biologica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "craparotta-salvador": {
+      "name": "Craparotta Salvador",
+      "slug": "craparotta-salvador",
+      "subjects": [
+        "analisis-matematico-3"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "crespi-lucas-emanuel": {
+      "name": "Crespi Lucas Emanuel",
+      "slug": "crespi-lucas-emanuel",
+      "subjects": [
+        "estatica-y-resistencia-de-los-materiales",
+        "mecanica-de-las-estructuras"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "crespo-andrada-karina-fernanda": {
+      "name": "Crespo Andrada Karina Fernanda",
+      "slug": "crespo-andrada-karina-fernanda",
+      "subjects": [
+        "microbiologia-ambiental"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "cuestas-luis-miguel": {
+      "name": "Cuestas Luis Miguel",
+      "slug": "cuestas-luis-miguel",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "cuneo-alejandro-javier": {
       "name": "Cuneo Alejandro Javier",
       "slug": "cuneo-alejandro-javier",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1",
-        "mecanica-de-los-fluidos"
+        "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -650,17 +1020,17 @@
       "name": "Daniele María Laura",
       "slug": "daniele-maria-laura",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "daziano-pablo": {
-      "name": "Daziano Pablo",
-      "slug": "daziano-pablo",
+    "del-barco-martin-ignacio": {
+      "name": "Del Barco Martin Ignacio",
+      "slug": "del-barco-martin-ignacio",
       "subjects": [
-        "electrotecnia-y-electricidad"
+        "electronica-digital-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -680,9 +1050,7 @@
       "name": "Del Soldato Carlos Federico",
       "slug": "del-soldato-carlos-federico",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-2",
-        "probabilidad-y-estadistica"
+        "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -692,10 +1060,7 @@
       "name": "Delgado Piñol Erika Mercedes",
       "slug": "delgado-pinol-erika-mercedes",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-1",
-        "fisica-1",
-        "mecanica-de-los-fluidos"
+        "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -705,29 +1070,37 @@
       "name": "Della Mea Eliana Luciana",
       "slug": "della-mea-eliana-luciana",
       "subjects": [
-        "biologia-y-ambiente",
-        "economia",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "demarchi-guillermo": {
-      "name": "Demarchi Guillermo",
-      "slug": "demarchi-guillermo",
+    "destefanis-eduardo": {
+      "name": "Destefanis Eduardo",
+      "slug": "destefanis-eduardo",
       "subjects": [
-        "analisis-matematico-3"
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "diaz-panero-ma": {
-      "name": "Díaz Panero Ma",
-      "slug": "diaz-panero-ma",
+    "diaz-lozada-jose-manuel": {
+      "name": "Diaz Lozada Jose Manuel",
+      "slug": "diaz-lozada-jose-manuel",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "diaz-panero-mariangeles": {
+      "name": "Diaz Panero Mariángeles",
+      "slug": "diaz-panero-mariangeles",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -737,7 +1110,38 @@
       "name": "Dimitroff Magdalena",
       "slug": "dimitroff-magdalena",
       "subjects": [
-        "algebra-lineal"
+        "algebra-lineal",
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "dominguez-alejandro-anibal": {
+      "name": "Dominguez Alejandro Anibal",
+      "slug": "dominguez-alejandro-anibal",
+      "subjects": [
+        "materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "drewniak-maria-eugenia": {
+      "name": "Drewniak Maria Eugenia",
+      "slug": "drewniak-maria-eugenia",
+      "subjects": [
+        "biologia-y-ambiente"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "edelstein-andres-ivan": {
+      "name": "Edelstein Andres Ivan",
+      "slug": "edelstein-andres-ivan",
+      "subjects": [
+        "quimica-fisica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -747,7 +1151,6 @@
       "name": "Egea Claudia María",
       "slug": "egea-claudia-maria",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-2"
       ],
       "ratingAvg": 0,
@@ -758,7 +1161,7 @@
       "name": "Enrico Pablo Ernesto",
       "slug": "enrico-pablo-ernesto",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "taller-y-laboratorio"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -768,9 +1171,7 @@
       "name": "Ernesto Fabio",
       "slug": "ernesto-fabio",
       "subjects": [
-        "electronica-aplicada",
-        "electronica-digital-1",
-        "electronica-digital-2"
+        "electronica-digital-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -780,7 +1181,7 @@
       "name": "Erro Eustaquio Martín",
       "slug": "erro-eustaquio-martin",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -790,8 +1191,37 @@
       "name": "Eschoyez Maximiliano",
       "slug": "eschoyez-maximiliano",
       "subjects": [
-        "informatica-avanzada",
         "programacion-avanzada"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "escribano-victor-ezequiel": {
+      "name": "Escribano Victor Ezequiel",
+      "slug": "escribano-victor-ezequiel",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "estrada-carlos-f": {
+      "name": "Estrada Carlos F",
+      "slug": "estrada-carlos-f",
+      "subjects": [
+        "mecanica-de-las-estructuras"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "etchegoin-marcos-sebastian": {
+      "name": "Etchegoin Marcos Sebastian",
+      "slug": "etchegoin-marcos-sebastian",
+      "subjects": [
+        "topografia-1-y-teoria-de-errores"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -801,18 +1231,17 @@
       "name": "Falletti Paulina",
       "slug": "falletti-paulina",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "fernandez-guillermo-enrique": {
-      "name": "Fernández Guillermo Enrique",
-      "slug": "fernandez-guillermo-enrique",
+    "fernandez-carlos-andres": {
+      "name": "Fernandez Carlos Andres",
+      "slug": "fernandez-carlos-andres",
       "subjects": [
-        "mecanica-de-los-fluidos",
-        "mecanica-racional"
+        "computacion-y-calculo-numerico"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -822,21 +1251,27 @@
       "name": "Fernández Pablo Andrés",
       "slug": "fernandez-pablo-andres",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "ferrer-maria-florencia": {
-      "name": "Ferrer María Florencia",
-      "slug": "ferrer-maria-florencia",
+    "ferrayoli-carlos-guillermo": {
+      "name": "Ferrayoli Carlos Guillermo",
+      "slug": "ferrayoli-carlos-guillermo",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "biologia-y-ambiente",
-        "biomateriales",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "ferrero-maria-cecilia": {
+      "name": "Ferrero Maria Cecilia",
+      "slug": "ferrero-maria-cecilia",
+      "subjects": [
+        "probabilidad-y-estadistica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -846,8 +1281,8 @@
       "name": "Ferreyra Marcos Agustín",
       "slug": "ferreyra-marcos-agustin",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-1"
+        "analisis-matematico-1",
+        "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -867,29 +1302,57 @@
       "name": "Finochietto Jorge Manuel",
       "slug": "finochietto-jorge-manuel",
       "subjects": [
-        "computacion-y-calculo-numerico",
-        "fundamentos-de-programacion",
-        "informatica-avanzada"
+        "fundamentos-de-programacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "fontan-pablo-ariel": {
-      "name": "Fontán Pablo Ariel",
-      "slug": "fontan-pablo-ariel",
+    "florencia-tames": {
+      "name": "Florencia Tames",
+      "slug": "florencia-tames",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "gallardo-gonzalo-nicolas": {
-      "name": "Gallardo Gonzalo Nicolás",
-      "slug": "gallardo-gonzalo-nicolas",
+    "fontana-fernando-manuel": {
+      "name": "Fontana Fernando Manuel",
+      "slug": "fontana-fernando-manuel",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "procesos-de-manufactura-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "francisca-franco-matias": {
+      "name": "Francisca Franco Matias",
+      "slug": "francisca-franco-matias",
+      "subjects": [
+        "ingenieria-geologica-y-geotecnica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gallardo-fernando-jose": {
+      "name": "Gallardo Fernando Jose",
+      "slug": "gallardo-fernando-jose",
+      "subjects": [
+        "electronica-aplicada"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gallardo-gonzalo": {
+      "name": "Gallardo Gonzalo",
+      "slug": "gallardo-gonzalo",
+      "subjects": [
+        "taller-y-laboratorio"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -899,17 +1362,57 @@
       "name": "Galleguillo Juan Cayetano",
       "slug": "galleguillo-juan-cayetano",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "taller-y-laboratorio"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "garcia-maria-laura": {
-      "name": "García María Laura",
-      "slug": "garcia-maria-laura",
+    "gallo-cesar-hugo": {
+      "name": "Gallo Cesar Hugo",
+      "slug": "gallo-cesar-hugo",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gallo-jose-francisco": {
+      "name": "Gallo Jose Francisco",
+      "slug": "gallo-jose-francisco",
+      "subjects": [
+        "economia"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "garcia-rodriguez-carlos-marcelo": {
+      "name": "Garcia Rodriguez Carlos Marcelo",
+      "slug": "garcia-rodriguez-carlos-marcelo",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "garzon-duarte-santiago": {
+      "name": "Garzon Duarte Santiago",
+      "slug": "garzon-duarte-santiago",
+      "subjects": [
+        "mecanica-racional"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gauna-marco-antonio-amadeo": {
+      "name": "Gauna Marco Antonio Amadeo",
+      "slug": "gauna-marco-antonio-amadeo",
+      "subjects": [
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -919,36 +1422,7 @@
       "name": "Gay Caramutti",
       "slug": "gay-caramutti",
       "subjects": [
-        "electronica-aplicada",
-        "electronica-digital-1",
-        "electronica-digital-2"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "giayetto-jazmin": {
-      "name": "Giayetto Jazmín",
-      "slug": "giayetto-jazmin",
-      "subjects": [
-        "anatomia-para-ingenieros",
-        "biomateriales",
-        "economia",
-        "organizaciones-e-industrias"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "gimenez-andres": {
-      "name": "Giménez Andrés",
-      "slug": "gimenez-andres",
-      "subjects": [
-        "fundamentos-de-los-procesos-quimicos",
-        "ingenieria-geologica-y-geotecnica",
-        "materiales-tecnologia-de-los-materiales",
-        "mecanica-de-suelos-y-rocas",
-        "procesos-de-manufactura-1"
+        "electronica-digital-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -964,13 +1438,21 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "gomez-betina": {
-      "name": "Gómez Betina",
-      "slug": "gomez-betina",
+    "giraudo-steffi-antonella": {
+      "name": "Giraudo Steffi Antonella",
+      "slug": "giraudo-steffi-antonella",
       "subjects": [
-        "biologia-y-ambiente",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "topografia-1-y-teoria-de-errores"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "glatstein-daniel": {
+      "name": "Glatstein Daniel",
+      "slug": "glatstein-daniel",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -986,12 +1468,21 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "gomez-gonzalo": {
-      "name": "Gómez Gonzalo",
-      "slug": "gomez-gonzalo",
+    "gomez-gustavo-cesar": {
+      "name": "Gomez Gustavo Cesar",
+      "slug": "gomez-gustavo-cesar",
       "subjects": [
-        "biologia-y-ambiente",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gomez-marcelo-martin": {
+      "name": "Gomez Marcelo Martin",
+      "slug": "gomez-marcelo-martin",
+      "subjects": [
+        "fundamentos-de-los-procesos-quimicos"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1001,16 +1492,15 @@
       "name": "Gómez Rivera Iván Darío",
       "slug": "gomez-rivera-ivan-dario",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "gonzalez-maria-fernanda": {
-      "name": "González María Fernanda",
-      "slug": "gonzalez-maria-fernanda",
+    "gonzalez-analia": {
+      "name": "Gonzalez Analia",
+      "slug": "gonzalez-analia",
       "subjects": [
         "probabilidad-y-estadistica"
       ],
@@ -1018,35 +1508,52 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "guerra-pablo": {
-      "name": "Guerra Pablo",
-      "slug": "guerra-pablo",
+    "gonzalez-gramaglia-hernan-ezequiel": {
+      "name": "Gonzalez Gramaglia Hernan Ezequiel",
+      "slug": "gonzalez-gramaglia-hernan-ezequiel",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "guevara-leonardo": {
-      "name": "Guevara Leonardo",
-      "slug": "guevara-leonardo",
+    "goyechea-ramos-luis-nataniel": {
+      "name": "Goyechea Ramos Luis Nataniel",
+      "slug": "goyechea-ramos-luis-nataniel",
       "subjects": [
-        "biologia-y-ambiente",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "mecanica-de-suelos-y-rocas"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "gutierrez-leonel": {
-      "name": "Gutiérrez Leonel",
-      "slug": "gutierrez-leonel",
+    "grinschpun-luciano-salvador": {
+      "name": "Grinschpun Luciano Salvador",
+      "slug": "grinschpun-luciano-salvador",
       "subjects": [
-        "biologia-y-ambiente",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "biomateriales",
+        "materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "gudino-gustavo-luis": {
+      "name": "Gudiño Gustavo Luis",
+      "slug": "gudino-gustavo-luis",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "guillen-nicolas-federico": {
+      "name": "Guillen Nicolas Federico",
+      "slug": "guillen-nicolas-federico",
+      "subjects": [
+        "mecanica-de-los-fluidos"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1062,11 +1569,20 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "harguinteguy-carlos-alfredo": {
+      "name": "Harguinteguy Carlos Alfredo",
+      "slug": "harguinteguy-carlos-alfredo",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "herrera-andrea-cecilia": {
       "name": "Herrera Andrea Cecilia",
       "slug": "herrera-andrea-cecilia",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-2"
       ],
       "ratingAvg": 0,
@@ -1093,11 +1609,21 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "iglesias-carla": {
-      "name": "Iglesias Carla",
-      "slug": "iglesias-carla",
+    "hunicken-diego-ricardo": {
+      "name": "Hunicken Diego Ricardo",
+      "slug": "hunicken-diego-ricardo",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "estatica-y-resistencia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "ibanez-fabian-rolando": {
+      "name": "Ibañez Fabian Rolando",
+      "slug": "ibanez-fabian-rolando",
+      "subjects": [
+        "quimica-fisica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1113,22 +1639,51 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "iznardo-luciano": {
+      "name": "Iznardo Luciano",
+      "slug": "iznardo-luciano",
+      "subjects": [
+        "introduccion-a-la-ingenieria"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "joaquin-daniel-alberto": {
       "name": "Joaquín Daniel Alberto",
       "slug": "joaquin-daniel-alberto",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "jorquera-luciano": {
-      "name": "Jorquera Luciano",
-      "slug": "jorquera-luciano",
+    "jorge-javier-alejandro": {
+      "name": "Jorge Javier Alejandro",
+      "slug": "jorge-javier-alejandro",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "computacion-y-calculo-numerico"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "krapacher-claudio-ricardo": {
+      "name": "Krapacher Claudio Ricardo",
+      "slug": "krapacher-claudio-ricardo",
+      "subjects": [
+        "quimica-inorganica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "labaque-maria-del-rosario": {
+      "name": "Labaque Maria Del Rosario",
+      "slug": "labaque-maria-del-rosario",
+      "subjects": [
+        "mecanica-de-los-fluidos"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1138,8 +1693,7 @@
       "name": "Lazarte Gustavo",
       "slug": "lazarte-gustavo",
       "subjects": [
-        "fisica-2",
-        "mecanica-de-los-fluidos"
+        "fisica-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1149,17 +1703,8 @@
       "name": "Leguizamón Carlos Raúl",
       "slug": "leguizamon-carlos-raul",
       "subjects": [
-        "fisica-2"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "limon-sergio-daniel": {
-      "name": "Limón Sergio Daniel",
-      "slug": "limon-sergio-daniel",
-      "subjects": [
-        "probabilidad-y-estadistica"
+        "fisica-2",
+        "tecnologia-electronica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1169,19 +1714,78 @@
       "name": "Litvack Federico Julio",
       "slug": "litvack-federico-julio",
       "subjects": [
-        "computacion-y-calculo-numerico",
-        "introduccion-a-la-ingenieria"
+        "taller-y-laboratorio",
+        "tecnologia-electronica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "lujan-maria-florencia": {
-      "name": "Luján María Florencia",
-      "slug": "lujan-maria-florencia",
+    "lizarraga-enrique-mariano": {
+      "name": "Lizarraga Enrique Mariano",
+      "slug": "lizarraga-enrique-mariano",
       "subjects": [
-        "economia",
-        "organizaciones-e-industrias"
+        "teoria-de-circuitos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "lopez-maria-laura": {
+      "name": "Lopez Maria Laura",
+      "slug": "lopez-maria-laura",
+      "subjects": [
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "lopez-raul-alberto": {
+      "name": "Lopez Raul Alberto",
+      "slug": "lopez-raul-alberto",
+      "subjects": [
+        "tecnologia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "lopez-sebastian": {
+      "name": "Lopez Sebastian",
+      "slug": "lopez-sebastian",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "losano-luis-guillermo": {
+      "name": "Losano Luis Guillermo",
+      "slug": "losano-luis-guillermo",
+      "subjects": [
+        "biomateriales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "luczywo-nadia-ayelen": {
+      "name": "Luczywo Nadia Ayelen",
+      "slug": "luczywo-nadia-ayelen",
+      "subjects": [
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "lujan-lautaro": {
+      "name": "Lujan Lautaro",
+      "slug": "lujan-lautaro",
+      "subjects": [
+        "termodinamica-quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1191,9 +1795,17 @@
       "name": "Maglione César Germán",
       "slug": "maglione-cesar-german",
       "subjects": [
-        "algebra-lineal",
-        "fisica-1",
         "fisica-2"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "maligno-emilio-pedro": {
+      "name": "Maligno Emilio Pedro",
+      "slug": "maligno-emilio-pedro",
+      "subjects": [
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1209,6 +1821,16 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "marhuenda-fernando-daniel": {
+      "name": "Marhuenda Fernando Daniel",
+      "slug": "marhuenda-fernando-daniel",
+      "subjects": [
+        "economia"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "marioni-ornela-florentina": {
       "name": "Marioni Ornela Florentina",
       "slug": "marioni-ornela-florentina",
@@ -1219,25 +1841,21 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "martinez-balsa-agustin": {
-      "name": "Martínez Balsa Agustín",
-      "slug": "martinez-balsa-agustin",
+    "mariotti-cardozo-alejandro-david": {
+      "name": "Mariotti Cardozo Alejandro David",
+      "slug": "mariotti-cardozo-alejandro-david",
       "subjects": [
-        "economia",
-        "mecanica-racional",
-        "probabilidad-y-estadistica",
-        "quimica-general-fisica-inorganica-organica-y-biologica",
-        "senales-y-sistemas"
+        "mecanica-racional"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "martinez-balsa-lucia": {
-      "name": "Martínez Balsa Lucía",
-      "slug": "martinez-balsa-lucia",
+    "martinez-balsa-agustin": {
+      "name": "Martínez Balsa Agustín",
+      "slug": "martinez-balsa-agustin",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "senales-y-sistemas"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1247,7 +1865,98 @@
       "name": "Martínez Elizabeth M",
       "slug": "martinez-elizabeth-m",
       "subjects": [
-        "anatomia-para-ingenieros"
+        "fisica-1",
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martinez-guillermo-gabriel": {
+      "name": "Martinez Guillermo Gabriel",
+      "slug": "martinez-guillermo-gabriel",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martinez-hector-david": {
+      "name": "Martinez Hector David",
+      "slug": "martinez-hector-david",
+      "subjects": [
+        "anatomia-para-ingeniero"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martinez-marcela-lilian": {
+      "name": "Martinez Marcela Lilian",
+      "slug": "martinez-marcela-lilian",
+      "subjects": [
+        "quimica-inorganica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martinez-maria-soledad": {
+      "name": "Martinez Maria Soledad",
+      "slug": "martinez-maria-soledad",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martinez-pablo-agustin": {
+      "name": "Martinez Pablo Agustin",
+      "slug": "martinez-pablo-agustin",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "martini-raquel-evangelina": {
+      "name": "Martini Raquel Evangelina",
+      "slug": "martini-raquel-evangelina",
+      "subjects": [
+        "termodinamica-quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "masso-leandro": {
+      "name": "Masso Leandro",
+      "slug": "masso-leandro",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "mateos-ana-carolina": {
+      "name": "Mateos Ana Carolina",
+      "slug": "mateos-ana-carolina",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "matias-reinaudi": {
+      "name": "Matias Reinaudi",
+      "slug": "matias-reinaudi",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1264,11 +1973,11 @@
       "ratingCount": 0,
       "createdAt": null
     },
-    "mazariego-manuel": {
-      "name": "Mazariego Manuel",
-      "slug": "mazariego-manuel",
+    "maza-mauro-sebastian": {
+      "name": "Maza Mauro Sebastian",
+      "slug": "maza-mauro-sebastian",
       "subjects": [
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "estructuras-isostaticas"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1278,10 +1987,7 @@
       "name": "Menéndez Pablo Sebastián",
       "slug": "menendez-pablo-sebastian",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-2",
-        "fisica-1",
-        "probabilidad-y-estadistica"
+        "fisica-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1291,8 +1997,17 @@
       "name": "Merino Hugo Alfredo",
       "slug": "merino-hugo-alfredo",
       "subjects": [
-        "fisica-1",
-        "modulo-de-ingles"
+        "fisica-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "milanesio-juan-manuel": {
+      "name": "Milanesio Juan Manuel",
+      "slug": "milanesio-juan-manuel",
+      "subjects": [
+        "termodinamica-quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1318,6 +2033,26 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "miranda-veronica-elizabeth": {
+      "name": "Miranda Veronica Elizabeth",
+      "slug": "miranda-veronica-elizabeth",
+      "subjects": [
+        "agrimensura-legal-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "monaldi-lucas": {
+      "name": "Monaldi Lucas",
+      "slug": "monaldi-lucas",
+      "subjects": [
+        "estructuras-isostaticas"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "montoya-gerardo-federico": {
       "name": "Montoya Gerardo Federico",
       "slug": "montoya-gerardo-federico",
@@ -1333,7 +2068,6 @@
       "name": "Mors Horacio Aníbal",
       "slug": "mors-horacio-anibal",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
@@ -1344,7 +2078,28 @@
       "name": "Moyano Angaramo Esteban Tomás",
       "slug": "moyano-angaramo-esteban-tomas",
       "subjects": [
+        "fisica-1",
         "fisica-2"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "mozejko-clara-alexandra": {
+      "name": "Mozejko Clara Alexandra",
+      "slug": "mozejko-clara-alexandra",
+      "subjects": [
+        "ingenieria-geologica-y-geotecnica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "muguiro-nestor-osvaldo": {
+      "name": "Muguiro Néstor Osvaldo",
+      "slug": "muguiro-nestor-osvaldo",
+      "subjects": [
+        "sistemas-de-representacion"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1360,12 +2115,106 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "namur-nicolas": {
+      "name": "Namur Nicolas",
+      "slug": "namur-nicolas",
+      "subjects": [
+        "procesos-de-manufactura-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "natali-osvaldo": {
       "name": "Natali Osvaldo",
       "slug": "natali-osvaldo",
       "subjects": [
+        "analisis-matematico-1",
+        "fisica-1",
+        "mecanica-racional",
+        "termodinamica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "naveiro-silvia-analia": {
+      "name": "Naveiro Silvia Analia",
+      "slug": "naveiro-silvia-analia",
+      "subjects": [
+        "estatica-y-resistencia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "nepote-valeria": {
+      "name": "Nepote Valeria",
+      "slug": "nepote-valeria",
+      "subjects": [
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "nicasio-cecilia-m": {
+      "name": "Nicasio Cecilia M.",
+      "slug": "nicasio-cecilia-m",
+      "subjects": [
+        "estatica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "nieva-pablo-martin": {
+      "name": "Nieva Pablo Martin",
+      "slug": "nieva-pablo-martin",
+      "subjects": [
+        "ingenieria-geologica-y-geotecnica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "o-mill-patricia": {
+      "name": "O Mill Patricia",
+      "slug": "o-mill-patricia",
+      "subjects": [
+        "fundamentos-de-los-procesos-quimicos",
+        "quimica-general"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "oberti-edgardo-r": {
+      "name": "Oberti Edgardo R.",
+      "slug": "oberti-edgardo-r",
+      "subjects": [
+        "microbiologia-ambiental"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "ochat-ernesto": {
+      "name": "Ochat Ernesto",
+      "slug": "ochat-ernesto",
+      "subjects": [
+        "estatica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "oliva-cuneo-facundo-nicolas": {
+      "name": "Oliva Cuneo Facundo Nicolas",
+      "slug": "oliva-cuneo-facundo-nicolas",
+      "subjects": [
         "algebra-lineal",
-        "analisis-matematico-1"
+        "probabilidad-y-estadistica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1375,7 +2224,17 @@
       "name": "Olivares Emiliano",
       "slug": "olivares-emiliano",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "taller-y-laboratorio"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "olivero-paola-andrea": {
+      "name": "Olivero Paola Andrea",
+      "slug": "olivero-paola-andrea",
+      "subjects": [
+        "biologia-y-ambiente"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1385,19 +2244,28 @@
       "name": "Orellano Mayco Nahuel",
       "slug": "orellano-mayco-nahuel",
       "subjects": [
-        "electronica-aplicada",
-        "electronica-digital-1",
-        "electronica-digital-2"
+        "electronica-digital-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "pacheco-daniel-alberto": {
-      "name": "Pacheco Daniel Alberto",
-      "slug": "pacheco-daniel-alberto",
+    "ostorero-gaston-nicolas": {
+      "name": "Ostorero Gaston Nicolas",
+      "slug": "ostorero-gaston-nicolas",
       "subjects": [
-        "mecanica-de-las-estructuras"
+        "estatica-y-resistencia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "pagliero-jorge-maximo": {
+      "name": "Pagliero Jorge Maximo",
+      "slug": "pagliero-jorge-maximo",
+      "subjects": [
+        "estructuras-isostaticas",
+        "tecnologia-de-los-materiales"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1407,9 +2275,37 @@
       "name": "Pagot Daniel Eduardo",
       "slug": "pagot-daniel-eduardo",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-1",
-        "fisica-1"
+        "analisis-matematico-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "paiaro-ricardo-jorge": {
+      "name": "Paiaro Ricardo Jorge",
+      "slug": "paiaro-ricardo-jorge",
+      "subjects": [
+        "materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "parada-larrosa-francisco": {
+      "name": "Parada Larrosa Francisco",
+      "slug": "parada-larrosa-francisco",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "paraje-maria-gabriela": {
+      "name": "Paraje Maria Gabriela",
+      "slug": "paraje-maria-gabriela",
+      "subjects": [
+        "microbiologia-ambiental"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1419,21 +2315,27 @@
       "name": "Pastore Liliana Beatriz",
       "slug": "pastore-liliana-beatriz",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "pavon-florencia": {
-      "name": "Pavón Florencia",
-      "slug": "pavon-florencia",
+    "pedrotti-beatriz-isabel": {
+      "name": "Pedrotti Beatriz Isabel",
+      "slug": "pedrotti-beatriz-isabel",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "biomateriales",
-        "economia",
-        "organizaciones-e-industrias"
+        "computacion-y-calculo-numerico"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "pelliza-martin-federico": {
+      "name": "Pelliza Martin Federico",
+      "slug": "pelliza-martin-federico",
+      "subjects": [
+        "informatica-avanzada"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1459,6 +2361,58 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "petrashin-pablo-antonio": {
+      "name": "Petrashin Pablo Antonio",
+      "slug": "petrashin-pablo-antonio",
+      "subjects": [
+        "electronica-digital-2"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "pierotti-silvia-marcela": {
+      "name": "Pierotti Silvia Marcela",
+      "slug": "pierotti-silvia-marcela",
+      "subjects": [
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "piloni-roxana-veronica": {
+      "name": "Piloni Roxana Verónica",
+      "slug": "piloni-roxana-veronica",
+      "subjects": [
+        "quimica-inorganica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "pirard-constancia-am": {
+      "name": "Pirard Constancia A.M.",
+      "slug": "pirard-constancia-am",
+      "subjects": [
+        "estatica-y-resistencia-de-los-materiales",
+        "estructuras-isostaticas"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "pisoni-gerardo-oscar": {
+      "name": "Pisoni Gerardo Oscar",
+      "slug": "pisoni-gerardo-oscar",
+      "subjects": [
+        "computacion-y-calculo-numerico",
+        "fundamentos-de-los-procesos-quimicos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "piumetto-miguel": {
       "name": "Piumetto Miguel",
       "slug": "piumetto-miguel",
@@ -1469,13 +2423,51 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "pozzi-piacenza-cecilia-elena": {
+      "name": "Pozzi Piacenza Cecilia Elena",
+      "slug": "pozzi-piacenza-cecilia-elena",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "prados-lautaro": {
       "name": "Prados Lautaro",
       "slug": "prados-lautaro",
       "subjects": [
-        "electronica-aplicada",
-        "electronica-digital-1",
-        "electronica-digital-2"
+        "electronica-digital-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "prato-antonio-manuel": {
+      "name": "Prato Antonio Manuel",
+      "slug": "prato-antonio-manuel",
+      "subjects": [
+        "estatica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "quintana-enrique-francisco": {
+      "name": "Quintana Enrique Francisco",
+      "slug": "quintana-enrique-francisco",
+      "subjects": [
+        "ingenieria-geologica-y-geotecnica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "racca-maria-agustina": {
+      "name": "Racca Maria Agustina",
+      "slug": "racca-maria-agustina",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1495,22 +2487,37 @@
       "name": "Reta Berg Diego Ernesto",
       "slug": "reta-berg-diego-ernesto",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "rey-veronica": {
-      "name": "Rey Verónica",
-      "slug": "rey-veronica",
+    "ribotta-pablo": {
+      "name": "Ribotta Pablo",
+      "slug": "ribotta-pablo",
       "subjects": [
-        "biologia-y-ambiente",
-        "economia",
-        "materiales-tecnologia-de-los-materiales",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica-inorganica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "rinaldi-victor-a": {
+      "name": "Rinaldi Victor A.",
+      "slug": "rinaldi-victor-a",
+      "subjects": [
+        "mecanica-de-suelos-y-rocas"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "roca-garbiglia-maria-d": {
+      "name": "Roca Garbiglia Maria D.",
+      "slug": "roca-garbiglia-maria-d",
+      "subjects": [
+        "mecanica-de-las-estructuras"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1520,7 +2527,6 @@
       "name": "Rodríguez Alfio Antonio",
       "slug": "rodriguez-alfio-antonio",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
@@ -1531,7 +2537,6 @@
       "name": "Rodríguez Carlos Héctor",
       "slug": "rodriguez-carlos-hector",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
@@ -1542,19 +2547,27 @@
       "name": "Rodríguez Carlos Ramiro",
       "slug": "rodriguez-carlos-ramiro",
       "subjects": [
-        "algebra-lineal",
-        "analisis-matematico-2",
-        "probabilidad-y-estadistica"
+        "analisis-matematico-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "rodriguez-diego-nicolas": {
-      "name": "Rodríguez Diego Nicolás",
-      "slug": "rodriguez-diego-nicolas",
+    "rodriguez-diego": {
+      "name": "Rodriguez Diego",
+      "slug": "rodriguez-diego",
       "subjects": [
-        "computacion-y-calculo-numerico"
+        "taller-y-laboratorio"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "rodriguez-jose-maria": {
+      "name": "Rodriguez Jose Maria",
+      "slug": "rodriguez-jose-maria",
+      "subjects": [
+        "economia"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1574,7 +2587,6 @@
       "name": "Roitman Claudia Alejandra",
       "slug": "roitman-claudia-alejandra",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-2",
         "introduccion-a-la-ingenieria"
       ],
@@ -1607,25 +2619,129 @@
       "name": "Rossi Roberto Raúl",
       "slug": "rossi-roberto-raul",
       "subjects": [
+        "electronica-digital-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "rouzaut-sabrina": {
+      "name": "Rouzaut Sabrina",
+      "slug": "rouzaut-sabrina",
+      "subjects": [
+        "ingenieria-geologica-y-geotecnica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "rovetto-laura-jorgelina": {
+      "name": "Rovetto Laura Jorgelina",
+      "slug": "rovetto-laura-jorgelina",
+      "subjects": [
+        "quimica-fisica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "ruiz-paola-fabiana": {
+      "name": "Ruiz Paola Fabiana",
+      "slug": "ruiz-paola-fabiana",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "s-daniela-pardo": {
+      "name": "S. Daniela Pardo",
+      "slug": "s-daniela-pardo",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "saldis-nancy-edith": {
+      "name": "Saldis Nancy Edith",
+      "slug": "saldis-nancy-edith",
+      "subjects": [
+        "fundamentos-de-los-procesos-quimicos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "salvatierra-nancy-alicia": {
+      "name": "Salvatierra Nancy Alicia",
+      "slug": "salvatierra-nancy-alicia",
+      "subjects": [
+        "quimica",
+        "quimica-organica-y-biologica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "sanchez-ignacio-roberto": {
+      "name": "Sanchez Ignacio Roberto",
+      "slug": "sanchez-ignacio-roberto",
+      "subjects": [
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "sanchez-julio-c": {
+      "name": "Sanchez Julio C.",
+      "slug": "sanchez-julio-c",
+      "subjects": [
         "electronica-aplicada",
-        "electronica-digital-1",
         "electronica-digital-2"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "sanchez-ana-paula": {
-      "name": "Sánchez Ana Paula",
-      "slug": "sanchez-ana-paula",
+    "sapuppo-daniel-salvador": {
+      "name": "Sapuppo Daniel Salvador",
+      "slug": "sapuppo-daniel-salvador",
       "subjects": [
-        "anatomia-para-ingenieros",
-        "biologia-y-ambiente",
-        "biomateriales",
-        "economia",
-        "microbiologia-ambiental",
-        "organizaciones-e-industrias",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "sistemas-de-representacion"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "schreter-lorena-lucrecia": {
+      "name": "Schreter Lorena Lucrecia",
+      "slug": "schreter-lorena-lucrecia",
+      "subjects": [
+        "topografia-basica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "segura-ricardo": {
+      "name": "Segura Ricardo",
+      "slug": "segura-ricardo",
+      "subjects": [
+        "procesos-de-manufactura-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "severini-hernan-claudio": {
+      "name": "Severini Hernan Claudio",
+      "slug": "severini-hernan-claudio",
+      "subjects": [
+        "quimica-inorganica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1635,7 +2751,27 @@
       "name": "Soliz Mónica Elizabeth",
       "slug": "soliz-monica-elizabeth",
       "subjects": [
-        "fisica-1"
+        "modulo-de-ingles"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "soria-carola": {
+      "name": "Soria Carola",
+      "slug": "soria-carola",
+      "subjects": [
+        "biologia-y-ambiente"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "sosa-claudio-alejandro": {
+      "name": "Sosa Claudio Alejandro",
+      "slug": "sosa-claudio-alejandro",
+      "subjects": [
+        "biologia-y-ambiente"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1651,58 +2787,91 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "stumpf-pablo-gustavo": {
+      "name": "Stumpf Pablo Gustavo",
+      "slug": "stumpf-pablo-gustavo",
+      "subjects": [
+        "tecnologia-de-los-materiales"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "suchetti-laura-fabiana": {
+      "name": "Suchetti Laura Fabiana",
+      "slug": "suchetti-laura-fabiana",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "talamoni-silvina": {
+      "name": "Talamoni Silvina",
+      "slug": "talamoni-silvina",
+      "subjects": [
+        "economia"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "tarrab-leticia": {
+      "name": "Tarrab Leticia",
+      "slug": "tarrab-leticia",
+      "subjects": [
+        "mecanica-de-los-fluidos"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "tavera-busso-ivan": {
+      "name": "Tavera Busso Ivan",
+      "slug": "tavera-busso-ivan",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "tejeda-pablo-gustavo": {
+      "name": "Tejeda Pablo Gustavo",
+      "slug": "tejeda-pablo-gustavo",
+      "subjects": [
+        "quimica-fisica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "tejerina-susana-mabel": {
+      "name": "Tejerina Susana Mabel",
+      "slug": "tejerina-susana-mabel",
+      "subjects": [
+        "topografia-basica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "tesando-micaela-andrea": {
       "name": "Tesando Micaela Andrea",
       "slug": "tesando-micaela-andrea",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "tognoni-guillermo-andres": {
-      "name": "Tognoni Guillermo Andrés",
-      "slug": "tognoni-guillermo-andres",
+    "tita-alejandra-graciela": {
+      "name": "Tita Alejandra Graciela",
+      "slug": "tita-alejandra-graciela",
       "subjects": [
-        "economia",
-        "estatica-estatica-y-resistencia-de-los-materiales-estructuras-isostaticas",
-        "fundamentos-de-los-procesos-quimicos",
-        "ingenieria-geologica-y-geotecnica",
-        "materiales-tecnologia-de-los-materiales",
-        "mecanica-de-las-estructuras",
-        "mecanica-de-los-fluidos",
-        "mecanica-de-suelos-y-rocas",
-        "procesos-de-manufactura-1"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "torre-gustavo": {
-      "name": "Torre Gustavo",
-      "slug": "torre-gustavo",
-      "subjects": [
-        "estatica-estatica-y-resistencia-de-los-materiales-estructuras-isostaticas",
-        "fundamentos-de-los-procesos-quimicos",
-        "ingenieria-geologica-y-geotecnica",
-        "materiales-tecnologia-de-los-materiales",
-        "mecanica-de-suelos-y-rocas",
-        "procesos-de-manufactura-1"
-      ],
-      "ratingAvg": 0,
-      "ratingCount": 0,
-      "createdAt": null
-    },
-    "torres-valeria": {
-      "name": "Torres Valeria",
-      "slug": "torres-valeria",
-      "subjects": [
-        "anatomia-para-ingenieros",
-        "biomateriales",
-        "probabilidad-y-estadistica",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "estatica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1718,11 +2887,42 @@
       "ratingCount": 0,
       "createdAt": null
     },
+    "trono-adriano": {
+      "name": "Trono Adriano",
+      "slug": "trono-adriano",
+      "subjects": [
+        "estructuras-isostaticas",
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "turco-mauricio-daniel": {
+      "name": "Turco Mauricio Daniel",
+      "slug": "turco-mauricio-daniel",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "turello-diego-fernando": {
+      "name": "Turello Diego Fernando",
+      "slug": "turello-diego-fernando",
+      "subjects": [
+        "estatica",
+        "mecanica-de-las-estructuras"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
     "valenzuela-maria-alejandra": {
       "name": "Valenzuela María Alejandra",
       "slug": "valenzuela-maria-alejandra",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
@@ -1733,9 +2933,38 @@
       "name": "Vega Leonor Teresa",
       "slug": "vega-leonor-teresa",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1",
         "fisica-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "velez-alexis-rafael": {
+      "name": "Velez Alexis Rafael",
+      "slug": "velez-alexis-rafael",
+      "subjects": [
+        "quimica-fisica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "vera-jorge-esteban": {
+      "name": "Vera Jorge Esteban",
+      "slug": "vera-jorge-esteban",
+      "subjects": [
+        "termodinamica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "vera-leonardo-gabriel": {
+      "name": "Vera Leonardo Gabriel",
+      "slug": "vera-leonardo-gabriel",
+      "subjects": [
+        "probabilidad-y-estadistica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1745,8 +2974,17 @@
       "name": "Vera Sonia Vanesa",
       "slug": "vera-sonia-vanesa",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "vidal-carlos-daniel": {
+      "name": "Vidal Carlos Daniel",
+      "slug": "vidal-carlos-daniel",
+      "subjects": [
+        "quimica"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1756,20 +2994,27 @@
       "name": "Vignoli Adolfo L",
       "slug": "vignoli-adolfo-l",
       "subjects": [
-        "algebra-lineal",
         "analisis-matematico-1"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
       "createdAt": null
     },
-    "villarreal-guadalupe": {
-      "name": "Villarreal Guadalupe",
-      "slug": "villarreal-guadalupe",
+    "villagran-constanza": {
+      "name": "Villagran Constanza",
+      "slug": "villagran-constanza",
       "subjects": [
-        "biologia-y-ambiente",
-        "microbiologia-ambiental",
-        "quimica-general-fisica-inorganica-organica-y-biologica"
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "villella-juan-carlos": {
+      "name": "Villella Juan Carlos",
+      "slug": "villella-juan-carlos",
+      "subjects": [
+        "agrimensura-y-geometria-territorial"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
@@ -1779,9 +3024,68 @@
       "name": "Vrech Rubén Héctor",
       "slug": "vrech-ruben-hector",
       "subjects": [
-        "electronica-aplicada",
         "electronica-digital-1",
         "electronica-digital-2"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "wannaz-eduardo-daniel": {
+      "name": "Wannaz Eduardo Daniel",
+      "slug": "wannaz-eduardo-daniel",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "warnholtz-eduardo-e": {
+      "name": "Warnholtz Eduardo E",
+      "slug": "warnholtz-eduardo-e",
+      "subjects": [
+        "estatica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "weber-juan-francisco": {
+      "name": "Weber Juan Francisco",
+      "slug": "weber-juan-francisco",
+      "subjects": [
+        "computacion-y-calculo-numerico"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "zampar-vanesa-paola": {
+      "name": "Zampar Vanesa Paola",
+      "slug": "zampar-vanesa-paola",
+      "subjects": [
+        "quimica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "zanazzi-jose-francisco": {
+      "name": "Zanazzi Jose Francisco",
+      "slug": "zanazzi-jose-francisco",
+      "subjects": [
+        "probabilidad-y-estadistica"
+      ],
+      "ratingAvg": 0,
+      "ratingCount": 0,
+      "createdAt": null
+    },
+    "zapata-adriana-ines": {
+      "name": "Zapata Adriana Ines",
+      "slug": "zapata-adriana-ines",
+      "subjects": [
+        "biologia-y-ambiente"
       ],
       "ratingAvg": 0,
       "ratingCount": 0,
