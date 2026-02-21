@@ -337,14 +337,19 @@ function updateSectionsSubjectFilter(){
 }
 
 function getCareerSlug(){
-  const base =
-    CTX?.careerSlug ||
-    CTX?.aulaState?.careerSlug ||
-    CTX?.getCurrentCareer?.() ||
-    document.getElementById("inpCareer")?.value ||
-    CTX?.getUserProfile?.()?.careerSlug ||
-    "";
-  return CTX.normalizeStr(base);
+  const candidates = [
+    { source: "CTX.careerSlug", value: CTX?.careerSlug },
+    { source: "aulaState.careerSlug", value: CTX?.aulaState?.careerSlug },
+    { source: "getCurrentCareer", value: CTX?.getCurrentCareer?.() },
+    { source: "inpCareer", value: document.getElementById("inpCareer")?.value },
+    { source: "profile.careerSlug", value: CTX?.getUserProfile?.()?.careerSlug }
+  ];
+  const selected = candidates.find((candidate) => candidate.value);
+  const source = selected?.source || "empty";
+  const base = selected?.value || "";
+  const normalized = CTX.normalizeStr(base);
+  console.debug("[planner:debug] getCareerSlug", { source, normalized });
+  return normalized;
 }
 
 function normalizeSectionItems(rawSection, idSeed = ""){
@@ -407,13 +412,15 @@ function convertPlannerSectionsToCourseSections(sections){
 }
 
 async function loadPlannerSections(){
+  console.groupCollapsed("[planner:debug] loadPlannerSections");
   const careerSlug = getCareerSlug();
-  console.debug("[planificador] careerSlug:", careerSlug);
+  console.debug("[planner:debug] careerSlug", careerSlug);
   if (!careerSlug){
     CTX.aulaState.plannerSections = [];
     CTX.aulaState.courseSections = [];
     plannerSectionsUiState = "ready";
-    console.debug("[planificador] sections loaded:", 0, { source: "missing-careerSlug" });
+    console.debug("[planner:debug] sections loaded", { normalizedCount: 0, source: "missing-careerSlug" });
+    console.groupEnd();
     return [];
   }
 
@@ -427,16 +434,28 @@ async function loadPlannerSections(){
 
   let source = "courseSections";
   let normalizedSections = [];
+  let currentStep = "idle";
 
   try {
+    currentStep = "courseSections where careerSlug";
+    console.debug("[planner:debug] Intentando query 1: courseSections where careerSlug", { careerSlug });
     const byCareerSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("careerSlug", "==", careerSlug)));
+    console.debug("[planner:debug] Resultado query 1", { snapshotSize: byCareerSnap?.size ?? null });
     normalizedSections = normalizeDocs(byCareerSnap);
+    console.debug("[planner:debug] Normalizadas query 1", { normalizedCount: normalizedSections.length });
     if (!normalizedSections.length){
+      currentStep = "courseSections where degreeSlug";
+      console.debug("[planner:debug] Intentando query 2: courseSections where degreeSlug", { careerSlug });
       const byDegreeSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("degreeSlug", "==", careerSlug)));
+      console.debug("[planner:debug] Resultado query 2", { snapshotSize: byDegreeSnap?.size ?? null });
       normalizedSections = normalizeDocs(byDegreeSnap);
+      console.debug("[planner:debug] Normalizadas query 2", { normalizedCount: normalizedSections.length });
     }
     if (!normalizedSections.length){
+      currentStep = "courseSections sample+filter";
+      console.debug("[planner:debug] Intentando query 3: courseSections sample+filter", { limit: 80, careerSlug });
       const sample = await getDocs(query(collection(CTX.db, "courseSections"), limit(80)));
+      console.debug("[planner:debug] Resultado query 3", { snapshotSize: sample?.size ?? null });
       normalizedSections = normalizeDocs({
         forEach(callback){
           sample.forEach((docSnap) => {
@@ -446,20 +465,32 @@ async function loadPlannerSections(){
           });
         }
       });
+      console.debug("[planner:debug] Normalizadas query 3", { normalizedCount: normalizedSections.length });
     }
 
     if (!normalizedSections.length){
       source = "comisiones";
+      currentStep = "comisiones where careerSlug";
+      console.debug("[planner:debug] Intentando query 4: comisiones where careerSlug", { careerSlug });
       const byCareer = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", careerSlug)));
+      console.debug("[planner:debug] Resultado query 4", { snapshotSize: byCareer?.size ?? null });
       normalizedSections = normalizeDocs(byCareer);
+      console.debug("[planner:debug] Normalizadas query 4", { normalizedCount: normalizedSections.length });
 
       if (!normalizedSections.length){
+        currentStep = "comisiones array-contains";
+        console.debug("[planner:debug] Intentando query 5: comisiones array-contains", { careerSlug });
         const byArray = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", careerSlug)));
+        console.debug("[planner:debug] Resultado query 5", { snapshotSize: byArray?.size ?? null });
         normalizedSections = normalizeDocs(byArray);
+        console.debug("[planner:debug] Normalizadas query 5", { normalizedCount: normalizedSections.length });
       }
 
       if (!normalizedSections.length){
+        currentStep = "comisiones doc(careerSlug)";
+        console.debug("[planner:debug] Intentando query 6: comisiones doc(careerSlug)", { careerSlug });
         const comisionDoc = await getDoc(doc(CTX.db, "comisiones", careerSlug));
+        console.debug("[planner:debug] Resultado query 6", { exists: comisionDoc.exists() });
         if (comisionDoc.exists()){
           const payload = comisionDoc.data() || {};
           const nested = Array.isArray(payload.sections)
@@ -468,15 +499,26 @@ async function loadPlannerSections(){
               ? payload.items
               : [];
           normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
+          console.debug("[planner:debug] Normalizadas query 6", { normalizedCount: normalizedSections.length });
           source = "comisiones-doc";
         }
       }
     }
   } catch (e) {
-    if (String(e?.code || "").includes("permission-denied")){
-      console.warn("[planificador] firestore error", e);
-    } else {
-      console.warn("[planificador] firestore error", e);
+    const code = String(e?.code || "");
+    const message = String(e?.message || "");
+    console.error("[planner:debug] Error al cargar secciones", {
+      currentStep,
+      code,
+      message,
+      stack: e?.stack || null,
+      hint: "loadPlannerSections"
+    });
+    if (`${code} ${message}`.toLowerCase().includes("permission-denied")){
+      console.warn("[planner:debug] Hint: Revisar reglas de Firestore para esta colección");
+    }
+    if (`${code} ${message}`.toLowerCase().includes("err_blocked_by_client") || `${code} ${message}`.toLowerCase().includes("blocked_by_client") || `${code} ${message}`.toLowerCase().includes("network")){
+      console.warn("[planner:debug] Hint: Revisar AdBlock/extensiones o CSP");
     }
     CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
     normalizedSections = [];
@@ -484,20 +526,39 @@ async function loadPlannerSections(){
 
   CTX.aulaState.plannerSections = normalizedSections;
   CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
-  console.debug("[planificador] sections loaded:", normalizedSections.length, { source });
+  console.debug("[planner:debug] source seleccionado final", source);
+  console.debug("[planner:debug] sections loaded", {
+    normalizedCount: normalizedSections.length,
+    courseSectionsCount: CTX.aulaState.courseSections.length
+  });
+  console.groupEnd();
   return normalizedSections;
 }
 
 async function refreshPlannerSections(options = {}){
+  console.groupCollapsed("[planner:debug] refreshPlannerSections");
   void options;
+  console.debug("[planner:debug] before", {
+    uiState: plannerSectionsUiState,
+    courseSections: CTX?.aulaState?.courseSections?.length || 0,
+    plannerSections: CTX?.aulaState?.plannerSections?.length || 0
+  });
   hydratePlannerColorStateFromRemote();
   plannerSectionsUiState = "loading";
+  console.debug("[planner:debug] uiState -> loading");
   renderSectionsList();
   await loadPlannerSections();
   plannerSectionsUiState = "ready";
+  console.debug("[planner:debug] uiState -> ready");
   renderSectionsList();
   renderSelectedSectionsList();
   renderPlannerPreview();
+  console.debug("[planner:debug] after", {
+    uiState: plannerSectionsUiState,
+    courseSections: CTX?.aulaState?.courseSections?.length || 0,
+    plannerSections: CTX?.aulaState?.plannerSections?.length || 0
+  });
+  console.groupEnd();
 }
 
 function renderPresetsList(){
@@ -802,8 +863,20 @@ function makeId(){
 }
 
 async function persistPresetsToFirestore(){
+  console.groupCollapsed("[planner:debug] persistPresetsToFirestore");
   const currentUser = CTX?.getCurrentUser?.();
-  if (!currentUser) return;
+  if (!currentUser){
+    console.warn("[planner:debug] persistPresetsToFirestore sin usuario autenticado");
+    console.groupEnd();
+    return;
+  }
+  const agendaSummary = Object.fromEntries(dayKeys.map((day) => [day, (CTX?.aulaState?.agendaData?.[day] || []).length]));
+  console.debug("[planner:debug] persist payload resumen", {
+    uid: currentUser.uid,
+    presetsLength: CTX?.aulaState?.presets?.length || 0,
+    activeSelectedSectionIdsLength: CTX?.aulaState?.activeSelectedSectionIds?.length || 0,
+    agendaSummary
+  });
   const ref = doc(CTX.db, "planner", currentUser.uid);
   const payload = {
     schedulePresets: CTX.aulaState.presets.map((plan) => ({
@@ -816,7 +889,18 @@ async function persistPresetsToFirestore(){
     plannerColorCursor: plannerColorState.cursor,
     agenda: buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds)
   };
-  await setDoc(ref, payload, { merge: true });
+  try {
+    await setDoc(ref, payload, { merge: true });
+    console.debug("[planner:debug] persistPresetsToFirestore finalizó");
+  } catch (e) {
+    console.error("[planner:debug] Error persistPresetsToFirestore", {
+      code: e?.code || null,
+      message: e?.message || String(e)
+    });
+    throw e;
+  } finally {
+    console.groupEnd();
+  }
 }
 
 function loadPreset(id){
@@ -934,8 +1018,10 @@ async function deletePreset(presetId, presetName){
 
 async function commitPlanState(options = {}){
   const { closePlanner = false } = options;
+  console.debug("[planner:debug] commitPlanState llamado", { closePlanner });
   CTX.aulaState.agendaData = buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
   await persistPresetsToFirestore();
+  console.debug("[planner:debug] commitPlanState persist finalizó");
   refreshAgendaUI();
   if (closePlanner) closePlannerModal();
 }
@@ -953,26 +1039,38 @@ function refreshAgendaUI(){
 }
 
 async function applyLiveChange(){
+  console.debug("[planner:debug] applyLiveChange llamado");
   const activePreset = CTX.aulaState.presets.find((plan) => plan.id === CTX.aulaState.activePresetId);
   if (activePreset){
     setPlanSectionIds(activePreset, CTX.aulaState.activeSelectedSectionIds);
     activePreset.updatedAt = Date.now();
   }
   await commitPlanState();
+  console.debug("[planner:debug] applyLiveChange persist finalizó");
 }
 
 function toggleSectionInPreset(sectionId){
   const idx = CTX.aulaState.activeSelectedSectionIds.indexOf(sectionId);
+  const wasSelected = idx >= 0;
   if (idx >= 0){
     CTX.aulaState.activeSelectedSectionIds.splice(idx, 1);
   } else {
     const sec = getSectionById(sectionId);
     if (!sec) return;
     const conflict = getConflictInfo(sec);
-    if (conflict.blocked){ CTX?.notifyWarn?.(conflict.reason); return; }
+    if (conflict.blocked){
+      console.warn("[planner:debug] toggleSectionInPreset bloqueado", { sectionId, reason: conflict.reason });
+      CTX?.notifyWarn?.(conflict.reason);
+      return;
+    }
     ensureColorForSubject(getSectionSubjectSlug(sec));
     CTX.aulaState.activeSelectedSectionIds.push(sectionId);
   }
+  console.debug("[planner:debug] toggleSectionInPreset", {
+    sectionId,
+    wasSelected,
+    newSelectedCount: CTX.aulaState.activeSelectedSectionIds.length
+  });
   applyLiveChange().catch(() => {});
 }
 
@@ -1319,8 +1417,15 @@ function hasMissingPresetModalEl(els){
 function initPresetToAgendaModalUI(){
   if (didBindPresetToAgendaModalUI) return;
   const els = getPresetModalEls();
+  console.debug("[planner:debug] initPresetToAgendaModalUI DOM", {
+    presetToAgendaModalBg: Boolean(els.presetToAgendaModalBg),
+    presetApplySelect: Boolean(els.presetApplySelect),
+    presetApplyInfo: Boolean(els.presetApplyInfo),
+    btnPresetApplyCancel: Boolean(els.btnPresetApplyCancel),
+    btnPresetApplyConfirm: Boolean(els.btnPresetApplyConfirm)
+  });
   if (hasMissingPresetModalEl(els)){
-    console.warn("[planner] Modal 'Aplicar preset a agenda' no está listo en el DOM.");
+    console.warn("[planner:debug] Modal 'Aplicar preset a agenda' no está listo en el DOM.");
     return;
   }
 
@@ -1348,7 +1453,18 @@ function initPresetToAgendaModalUI(){
 
 function openPresetToAgendaModal(){
   const { presetToAgendaModalBg, presetApplySelect, presetApplyInfo } = getPresetModalEls();
-  if (!presetToAgendaModalBg || !presetApplySelect || !presetApplyInfo) return;
+  if (!presetToAgendaModalBg || !presetApplySelect || !presetApplyInfo){
+    console.warn("[planner:debug] openPresetToAgendaModal sin nodos DOM requeridos", {
+      presetToAgendaModalBg: Boolean(presetToAgendaModalBg),
+      presetApplySelect: Boolean(presetApplySelect),
+      presetApplyInfo: Boolean(presetApplyInfo)
+    });
+    return;
+  }
+  console.debug("[planner:debug] openPresetToAgendaModal presets", {
+    presetsCount: CTX?.aulaState?.presets?.length || 0,
+    activePresetId: CTX?.aulaState?.activePresetId || ""
+  });
   if (!CTX.aulaState.presets.length){
     CTX?.notifyWarn?.("Todavía no tenés presets guardados.");
     return;
@@ -1362,18 +1478,46 @@ function openPresetToAgendaModal(){
   });
   presetApplySelect.value = CTX.aulaState.activePresetId || CTX.aulaState.presets[0].id;
   const p = CTX.aulaState.presets.find(x => x.id === presetApplySelect.value);
+  console.debug("[planner:debug] openPresetToAgendaModal seleccionado", {
+    selectedPresetId: presetApplySelect.value,
+    selectedPresetName: p?.name || ""
+  });
   presetApplyInfo.textContent = p ? `Preset: ${p.name || "Sin nombre"} · ${(p.sectionIds || []).length} comisiones.` : "—";
   presetToAgendaModalBg.style.display = "flex";
 }
 
 const Planner = {
   init(ctx){
+    console.groupCollapsed("[planner:debug] Planner.init");
     CTX = ctx;
-    console.log("🛠️ Planner.init ejecutándose");
+    const currentUser = CTX?.getCurrentUser?.();
+    console.debug("[planner:debug] init started", {
+      hasCtx: Boolean(ctx),
+      hasDb: Boolean(ctx?.db),
+      hasAulaState: Boolean(ctx?.aulaState),
+      uid: currentUser?.uid || null,
+      aulaCareerSlug: ctx?.aulaState?.careerSlug || "",
+      ctxCareerSlug: ctx?.careerSlug || "",
+      presetsCount: ctx?.aulaState?.presets?.length || 0,
+      activePresetId: ctx?.aulaState?.activePresetId || ""
+    });
+    console.debug("[planner:debug] Planner.init DOM", {
+      plannerModalBg: Boolean(document.getElementById("plannerModalBg")),
+      sectionsList: Boolean(document.getElementById("sectionsList")),
+      sectionsSubjectFilter: Boolean(document.getElementById("sectionsSubjectFilter")),
+      plannerSearch: Boolean(document.getElementById("plannerSearch")),
+      presetToAgendaModalBg: Boolean(document.getElementById("presetToAgendaModalBg")),
+      presetApplySelect: Boolean(document.getElementById("presetApplySelect")),
+      presetApplyInfo: Boolean(document.getElementById("presetApplyInfo")),
+      subjectsModalBg: Boolean(document.getElementById("subjectsModalBg")),
+      subjectsModalNameSelect: Boolean(document.getElementById("subjectsModalNameSelect")),
+      subjectsModalColor: Boolean(document.getElementById("subjectsModalColor"))
+    });
     normalizePlansState();
     plannerColorState = loadColorStateFromLocalStorage();
     hydratePlannerColorStateFromRemote();
     initPresetToAgendaModalUI();
+    console.groupEnd();
   },
   refreshPlannerSections,
   loadPlannerSections,
