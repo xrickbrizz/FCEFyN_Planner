@@ -357,13 +357,15 @@ function normalizeSectionItems(rawSection, idSeed = ""){
   const sectionId = String(rawSection?.sectionId || rawSection?.id || rawSection?.commission || idSeed || makeId()).trim();
   const subjectName = String(rawSection?.subjectName || rawSection?.subject || rawSection?.materia || rawSection?.name || rawSection?.subjectSlug || "").trim();
   const subjectSlug = slugify(rawSection?.subjectSlug || rawSection?.subjectId || rawSection?.code || subjectName);
-  const label = String(rawSection?.label || rawSection?.commission || rawSection?.comision || rawSection?.name || sectionId).trim();
+  const label = String(rawSection?.label || rawSection?.commission || rawSection?.comision || rawSection?.name || rawSection?.id || sectionId).trim();
   const room = String(rawSection?.room || rawSection?.aula || "").trim();
   const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
-  const daysRaw = Array.isArray(rawSection?.days)
-    ? rawSection.days
-    : Array.isArray(rawSection?.horarios)
-      ? rawSection.horarios
+  const hasHorariosObjects = Array.isArray(rawSection?.horarios) && rawSection.horarios.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
+  const hasDaysObjects = Array.isArray(rawSection?.days) && rawSection.days.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
+  const daysRaw = hasHorariosObjects
+    ? rawSection.horarios
+    : hasDaysObjects
+      ? rawSection.days
       : (rawSection?.day || rawSection?.dia || rawSection?.start || rawSection?.inicio)
         ? [rawSection]
         : [];
