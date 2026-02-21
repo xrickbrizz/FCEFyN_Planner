@@ -262,7 +262,7 @@
     --mobile-bottom-active: #e2e8f0;
   }
 }
-@media (max-width:500px){
+@media (max-width:650px){
   .weather-widget,.home-notices-panel{
     width: 27rem;
   }
@@ -276,7 +276,7 @@
   }
 
 }
-@media (max-width:500px) {
+@media (max-width:650px) {
       .streak-overlay{
       top: 8px;
       left: 158px;
