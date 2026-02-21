@@ -9,7 +9,9 @@ import {
   addDoc,
   setDoc,
   doc,
-  getDoc
+  getDoc,
+  getFunctions,
+  httpsCallable
 } from "../core/firebase.js";
 
 let CTX = null;

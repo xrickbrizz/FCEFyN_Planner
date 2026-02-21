@@ -58,7 +58,6 @@ export function initNav(ctx = {}) {
   console.log("[nav] init start", ctx);
   try {
     const mountId = ctx.mountId || "quickSidebarMount";
-    const toggleId = ctx.toggleId || "sidebarToggle";
     const layoutId = ctx.layoutId || "pageLayout";
     const items = Array.isArray(ctx.items) && ctx.items.length ? ctx.items : navItems;
     const showTab = ctx.showTab;
@@ -71,9 +70,7 @@ export function initNav(ctx = {}) {
       console.log("[nav] binding click", item.id);
     });
 
-    const toggleBtn = document.getElementById(toggleId);
     const layout = document.getElementById(layoutId);
-    let isOpenByClick = false;
     let isOpenByHover = false;
 
     const isMobile = () =>
@@ -92,7 +89,7 @@ export function initNav(ctx = {}) {
           console.log("[nav] showTab called", id);
           showTab(id);
         }
-        if (!isOpenByClick && !isMobile()) collapseSidebar();
+        if (!isMobile()) collapseSidebar();
       }
     });
 
@@ -109,19 +106,16 @@ export function initNav(ctx = {}) {
     }
 
     function syncDesktopSidebar() {
-      const shouldStayOpen = isOpenByClick || isOpenByHover;
-      toggleBtn?.classList.toggle("active", isOpenByClick);
-      if (shouldStayOpen) expandSidebar();
+      if (isOpenByHover) expandSidebar();
       else collapseSidebar();
     }
 
     const isInsideActivationArea = (target) => {
       if (!(target instanceof Node)) return false;
-      return mount.contains(target) || toggleBtn?.contains(target);
+      return mount.contains(target);
     };
 
     function clearDesktopSidebarState() {
-      isOpenByClick = false;
       isOpenByHover = false;
       syncDesktopSidebar();
     }
@@ -138,7 +132,7 @@ export function initNav(ctx = {}) {
     });
     mount.addEventListener("mouseleave", (event) => {
       if (isMobile()) return;
-      // Si el cursor salió del área botón+sidebar, limpiamos hover y click.
+      // Si el cursor salió del área de la sidebar, limpiamos estado.
       if (!isInsideActivationArea(event.relatedTarget)) {
         clearDesktopSidebarState();
         return;
@@ -146,34 +140,6 @@ export function initNav(ctx = {}) {
       isOpenByHover = false;
       syncDesktopSidebar();
     });
-
-    if (toggleBtn && sidebarCtrl) {
-      toggleBtn.addEventListener("mouseenter", () => {
-        if (isMobile()) return;
-        isOpenByHover = true;
-        syncDesktopSidebar();
-      });
-
-      toggleBtn.addEventListener("mouseleave", (event) => {
-        if (isMobile()) return;
-        if (!isInsideActivationArea(event.relatedTarget)) {
-          clearDesktopSidebarState();
-          return;
-        }
-        isOpenByHover = false;
-        syncDesktopSidebar();
-      });
-
-      toggleBtn.addEventListener("click", () => {
-        if (isMobile()) {
-          sidebarCtrl.toggle();
-          return;
-        }
-        // Desktop: apertura por click separada del hover, sin dejar estado pegado al salir.
-        isOpenByClick = !isOpenByClick;
-        syncDesktopSidebar();
-      });
-    }
 
 
     /*const viewportMq = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null; */
