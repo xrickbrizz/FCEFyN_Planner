@@ -414,6 +414,31 @@ function convertPlannerSectionsToCourseSections(sections){
   return [...grouped.values()];
 }
 
+function debugLogComisionesSnapshot(snap, label = "[planner:debug] comisiones snapshot"){
+  const rows = [];
+  snap?.forEach((docSnap) => {
+    const data = docSnap.data() || {};
+    const careerSlugs = Array.isArray(data.careerSlugs) ? data.careerSlugs : [];
+    rows.push({
+      docId: docSnap.id,
+      subjectSlug: data.subjectSlug || null,
+      anio: data.anio ?? null,
+      tipo: data.tipo ?? null,
+      sede: data.sede ?? null,
+      careerSlugsCount: careerSlugs.length,
+      careerSlugs
+    });
+  });
+
+  console.groupCollapsed(label);
+  console.log("total", snap?.size ?? 0);
+  rows.forEach((row) => {
+    console.log("doc", row);
+  });
+  console.table(rows);
+  console.groupEnd();
+}
+
 async function loadPlannerSections(){
   console.groupCollapsed("[planner:debug] loadPlannerSections");
   const normalizeComisionesDocs = (snap) => {
@@ -438,6 +463,9 @@ async function loadPlannerSections(){
   };
 
   try {
+    const debugComisionesSnap = await getDocs(query(collection(CTX.db, "comisiones"), limit(500)));
+    debugLogComisionesSnapshot(debugComisionesSnap, "[planner:debug] comisiones (limit 500)");
+
     console.debug("[planner:debug] fetch comisiones sin filtro", { maxFetch: MAX_FETCH });
     const snap = await getDocs(query(collection(CTX.db, "comisiones"), limit(MAX_FETCH)));
     const normalizedSections = normalizeComisionesDocs(snap);
@@ -689,11 +717,6 @@ function renderSectionsList(){
   const list = document.getElementById("sectionsList");
   if (!list) return;
   list.innerHTML = "";
-
-  if (plannerSectionsUiState === "loading"){
-    list.innerHTML = '<div class="small-muted">Cargando comisiones…</div>';
-    return;
-  }
 
   const allSections = CTX.aulaState.courseSections.slice();
   updateSectionsSubjectFilter();
