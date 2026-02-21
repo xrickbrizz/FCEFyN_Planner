@@ -436,93 +436,67 @@ async function loadPlannerSections(){
   let normalizedSections = [];
   let currentStep = "idle";
 
-  try {
-    currentStep = "courseSections where careerSlug";
-    console.debug("[planner:debug] Intentando query 1: courseSections where careerSlug", { careerSlug });
-    const byCareerSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("careerSlug", "==", careerSlug)));
-    console.debug("[planner:debug] Resultado query 1", { snapshotSize: byCareerSnap?.size ?? null });
-    normalizedSections = normalizeDocs(byCareerSnap);
-    console.debug("[planner:debug] Normalizadas query 1", { normalizedCount: normalizedSections.length });
-    if (!normalizedSections.length){
-      currentStep = "courseSections where degreeSlug";
-      console.debug("[planner:debug] Intentando query 2: courseSections where degreeSlug", { careerSlug });
-      const byDegreeSnap = await getDocs(query(collection(CTX.db, "courseSections"), where("degreeSlug", "==", careerSlug)));
-      console.debug("[planner:debug] Resultado query 2", { snapshotSize: byDegreeSnap?.size ?? null });
-      normalizedSections = normalizeDocs(byDegreeSnap);
-      console.debug("[planner:debug] Normalizadas query 2", { normalizedCount: normalizedSections.length });
-    }
-    if (!normalizedSections.length){
-      currentStep = "courseSections sample+filter";
-      console.debug("[planner:debug] Intentando query 3: courseSections sample+filter", { limit: 80, careerSlug });
-      const sample = await getDocs(query(collection(CTX.db, "courseSections"), limit(80)));
-      console.debug("[planner:debug] Resultado query 3", { snapshotSize: sample?.size ?? null });
-      normalizedSections = normalizeDocs({
-        forEach(callback){
-          sample.forEach((docSnap) => {
-            const data = docSnap.data() || {};
-            const candidate = slugify(data.careerSlug || data.degreeSlug || data.planSlug || data.career || data.degree || "");
-            if (candidate === careerSlug) callback(docSnap);
-          });
-        }
-      });
-      console.debug("[planner:debug] Normalizadas query 3", { normalizedCount: normalizedSections.length });
-    }
+source = "comisiones";
+const careerKey = slugify(careerSlug);
+const slugVariants = Array.from(new Set([
+  careerSlug,
+  careerKey,
+  `ingenieria-${careerKey}`,
+  `ingenieria-en-${careerKey}`
+].filter(Boolean)));
 
-    if (!normalizedSections.length){
-      source = "comisiones";
-      currentStep = "comisiones where careerSlug";
-      console.debug("[planner:debug] Intentando query 4: comisiones where careerSlug", { careerSlug });
-      const byCareer = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", careerSlug)));
-      console.debug("[planner:debug] Resultado query 4", { snapshotSize: byCareer?.size ?? null });
-      normalizedSections = normalizeDocs(byCareer);
-      console.debug("[planner:debug] Normalizadas query 4", { normalizedCount: normalizedSections.length });
+console.debug("[planner:debug] Variants careerSlug", { careerSlug, careerKey, slugVariants });
 
-      if (!normalizedSections.length){
-        currentStep = "comisiones array-contains";
-        console.debug("[planner:debug] Intentando query 5: comisiones array-contains", { careerSlug });
-        const byArray = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", careerSlug)));
-        console.debug("[planner:debug] Resultado query 5", { snapshotSize: byArray?.size ?? null });
-        normalizedSections = normalizeDocs(byArray);
-        console.debug("[planner:debug] Normalizadas query 5", { normalizedCount: normalizedSections.length });
-      }
-
-      if (!normalizedSections.length){
-        currentStep = "comisiones doc(careerSlug)";
-        console.debug("[planner:debug] Intentando query 6: comisiones doc(careerSlug)", { careerSlug });
-        const comisionDoc = await getDoc(doc(CTX.db, "comisiones", careerSlug));
-        console.debug("[planner:debug] Resultado query 6", { exists: comisionDoc.exists() });
-        if (comisionDoc.exists()){
-          const payload = comisionDoc.data() || {};
-          const nested = Array.isArray(payload.sections)
-            ? payload.sections
-            : Array.isArray(payload.items)
-              ? payload.items
-              : [];
-          normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
-          console.debug("[planner:debug] Normalizadas query 6", { normalizedCount: normalizedSections.length });
-          source = "comisiones-doc";
-        }
-      }
-    }
-  } catch (e) {
-    const code = String(e?.code || "");
-    const message = String(e?.message || "");
-    console.error("[planner:debug] Error al cargar secciones", {
-      currentStep,
-      code,
-      message,
-      stack: e?.stack || null,
-      hint: "loadPlannerSections"
-    });
-    if (`${code} ${message}`.toLowerCase().includes("permission-denied")){
-      console.warn("[planner:debug] Hint: Revisar reglas de Firestore para esta colección");
-    }
-    if (`${code} ${message}`.toLowerCase().includes("err_blocked_by_client") || `${code} ${message}`.toLowerCase().includes("blocked_by_client") || `${code} ${message}`.toLowerCase().includes("network")){
-      console.warn("[planner:debug] Hint: Revisar AdBlock/extensiones o CSP");
-    }
-    CTX?.notifyError?.("Error al cargar comisiones: " + (e.message || e));
-    normalizedSections = [];
+// 1) Probar queries where careerSlug == variant
+for (const slug of slugVariants){
+  currentStep = `comisiones where careerSlug == ${slug}`;
+  console.debug("[planner:debug] Intentando", currentStep);
+  const snap = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", slug)));
+  console.debug("[planner:debug] Resultado", { slug, snapshotSize: snap?.size ?? null });
+  normalizedSections = normalizeDocs(snap);
+  console.debug("[planner:debug] Normalizadas", { slug, normalizedCount: normalizedSections.length });
+  if (normalizedSections.length){
+    break;
   }
+}
+
+// 2) Probar array-contains con variants (si tu schema lo usa)
+if (!normalizedSections.length){
+  for (const slug of slugVariants){
+    currentStep = `comisiones array-contains careerSlugs has ${slug}`;
+    console.debug("[planner:debug] Intentando", currentStep);
+    const snap = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", slug)));
+    console.debug("[planner:debug] Resultado", { slug, snapshotSize: snap?.size ?? null });
+    normalizedSections = normalizeDocs(snap);
+    console.debug("[planner:debug] Normalizadas", { slug, normalizedCount: normalizedSections.length });
+    if (normalizedSections.length){
+      break;
+    }
+  }
+}
+
+// 3) Probar doc(comisiones/{id}) con variants (muchas veces el id es el slug)
+if (!normalizedSections.length){
+  for (const slug of slugVariants){
+    currentStep = `comisiones doc(${slug})`;
+    console.debug("[planner:debug] Intentando", currentStep);
+    const comisionDoc = await getDoc(doc(CTX.db, "comisiones", slug));
+    console.debug("[planner:debug] Resultado doc", { slug, exists: comisionDoc.exists() });
+
+    if (comisionDoc.exists()){
+      const payload = comisionDoc.data() || {};
+      const nested = Array.isArray(payload.sections)
+        ? payload.sections
+        : Array.isArray(payload.items)
+          ? payload.items
+          : [];
+      normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
+      source = "comisiones-doc";
+      console.debug("[planner:debug] Normalizadas doc", { slug, normalizedCount: normalizedSections.length });
+      if (normalizedSections.length) break;
+    }
+  }
+}
 
   CTX.aulaState.plannerSections = normalizedSections;
   CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
@@ -1368,6 +1342,7 @@ function bindPlannerGlobalListeners(){
 
 function initPlanificadorUI(){
   normalizePlansState();
+  initPresetToAgendaModalUI();
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
   const plannerSearchInput = document.getElementById("plannerSearch");
 
