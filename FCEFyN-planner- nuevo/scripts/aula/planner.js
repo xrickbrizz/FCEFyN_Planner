@@ -19,6 +19,7 @@ let plannerModalSnapshot = null;
 let didBindPlannerGlobalListeners = false;
 let plannerSectionsUiState = "idle";
 let renamePresetDialogRef = null;
+let didBindPresetToAgendaModalUI = false;
 
 function norm(value){
   return String(value || "")
@@ -804,18 +805,18 @@ async function persistPresetsToFirestore(){
   const currentUser = CTX?.getCurrentUser?.();
   if (!currentUser) return;
   const ref = doc(CTX.db, "planner", currentUser.uid);
-  const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
-  data.schedulePresets = CTX.aulaState.presets.map((plan) => ({
-    ...plan,
-    sectionIds: getPlanSectionIds(plan),
-    selectedComisiones: getPlanSectionIds(plan)
-  }));
-  data.activePresetId = CTX.aulaState.activePresetId || "";
-  data.plannerSubjectColors = plannerColorState.map;
-  data.plannerColorCursor = plannerColorState.cursor;
-  data.agenda = buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds);
-  await setDoc(ref, data);
+  const payload = {
+    schedulePresets: CTX.aulaState.presets.map((plan) => ({
+      ...plan,
+      sectionIds: getPlanSectionIds(plan),
+      selectedComisiones: getPlanSectionIds(plan)
+    })),
+    activePresetId: CTX.aulaState.activePresetId || "",
+    plannerSubjectColors: plannerColorState.map,
+    plannerColorCursor: plannerColorState.cursor,
+    agenda: buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds)
+  };
+  await setDoc(ref, payload, { merge: true });
 }
 
 function loadPreset(id){
@@ -1301,13 +1302,36 @@ function renderPlannerAll(){
   filterPlannerItems(plannerSearchQuery);
 }
 
-const presetToAgendaModalBg = document.getElementById("presetToAgendaModalBg");
-const presetApplySelect = document.getElementById("presetApplySelect");
-const presetApplyInfo = document.getElementById("presetApplyInfo");
-const btnPresetApplyCancel = document.getElementById("btnPresetApplyCancel");
-const btnPresetApplyConfirm = document.getElementById("btnPresetApplyConfirm");
+function getPresetModalEls(){
+  return {
+    presetToAgendaModalBg: document.getElementById("presetToAgendaModalBg"),
+    presetApplySelect: document.getElementById("presetApplySelect"),
+    presetApplyInfo: document.getElementById("presetApplyInfo"),
+    btnPresetApplyCancel: document.getElementById("btnPresetApplyCancel"),
+    btnPresetApplyConfirm: document.getElementById("btnPresetApplyConfirm")
+  };
+}
+
+function hasMissingPresetModalEl(els){
+  return Object.values(els).some((el) => !el);
+}
 
 function initPresetToAgendaModalUI(){
+  if (didBindPresetToAgendaModalUI) return;
+  const els = getPresetModalEls();
+  if (hasMissingPresetModalEl(els)){
+    console.warn("[planner] Modal 'Aplicar preset a agenda' no está listo en el DOM.");
+    return;
+  }
+
+  const {
+    presetToAgendaModalBg,
+    presetApplySelect,
+    presetApplyInfo,
+    btnPresetApplyCancel,
+    btnPresetApplyConfirm
+  } = els;
+
   btnPresetApplyCancel?.addEventListener("click", () => { if (presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none"; });
   presetToAgendaModalBg?.addEventListener("click", (e) => { if (e.target === presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none"; });
   presetApplySelect?.addEventListener("change", () => {
@@ -1319,9 +1343,12 @@ function initPresetToAgendaModalUI(){
     if (presetToAgendaModalBg) presetToAgendaModalBg.style.display = "none";
   });
   document.getElementById("btnAgendaFromPreset")?.addEventListener("click", openPresetToAgendaModal);
+  didBindPresetToAgendaModalUI = true;
 }
 
 function openPresetToAgendaModal(){
+  const { presetToAgendaModalBg, presetApplySelect, presetApplyInfo } = getPresetModalEls();
+  if (!presetToAgendaModalBg || !presetApplySelect || !presetApplyInfo) return;
   if (!CTX.aulaState.presets.length){
     CTX?.notifyWarn?.("Todavía no tenés presets guardados.");
     return;
