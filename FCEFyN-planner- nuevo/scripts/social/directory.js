@@ -1,4 +1,4 @@
-import { collection, getDocs, getDoc, doc, query, where, orderBy, limit } from "../core/firebase.js";
+import { collection, getDocs, getDoc, doc, query, limit } from "../core/firebase.js";
 
 let CTX = null;
 let previousFocusedElement = null;
@@ -7,10 +7,9 @@ let friendSearchDebounceTimer = null;
 let activeSearchRequestId = 0;
 const searchAvatarUrlCache = new Map();
 
-const DEBUG_FRIEND_SEARCH = false;
-const FRIEND_SEARCH_MIN_CHARS = 1;
-const FRIEND_SEARCH_DEBOUNCE_MS = 300;
-const FRIEND_SEARCH_MAX_RESULTS = 15;
+const DEBUG_FRIEND_SEARCH = true;
+const FRIEND_SEARCH_DEBOUNCE_MS = 200;
+const FRIEND_SEARCH_MAX_RESULTS = 100;
 
 function normalizeText(value){
   const raw = (value || "").toString().trim().toLowerCase();
@@ -30,14 +29,8 @@ function ensureSocialSearchState(){
   state.usersSearchResults ??= [];
   state.usersLoading ??= false;
   state.usersError ??= "";
+  state.friendSearchDebugPool ??= [];
   return state;
-}
-
-function buildExcludedUserSet(){
-  const excluded = new Set();
-  const currentUser = CTX?.getCurrentUser?.();
-  if (currentUser?.uid) excluded.add(currentUser.uid);
-  return excluded;
 }
 
 function toggleSearchOverlay(isOpen){
@@ -49,7 +42,9 @@ function toggleSearchOverlay(isOpen){
   if (isOpen){
     previousFocusedElement = document.activeElement;
     resetSearchState();
-    renderUsersSearchList();
+    state.usersSearchInput.value = "";
+    const requestId = ++activeSearchRequestId;
+    performUsersSearch("", requestId);
     state.usersSearchInput?.focus();
   } else {
     resetSearchState();
@@ -146,24 +141,6 @@ function renderUsersSearchList(){
     return;
   }
 
-  if (!queryText){
-    state.usersSearchList.innerHTML = `
-      <div class="friend-search-empty">
-        <div class="friend-search-empty-icon" aria-hidden="true">⌁</div>
-        <div class="friend-search-empty-title">Escribí para buscar usuarios (por nombre o correo)</div>
-      </div>
-    `;
-    return;
-  }
-
-  if (queryText.length < FRIEND_SEARCH_MIN_CHARS){
-    state.usersSearchList.innerHTML = `
-      <div class="friend-search-empty">
-        <div class="friend-search-empty-title">Escribí al menos ${FRIEND_SEARCH_MIN_CHARS} caracteres</div>
-      </div>
-    `;
-    return;
-  }
 
   const matches = state.usersSearchResults || [];
 
@@ -211,14 +188,6 @@ function resetSearchState(){
   if (state.usersSearchInput) state.usersSearchInput.value = "";
 }
 
-function mergeUsersByUid(listA = [], listB = []){
-  const map = new Map();
-  [...listA, ...listB].forEach((user) => {
-    if (user?.uid && !map.has(user.uid)) map.set(user.uid, user);
-  });
-  return Array.from(map.values());
-}
-
 function shouldSearchAsEmail(queryText){
   return queryText.includes("@");
 }
@@ -228,88 +197,69 @@ function toSearchableProfile(docSnap){
   return { uid: docSnap.id, ...data };
 }
 
-function excludeNotAllowedUsers(users = []){
+async function loadDebugUsersPool(){
   const state = ensureSocialSearchState();
-  const excluded = buildExcludedUserSet();
-  (state?.friendsList || []).forEach((friend) => {
-    if (friend?.otherUid) excluded.add(friend.otherUid);
-  });
-  return users.filter((user) => user?.uid && !excluded.has(user.uid));
-}
-
-async function runPrefixQuery(fieldName, normalizedQuery){
-  const usersRef = collection(CTX.db, "publicUsers");
-  const q = query(
-    usersRef,
-    where(fieldName, ">=", normalizedQuery),
-    where(fieldName, "<=", `${normalizedQuery}\uf8ff`),
-    orderBy(fieldName),
-    limit(FRIEND_SEARCH_MAX_RESULTS)
-  );
-  const snap = await getDocs(q);
+  if (!state) return [];
+  if (Array.isArray(state.friendSearchDebugPool) && state.friendSearchDebugPool.length){
+    return state.friendSearchDebugPool;
+  }
+  const snap = await getDocs(query(collection(CTX.db, "publicUsers"), limit(FRIEND_SEARCH_MAX_RESULTS)));
   const users = [];
-  snap.forEach((docSnap) => {
-    users.push(toSearchableProfile(docSnap));
-  });
+  snap.forEach((docSnap) => users.push(toSearchableProfile(docSnap)));
+  state.friendSearchDebugPool = users;
+  if (DEBUG_FRIEND_SEARCH){
+    console.debug("[Mensajeria][Search] pool loaded", { poolSize: users.length, limit: FRIEND_SEARCH_MAX_RESULTS });
+  }
   return users;
 }
 
-async function runSearchQueries(normalizedQuery, rawInput){
-  const searchByEmail = shouldSearchAsEmail(normalizedQuery);
-  const trimmedInput = (rawInput || "").trim();
-
-  const namePromise = searchByEmail ? Promise.resolve([]) : runPrefixQuery("searchName", normalizedQuery);
-  const emailPromise = runPrefixQuery("searchEmail", normalizedQuery);
-  const usernamePromise = runPrefixQuery("searchUsername", normalizedQuery);
-  const uidPromise = trimmedInput
-    ? getDoc(doc(CTX.db, "publicUsers", trimmedInput))
-    : Promise.resolve(null);
-
-  const [nameMatches, emailMatches, usernameMatches, uidSnap] = await Promise.all([
-    namePromise,
-    emailPromise,
-    usernamePromise,
-    uidPromise
-  ]);
-
-  const uidExactMatches = uidSnap?.exists?.() ? [toSearchableProfile(uidSnap)] : [];
+function filterUsersLocally(users = [], rawInput = ""){
+  const normalizedQuery = normalizeText(rawInput);
+  const currentUid = CTX?.getCurrentUser?.()?.uid || "";
+  const filtered = users.filter((user) => {
+    if (!user?.uid) return false;
+    if (user.uid === currentUid) return false;
+    if (!normalizedQuery) return true;
+    const name = normalizeText(user.name || user.fullName || user.firstName || "");
+    const email = normalizeText(user.email || user.emailLower || "");
+    const uid = normalizeText(user.uid || "");
+    return name.includes(normalizedQuery) || email.includes(normalizedQuery) || uid.includes(normalizedQuery);
+  });
 
   if (DEBUG_FRIEND_SEARCH){
-    console.debug("[Mensajeria][Search] resultados crudos", {
-      name: nameMatches.length,
-      email: emailMatches.length,
-      username: usernameMatches.length,
-      uidExact: uidExactMatches.length
+    console.debug("[Mensajeria][Search] local filter", {
+      rawInput,
+      normalizedQuery,
+      pool: users.length,
+      result: filtered.length,
+      byEmailMode: shouldSearchAsEmail(normalizedQuery)
     });
   }
 
-  return { nameMatches, emailMatches, usernameMatches, uidExactMatches };
+  return filtered.slice(0, FRIEND_SEARCH_MAX_RESULTS);
 }
 
 async function performUsersSearch(rawInput, requestId){
   const state = ensureSocialSearchState();
   if (!state) return;
   const normalizedQuery = normalizeText(rawInput);
-  if (!normalizedQuery || normalizedQuery.length < FRIEND_SEARCH_MIN_CHARS) return;
 
   state.usersLoading = true;
   state.usersError = "";
   renderUsersSearchList();
 
   try{
-    const { nameMatches, emailMatches, usernameMatches, uidExactMatches } = await runSearchQueries(normalizedQuery, rawInput);
-
+    const pool = await loadDebugUsersPool();
     if (requestId !== activeSearchRequestId) return;
-    const merged = mergeUsersByUid(
-      mergeUsersByUid(nameMatches, emailMatches),
-      mergeUsersByUid(usernameMatches, uidExactMatches)
-    );
+    const filtered = filterUsersLocally(pool, rawInput);
     if (DEBUG_FRIEND_SEARCH){
-      console.debug("[Mensajeria][Search] post-merge", { merged: merged.length });
-    }
-    const filtered = excludeNotAllowedUsers(merged).slice(0, FRIEND_SEARCH_MAX_RESULTS);
-    if (DEBUG_FRIEND_SEARCH){
-      console.debug("[Mensajeria][Search] post-filter", { filtered: filtered.length });
+      console.debug("[Mensajeria][Search] final", {
+        rawInput,
+        normalizedQuery,
+        resultCount: filtered.length,
+        friendCount: (state.friendsList || []).length,
+        outgoingPending: (state.friendRequests?.outgoing || []).filter(req => req?.status === "pending").length
+      });
     }
     filtered.forEach((profile) => state.userProfileCache.set(profile.uid, profile));
     state.usersSearchResults = filtered;
@@ -335,20 +285,11 @@ async function performUsersSearch(rawInput, requestId){
 function handleFriendSearchInput(){
   const state = CTX?.socialState;
   if (!state?.usersSearchInput) return;
-  const queryText = normalizeText(state.usersSearchInput.value);
   state.usersError = "";
 
   if (friendSearchDebounceTimer){
     clearTimeout(friendSearchDebounceTimer);
     friendSearchDebounceTimer = null;
-  }
-
-  if (!queryText || queryText.length < FRIEND_SEARCH_MIN_CHARS){
-    activeSearchRequestId += 1;
-    state.usersLoading = false;
-    state.usersSearchResults = [];
-    renderUsersSearchList();
-    return;
   }
 
   const requestId = ++activeSearchRequestId;

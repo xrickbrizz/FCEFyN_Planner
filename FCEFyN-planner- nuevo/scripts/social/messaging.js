@@ -303,6 +303,48 @@ function subscribeMessages(chatId){
   }, (err) => console.error("messages snapshot error", err));
 }
 
+function clearChatSnapshotSubscription(){
+  if (CTX.socialState.messagesUnsubscribe){
+    CTX.socialState.messagesUnsubscribe();
+    CTX.socialState.messagesUnsubscribe = null;
+  }
+}
+
+function clearLegacyChatCache(chatId){
+  const uid = getCurrentUid();
+  const keysToDrop = [
+    "lastOpenedChat",
+    "selectedChatId",
+    "activeChatId",
+    uid ? `lastOpenedChat:${uid}` : "",
+    uid ? `selectedChatId:${uid}` : ""
+  ].filter(Boolean);
+
+  keysToDrop.forEach((key) => {
+    try{ localStorage.removeItem(key); }catch(_){ /* noop */ }
+  });
+
+  // Compatibilidad legacy: limpiamos cualquier key de cache que incluya el chat eliminado.
+  if (!chatId) return;
+  Object.keys(localStorage).forEach((key) => {
+    if (!key) return;
+    if (key.includes(chatId) && (key.toLowerCase().includes("chat") || key.toLowerCase().includes("mensaj"))){
+      try{ localStorage.removeItem(key); }catch(_){ /* noop */ }
+    }
+  });
+}
+
+function closeActiveChatSession(chatIdToClose = ""){
+  const activeChatId = CTX.socialState.activeChatId;
+  if (!activeChatId) return;
+  if (chatIdToClose && activeChatId !== chatIdToClose) return;
+  clearChatSnapshotSubscription();
+  CTX.socialState.activeChatId = null;
+  CTX.socialState.activeChatPartner = null;
+  setChatInputState(false, "Seleccioná un amigo para chatear");
+  renderMessaging();
+}
+
 async function ensureChat(uids){
   const users = Array.from(new Set((uids || []).filter(Boolean)));
   const chatId = composeChatId(users);
@@ -670,6 +712,8 @@ function handleChatMenuAction(action){
     patchActiveChatPrefs({ archived: true });
   } else if (action === "open-settings"){
     openChatSettingsModal();
+  } else if (action === "remove-friend"){
+    CTX.socialModules.Friends?.removeFriend?.();
   }
   closeContextMenu();
 }
@@ -841,6 +885,9 @@ const Messaging = {
   ensureChat,
   updatePresence,
   sortFriendsRows,
+  closeActiveChatSession,
+  clearLegacyChatCache,
+  clearChatSnapshotSubscription,
   getChatPref,
   setChatPref,
   getFriendUnreadCount,

@@ -8,7 +8,8 @@ import {
   updateDoc,
   addDoc,
   setDoc,
-  doc
+  doc,
+  getDoc
 } from "../core/firebase.js";
 
 let CTX = null;
@@ -48,6 +49,117 @@ function sortFriendsRows(rows){
     return CTX.socialModules.Messaging.sortFriendsRows(rows);
   }
   return (rows || []).slice();
+}
+
+async function collectRequestDocsBetween(uidA, uidB){
+  if (!uidA || !uidB) return [];
+  const requestsRef = collection(CTX.db, "friendRequests");
+  const queryPairs = [
+    ["fromUid", uidA],
+    ["fromUid", uidB],
+    ["senderUid", uidA],
+    ["senderUid", uidB],
+    ["senderId", uidA],
+    ["senderId", uidB],
+    ["toUid", uidA],
+    ["toUid", uidB],
+    ["receiverUid", uidA],
+    ["receiverUid", uidB],
+    ["recipientUid", uidA],
+    ["recipientUid", uidB]
+  ];
+
+  const docsMap = new Map();
+  const snaps = await Promise.all(queryPairs.map(([field, value]) => getDocs(query(requestsRef, where(field, "==", value)))));
+  snaps.forEach((snap) => {
+    snap.forEach((docSnap) => {
+      const data = docSnap.data() || {};
+      const from = data.fromUid || data.senderUid || data.senderId || "";
+      const to = data.toUid || data.receiverUid || data.recipientUid || "";
+      const isBetweenUsers = (from === uidA && to === uidB) || (from === uidB && to === uidA);
+      if (isBetweenUsers) docsMap.set(docSnap.id, docSnap);
+    });
+  });
+
+  return Array.from(docsMap.values());
+}
+
+async function removeFriend(friendUidParam = ""){
+  const currentUser = CTX?.getCurrentUser?.();
+  const currentUid = currentUser?.uid || "";
+  const activePartner = CTX?.socialState?.activeChatPartner || {};
+  const friendUid = friendUidParam || activePartner.otherUid || "";
+  if (!currentUid || !friendUid){
+    CTX?.notifyWarn?.("No se pudo identificar al amigo a eliminar.");
+    return;
+  }
+
+  const friendRow = (CTX.socialState.friendsList || []).find((f) => f.otherUid === friendUid);
+  const chatId = friendRow?.chatId
+    || activePartner.chatId
+    || CTX.socialModules.Messaging?.composeChatId?.([currentUid, friendUid])
+    || [currentUid, friendUid].sort().join("__");
+  const friendLabel = friendRow?.otherProfile?.name || friendRow?.otherProfile?.fullName || friendUid;
+
+  if (!window.confirm(`¿Eliminar a ${friendLabel} de tus amistades?\n\nNo se borrará el historial del chat.`)){
+    return;
+  }
+
+  try{
+    console.debug("[Mensajeria][removeFriend] start", { currentUid, friendUid, chatId });
+
+    // Legacy note: antes sólo existía friends/{chatId}. Mantenemos compatibilidad marcando estado inactivo
+    // en lugar de borrar mensajes/chats, así se evita romper historial y se permite re-agregar después.
+    await setDoc(doc(CTX.db, "friends", chatId), {
+      chatId,
+      uids: [currentUid, friendUid],
+      friendshipActive: false,
+      status: "removed",
+      removedAt: serverTimestamp(),
+      removedBy: currentUid,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    const chatRef = doc(CTX.db, "chats", chatId);
+    const chatSnap = await getDoc(chatRef);
+    if (chatSnap.exists()){
+      await updateDoc(chatRef, {
+        friendshipActive: false,
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    const requestDocs = await collectRequestDocsBetween(currentUid, friendUid);
+    console.debug("[Mensajeria][removeFriend] pending requests found", { count: requestDocs.length });
+    await Promise.all(requestDocs.map((reqDoc) => updateDoc(doc(CTX.db, "friendRequests", reqDoc.id), {
+      status: "cancelled",
+      cancelledBy: currentUid,
+      updatedAt: serverTimestamp(),
+      cancelReason: "friend_removed"
+    })));
+
+    const wasActive = CTX.socialState.activeChatId === chatId;
+    CTX.socialState.friendsList = sortFriendsRows((CTX.socialState.friendsList || []).filter((f) => f.otherUid !== friendUid));
+    delete CTX.socialState.messagesCache[chatId];
+    if (wasActive){
+      CTX.socialModules.Messaging?.closeActiveChatSession?.(chatId);
+    }
+    CTX.socialModules.Messaging?.setChatPref?.(currentUid, chatId, {
+      forcedUnread: false,
+      lastReadAt: Date.now(),
+      archived: false
+    });
+    CTX.socialModules.Messaging?.clearLegacyChatCache?.(chatId);
+
+    await loadFriendRequests();
+    renderFriendsList();
+    CTX.socialModules.Directory?.renderUsersSearchList?.();
+    CTX.socialModules.Messaging?.renderMessaging?.();
+    CTX?.notifySuccess?.("Amigo eliminado. Podés volver a agregarlo cuando quieras.");
+  }catch(error){
+    console.error("[Mensajeria][removeFriend] failed", error);
+    CTX?.notifyError?.("No se pudo eliminar al amigo: " + (error?.message || error));
+  }
 }
 
 async function loadFriendRequests(){
@@ -415,6 +527,7 @@ async function loadFriendsList(){
 
     const rows = await Promise.all(snap.docs.map(async (d)=>{
       const data = d.data() || {};
+      if (data.friendshipActive === false || data.status === "removed") return null;
       const uids = Array.isArray(data.uids) ? data.uids : [];
       const otherUid = uids.find(u => u !== currentUser.uid) || "";
       const otherProfile = await CTX.socialModules.Directory?.getUserProfile?.(otherUid);
@@ -429,7 +542,7 @@ async function loadFriendsList(){
       };
     }));
 
-    state.friendsList = sortFriendsRows(rows);
+    state.friendsList = sortFriendsRows(rows.filter(Boolean));
   }catch(error){
     console.error("[Mensajeria] Error al cargar amigos:", error);
     state.friendsList = [];
@@ -630,7 +743,8 @@ const Friends = {
   sortFriendsRows,
   ensureRequestEndpoints,
   openFriendRequestsModal,
-  closeFriendRequestsModal
+  closeFriendRequestsModal,
+  removeFriend
 };
 
 export default Friends;
