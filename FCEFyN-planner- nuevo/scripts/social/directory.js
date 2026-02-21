@@ -7,7 +7,7 @@ let friendSearchDebounceTimer = null;
 let activeSearchRequestId = 0;
 const searchAvatarUrlCache = new Map();
 
-const FRIEND_SEARCH_DOMAIN = "@mi.unc.edu.ar";
+const DEBUG_FRIEND_SEARCH = false;
 const FRIEND_SEARCH_MIN_CHARS = 1;
 const FRIEND_SEARCH_DEBOUNCE_MS = 300;
 const FRIEND_SEARCH_MAX_RESULTS = 15;
@@ -16,6 +16,21 @@ function normalizeText(value){
   const raw = (value || "").toString().trim().toLowerCase();
   if (typeof CTX?.normalizeStr === "function") return CTX.normalizeStr(raw);
   return raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function ensureSocialSearchState(){
+  if (!CTX) return null;
+  CTX.socialState ??= {};
+  const state = CTX.socialState;
+  // Estado/cachés defensivos para evitar fallos silenciosos.
+  state.userProfileCache ??= new Map();
+  state.allUsersCache ??= [];
+  state.friendsList ??= [];
+  state.friendRequests ??= { outgoing: [], incoming: [] };
+  state.usersSearchResults ??= [];
+  state.usersLoading ??= false;
+  state.usersError ??= "";
+  return state;
 }
 
 function buildExcludedUserSet(){
@@ -214,17 +229,12 @@ function toSearchableProfile(docSnap){
 }
 
 function excludeNotAllowedUsers(users = []){
-  const state = CTX?.socialState;
+  const state = ensureSocialSearchState();
   const excluded = buildExcludedUserSet();
   (state?.friendsList || []).forEach((friend) => {
     if (friend?.otherUid) excluded.add(friend.otherUid);
   });
-  return users.filter((user) => {
-    if (!user?.uid || excluded.has(user.uid)) return false;
-    const email = normalizeText(user.email || user.emailLower || user.searchEmail);
-    if (!email.endsWith(FRIEND_SEARCH_DOMAIN)) return false;
-    return true;
-  });
+  return users.filter((user) => user?.uid && !excluded.has(user.uid));
 }
 
 async function runPrefixQuery(fieldName, normalizedQuery){
@@ -244,8 +254,40 @@ async function runPrefixQuery(fieldName, normalizedQuery){
   return users;
 }
 
+async function runSearchQueries(normalizedQuery, rawInput){
+  const searchByEmail = shouldSearchAsEmail(normalizedQuery);
+  const trimmedInput = (rawInput || "").trim();
+
+  const namePromise = searchByEmail ? Promise.resolve([]) : runPrefixQuery("searchName", normalizedQuery);
+  const emailPromise = runPrefixQuery("searchEmail", normalizedQuery);
+  const usernamePromise = runPrefixQuery("searchUsername", normalizedQuery);
+  const uidPromise = trimmedInput
+    ? getDoc(doc(CTX.db, "publicUsers", trimmedInput))
+    : Promise.resolve(null);
+
+  const [nameMatches, emailMatches, usernameMatches, uidSnap] = await Promise.all([
+    namePromise,
+    emailPromise,
+    usernamePromise,
+    uidPromise
+  ]);
+
+  const uidExactMatches = uidSnap?.exists?.() ? [toSearchableProfile(uidSnap)] : [];
+
+  if (DEBUG_FRIEND_SEARCH){
+    console.debug("[Mensajeria][Search] resultados crudos", {
+      name: nameMatches.length,
+      email: emailMatches.length,
+      username: usernameMatches.length,
+      uidExact: uidExactMatches.length
+    });
+  }
+
+  return { nameMatches, emailMatches, usernameMatches, uidExactMatches };
+}
+
 async function performUsersSearch(rawInput, requestId){
-  const state = CTX?.socialState;
+  const state = ensureSocialSearchState();
   if (!state) return;
   const normalizedQuery = normalizeText(rawInput);
   if (!normalizedQuery || normalizedQuery.length < FRIEND_SEARCH_MIN_CHARS) return;
@@ -255,22 +297,32 @@ async function performUsersSearch(rawInput, requestId){
   renderUsersSearchList();
 
   try{
-    const searchByEmail = shouldSearchAsEmail(normalizedQuery);
-    const [nameMatches, emailMatches] = searchByEmail
-      ? [[], await runPrefixQuery("searchEmail", normalizedQuery)]
-      : await Promise.all([
-        runPrefixQuery("searchName", normalizedQuery),
-        runPrefixQuery("searchEmail", normalizedQuery)
-      ]);
+    const { nameMatches, emailMatches, usernameMatches, uidExactMatches } = await runSearchQueries(normalizedQuery, rawInput);
 
     if (requestId !== activeSearchRequestId) return;
-    const merged = mergeUsersByUid(nameMatches, emailMatches);
+    const merged = mergeUsersByUid(
+      mergeUsersByUid(nameMatches, emailMatches),
+      mergeUsersByUid(usernameMatches, uidExactMatches)
+    );
+    if (DEBUG_FRIEND_SEARCH){
+      console.debug("[Mensajeria][Search] post-merge", { merged: merged.length });
+    }
     const filtered = excludeNotAllowedUsers(merged).slice(0, FRIEND_SEARCH_MAX_RESULTS);
+    if (DEBUG_FRIEND_SEARCH){
+      console.debug("[Mensajeria][Search] post-filter", { filtered: filtered.length });
+    }
     filtered.forEach((profile) => state.userProfileCache.set(profile.uid, profile));
     state.usersSearchResults = filtered;
   }catch(error){
     if (requestId !== activeSearchRequestId) return;
-    console.error("[Mensajeria] Error al buscar usuarios:", error);
+    console.error("[Mensajeria] Error al buscar usuarios:", {
+      code: error?.code,
+      message: error?.message,
+      rawInput,
+      normalizedQuery,
+      requestId,
+      activeSearchRequestId
+    });
     state.usersError = "No pudimos completar la búsqueda. Probá de nuevo en unos segundos.";
     state.usersSearchResults = [];
   }finally{
@@ -349,7 +401,7 @@ async function hydrateSearchResultAvatar(item, user, labelName, initial){
 }
 
 function ensureUsersSearchUI(){
-  const state = CTX?.socialState;
+  const state = ensureSocialSearchState();
   if (!state) return;
 
   state.usersSearchInput = document.getElementById("friendSearchInput");
@@ -399,8 +451,9 @@ function ensureUsersSearchUI(){
 }
 
 async function getUserProfile(uid){
-  const state = CTX?.socialState;
+  const state = ensureSocialSearchState();
   if (!uid) return null;
+  state.userProfileCache ??= new Map();
   if (state.userProfileCache.has(uid)) return state.userProfileCache.get(uid);
   const cached = (state.allUsersCache || []).find(user => user.uid === uid);
   if (cached){
@@ -437,6 +490,7 @@ async function getUserProfile(uid){
 const Directory = {
   init(ctx){
     CTX = ctx;
+    ensureSocialSearchState();
   },
   ensureUsersSearchUI,
   renderUsersSearchList,
