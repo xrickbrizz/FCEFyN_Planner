@@ -918,56 +918,79 @@ async function ensureJsPDF(){
   return jsPDFLib;
 }
 
-// DEBUG temporal: ayuda a detectar estilos computados incompatibles con html2canvas.
-function debugAgendaColorFunctions(container){
-  if (!container) return [];
-  const propsToCheck = [
-    "color",
-    "backgroundColor",
-    "borderTopColor",
-    "borderRightColor",
-    "borderBottomColor",
-    "borderLeftColor",
-    "outlineColor",
-    "boxShadow",
-    "textShadow"
-  ];
+function clamp(value, min, max){
+  return Math.min(max, Math.max(min, value));
+}
 
-  const nodes = [container, ...container.querySelectorAll("*")];
-  const findings = [];
+function parseCssColorNumber(token, isAlpha = false){
+  if (typeof token !== "string") return null;
+  const trimmed = token.trim();
+  if (!trimmed) return null;
+  const percent = trimmed.endsWith("%");
+  const raw = Number.parseFloat(trimmed);
+  if (!Number.isFinite(raw)) return null;
 
-  nodes.forEach((node) => {
-    const styles = getComputedStyle(node);
-    propsToCheck.forEach((prop) => {
-      const value = styles[prop];
-      if (typeof value === "string" && value.includes("color(")) {
-        const selector = [
-          node.tagName?.toLowerCase(),
-          node.id ? `#${node.id}` : "",
-          ...Array.from(node.classList || []).map((cls) => `.${cls}`)
-        ].join("");
-        findings.push({ selector, property: prop, value });
-      }
+  if (isAlpha) {
+    const alpha = percent ? raw / 100 : raw;
+    return clamp(alpha, 0, 1);
+  }
+  if (percent) return Math.round(clamp(raw, 0, 100) * 2.55);
+  if (raw <= 1) return Math.round(clamp(raw, 0, 1) * 255);
+  return Math.round(clamp(raw, 0, 255));
+}
+
+function normalizeColorFunctionString(value){
+  if (typeof value !== "string" || !value.includes("color(")) return value;
+  return value.replace(/color\(\s*srgb\s+([^\)]+)\)/gi, (_match, content) => {
+    const [rgbPart, alphaPart] = content.split("/").map((part) => part.trim());
+    const channels = rgbPart.split(/\s+/).filter(Boolean);
+    if (channels.length < 3) return _match;
+    const r = parseCssColorNumber(channels[0]);
+    const g = parseCssColorNumber(channels[1]);
+    const b = parseCssColorNumber(channels[2]);
+    if ([r, g, b].some((n) => n == null)) return _match;
+    if (!alphaPart) return `rgb(${r}, ${g}, ${b})`;
+
+    const alpha = parseCssColorNumber(alphaPart, true);
+    if (alpha == null) return `rgb(${r}, ${g}, ${b})`;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  });
+}
+
+function normalizeAgendaExportClone(clonedDoc){
+  const clonedCapture = clonedDoc.getElementById("tab-agenda")?.querySelector(".agenda-shell")
+    || clonedDoc.querySelector(".agenda-shell");
+  if (!clonedCapture) return;
+
+  const colorProps = ["color", "borderTopColor", "borderRightColor", "borderBottomColor", "borderLeftColor", "outlineColor"];
+
+  clonedCapture.querySelectorAll(".planner-item").forEach((item) => {
+    const styles = clonedDoc.defaultView?.getComputedStyle(item);
+    if (!styles) return;
+
+    const normalizedBackground = normalizeColorFunctionString(styles.backgroundColor || "");
+    item.style.backgroundColor = normalizedBackground.includes("color(") ? "rgb(240, 244, 255)" : normalizedBackground;
+
+    const normalizedBoxShadow = normalizeColorFunctionString(styles.boxShadow || "");
+    item.style.boxShadow = normalizedBoxShadow.includes("color(")
+      ? "0 4px 10px rgba(0,0,0,.08)"
+      : normalizedBoxShadow;
+
+    const normalizedTextShadow = normalizeColorFunctionString(styles.textShadow || "");
+    if (normalizedTextShadow && normalizedTextShadow !== "none") {
+      item.style.textShadow = normalizedTextShadow.includes("color(") ? "none" : normalizedTextShadow;
+    }
+
+    colorProps.forEach((prop) => {
+      const normalized = normalizeColorFunctionString(styles[prop] || "");
+      if (normalized && !normalized.includes("color(")) item.style[prop] = normalized;
     });
   });
-
-  if (findings.length) {
-    console.group("[Agenda export debug] Estilos computados con color(");
-    findings.forEach((item) => {
-      console.warn("[Agenda export debug] conflict", item.selector, item.property, item.value);
-    });
-    console.groupEnd();
-  } else {
-    console.info("[Agenda export debug] No se detectaron estilos con color(");
-  }
-
-  return findings;
 }
 
 async function downloadAgenda(format){
   const tabAgenda = document.getElementById("tab-agenda");
   const captureEl = tabAgenda?.querySelector(".agenda-shell");
-  console.info("[Agenda export debug] downloadAgenda invoked", { format });
   if (!tabAgenda || !captureEl || tabAgenda.style.display === "none"){
     notifyWarn("Abrí la pestaña Agenda para descargar tu horario.");
     return;
@@ -977,15 +1000,14 @@ async function downloadAgenda(format){
     captureEl.scrollTop = 0;
     await new Promise(res => requestAnimationFrame(()=> requestAnimationFrame(res)));
     const html2canvas = await ensureHtml2canvas();
-    const bgColor = getComputedStyle(captureEl).backgroundColor;
     const captureOptions = {
-      backgroundColor: bgColor || themeColor("--color-primary-strong", "#0F1A18"),
+      backgroundColor: "#ffffff",
       scale:2,
-      useCORS:true
+      useCORS:true,
+      onclone: (clonedDoc) => {
+        normalizeAgendaExportClone(clonedDoc);
+      }
     };
-    console.info("[Agenda export debug] capture target", captureEl);
-    console.info("[Agenda export debug] html2canvas options", captureOptions);
-    debugAgendaColorFunctions(captureEl);
     const canvas = await html2canvas(captureEl, captureOptions);
 
     if (format === "png"){
