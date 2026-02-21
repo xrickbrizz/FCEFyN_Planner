@@ -7,6 +7,7 @@ let unsubscribeAuth = null;
 let unsubscribeProfile = null;
 let profileUid = "";
 let didLoadProfile = false;
+const SESSION_DEBUG = false; // Cambiar a true para diagnosticar tiempos de sesión.
 const readyCallbacks = [];
 const profileCallbacks = [];
 const PROFILE_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
@@ -147,19 +148,9 @@ export function onProfileUpdated(callback){
 
 export function initSession({ onMissingUser } = {}){
   if (unsubscribeAuth) return;
-  unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-    if (!user){
-      if (typeof onMissingUser === "function") onMissingUser();
-      currentUser = null;
-      profileUid = "";
-      if (unsubscribeProfile){
-        unsubscribeProfile();
-        unsubscribeProfile = null;
-      }
-      notifyProfile(null);
-      return;
-    }
+  const authStartMs = performance.now();
 
+  const bootUser = (user, source = "auth-listener") => {
     currentUser = user;
     const cachedProfile = getCachedProfile(user.uid);
     if (cachedProfile) {
@@ -176,9 +167,31 @@ export function initSession({ onMissingUser } = {}){
       callbacks.forEach(cb => cb(user));
     }
 
-    if (unsubscribeAuth){
-      unsubscribeAuth();
-      unsubscribeAuth = null;
+    if (SESSION_DEBUG) {
+      console.debug("[perf] session_boot_ms", {
+        source,
+        elapsed: Math.round(performance.now() - authStartMs)
+      });
     }
+  };
+
+  if (auth?.currentUser) {
+    bootUser(auth.currentUser, "auth-currentUser");
+  }
+
+  unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    if (!user){
+      if (typeof onMissingUser === "function") onMissingUser();
+      currentUser = null;
+      profileUid = "";
+      if (unsubscribeProfile){
+        unsubscribeProfile();
+        unsubscribeProfile = null;
+      }
+      notifyProfile(null);
+      return;
+    }
+
+    bootUser(user, "auth-listener");
   });
 }

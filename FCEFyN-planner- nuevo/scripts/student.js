@@ -17,6 +17,17 @@ let unsubscribeHomeNotices = null;
 let pendingCareerChangeSlug = "";
 let plansEmbeddedController = null;
 let weatherWidgetController = null;
+const UX_LOADER_DELAY_MS = 420;
+const PERF_DEBUG = false; // Cambiar a true para diagnosticar tiempos de carga.
+const PERF_TIMERS = {
+  scriptStart: performance.now(),
+  authResolvedAt: 0,
+  firstContentVisibleAt: 0
+};
+const homeNoticesCache = {
+  items: [],
+  updatedAt: 0
+};
 
 const AppState = {
   currentUser: null,
@@ -216,8 +227,8 @@ function renderHomeSkeleton(){
     listEl.innerHTML = Array.from({ length: 4 }, () => '<div class="home-notice-skeleton"></div>').join("");
   }
   if (emptyEl) {
-    emptyEl.hidden = false;
-    emptyEl.textContent = "Cargando avisos…";
+    emptyEl.hidden = true;
+    emptyEl.textContent = "No hay avisos para mostrar.";
   }
   if (rangeEl) rangeEl.textContent = "…";
 }
@@ -246,7 +257,28 @@ function initHomeNotices(){
     page: 0,
     selectedId: null,
     items: [],
-    loading: true
+    loading: true,
+    loadingVisible: false,
+    hasCache: Array.isArray(homeNoticesCache.items) && homeNoticesCache.items.length > 0
+  };
+
+  let loadingDelayTimer = null;
+
+  const stopLoadingDelay = () => {
+    if (loadingDelayTimer) {
+      clearTimeout(loadingDelayTimer);
+      loadingDelayTimer = null;
+    }
+  };
+
+  const startLoadingDelay = () => {
+    stopLoadingDelay();
+    state.loadingVisible = false;
+    loadingDelayTimer = setTimeout(() => {
+      if (!state.loading) return;
+      state.loadingVisible = true;
+      renderList();
+    }, UX_LOADER_DELAY_MS);
   };
 
   const setMode = (mode) => {
@@ -275,11 +307,19 @@ function initHomeNotices(){
   };
 
   const renderList = () => {
-    if (state.loading) {
+    if (state.loading && state.loadingVisible) {
       listEl.innerHTML = Array.from({ length: 4 }, () => '<div class="home-notice-skeleton"></div>').join("");
-      emptyEl.hidden = false;
-      emptyEl.textContent = "Cargando avisos…";
+      emptyEl.hidden = true;
       rangeEl.textContent = "…";
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    if (state.loading && !state.loadingVisible) {
+      listEl.innerHTML = "";
+      emptyEl.hidden = true;
+      rangeEl.textContent = "0–0";
       prevBtn.disabled = true;
       nextBtn.disabled = true;
       return;
@@ -362,7 +402,9 @@ function initHomeNotices(){
   backBtn.addEventListener("click", returnToList);
 
   const handleSnapshot = (snap) => {
+    stopLoadingDelay();
     state.loading = false;
+    state.loadingVisible = false;
     const now = new Date();
     const items = snap.docs.map(docSnap => {
       const data = docSnap.data() || {};
@@ -391,6 +433,11 @@ function initHomeNotices(){
       return bTime - aTime;
     });
     state.items = items;
+    homeNoticesCache.items = items;
+    homeNoticesCache.updatedAt = Date.now();
+    if (PERF_DEBUG) {
+      console.debug("[perf] firestore_announcements_ms", Math.round(performance.now() - PERF_TIMERS.scriptStart));
+    }
     if (panel.dataset.mode === "detail") {
       const selected = state.items.find(item => item.id === state.selectedId);
       if (selected) {
@@ -404,7 +451,9 @@ function initHomeNotices(){
   };
 
   const handleSnapshotError = (err) => {
+    stopLoadingDelay();
     state.loading = false;
+    state.loadingVisible = false;
     console.error("[home-notices] snapshot error", err);
     notifyError("No se pudieron cargar los avisos.");
     renderList();
@@ -419,6 +468,14 @@ const announcementsQuery = query(
     unsubscribeHomeNotices();
   }
   unsubscribeHomeNotices = onSnapshot(announcementsQuery, handleSnapshot, handleSnapshotError);
+
+  if (state.hasCache) {
+    state.items = [...homeNoticesCache.items];
+    state.loading = false;
+    state.loadingVisible = false;
+  } else {
+    startLoadingDelay();
+  }
 
   setMode("list");
   renderList();
@@ -554,6 +611,10 @@ async function initStudentModulesInBackground(user, ctx){
 }
 
 onSessionReady((user) => {
+  PERF_TIMERS.authResolvedAt = performance.now();
+  if (PERF_DEBUG) {
+    console.debug("[perf] auth_ready_ms", Math.round(PERF_TIMERS.authResolvedAt - PERF_TIMERS.scriptStart));
+  }
   AppState.currentUser = user;
 
   const emailLabel = document.getElementById("userEmailLabel");
@@ -602,6 +663,10 @@ onSessionReady((user) => {
   initHomeModules();
   initHomeNotices();
   weatherWidgetController = initWeatherWidget("inicio");
+  PERF_TIMERS.firstContentVisibleAt = performance.now();
+  if (PERF_DEBUG) {
+    console.debug("[perf] first_content_visible_ms", Math.round(PERF_TIMERS.firstContentVisibleAt - PERF_TIMERS.scriptStart));
+  }
 
   initStudentModulesInBackground(user, ctx).catch((error) => {
     console.error("[bootstrap] initStudentModulesInBackground error", error);

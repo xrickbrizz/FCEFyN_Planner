@@ -592,8 +592,8 @@ function renderFriendRequestsUI(){
   updateFriendRequestsBadge();
 
   if (state.requestsLoading){
-    incomingBox.innerHTML = "<div class='request-empty'>Cargando...</div>";
-    outgoingBox.innerHTML = "<div class='request-empty'>Cargando...</div>";
+    incomingBox.innerHTML = "<div class='request-empty request-empty--skeleton' aria-hidden='true'></div>";
+    outgoingBox.innerHTML = "<div class='request-empty request-empty--skeleton' aria-hidden='true'></div>";
     return;
   }
 
@@ -657,7 +657,7 @@ function renderFriendsList(){
   box.innerHTML = "";
 
   if (state.friendsLoading){
-    box.innerHTML = "<div class='muted'>Cargando amigos...</div>";
+    box.innerHTML = "<div class='friend-search-skeleton-row' aria-hidden='true'></div><div class='friend-search-skeleton-row' aria-hidden='true'></div>";
     return;
   }
 
@@ -688,7 +688,7 @@ function renderFriendsList(){
     }
     div.innerHTML = `
       <div class="friend-main">
-        <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}">
+        <img class="friend-avatar" src="${avatarUrl}" alt="Avatar de ${name}" loading="lazy" width="44" height="44" decoding="async">
         <div class="friend-copy">
           <div class="friend-name-line">
             <div class="friend-name">${name}</div>

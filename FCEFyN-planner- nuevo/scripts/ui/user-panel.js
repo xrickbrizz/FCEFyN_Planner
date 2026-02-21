@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderUserAvatar = (mountEl) => {
     mountEl.innerHTML = `
       <a class="user-avatar" href="#perfil" aria-label="Ir al perfil">
-        <img src="${window.userPanelAvatar || fallbackAvatar}" alt="Foto de perfil" />
+        <img src="${window.userPanelAvatar || fallbackAvatar}" alt="Foto de perfil" loading="lazy" width="40" height="40" decoding="async" />
       </a>
     `;
 

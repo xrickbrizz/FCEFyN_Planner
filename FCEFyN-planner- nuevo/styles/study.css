@@ -3148,6 +3148,13 @@ body[data-theme="dark"] .prof-subject-chip{
   font-size:.88rem;
   padding:.5rem .1rem;
 }
+.friend-requests-modal .request-empty--skeleton{
+  min-height:2.1rem;
+  border-radius:10px;
+  background:linear-gradient(90deg,rgba(148,163,184,.16) 25%,rgba(148,163,184,.32) 50%,rgba(148,163,184,.16) 75%);
+  background-size:200% 100%;
+  animation:skeletonPulse 1.1s ease infinite;
+}
 .friend-requests-modal .request-state-pill,
 .friend-requests-modal .btn-request,
 .friend-requests-modal .btn-request-soft{
