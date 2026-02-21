@@ -405,20 +405,11 @@ async function uploadProfilePhoto(file){
     setProfileAvatarStatus("La imagen supera 2MB.");
     return;
   }
-  const extension = file.type?.split("/")?.[1] || "jpg";
-  const safeExtension = extension.replace(/[^a-zA-Z0-9]/g, "") || "jpg";
-  const path = `fotoperfil/${currentUser.uid}/avatar_${Date.now()}.${safeExtension}`;
+  const extension = file.type === "image/png" ? "png" : "jpg";
+  const path = `fotoperfil/${currentUser.uid}/avatar.${extension}`;
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
   try{
-    const previousPath = getSessionUserProfile()?.photoPath || "";
-    if (previousPath && previousPath !== path){
-      try{
-        await deleteObject(storageRef(storage, previousPath));
-      }catch(error){
-        console.warn("[Perfil] No se pudo borrar la foto anterior en storage", error);
-      }
-    }
     await uploadBytes(fileRef, file, { contentType: file.type || "image/jpeg" });
     const photoURL = await getDownloadURL(fileRef);
     const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
