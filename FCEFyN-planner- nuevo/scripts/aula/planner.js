@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, where, limit } from "../core/firebase.js";
+import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, limit } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 
 let CTX = null;
@@ -12,6 +12,7 @@ let plannerSearchQuery = "";
 const PLANNER_COLOR_COUNT = 7;
 const MAX_PLANS = 4;
 const MAX_PLAN_NAME_LENGTH = 24;
+const MAX_FETCH = 300;
 const COLOR_KEY = "planner_subject_colors_v1";
 const CURSOR_KEY = "planner_color_cursor_v1";
 let plannerColorState = { map: {}, cursor: 0 };
@@ -413,100 +414,56 @@ function convertPlannerSectionsToCourseSections(sections){
 
 async function loadPlannerSections(){
   console.groupCollapsed("[planner:debug] loadPlannerSections");
-  const careerSlug = getCareerSlug();
-  console.debug("[planner:debug] careerSlug", careerSlug);
-  if (!careerSlug){
-    CTX.aulaState.plannerSections = [];
-    CTX.aulaState.courseSections = [];
-    plannerSectionsUiState = "ready";
-    console.debug("[planner:debug] sections loaded", { normalizedCount: 0, source: "missing-careerSlug" });
-    console.groupEnd();
-    return [];
-  }
-
-  const normalizeDocs = (snap) => {
+  const normalizeComisionesDocs = (snap) => {
     const list = [];
     snap.forEach((docSnap) => {
-      list.push(...normalizeSectionItems(docSnap.data(), docSnap.id));
+      const payload = docSnap.data() || {};
+      if (Array.isArray(payload.sections)){
+        payload.sections.forEach((item, index) => {
+          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`));
+        });
+        return;
+      }
+      if (Array.isArray(payload.items)){
+        payload.items.forEach((item, index) => {
+          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`));
+        });
+        return;
+      }
+      list.push(...normalizeSectionItems(payload, docSnap.id));
     });
     return list;
   };
 
-  let source = "courseSections";
-  let normalizedSections = [];
-  let currentStep = "idle";
+  try {
+    console.debug("[planner:debug] fetch comisiones sin filtro", { maxFetch: MAX_FETCH });
+    const snap = await getDocs(query(collection(CTX.db, "comisiones"), limit(MAX_FETCH)));
+    const normalizedSections = normalizeComisionesDocs(snap);
 
-source = "comisiones";
-const careerKey = slugify(careerSlug);
-const slugVariants = Array.from(new Set([
-  careerSlug,
-  careerKey,
-  `ingenieria-${careerKey}`,
-  `ingenieria-en-${careerKey}`
-].filter(Boolean)));
+    CTX.aulaState.plannerSections = normalizedSections;
+    CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
+    plannerSectionsUiState = "ready";
 
-console.debug("[planner:debug] Variants careerSlug", { careerSlug, careerKey, slugVariants });
-
-// 1) Probar queries where careerSlug == variant
-for (const slug of slugVariants){
-  currentStep = `comisiones where careerSlug == ${slug}`;
-  console.debug("[planner:debug] Intentando", currentStep);
-  const snap = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlug", "==", slug)));
-  console.debug("[planner:debug] Resultado", { slug, snapshotSize: snap?.size ?? null });
-  normalizedSections = normalizeDocs(snap);
-  console.debug("[planner:debug] Normalizadas", { slug, normalizedCount: normalizedSections.length });
-  if (normalizedSections.length){
-    break;
+    console.debug("[planner:debug] sections loaded", {
+      snapshotSize: snap?.size ?? null,
+      normalizedCount: normalizedSections.length,
+      courseSectionsCount: CTX.aulaState.courseSections.length
+    });
+    console.groupEnd();
+    return normalizedSections;
+  } catch (error) {
+    console.error("[planner:debug] Error loadPlannerSections", {
+      code: error?.code,
+      message: error?.message,
+      error
+    });
+    CTX?.notifyError?.("No se pudieron cargar las comisiones. Intentá nuevamente.");
+    CTX.aulaState.plannerSections = [];
+    CTX.aulaState.courseSections = [];
+    plannerSectionsUiState = "ready";
+    console.groupEnd();
+    return [];
   }
-}
-
-// 2) Probar array-contains con variants (si tu schema lo usa)
-if (!normalizedSections.length){
-  for (const slug of slugVariants){
-    currentStep = `comisiones array-contains careerSlugs has ${slug}`;
-    console.debug("[planner:debug] Intentando", currentStep);
-    const snap = await getDocs(query(collection(CTX.db, "comisiones"), where("careerSlugs", "array-contains", slug)));
-    console.debug("[planner:debug] Resultado", { slug, snapshotSize: snap?.size ?? null });
-    normalizedSections = normalizeDocs(snap);
-    console.debug("[planner:debug] Normalizadas", { slug, normalizedCount: normalizedSections.length });
-    if (normalizedSections.length){
-      break;
-    }
-  }
-}
-
-// 3) Probar doc(comisiones/{id}) con variants (muchas veces el id es el slug)
-if (!normalizedSections.length){
-  for (const slug of slugVariants){
-    currentStep = `comisiones doc(${slug})`;
-    console.debug("[planner:debug] Intentando", currentStep);
-    const comisionDoc = await getDoc(doc(CTX.db, "comisiones", slug));
-    console.debug("[planner:debug] Resultado doc", { slug, exists: comisionDoc.exists() });
-
-    if (comisionDoc.exists()){
-      const payload = comisionDoc.data() || {};
-      const nested = Array.isArray(payload.sections)
-        ? payload.sections
-        : Array.isArray(payload.items)
-          ? payload.items
-          : [];
-      normalizedSections = nested.flatMap((item, index) => normalizeSectionItems(item, `${comisionDoc.id}_${index}`));
-      source = "comisiones-doc";
-      console.debug("[planner:debug] Normalizadas doc", { slug, normalizedCount: normalizedSections.length });
-      if (normalizedSections.length) break;
-    }
-  }
-}
-
-  CTX.aulaState.plannerSections = normalizedSections;
-  CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
-  console.debug("[planner:debug] source seleccionado final", source);
-  console.debug("[planner:debug] sections loaded", {
-    normalizedCount: normalizedSections.length,
-    courseSectionsCount: CTX.aulaState.courseSections.length
-  });
-  console.groupEnd();
-  return normalizedSections;
 }
 
 async function refreshPlannerSections(options = {}){
@@ -729,7 +686,6 @@ function filterPlannerItems(query){
 function renderSectionsList(){
   const list = document.getElementById("sectionsList");
   if (!list) return;
-  const selectedSubjectValue = document.getElementById("sectionsSubjectFilter")?.value || "";
   list.innerHTML = "";
 
   if (plannerSectionsUiState === "loading"){
@@ -739,18 +695,7 @@ function renderSectionsList(){
 
   const allSections = CTX.aulaState.courseSections.slice();
   updateSectionsSubjectFilter();
-  const selectedSlug = slugify(selectedSubjectValue);
-  const selectedName = norm(selectedSubjectValue);
-
-  let filtered = allSections.slice();
-  if (selectedSubjectValue){
-    filtered = filtered.filter((section) => {
-      const sectionSubjectName = getSubjectNameFromSection(section);
-      const sectionSubjectSlug = slugify(section.subjectSlug || getSectionSubjectSlug(section) || sectionSubjectName);
-      return sectionSubjectSlug === selectedSlug
-        || norm(sectionSubjectName) === selectedName;
-    });
-  }
+  const filtered = allSections.slice();
 
   if (!allSections.length){
     const careerSlug = getCareerSlug() || "(sin carrera)";
