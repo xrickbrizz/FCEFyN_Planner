@@ -108,53 +108,39 @@ async function removeFriend(friendUidParam = ""){
   try{
     console.debug("[Mensajeria][removeFriend] start", { currentUid, friendUid, chatId });
 
-    // Legacy note: antes sólo existía friends/{chatId}. Mantenemos compatibilidad marcando estado inactivo
-    // en lugar de borrar mensajes/chats, así se evita romper historial y se permite re-agregar después.
-    await setDoc(doc(CTX.db, "friends", chatId), {
+    // ✅ Modo C: delegar borrado/desvinculación al backend (Cloud Function)
+    const callable = httpsCallable(getFunctionsInstance(), "removeFriendshipCallable");
+
+    const result = await callable({
+      friendshipId: chatId, // en tu app el doc de friends usa chatId como id
+      friendUid,
       chatId,
-      uids: [currentUid, friendUid],
-      friendshipActive: false,
-      status: "removed",
-      removedAt: serverTimestamp(),
-      removedBy: currentUid,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+      deleteChat: false // mantenemos historial del chat
+    });
 
-    const chatRef = doc(CTX.db, "chats", chatId);
-    const chatSnap = await getDoc(chatRef);
-    if (chatSnap.exists()){
-      await updateDoc(chatRef, {
-        friendshipActive: false,
-        updatedAt: serverTimestamp()
-      });
-    }
-
-    const requestDocs = await collectRequestDocsBetween(currentUid, friendUid);
-    console.debug("[Mensajeria][removeFriend] pending requests found", { count: requestDocs.length });
-    await Promise.all(requestDocs.map((reqDoc) => updateDoc(doc(CTX.db, "friendRequests", reqDoc.id), {
-      status: "cancelled",
-      cancelledBy: currentUid,
-      updatedAt: serverTimestamp(),
-      cancelReason: "friend_removed"
-    })));
+    console.debug("[Mensajeria][removeFriend] callable OK", result?.data);
 
     const wasActive = CTX.socialState.activeChatId === chatId;
     CTX.socialState.friendsList = sortFriendsRows((CTX.socialState.friendsList || []).filter((f) => f.otherUid !== friendUid));
     delete CTX.socialState.messagesCache[chatId];
+
     if (wasActive){
       CTX.socialModules.Messaging?.closeActiveChatSession?.(chatId);
     }
+
     CTX.socialModules.Messaging?.setChatPref?.(currentUid, chatId, {
       forcedUnread: false,
       lastReadAt: Date.now(),
       archived: false
     });
+
     CTX.socialModules.Messaging?.clearLegacyChatCache?.(chatId);
 
     await loadFriendRequests();
     renderFriendsList();
     CTX.socialModules.Directory?.renderUsersSearchList?.();
     CTX.socialModules.Messaging?.renderMessaging?.();
+
     CTX?.notifySuccess?.("Amigo eliminado. Podés volver a agregarlo cuando quieras.");
   }catch(error){
     console.error("[Mensajeria][removeFriend] failed", error);

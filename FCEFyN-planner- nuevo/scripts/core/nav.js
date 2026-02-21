@@ -73,7 +73,8 @@ export function initNav(ctx = {}) {
 
     const toggleBtn = document.getElementById(toggleId);
     const layout = document.getElementById(layoutId);
-    let isPinned = false;
+    let isOpenByClick = false;
+    let isOpenByHover = false;
 
     const isMobile = () =>
       window.matchMedia && window.matchMedia("(max-width: 650px)").matches;
@@ -91,7 +92,7 @@ export function initNav(ctx = {}) {
           console.log("[nav] showTab called", id);
           showTab(id);
         }
-        if (!isPinned && !isMobile()) collapseSidebar();
+        if (!isOpenByClick && !isMobile()) collapseSidebar();
       }
     });
 
@@ -107,28 +108,70 @@ export function initNav(ctx = {}) {
       layout?.classList.remove("sidebar-collapsed");
     }
 
+    function syncDesktopSidebar() {
+      const shouldStayOpen = isOpenByClick || isOpenByHover;
+      toggleBtn?.classList.toggle("active", isOpenByClick);
+      if (shouldStayOpen) expandSidebar();
+      else collapseSidebar();
+    }
+
+    const isInsideActivationArea = (target) => {
+      if (!(target instanceof Node)) return false;
+      return mount.contains(target) || toggleBtn?.contains(target);
+    };
+
+    function clearDesktopSidebarState() {
+      isOpenByClick = false;
+      isOpenByHover = false;
+      syncDesktopSidebar();
+    }
+
     if (layout && sidebarCtrl) {
       sidebarCtrl.setCollapsed(true);
       layout.classList.add("sidebar-collapsed");
     }
 
     mount.addEventListener("mouseenter", () => {
-      if (!isMobile()) expandSidebar();
+      if (isMobile()) return;
+      isOpenByHover = true;
+      syncDesktopSidebar();
     });
-    mount.addEventListener("mouseleave", () => {
-      if (!isMobile() && !isPinned) collapseSidebar();
+    mount.addEventListener("mouseleave", (event) => {
+      if (isMobile()) return;
+      // Si el cursor salió del área botón+sidebar, limpiamos hover y click.
+      if (!isInsideActivationArea(event.relatedTarget)) {
+        clearDesktopSidebarState();
+        return;
+      }
+      isOpenByHover = false;
+      syncDesktopSidebar();
     });
 
     if (toggleBtn && sidebarCtrl) {
+      toggleBtn.addEventListener("mouseenter", () => {
+        if (isMobile()) return;
+        isOpenByHover = true;
+        syncDesktopSidebar();
+      });
+
+      toggleBtn.addEventListener("mouseleave", (event) => {
+        if (isMobile()) return;
+        if (!isInsideActivationArea(event.relatedTarget)) {
+          clearDesktopSidebarState();
+          return;
+        }
+        isOpenByHover = false;
+        syncDesktopSidebar();
+      });
+
       toggleBtn.addEventListener("click", () => {
         if (isMobile()) {
           sidebarCtrl.toggle();
           return;
         }
-        isPinned = !isPinned;
-        toggleBtn.classList.toggle("active", isPinned);
-        if (isPinned) expandSidebar();
-        else collapseSidebar();
+        // Desktop: apertura por click separada del hover, sin dejar estado pegado al salir.
+        isOpenByClick = !isOpenByClick;
+        syncDesktopSidebar();
       });
     }
 
