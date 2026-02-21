@@ -918,9 +918,56 @@ async function ensureJsPDF(){
   return jsPDFLib;
 }
 
+// DEBUG temporal: ayuda a detectar estilos computados incompatibles con html2canvas.
+function debugAgendaColorFunctions(container){
+  if (!container) return [];
+  const propsToCheck = [
+    "color",
+    "backgroundColor",
+    "borderTopColor",
+    "borderRightColor",
+    "borderBottomColor",
+    "borderLeftColor",
+    "outlineColor",
+    "boxShadow",
+    "textShadow"
+  ];
+
+  const nodes = [container, ...container.querySelectorAll("*")];
+  const findings = [];
+
+  nodes.forEach((node) => {
+    const styles = getComputedStyle(node);
+    propsToCheck.forEach((prop) => {
+      const value = styles[prop];
+      if (typeof value === "string" && value.includes("color(")) {
+        const selector = [
+          node.tagName?.toLowerCase(),
+          node.id ? `#${node.id}` : "",
+          ...Array.from(node.classList || []).map((cls) => `.${cls}`)
+        ].join("");
+        findings.push({ selector, property: prop, value });
+      }
+    });
+  });
+
+  if (findings.length) {
+    console.group("[Agenda export debug] Estilos computados con color(");
+    findings.forEach((item) => {
+      console.warn("[Agenda export debug] conflict", item.selector, item.property, item.value);
+    });
+    console.groupEnd();
+  } else {
+    console.info("[Agenda export debug] No se detectaron estilos con color(");
+  }
+
+  return findings;
+}
+
 async function downloadAgenda(format){
   const tabAgenda = document.getElementById("tab-agenda");
   const captureEl = tabAgenda?.querySelector(".agenda-shell");
+  console.info("[Agenda export debug] downloadAgenda invoked", { format });
   if (!tabAgenda || !captureEl || tabAgenda.style.display === "none"){
     notifyWarn("Abrí la pestaña Agenda para descargar tu horario.");
     return;
@@ -931,11 +978,15 @@ async function downloadAgenda(format){
     await new Promise(res => requestAnimationFrame(()=> requestAnimationFrame(res)));
     const html2canvas = await ensureHtml2canvas();
     const bgColor = getComputedStyle(captureEl).backgroundColor;
-    const canvas = await html2canvas(captureEl, {
+    const captureOptions = {
       backgroundColor: bgColor || themeColor("--color-primary-strong", "#0F1A18"),
       scale:2,
       useCORS:true
-    });
+    };
+    console.info("[Agenda export debug] capture target", captureEl);
+    console.info("[Agenda export debug] html2canvas options", captureOptions);
+    debugAgendaColorFunctions(captureEl);
+    const canvas = await html2canvas(captureEl, captureOptions);
 
     if (format === "png"){
       const link = document.createElement("a");
