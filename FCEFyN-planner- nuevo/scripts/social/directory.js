@@ -8,7 +8,7 @@ let activeSearchRequestId = 0;
 const searchAvatarUrlCache = new Map();
 
 const FRIEND_SEARCH_DOMAIN = "@mi.unc.edu.ar";
-const FRIEND_SEARCH_MIN_CHARS = 3;
+const FRIEND_SEARCH_MIN_CHARS = 1;
 const FRIEND_SEARCH_DEBOUNCE_MS = 300;
 const FRIEND_SEARCH_MAX_RESULTS = 15;
 
