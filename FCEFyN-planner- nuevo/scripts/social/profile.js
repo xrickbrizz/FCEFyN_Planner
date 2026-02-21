@@ -389,6 +389,8 @@ async function uploadProfilePhoto(file){
   const ready = getReadyProfileContext("Subir foto de perfil", { avatarStatus: true, requireStorage: true, requireDB: true });
   if (!ready) return;
   const { currentUser, db, storage, notifyWarn, notifyError, notifySuccess } = ready;
+  const currentProfile = getSessionUserProfile() || CTX?.AppState?.userProfile || null;
+  const oldPhotoPath = currentProfile?.photoPath || currentUser?.photoPath || null;
   if (!file){
     console.warn("[Perfil] Subida cancelada: no se seleccionó archivo.");
     notifyWarn?.("Seleccioná una imagen primero.");
@@ -409,23 +411,46 @@ async function uploadProfilePhoto(file){
   const path = `fotoperfil/${currentUser.uid}/avatar.${extension}`;
   const fileRef = storageRef(storage, path);
   setProfileAvatarStatus("Subiendo foto...");
+
+  let photoURL = "";
+
+  // SUBIDA
   try{
     await uploadBytes(fileRef, file, { contentType: file.type || "image/jpeg" });
-    const photoURL = await getDownloadURL(fileRef);
-    const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
-    await setDoc(doc(db, "users", currentUser.uid), payload, { merge:true });
-    await setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true });
-    const nextProfile = updateUserProfileCache({ photoURL, photoPath: path });
-    await ensurePublicUserProfile(db, currentUser, nextProfile);
-    pendingProfilePhotoFile = null;
-    setProfileAvatarStatus("Foto actualizada.");
-    applyAvatarEverywhere(photoURL);
-    notifySuccess?.("Foto de perfil actualizada.");
+    photoURL = await getDownloadURL(fileRef);
   }catch(e){
     console.error("[Perfil] Error al subir foto", e?.code, e?.message, e);
     notifyError?.("No se pudo subir la foto.");
     setProfileAvatarStatus("No se pudo subir la foto.");
     renderProfileAvatar();
+    return;
+  }
+
+  pendingProfilePhotoFile = null;
+  setProfileAvatarStatus("Foto actualizada.");
+  applyAvatarEverywhere(photoURL);
+  notifySuccess?.("Foto de perfil actualizada.");
+
+  // SYNC
+  try{
+    const payload = { photoURL, photoPath: path, updatedAt: serverTimestamp() };
+    await Promise.all([
+      setDoc(doc(db, "users", currentUser.uid), payload, { merge:true }),
+      setDoc(doc(db, "publicUsers", currentUser.uid), payload, { merge:true })
+    ]);
+    const nextProfile = updateUserProfileCache({ photoURL, photoPath: path });
+    await ensurePublicUserProfile(db, currentUser, nextProfile);
+  }catch(err){
+    console.warn("[Perfil] Foto subida OK, pero falló sync:", err?.code, err?.message, err);
+  }
+
+  // DELETE OLD
+  try{
+    if (oldPhotoPath && oldPhotoPath !== path){
+      await deleteObject(storageRef(storage, oldPhotoPath));
+    }
+  }catch(err){
+    console.warn("[Perfil] No se pudo borrar foto anterior:", err?.code, err?.message, err);
   }
 }
 
