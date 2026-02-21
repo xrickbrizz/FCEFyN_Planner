@@ -1053,6 +1053,62 @@ function normalizeAgendaExportClone(clonedDoc){
   });
 }
 
+function isDarkThemeActive(){
+  const body = document.body;
+  const html = document.documentElement;
+  return body?.classList.contains("dark-mode")
+    || body?.dataset.theme === "dark"
+    || html?.classList.contains("dark")
+    || html?.dataset.theme === "dark";
+}
+
+function getAgendaExportPalette(isDark){
+  if (isDark){
+    return {
+      background: "#111827",
+      panel: "#0f172a",
+      border: "#1f2937",
+      text: "#e5e7eb",
+      mutedText: "#94a3b8"
+    };
+  }
+  return {
+    background: "#ffffff",
+    panel: "#f8fafc",
+    border: "#cbd5e1",
+    text: "#0f172a",
+    mutedText: "#475569"
+  };
+}
+
+function applyAgendaExportThemeClone(clonedDoc, palette){
+  const clonedHtml = clonedDoc.documentElement;
+  const clonedBody = clonedDoc.body;
+  const clonedTabAgenda = clonedDoc.getElementById("tab-agenda");
+  const clonedCapture = clonedTabAgenda?.querySelector(".agenda-shell") || clonedDoc.querySelector(".agenda-shell");
+
+  if (clonedHtml) clonedHtml.style.backgroundColor = palette.background;
+  if (clonedBody){
+    clonedBody.style.backgroundColor = palette.background;
+    clonedBody.style.color = palette.text;
+  }
+
+  if (clonedTabAgenda){
+    clonedTabAgenda.style.backgroundColor = palette.background;
+    clonedTabAgenda.style.color = palette.text;
+  }
+
+  if (clonedCapture){
+    clonedCapture.style.backgroundColor = palette.panel;
+    clonedCapture.style.borderColor = palette.border;
+    clonedCapture.style.color = palette.text;
+  }
+
+  clonedDoc.querySelectorAll(".agenda-shell .muted, .agenda-shell .hint, .agenda-shell .subtext").forEach((el) => {
+    el.style.color = palette.mutedText;
+  });
+}
+
 async function downloadAgenda(format){
   const tabAgenda = document.getElementById("tab-agenda");
   const captureEl = tabAgenda?.querySelector(".agenda-shell");
@@ -1065,14 +1121,27 @@ async function downloadAgenda(format){
     captureEl.scrollTop = 0;
     await new Promise(res => requestAnimationFrame(()=> requestAnimationFrame(res)));
     const html2canvas = await ensureHtml2canvas();
+    const isDarkTheme = isDarkThemeActive();
+    const palette = getAgendaExportPalette(isDarkTheme);
     const captureOptions = {
-      backgroundColor: "#ffffff",
+      backgroundColor: palette.background,
       scale:2,
       useCORS:true,
       onclone: (clonedDoc) => {
+        // DEBUG export agenda: onclone executed
+        // console.debug("[agenda-export] onclone", { format, isDarkTheme, selector: "#tab-agenda .agenda-shell" });
+        applyAgendaExportThemeClone(clonedDoc, palette);
         normalizeAgendaExportClone(clonedDoc);
+        // DEBUG export agenda: check unsupported css color() presence in clone
+        // const hasUnsupportedColorFn = Array.from(clonedDoc.querySelectorAll("*")).some((el) => {
+        //   const style = clonedDoc.defaultView?.getComputedStyle(el);
+        //   return !!style && [style.backgroundColor, style.boxShadow, style.borderColor, style.outlineColor, style.textShadow].some((value) => typeof value === "string" && value.includes("color("));
+        // });
+        // console.debug("[agenda-export] clone contains color(...) values:", hasUnsupportedColorFn);
       }
     };
+    // DEBUG export agenda: theme/background used for html2canvas
+    // console.debug("[agenda-export] capture config", { format, isDarkTheme, backgroundColor: captureOptions.backgroundColor, selector: "#tab-agenda .agenda-shell" });
     const canvas = await html2canvas(captureEl, captureOptions);
 
     if (format === "png"){
@@ -1088,6 +1157,10 @@ async function downloadAgenda(format){
     const imgData = canvas.toDataURL("image/png");
     const orientation = canvas.width >= canvas.height ? "landscape" : "portrait";
     const pdf = new jsPDF({ orientation, unit:"pt", format:[canvas.width, canvas.height] });
+    if (isDarkTheme){
+      pdf.setFillColor(palette.background);
+      pdf.rect(0, 0, canvas.width, canvas.height, "F");
+    }
     pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
     pdf.save("horario.pdf");
     notifySuccess("Horario descargado en PDF.");
