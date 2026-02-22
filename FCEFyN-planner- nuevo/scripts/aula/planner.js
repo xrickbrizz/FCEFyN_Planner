@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, limit } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
+import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
 
 let CTX = null;
 
@@ -21,6 +22,8 @@ let didBindPlannerGlobalListeners = false;
 let plannerSectionsUiState = "idle";
 let renamePresetDialogRef = null;
 let didBindPresetToAgendaModalUI = false;
+let plannerSubjectStates = {};
+let plannerEligibilityMap = {};
 
 function norm(value){
   return String(value || "")
@@ -155,6 +158,15 @@ function ensureColorForSubject(subjectSlug){
   const updatedMap = { ...plannerColorState.map, [slug]: nextIndex };
   setPlannerColorState(updatedMap, (plannerColorState.cursor + 1) % PLANNER_COLOR_COUNT);
   return nextIndex;
+}
+
+function rebuildPlannerEligibilityMap(){
+  plannerEligibilityMap = buildEligibilityMap({
+    subjectsPlan: CTX?.aulaState?.careerSubjects || [],
+    subjectStates: plannerSubjectStates || CTX?.plannerState?.subjectStates || {},
+    planData: { materias: CTX?.aulaState?.careerSubjects || [] },
+    debugTag: "Eligibility:Planner"
+  });
 }
 
 function getSectionSubjectSlug(section){
@@ -718,9 +730,13 @@ function renderSectionsList(){
   if (!list) return;
   list.innerHTML = "";
 
+  rebuildPlannerEligibilityMap();
   const allSections = CTX.aulaState.courseSections.slice();
   updateSectionsSubjectFilter();
-  const filtered = allSections.slice();
+  const filtered = allSections.filter((section) => {
+    const eligibility = getEligibilityForSubject(getSectionSubjectSlug(section), plannerEligibilityMap);
+    return eligibility.visibleInPlanner;
+  });
 
   if (!allSections.length){
     const careerSlug = getCareerSlug() || "(sin carrera)";
@@ -1308,6 +1324,11 @@ function bindPlannerGlobalListeners(){
   window.addEventListener("careerChanged", () => {
     refreshPlannerSections().catch(() => {});
   });
+
+  window.addEventListener("plannerSubjectStatesChanged", (event) => {
+    plannerSubjectStates = event?.detail?.subjectStates || {};
+    renderSectionsList();
+  });
 }
 
 function initPlanificadorUI(){
@@ -1435,6 +1456,8 @@ const Planner = {
   init(ctx){
     console.groupCollapsed("[planner:debug] Planner.init");
     CTX = ctx;
+    plannerSubjectStates = CTX?.plannerState?.subjectStates || {};
+    rebuildPlannerEligibilityMap();
     const currentUser = CTX?.getCurrentUser?.();
     console.debug("[planner:debug] init started", {
       hasCtx: Boolean(ctx),

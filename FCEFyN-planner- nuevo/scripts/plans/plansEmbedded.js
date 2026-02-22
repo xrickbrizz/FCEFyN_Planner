@@ -2,6 +2,7 @@ import { doc, onSnapshot, setDoc, serverTimestamp, updateDoc, deleteField } from
 import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-data.js";
 import { getPrereqsForSubject, normalizeSubjectKey } from "../core/prereqs.js";
 import { computeApproved, computeUnlocks, normalizeStatus, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
+import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
 
 const SEMESTER_LABELS = [
   "Ingreso",
@@ -83,6 +84,7 @@ export async function mountPlansEmbedded({
     plannerRef: plannerRef || (db && userUid ? doc(db, "planner", userUid) : null),
     userUid: userUid || "",
     plannerUnsubscribe: null,
+    eligibilityMap: {},
     getCareerName: typeof getCareerName === "function" ? getCareerName : () => "",
     careerName: "",
     notifySuccess: typeof notifySuccess === "function" ? notifySuccess : null,
@@ -159,14 +161,24 @@ export async function mountPlansEmbedded({
     return { ok: missing.length === 0, missing, reqs };
   }
 
+  function rebuildEligibilityMap() {
+    state.eligibilityMap = buildEligibilityMap({
+      subjectsPlan: state.materias,
+      subjectStates: state.subjectStates,
+      planData: state.planData || { materias: state.materias },
+      debugTag: "Eligibility:Correlativas"
+    });
+  }
+
 
   function updateStatusButtonsGate(subjectKey) {
     const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
+    const eligibility = getEligibilityForSubject(subjectKey, state.eligibilityMap);
     const options = modalActionsEl?.querySelectorAll(".status-pill-option") || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.statusValue || "");
       const isUnlockOption = !!value && computeUnlocks(value);
-      buttonEl.disabled = isUnlockOption && !gate.ok;
+      buttonEl.disabled = (!eligibility.canChangeState) || (isUnlockOption && !gate.ok);
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
@@ -174,11 +186,12 @@ export async function mountPlansEmbedded({
 
   function updateInlineStatusButtonsGate(subjectKey) {
     const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
+    const eligibility = getEligibilityForSubject(subjectKey, state.eligibilityMap);
     const options = gridEl?.querySelectorAll(`.status-chips[data-subject-id="${subjectKey}"] .status-pill-option`) || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.inlineStatusValue || "");
       const isUnlockOption = !!value && computeUnlocks(value);
-      buttonEl.disabled = isUnlockOption && !gate.ok;
+      buttonEl.disabled = (!eligibility.canChangeState) || (isUnlockOption && !gate.ok);
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
@@ -281,6 +294,8 @@ export async function mountPlansEmbedded({
       if (progress < subject.requiresProgressPercent) return { blocked: true, missing: [], reqs: gate.reqs };
     }
 
+    const eligibility = getEligibilityForSubject(subject.subjectSlug, state.eligibilityMap);
+    if (!eligibility.canTake) return { blocked: true, missing: gate.missing, reqs: gate.reqs };
     return { blocked: false, missing: gate.missing, reqs: gate.reqs };
   }
 
@@ -304,6 +319,7 @@ export async function mountPlansEmbedded({
       item.dataset.subjectName = subject.name;
 
       const status = estados[subject.subjectSlug] || null;
+      const eligibility = getEligibilityForSubject(subject.subjectSlug, state.eligibilityMap);
       const gate = computeBlocked(subject, estados);
       console.log("[gate] subject:", subject.subjectSlug, "reqs:", gate.reqs, "missing:", gate.missing);
       if (status) item.classList.add(status);
@@ -314,14 +330,14 @@ export async function mountPlansEmbedded({
         item.appendChild(renderLockIcon());
         if (missingNames.length) item.title = `Requiere: ${missingNames.join(", ")}`;
       }
-      if (isApproved(status)) item.classList.add("subject-approved");
+      if (isApproved(status) || eligibility.promoted) item.classList.add("subject-approved");
 
       row.appendChild(item);
 
       const chips = document.createElement("div");
       chips.className = "status-chips";
       chips.dataset.subjectId = subject.subjectSlug;
-      chips.style.display = state.openedInlineSelectorId === subject.subjectSlug ? "inline-flex" : "none";
+      chips.style.display = (state.openedInlineSelectorId === subject.subjectSlug && eligibility.canChangeState) ? "inline-flex" : "none";
       chips.innerHTML = `
         <button class="status-pill-option status-pill-pro" type="button" data-inline-status-value="promocionada">PRO</button>
         <button class="status-pill-option status-pill-reg" type="button" data-inline-status-value="regular">REG</button>
@@ -349,6 +365,8 @@ export async function mountPlansEmbedded({
   }
 
   function toggleInlineStatusSelector(subjectEl, subjectId) {
+    const eligibility = getEligibilityForSubject(subjectId, state.eligibilityMap);
+    if (!eligibility.canChangeState) return;
     const chipsEl = subjectEl.parentElement?.querySelector(`.status-chips[data-subject-id="${subjectId}"]`);
     if (!(chipsEl instanceof HTMLElement)) return;
 
@@ -369,6 +387,7 @@ export async function mountPlansEmbedded({
   }
 
   function updateUI() {
+    rebuildEligibilityMap();
     renderSubjects();
     const estados = getEstadoSimpleMap();
     const total = state.materias.length;
@@ -506,6 +525,11 @@ export async function mountPlansEmbedded({
   async function applyStatus(statusValue) {
     const slug = String(state.selectedSubjectId || "").trim();
     if (!slug) return;
+    const eligibility = getEligibilityForSubject(slug, state.eligibilityMap);
+    if (!eligibility.canChangeState) {
+      showSectionMsg("Materia bloqueada por correlativas o ya promocionada.");
+      return;
+    }
     const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
     if (normalized && computeUnlocks(normalized)) {
