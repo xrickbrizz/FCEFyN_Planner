@@ -89,9 +89,30 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create, update, delete: if isAdmin();
 
+      function validReviewPayload(data) {
+        return data.userId is string
+          && data.userId == request.auth.uid
+          && data.comment is string
+          && data.comment.size() > 0
+          && data.comment.size() <= 500
+          && data.anonymous is bool
+          && data.authorName is string
+          && data.createdAt is timestamp
+          && data.updatedAt is timestamp;
+      }
+
       match /reviews/{reviewId} {
         allow read: if signedIn();
-        allow write: if false;
+        allow create: if signedIn()
+          && reviewId == request.auth.uid
+          && validReviewPayload(request.resource.data);
+        allow update: if signedIn()
+          && reviewId == request.auth.uid
+          && resource.data.userId == request.auth.uid
+          && validReviewPayload(request.resource.data)
+          && request.resource.data.userId == resource.data.userId
+          && request.resource.data.createdAt == resource.data.createdAt;
+        allow delete: if false;
       }
 
       match /reviewPuntaje/{uid} {

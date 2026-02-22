@@ -68,12 +68,13 @@ exports.submitProfessorCommentCallable = onCall(CALLABLE_OPTS, async (request) =
     const uid = request.auth.uid;
     const professorRef = db.collection("professors").doc(professorId);
     const reviewerRef = professorRef.collection("reviewers").doc(uid);
-    const reviewRef = professorRef.collection("reviews").doc();
+    const reviewRef = professorRef.collection("reviews").doc(uid);
 
     let isFirstReview = false;
     await db.runTransaction(async (tx) => {
       const professorSnap = await tx.get(professorRef);
       const reviewerSnap = await tx.get(reviewerRef);
+      const reviewSnap = await tx.get(reviewRef);
 
       if (!professorSnap.exists) {
         throw new HttpsError("not-found", "Profesor no encontrado.");
@@ -85,9 +86,9 @@ exports.submitProfessorCommentCallable = onCall(CALLABLE_OPTS, async (request) =
         comment,
         anonymous,
         authorName: anonymous ? "" : normalizeAuthorName(request),
-        createdAt: now,
+        createdAt: reviewSnap.exists ? (reviewSnap.data()?.createdAt || now) : now,
         updatedAt: now,
-      });
+      }, { merge: true });
 
       if (!reviewerSnap.exists) {
         isFirstReview = true;

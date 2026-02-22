@@ -3,8 +3,10 @@ import {
   collection,
   getDocs,
   getDoc,
+  setDoc,
   query,
   orderBy,
+  serverTimestamp,
   getFunctions,
   httpsCallable,
   doc
@@ -391,6 +393,13 @@ function formatReviewDate(value){
   return new Intl.DateTimeFormat("es-AR", { day:"2-digit", month:"short", year:"numeric" }).format(date);
 }
 
+function reviewTimestampToMs(review){
+  const value = review?.updatedAt || review?.createdAt || null;
+  const date = typeof value?.toDate === "function" ? value.toDate() : (value ? new Date(value) : null);
+  const time = date?.getTime?.();
+  return Number.isFinite(time) ? time : 0;
+}
+
 function renderProfessorDetail(){
   const box = document.getElementById("profDetailBox");
   if (!box) return;
@@ -444,7 +453,7 @@ function renderProfessorDetail(){
       <section class="prof-detail-reviews">
         <div class="prof-reviews-header">
           <h3>Reseñas</h3>
-          <button id="openProfCommentModal" class="btn-small prof-dark-btn" type="button">Dejar comentario</button>
+          <button id="openProfCommentModal" class="btn-small prof-dark-btn" type="button">${(reviews || []).some((review) => review.userId === CTX?.getCurrentUser?.()?.uid) ? "Editar comentario" : "Dejar comentario"}</button>
         </div>
         <div class="prof-review-scroll">
           ${reviewsPageItems.length ? reviewsPageItems.map(review => {
@@ -507,10 +516,10 @@ async function loadProfessorReviews(professorId){
   try{
     const reviewsQuery = query(collection(CTX.db, "professors", professorId, "reviews"), orderBy("createdAt", "desc"));
     const snap = await getDocs(reviewsQuery);
-    const reviews = [];
+    const reviewsByUser = new Map();
     snap.forEach((reviewDoc) => {
       const data = reviewDoc.data() || {};
-      reviews.push({
+      const parsed = {
         id: reviewDoc.id,
         professorId,
         userId: data.userId || "",
@@ -523,8 +532,14 @@ async function loadProfessorReviews(professorId){
         firstName: data.firstName || "",
         lastName: data.lastName || "",
         name: data.name || ""
-      });
+      };
+      const key = parsed.userId || reviewDoc.id;
+      const existing = reviewsByUser.get(key);
+      if (!existing || reviewTimestampToMs(parsed) >= reviewTimestampToMs(existing)) {
+        reviewsByUser.set(key, parsed);
+      }
     });
+    const reviews = [...reviewsByUser.values()].sort((a, b) => reviewTimestampToMs(b) - reviewTimestampToMs(a));
     state.reviewsByProfessor.set(professorId, reviews);
   }catch(error){
     console.error("[Profesores] No se pudieron cargar reseñas", error);
@@ -619,6 +634,8 @@ function openCommentModal(professor){
   const commentInput = document.getElementById("profCommentInput");
   const commentCount = document.getElementById("profCommentCount");
   const anonymousCheck = document.getElementById("profCommentAnonymous");
+  const submitBtn = document.getElementById("btnSubmitComment");
+  const modalTitle = document.getElementById("profCommentModalTitle");
   if (!modal || !commentInput || !commentCount || !anonymousCheck || !professor) return;
 
   const draft = ensureReviewDraft(professor.id);
@@ -629,6 +646,8 @@ function openCommentModal(professor){
     draft.comment = userReview.comment || "";
     draft.anonymous = Boolean(userReview.anonymous);
   }
+  if (submitBtn) submitBtn.textContent = userReview ? "Actualizar comentario" : "Enviar";
+  if (modalTitle) modalTitle.textContent = userReview ? "Editar comentario" : "Dejar comentario";
   console.log("[prof] openReviewModal", { professorId: professor.id, hasModal: !!modal });
   console.log("[prof] initRatingUI", {
     stars: document.querySelectorAll("#profRatingModal .star-btn")?.length || 0,
@@ -793,35 +812,27 @@ async function submitComment(){
     return;
   }
 
-  const payload = buildReviewPayload({
-    professorId,
-    includeComment: true,
-    comment: commentText,
-    anonymous
-  });
-  if (
-    Object.prototype.hasOwnProperty.call(payload, "rating") ||
-    Object.prototype.hasOwnProperty.call(payload, "teachingQuality") ||
-    Object.prototype.hasOwnProperty.call(payload, "examDifficulty") ||
-    Object.prototype.hasOwnProperty.call(payload, "studentTreatment")
-  ) {
-    console.warn("[prof][TEMP] submitComment payload incluye rating/métricas (no debería ocurrir)", payload);
-  }
-  console.log("[prof] submit payload FINAL", payload);
-
   const submitBtn = document.getElementById("btnSubmitComment");
   if (submitBtn) submitBtn.disabled = true;
 
   try{
-    const functions = getFunctions(app, "us-central1");
-    const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
-    console.log("[prof] submit comment callable -> payload", payload);
-    const res = await submitProfessorCommentCallable(payload);
-    console.log("[prof] submit comment callable <- res.data", res?.data);
+    const reviewRef = doc(CTX.db, "professors", professorId, "reviews", currentUser.uid);
+    const existingReviewSnap = await getDoc(reviewRef);
+    const existingReview = existingReviewSnap.exists() ? (existingReviewSnap.data() || {}) : null;
+    const now = serverTimestamp();
 
-    resetCommentForm(professorId);
+    // Upsert en un doc con ID estable (uid): evita duplicados por usuario/profesor.
+    await setDoc(reviewRef, {
+      userId: currentUser.uid,
+      comment,
+      anonymous,
+      authorName: anonymous ? "" : (currentUser.displayName || "Estudiante"),
+      createdAt: existingReview?.createdAt || now,
+      updatedAt: now
+    }, { merge: true });
+
     closeCommentModal();
-    notifySuccess("Comentario publicado.");
+    notifySuccess(existingReview ? "Comentario actualizado." : "Comentario publicado.");
 
     try{
       await refreshSelectedProfessorStats(professorId);
