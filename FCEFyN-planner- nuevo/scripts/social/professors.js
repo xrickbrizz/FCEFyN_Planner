@@ -3,10 +3,8 @@ import {
   collection,
   getDocs,
   getDoc,
-  setDoc,
   query,
   orderBy,
-  serverTimestamp,
   getFunctions,
   httpsCallable,
   doc
@@ -816,16 +814,12 @@ async function submitComment(){
   if (submitBtn) submitBtn.disabled = true;
 
   try{
-    const reviewRef = doc(CTX.db, "professors", professorId, "reviews", currentUser.uid);
-    const existingReviewSnap = await getDoc(reviewRef);
-    const existingReview = existingReviewSnap.exists() ? (existingReviewSnap.data() || {}) : null;
-    const now = serverTimestamp();
-
-const functions = getFunctions(app, "us-central1");
-const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
-await submitProfessorCommentCallable({ professorId, comment, anonymous });
+    const functions = getFunctions(app, "us-central1");
+    const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
+    const res = await submitProfessorCommentCallable({ professorId, comment, anonymous });
+    const updated = Boolean(res?.data?.updated);
     closeCommentModal();
-    notifySuccess(existingReview ? "Comentario actualizado." : "Comentario publicado.");
+    notifySuccess(updated ? "Comentario actualizado." : "Comentario publicado.");
 
     try{
       await refreshSelectedProfessorStats(professorId);

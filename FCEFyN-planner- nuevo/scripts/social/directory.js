@@ -39,13 +39,15 @@ function toggleSearchOverlay(isOpen){
   state.friendSearchOverlay.classList.toggle("hidden", !isOpen);
   state.friendSearchOverlay.setAttribute("aria-hidden", String(!isOpen));
   document.body.classList.toggle("modal-open", isOpen);
-  if (isOpen){
-    previousFocusedElement = document.activeElement;
-    resetSearchState();
-    state.usersSearchInput.value = "";
-    const requestId = ++activeSearchRequestId;
-    performUsersSearch("", requestId);
-    state.usersSearchInput?.focus();
+if (isOpen){
+  previousFocusedElement = document.activeElement;
+  resetSearchState();
+  state.usersSearchInput.value = "";
+  state.usersLoading = false;
+  state.usersError = "";
+  state.usersSearchResults = [];
+  renderUsersSearchList(); // solo muestra estado inicial
+  state.usersSearchInput?.focus();
   } else {
     resetSearchState();
     previousFocusedElement?.focus?.();
@@ -124,6 +126,28 @@ function renderUsersSearchList(){
   const clearButton = document.getElementById("clearFriendSearch");
   if (clearButton) clearButton.hidden = !queryText;
 
+const MIN_SEARCH_CHARS = 2; // o 3 si querés más estricto
+
+if (!queryText){
+  state.usersSearchList.innerHTML = `
+    <div class="friend-search-empty">
+      <div class="friend-search-empty-icon" aria-hidden="true">🔎</div>
+      <div class="friend-search-empty-title">Escribí para buscar usuarios</div>
+      <div class="friend-search-empty-subtitle">Buscá por nombre, correo o UID</div>
+    </div>
+  `;
+  return;
+}
+
+if (queryText.length < MIN_SEARCH_CHARS){
+  state.usersSearchList.innerHTML = `
+    <div class="friend-search-empty">
+      <div class="friend-search-empty-title">Escribí al menos ${MIN_SEARCH_CHARS} caracteres</div>
+    </div>
+  `;
+  return;
+}
+  
   if (state.usersLoading){
     state.usersSearchList.innerHTML = `
       <div class="friend-search-empty">
@@ -219,7 +243,7 @@ function filterUsersLocally(users = [], rawInput = ""){
   const filtered = users.filter((user) => {
     if (!user?.uid) return false;
     if (user.uid === currentUid) return false;
-    if (!normalizedQuery) return true;
+    if (!normalizedQuery) return false;
     const name = normalizeText(user.name || user.fullName || user.firstName || "");
     const email = normalizeText(user.email || user.emailLower || "");
     const uid = normalizeText(user.uid || "");
@@ -292,10 +316,23 @@ function handleFriendSearchInput(){
     friendSearchDebounceTimer = null;
   }
 
+  const rawValue = state.usersSearchInput.value || "";
+  const normalized = normalizeText(rawValue);
+  const MIN_SEARCH_CHARS = 3; // o 3
+
+  if (!normalized || normalized.length < MIN_SEARCH_CHARS){
+    activeSearchRequestId += 1; // invalida búsquedas previas
+    state.usersLoading = false;
+    state.usersSearchResults = [];
+    renderUsersSearchList();
+    return;
+  }
+
   const requestId = ++activeSearchRequestId;
   friendSearchDebounceTimer = setTimeout(() => {
-    performUsersSearch(state.usersSearchInput.value, requestId);
+    performUsersSearch(rawValue, requestId);
   }, FRIEND_SEARCH_DEBOUNCE_MS);
+
   renderUsersSearchList();
 }
 

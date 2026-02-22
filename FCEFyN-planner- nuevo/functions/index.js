@@ -73,10 +73,12 @@ exports.submitProfessorCommentCallable = onCall(CALLABLE_OPTS, async (request) =
     const reviewRef = professorRef.collection("reviews").doc(uid);
 
     let isFirstReview = false;
+    let updated = false;
     await db.runTransaction(async (tx) => {
       const professorSnap = await tx.get(professorRef);
       const reviewerSnap = await tx.get(reviewerRef);
       const reviewSnap = await tx.get(reviewRef);
+      updated = reviewSnap.exists;
 
       if (!professorSnap.exists) {
         throw new HttpsError("not-found", "Profesor no encontrado.");
@@ -119,7 +121,7 @@ exports.submitProfessorCommentCallable = onCall(CALLABLE_OPTS, async (request) =
       }
     });
 
-    return { ok: true, isFirstReview };
+    return { ok: true, isFirstReview, updated };
   } catch (err) {
     console.error("submitProfessorCommentCallable error", err);
     if (err instanceof HttpsError) throw err;
