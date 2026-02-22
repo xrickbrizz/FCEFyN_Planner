@@ -965,6 +965,7 @@ body[data-theme="light"] .tab-card{
       gap: 1rem;
       position: relative;
       z-index: 0;
+      height: 60.327rem;
     }
     .study-main-column{
       width: 20rem;
@@ -1268,6 +1269,7 @@ body[data-theme="light"] .tab-card{
       display:flex;
       flex-direction:column;
       gap:.75rem;
+      height: 13.56rem;
     }
     .day:hover{ border-color:var(--info-45); }
     .day-number{
@@ -1927,6 +1929,8 @@ body[data-theme="light"] .event{
 
     #tab-agenda{
       overflow:visible !important;
+      height: 60.327rem;
+
     }
 
     .main-shell{
