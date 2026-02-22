@@ -10,7 +10,7 @@ import {
   setDoc,
   doc,
   getDoc,
-  getFunctions,
+  functions,
   httpsCallable
 } from "../core/firebase.js";
 
@@ -112,7 +112,7 @@ async function removeFriend(friendUidParam = ""){
     console.debug("[Mensajeria][removeFriend] start", { currentUid, friendUid, chatId });
 
     // ✅ Modo C: delegar borrado/desvinculación al backend (Cloud Function)
-    const callable = httpsCallable(getFunctionsInstance(), "removeFriendshipCallable");
+    const callable = httpsCallable(functions, "removeFriendshipCallable");
 
     const result = await callable({
       friendshipId: chatId, // en tu app el doc de friends usa chatId como id
@@ -781,8 +781,18 @@ function wireFriendsRowMenus(){
 
     if (action === "remove-friend"){
       const uid = actionBtn.dataset.uid || "";
+
+      // Evita warning de aria-hidden: devolver foco al botón del menú antes de ocultarlo
+      const row = actionBtn.closest(".friend-row");
+      const toggleBtn = row?.querySelector("button[data-menu-toggle='friend-row']");
+
+      if (document.activeElement === actionBtn) {
+        toggleBtn?.focus?.({ preventScroll: true });
+      }
+
       closeAllFriendRowMenus();
       removeFriend(uid);
+      return;
     }
   });
 
