@@ -14,12 +14,22 @@ const agendaGrid = document.getElementById("agendaGrid");
 const agendaModalBg = document.getElementById("agendaModalBg");
 const agendaModalTitle = document.getElementById("agendaModalTitle");
 const agendaModalInfo = document.getElementById("agendaModalInfo");
-const agendaColor = document.getElementById("agendaColor");
+const agendaColorPalette = document.getElementById("agendaColorPalette");
 const btnAddClass = document.getElementById("btnAddClass");
 const btnDownloadAgendaPng = document.getElementById("btnDownloadAgendaPng");
 const btnDownloadAgendaPdf = document.getElementById("btnDownloadAgendaPdf");
 const btnAgendaCancel = document.getElementById("btnAgendaCancel");
 const btnAgendaDelete = document.getElementById("btnAgendaDelete");
+
+const AGENDA_PALETTE = [
+  { index: 0, cssColor: "var(--subj-1)", name: "verde" },
+  { index: 1, cssColor: "var(--subj-2)", name: "azul" },
+  { index: 2, cssColor: "var(--subj-3)", name: "violeta" },
+  { index: 3, cssColor: "var(--subj-4)", name: "amarillo" },
+  { index: 4, cssColor: "var(--subj-5)", name: "rojo" },
+  { index: 5, cssColor: "var(--subj-6)", name: "turquesa" },
+  { index: 6, cssColor: "var(--subj-7)", name: "gris" }
+];
 
 function pad2(n){ return String(n).padStart(2, "0"); }
 function timeToMinutes(t){
@@ -161,16 +171,36 @@ function renderAgendaGridInto(grid, data, allowEdit){
   });
 }
 
-function populateColorSelector(selectedIndex){
-  if (!agendaColor) return;
-  agendaColor.innerHTML = "";
-  for (let i = 0; i < PLANNER_COLOR_COUNT; i += 1){
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = `Color ${i + 1}`;
-    agendaColor.appendChild(opt);
-  }
-  agendaColor.value = String(selectedIndex);
+function updateAgendaColorPaletteSelection(selectedIndex){
+  if (!agendaColorPalette) return;
+  Array.from(agendaColorPalette.querySelectorAll(".subject-inline-color")).forEach((swatch) => {
+    const isSelected = Number(swatch.getAttribute("data-color-index")) === selectedIndex;
+    swatch.classList.toggle("is-selected", isSelected);
+    swatch.setAttribute("aria-pressed", String(isSelected));
+  });
+}
+
+function populateColorPalette(selectedIndex){
+  if (!agendaColorPalette) return;
+  agendaColorPalette.innerHTML = "";
+  AGENDA_PALETTE.forEach((paletteColor) => {
+    const swatch = document.createElement("button");
+    swatch.type = "button";
+    swatch.className = "subject-inline-color";
+    swatch.style.background = paletteColor.cssColor;
+    swatch.setAttribute("title", paletteColor.name);
+    swatch.setAttribute("aria-label", `Elegir color ${paletteColor.name}`);
+    swatch.setAttribute("aria-pressed", "false");
+    swatch.setAttribute("data-color-index", String(paletteColor.index));
+    swatch.addEventListener("click", async () => {
+      const item = getAgendaItem(CTX.aulaState.agendaEditDay, CTX.aulaState.agendaEditIndex);
+      if (!item?.sectionId) return;
+      updateAgendaColorPaletteSelection(paletteColor.index);
+      await CTX?.planner?.updateSectionColor?.(item.sectionId, paletteColor.index);
+    });
+    agendaColorPalette.appendChild(swatch);
+  });
+  updateAgendaColorPaletteSelection(selectedIndex);
 }
 
 function openAgendaModal(dayKey, index){
@@ -185,7 +215,7 @@ function openAgendaModal(dayKey, index){
 
   agendaModalTitle.textContent = "Opciones de comisión";
   agendaModalInfo.textContent = `${item.materia || "Comisión"} · ${item.inicio || "--:--"} - ${item.fin || "--:--"}`;
-  populateColorSelector(getAgendaColorIndex(item));
+  populateColorPalette(getAgendaColorIndex(item));
   agendaModalBg.style.display = "flex";
 }
 
@@ -196,15 +226,6 @@ function bindAgendaModal(){
 
   if (btnAgendaCancel) btnAgendaCancel.onclick = () => { agendaModalBg.style.display = "none"; };
   if (agendaModalBg) agendaModalBg.onclick = (e) => { if (e.target === agendaModalBg) agendaModalBg.style.display = "none"; };
-
-  if (agendaColor){
-    // Cambio de color compartiendo persistencia/render del Planificador.
-    agendaColor.onchange = async () => {
-      const item = getAgendaItem(CTX.aulaState.agendaEditDay, CTX.aulaState.agendaEditIndex);
-      if (!item?.sectionId) return;
-      await CTX?.planner?.updateSectionColor?.(item.sectionId, Number(agendaColor.value));
-    };
-  }
 
   if (btnAgendaDelete){
     btnAgendaDelete.onclick = async () => {
