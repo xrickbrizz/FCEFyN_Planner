@@ -2424,7 +2424,7 @@ body[data-theme="light"] .event{
       align-content:start;
     }
     .planner-filters-row{
-      display:flex;
+      display:grid;
       gap:.6rem;
       align-items:center;
       margin: .65rem 0 1rem;
@@ -3697,6 +3697,10 @@ body.modal-open{
 #tab-perfil.profile-page .profile-avatar-status{
   color:var(--text-soft);
   font-size: .92rem;
+}
+
+.small-muted{
+  margin-bottom: 0px;
 }
 
 #tab-perfil.profile-page .profile-header-center{
