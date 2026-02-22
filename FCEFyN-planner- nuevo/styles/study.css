@@ -4772,9 +4772,9 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-section legend{
 }
 
 #tab-mensajes .friend-row:hover{
-  transform:translateY(-1px);
   border-color:var(--accent-30);
 }
+
 
 #tab-mensajes .friend-row.selected{
   background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3));
@@ -4819,10 +4819,9 @@ body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
   height:1rem;
   fill:currentColor;
 }
-#tab-mensajes .friend-row-menu{
-  position:absolute;
-  top:calc(100% + .35rem);
-  right:0;
+#tab-mensajes .friend-row-menu,
+#friend-row-floating-menu.friend-row-menu{
+  position:fixed;
   min-width:10rem;
   border:1px solid var(--border-30);
   border-radius:.8rem;
@@ -4831,10 +4830,24 @@ body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
   padding:.35rem;
   display:flex;
   flex-direction:column;
-  z-index:25;
+  z-index:2600;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(-2px);
+  transition:opacity .12s ease, transform .12s ease, visibility .12s ease;
 }
-#tab-mensajes .friend-row-menu.hidden{ display:none; }
-#tab-mensajes .friend-row-menu button{
+
+#tab-mensajes .friend-row-menu.is-open,
+#friend-row-floating-menu.friend-row-menu.is-open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+#tab-mensajes .friend-row-menu button,
+#friend-row-floating-menu.friend-row-menu button{
   border:0;
   background:transparent;
   text-align:left;
@@ -4842,7 +4855,8 @@ body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
   border-radius:.6rem;
   cursor:pointer;
 }
-#tab-mensajes .friend-row-menu button:hover{
+#tab-mensajes .friend-row-menu button:hover,
+#friend-row-floating-menu.friend-row-menu button:hover{
   background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3));
 }
 #tab-mensajes .friend-unread-badge{

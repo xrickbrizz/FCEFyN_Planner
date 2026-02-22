@@ -19,6 +19,8 @@ let requestsBadgeUnsubs = [];
 let requestsModalLiveUnsubs = [];
 let requestsModalBound = false;
 let friendRowMenusBound = false;
+let friendRowMenuFloatingEl = null;
+let activeFriendRowMenuButton = null;
 
 const CHAT_ACCENTS = {
   green: "#7CC7A0",
@@ -701,12 +703,10 @@ function renderFriendsList(){
           data-chat="${f.chatId}"
           data-uid="${f.otherUid}"
           aria-expanded="${isMenuOpen ? "true" : "false"}"
+          aria-controls="friend-row-floating-menu"
         >
           ${buildFriendGearIcon()}
         </button>
-        <div class="friend-row-menu ${isMenuOpen ? "" : "hidden"}" role="menu" aria-hidden="${isMenuOpen ? "false" : "true"}" data-menu-for="${f.otherUid}">
-          <button type="button" data-action="remove-friend" data-uid="${f.otherUid}">Eliminar amigo</button>
-        </div>
       </div>
     `;
     box.appendChild(div);
@@ -721,16 +721,54 @@ function buildFriendGearIcon(){
   `;
 }
 
+function ensureFriendRowFloatingMenu(){
+  if (friendRowMenuFloatingEl && document.body.contains(friendRowMenuFloatingEl)) return friendRowMenuFloatingEl;
+  const menu = document.createElement("div");
+  menu.id = "friend-row-floating-menu";
+  menu.className = "friend-row-menu";
+  menu.setAttribute("role", "menu");
+  menu.setAttribute("aria-hidden", "true");
+  menu.innerHTML = '<button type="button" role="menuitem" data-action="remove-friend">Eliminar amigo</button>';
+  document.body.appendChild(menu);
+  friendRowMenuFloatingEl = menu;
+  return menu;
+}
+
 function closeAllFriendRowMenus(){
   if (!CTX?.socialState) return;
   CTX.socialState.openFriendRowMenuUid = "";
   const listBox = document.getElementById("friendsListBox");
-  if (!listBox) return;
-  listBox.querySelectorAll(".friend-actions-menu-btn[aria-expanded='true']").forEach((btn) => btn.setAttribute("aria-expanded", "false"));
-  listBox.querySelectorAll(".friend-row-menu").forEach((menu) => {
-    menu.classList.add("hidden");
-    menu.setAttribute("aria-hidden", "true");
-  });
+  if (listBox){
+    listBox.querySelectorAll(".friend-actions-menu-btn[aria-expanded='true']").forEach((btn) => btn.setAttribute("aria-expanded", "false"));
+  }
+
+  const menu = ensureFriendRowFloatingMenu();
+  menu.classList.remove("is-open");
+  menu.setAttribute("aria-hidden", "true");
+  menu.removeAttribute("data-uid");
+  if (activeFriendRowMenuButton){
+    activeFriendRowMenuButton.classList.remove("menu-open");
+  }
+  activeFriendRowMenuButton = null;
+}
+
+function positionFriendRowMenu(menuEl, anchorButton){
+  const rect = anchorButton.getBoundingClientRect();
+  const menuWidth = menuEl.offsetWidth || 180;
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+  const margin = 8;
+
+  let left = rect.right - menuWidth;
+  if ((left + menuWidth) > (viewportWidth - margin)) left = viewportWidth - menuWidth - margin;
+  if (left < margin) left = margin;
+
+  let top = rect.bottom + 6;
+  const menuHeight = menuEl.offsetHeight || 0;
+  if ((top + menuHeight) > (viewportHeight - margin)) top = Math.max(margin, rect.top - menuHeight - 6);
+
+  menuEl.style.left = `${Math.round(left)}px`;
+  menuEl.style.top = `${Math.round(top)}px`;
 }
 
 function toggleFriendRowMenu(buttonEl){
@@ -740,14 +778,17 @@ function toggleFriendRowMenu(buttonEl){
   closeAllFriendRowMenus();
   if (isOpen) return;
 
-  const row = buttonEl.closest(".friend-row");
-  const menu = row?.querySelector(".friend-row-menu");
-  if (!menu) return;
-
+  const menu = ensureFriendRowFloatingMenu();
   CTX.socialState.openFriendRowMenuUid = uid;
+  activeFriendRowMenuButton = buttonEl;
+
   buttonEl.setAttribute("aria-expanded", "true");
-  menu.classList.remove("hidden");
+  buttonEl.classList.add("menu-open");
+  menu.classList.add("is-open");
   menu.setAttribute("aria-hidden", "false");
+  menu.dataset.uid = uid;
+
+  positionFriendRowMenu(menu, buttonEl);
 }
 
 function wireFriendsRowMenus(){
@@ -781,20 +822,37 @@ function wireFriendsRowMenus(){
 
     if (action === "remove-friend"){
       const uid = actionBtn.dataset.uid || "";
-
-      // Evita warning de aria-hidden: devolver foco al botón del menú antes de ocultarlo
-      const row = actionBtn.closest(".friend-row");
-      const toggleBtn = row?.querySelector("button[data-menu-toggle='friend-row']");
-
-      if (document.activeElement === actionBtn) {
-        toggleBtn?.focus?.({ preventScroll: true });
-      }
-
       closeAllFriendRowMenus();
       removeFriend(uid);
       return;
     }
   });
+
+  const floatingMenu = ensureFriendRowFloatingMenu();
+
+  floatingMenu.addEventListener("click", (event) => {
+    const actionBtn = event.target.closest("button[data-action='remove-friend']");
+    if (!actionBtn) return;
+    event.preventDefault();
+    const uid = floatingMenu.dataset.uid || "";
+    if (document.activeElement === actionBtn && activeFriendRowMenuButton){
+      activeFriendRowMenuButton.focus?.({ preventScroll: true });
+    }
+    closeAllFriendRowMenus();
+    removeFriend(uid);
+  });
+
+  window.addEventListener("resize", () => {
+    const menu = friendRowMenuFloatingEl;
+    if (!menu || !menu.classList.contains("is-open") || !activeFriendRowMenuButton) return;
+    positionFriendRowMenu(menu, activeFriendRowMenuButton);
+  });
+
+  window.addEventListener("scroll", () => {
+    const menu = friendRowMenuFloatingEl;
+    if (!menu || !menu.classList.contains("is-open") || !activeFriendRowMenuButton) return;
+    positionFriendRowMenu(menu, activeFriendRowMenuButton);
+  }, true);
 
   document.addEventListener("click", (event) => {
     const clickedInsideFriendsList = event.target.closest("#friendsListBox");

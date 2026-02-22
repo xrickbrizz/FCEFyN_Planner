@@ -1,5 +1,6 @@
 let CTX = null;
 let didBindPlanChangedListener = false;
+let isUpdatingAgendaColor = false;
 
 const PLAN_CHANGED_EVENT = "plan:changed";
 const PLANNER_COLOR_COUNT = 7;
@@ -180,6 +181,19 @@ function updateAgendaColorPaletteSelection(selectedIndex){
   });
 }
 
+function setAgendaPaletteDisabled(disabled){
+  if (!agendaColorPalette) return;
+  agendaColorPalette.setAttribute("aria-busy", String(Boolean(disabled)));
+  Array.from(agendaColorPalette.querySelectorAll(".subject-inline-color")).forEach((swatch) => {
+    swatch.disabled = Boolean(disabled);
+  });
+}
+
+function closeAgendaModal(){
+  if (!agendaModalBg) return;
+  agendaModalBg.style.display = "none";
+}
+
 function populateColorPalette(selectedIndex){
   if (!agendaColorPalette) return;
   agendaColorPalette.innerHTML = "";
@@ -192,11 +206,23 @@ function populateColorPalette(selectedIndex){
     swatch.setAttribute("aria-label", `Elegir color ${paletteColor.name}`);
     swatch.setAttribute("aria-pressed", "false");
     swatch.setAttribute("data-color-index", String(paletteColor.index));
-    swatch.addEventListener("click", async () => {
+    swatch.addEventListener("click", async (event) => {
+      event.stopPropagation();
+      if (isUpdatingAgendaColor) return;
       const item = getAgendaItem(CTX.aulaState.agendaEditDay, CTX.aulaState.agendaEditIndex);
       if (!item?.sectionId) return;
       updateAgendaColorPaletteSelection(paletteColor.index);
-      await CTX?.planner?.updateSectionColor?.(item.sectionId, paletteColor.index);
+      isUpdatingAgendaColor = true;
+      setAgendaPaletteDisabled(true);
+      try {
+        await CTX?.planner?.updateSectionColor?.(item.sectionId, paletteColor.index);
+        closeAgendaModal();
+      } catch (error) {
+        CTX?.notifyError?.(`No se pudo guardar el color de la comisión: ${error?.message || error}`);
+      } finally {
+        isUpdatingAgendaColor = false;
+        setAgendaPaletteDisabled(false);
+      }
     });
     agendaColorPalette.appendChild(swatch);
   });
@@ -216,6 +242,7 @@ function openAgendaModal(dayKey, index){
   agendaModalTitle.textContent = "Opciones de comisión";
   agendaModalInfo.textContent = `${item.materia || "Comisión"} · ${item.inicio || "--:--"} - ${item.fin || "--:--"}`;
   populateColorPalette(getAgendaColorIndex(item));
+  setAgendaPaletteDisabled(false);
   agendaModalBg.style.display = "flex";
 }
 
@@ -224,8 +251,8 @@ function bindAgendaModal(){
   if (btnDownloadAgendaPng) btnDownloadAgendaPng.addEventListener("click", () => CTX.downloadAgenda?.("png"));
   if (btnDownloadAgendaPdf) btnDownloadAgendaPdf.addEventListener("click", () => CTX.downloadAgenda?.("pdf"));
 
-  if (btnAgendaCancel) btnAgendaCancel.onclick = () => { agendaModalBg.style.display = "none"; };
-  if (agendaModalBg) agendaModalBg.onclick = (e) => { if (e.target === agendaModalBg) agendaModalBg.style.display = "none"; };
+  if (btnAgendaCancel) btnAgendaCancel.onclick = () => { closeAgendaModal(); };
+  if (agendaModalBg) agendaModalBg.onclick = (e) => { if (e.target === agendaModalBg) closeAgendaModal(); };
 
   if (btnAgendaDelete){
     btnAgendaDelete.onclick = async () => {
@@ -240,7 +267,7 @@ function bindAgendaModal(){
       });
       if (!ok) return;
       await CTX?.planner?.removeSectionFromActivePreset?.(item.sectionId);
-      agendaModalBg.style.display = "none";
+      closeAgendaModal();
     };
   }
 }
