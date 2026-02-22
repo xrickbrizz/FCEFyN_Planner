@@ -4596,7 +4596,7 @@ body[data-theme="light"] #acadCompletedLink.widget-link:focus-visible{
   outline-offset:3px;
   border-radius:0.3rem;
 }
-#tab-profesores,#tab-comunidad,#tab-recreo,#tab-biblioteca,#tab-transporte,#tab-mensajes, #tab-perfil{
+#tab-materias,#tab-profesores,#tab-comunidad,#tab-recreo,#tab-biblioteca,#tab-transporte,#tab-mensajes, #tab-perfil{
   height: 60.327rem;
 }
 body.dark-mode .coming-view h2,
@@ -4651,6 +4651,7 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-section legend{
   border:1px solid var(--border-85);
   border-radius:16px;
   padding:1rem;
+  height: 58rem;
 }
 .subjects-modern-header h3{ margin:0; font-size:1.1rem; }
 .subjects-modern-header p{ margin:.2rem 0 .75rem; }
