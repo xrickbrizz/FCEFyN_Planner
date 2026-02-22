@@ -28,6 +28,18 @@ let plannerSubjectStates = {};
 let plannerEligibilityMap = {};
 let plannerEligibilityContext = { careerSlug: "", planSlug: "", source: "fallback" };
 
+function normalizeSectionColorMap(rawMap){
+  if (!rawMap || typeof rawMap !== "object") return {};
+  const normalizedMap = {};
+  Object.entries(rawMap).forEach(([rawSectionId, rawIndex]) => {
+    const sectionId = String(rawSectionId || "").trim();
+    const index = Number(rawIndex);
+    if (!sectionId || !Number.isFinite(index)) return;
+    normalizedMap[sectionId] = ((index % PLANNER_COLOR_COUNT) + PLANNER_COLOR_COUNT) % PLANNER_COLOR_COUNT;
+  });
+  return normalizedMap;
+}
+
 function norm(value){
   return String(value || "")
     .normalize("NFD")
@@ -142,6 +154,26 @@ function hydratePlannerColorStateFromRemote(){
   const savedCursor = Number(CTX.aulaState?.plannerColorCursor);
   if (!savedMap || typeof savedMap !== "object") return;
   setPlannerColorState(savedMap, Number.isFinite(savedCursor) ? savedCursor : 0);
+}
+
+function getSectionColorIndex(sectionId){
+  const normalizedSectionId = String(sectionId || "").trim();
+  if (!normalizedSectionId) return null;
+  const map = normalizeSectionColorMap(CTX?.aulaState?.plannerSectionColors);
+  const colorIndex = map[normalizedSectionId];
+  return Number.isFinite(colorIndex) ? colorIndex : null;
+}
+
+function setSectionColorIndex(sectionId, colorIndex){
+  const normalizedSectionId = String(sectionId || "").trim();
+  const parsedIndex = Number(colorIndex);
+  if (!normalizedSectionId || !Number.isFinite(parsedIndex)) return;
+  const normalizedIndex = ((parsedIndex % PLANNER_COLOR_COUNT) + PLANNER_COLOR_COUNT) % PLANNER_COLOR_COUNT;
+  const currentMap = normalizeSectionColorMap(CTX?.aulaState?.plannerSectionColors);
+  CTX.aulaState.plannerSectionColors = {
+    ...currentMap,
+    [normalizedSectionId]: normalizedIndex
+  };
 }
 
 function getSubjectColorIndex(subjectSlug){
@@ -319,13 +351,13 @@ function buildWeeklyDataFromSectionIds(sectionIds){
   (sectionIds || []).map(getSectionById).filter(Boolean).forEach(sec => {
     const subject = getSubjectNameFromSection(sec) || "(Sin materia)";
     const subjectSlug = getSectionSubjectSlug(sec);
-    const colorIndex = ensureColorForSubject(subjectSlug);
+    const colorIndex = getSectionColorIndex(sec.id) ?? ensureColorForSubject(subjectSlug);
     const commission = sec.commission ? `Comisión ${sec.commission}` : "";
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
       const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" • ");
-      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "", subjectSlug, colorIndex });
+      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "", subjectSlug, colorIndex, sectionId: sec.id });
     });
   });
 
@@ -898,6 +930,7 @@ async function persistPresetsToFirestore(){
     activePresetId: CTX.aulaState.activePresetId || "",
     plannerSubjectColors: plannerColorState.map,
     plannerColorCursor: plannerColorState.cursor,
+    plannerSectionColors: normalizeSectionColorMap(CTX.aulaState.plannerSectionColors),
     agenda: buildWeeklyDataFromSectionIds(CTX.aulaState.activeSelectedSectionIds)
   };
   try {
@@ -1083,6 +1116,22 @@ function toggleSectionInPreset(sectionId){
     newSelectedCount: CTX.aulaState.activeSelectedSectionIds.length
   });
   applyLiveChange().catch(() => {});
+}
+
+async function removeSectionFromActivePreset(sectionId){
+  const normalizedSectionId = String(sectionId || "").trim();
+  if (!normalizedSectionId) return false;
+  if (!CTX.aulaState.activeSelectedSectionIds.includes(normalizedSectionId)) return false;
+  // Función compartida de desmarcado usada tanto por Planificador como por el modal de Agenda.
+  toggleSectionInPreset(normalizedSectionId);
+  return true;
+}
+
+async function updateSectionColor(sectionId, colorIndex){
+  const normalizedSectionId = String(sectionId || "").trim();
+  if (!normalizedSectionId) return;
+  setSectionColorIndex(normalizedSectionId, colorIndex);
+  await commitPlanState();
 }
 
 async function applyPresetToAgendaDirect(presetId, notify = false){
@@ -1552,6 +1601,9 @@ const Planner = {
   renderSelectedSectionsList,
   renderPlannerPreview,
   getSubjectColorIndex,
+  getSectionColorIndex,
+  removeSectionFromActivePreset,
+  updateSectionColor,
   getSubjectColorsMap: () => ({ ...plannerColorState.map }),
   getColorCursor: () => plannerColorState.cursor
 };

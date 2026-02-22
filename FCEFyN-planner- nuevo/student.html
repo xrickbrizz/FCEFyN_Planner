@@ -816,38 +816,18 @@
 
   <div class="modal-bg" id="agendaModalBg">
     <div class="modal">
-      <h3 class="modal-title" id="agendaModalTitle">Añadir clase</h3>
-      <label>Día</label>
-      <select id="agendaDay"></select>
+      <h3 class="modal-title" id="agendaModalTitle">Opciones de comisión</h3>
 
-      <label>Materia</label>
-      <select id="agendaSubject"></select>
+      <div id="agendaModalInfo" class="small-muted" style="margin-bottom:.8rem;"></div>
 
-      <label>Sede / Modalidad</label>
-      <select id="agendaLocation" required>
-        <option value="Ciudad Universitaria">Ciudad Universitaria</option>
-        <option value="Centro">Centro</option>
-        <option value="Virtual Sincrónica">Virtual Sincrónica</option>
-      </select>
-
-      <label>Aula (opcional)</label>
-      <input id="agendaRoom" placeholder="Ej: 100, 218, Lab 2" />
-
-      <div style="display:flex;gap:.5rem;">
-        <div style="flex:1;">
-          <label>Inicio</label>
-          <input id="agendaStart" type="time" min="08:00" max="23:00" />
-        </div>
-        <div style="flex:1;">
-          <label>Fin</label>
-          <input id="agendaEnd" type="time" min="08:00" max="23:00" />
-        </div>
+      <div class="modal-field">
+        <label for="agendaColor">Color</label>
+        <select id="agendaColor"></select>
       </div>
 
       <div style="margin-top:.6rem;display:flex;gap:.5rem;justify-content:flex-end;">
-        <button class="btn-gray btn-small" id="btnAgendaCancel">Cancelar</button>
-        <button class="btn-danger btn-small" id="btnAgendaDelete" style="display:none;">Eliminar</button>
-        <button class="btn-blue btn-small" id="btnAgendaSave">Guardar</button>
+        <button class="btn-gray btn-small" id="btnAgendaCancel">Cerrar</button>
+        <button class="btn-danger btn-small" id="btnAgendaDelete">Eliminar</button>
       </div>
     </div>
   </div>
