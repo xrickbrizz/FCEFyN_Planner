@@ -961,14 +961,14 @@ body[data-theme="light"] .tab-card{
 
     .tab-estudio-layout{
       display:grid;
-      grid-template-columns: minmax(0,1.55fr) minmax(18.75rem,5.55fr);
+      grid-template-columns: minmax(19rem,1.45fr) minmax(0,2.55fr);
       gap: 1rem;
       position: relative;
       z-index: 0;
-      height: 60.327rem;
+      align-items:start;
     }
     .study-main-column{
-      width: 20rem;
+      width: 100%;
     }
     .study-main-column,
     .study-side-column{
@@ -1173,6 +1173,7 @@ body[data-theme="light"] .tab-card{
     @media(max-width:900px){
       .tab-estudio-layout{ grid-template-columns:1fr; }
       .study-stats-grid{ grid-template-columns:1fr; }
+      .study-recent-logs-list{ max-height:15.5rem; }
       .study-calendar-compact{
         padding-top: 4rem;
       }
@@ -1270,6 +1271,83 @@ body[data-theme="light"] .tab-card{
       flex-direction:column;
       gap:.75rem;
       height: 13.56rem;
+    }
+
+    .study-recent-logs-panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:.9rem;
+      display:flex;
+      flex-direction:column;
+      gap:.75rem;
+      min-height: 14rem;
+    }
+    .study-recent-logs-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:.65rem;
+    }
+    .study-recent-logs-title{
+      margin:0;
+      font-size:1.01rem;
+      font-weight:700;
+      color:var(--text);
+    }
+    .study-recent-logs-subtitle{
+      margin:.15rem 0 0;
+      font-size:.82rem;
+      color:var(--text-soft);
+    }
+    .study-recent-logs-body{
+      min-height: 9rem;
+    }
+    .study-recent-logs-list{
+      display:flex;
+      flex-direction:column;
+      gap:.55rem;
+      max-height: 19.5rem;
+      overflow-y:auto;
+      padding-right:.2rem;
+    }
+    .study-recent-log-item{
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      padding:.6rem .68rem;
+      display:flex;
+      justify-content:space-between;
+      gap:.65rem;
+      background:var(--surface);
+      transition: border-color .2s ease, background-color .2s ease;
+    }
+    .study-recent-log-item:hover{
+      border-color:var(--info-45);
+      background:color-mix(in srgb, var(--card) 72%, var(--surface) 28%);
+    }
+    .study-recent-log-main{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:.15rem;
+    }
+    .study-recent-log-row{
+      display:flex;
+      justify-content:space-between;
+      gap:.55rem;
+      font-size:.85rem;
+      color:var(--text);
+    }
+    .study-recent-log-meta{
+      color:var(--text-soft);
+      font-size:.77rem;
+    }
+    .study-recent-log-topic{
+      font-size:.79rem;
+      color:var(--text-soft);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     .day:hover{ border-color:var(--info-45); }
     .day-number{
@@ -4518,7 +4596,9 @@ body[data-theme="light"] #acadCompletedLink.widget-link:focus-visible{
   outline-offset:3px;
   border-radius:0.3rem;
 }
-
+#tab-profesores,#tab-comunidad,#tab-recreo,#tab-biblioteca,#tab-transporte,#tab-mensajes, #tab-perfil{
+  height: 60.327rem;
+}
 body.dark-mode .coming-view h2,
 body[data-theme="dark"] .coming-view h2,
 body.dark-mode .home-card[data-coming-soon="true"] .home-card-title,

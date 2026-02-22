@@ -9,6 +9,7 @@ let editingIndex = -1;
 let studyViewYear = null;
 let studyViewMonth = null;
 let studyFocusDateKey = null;
+let studyLogsLoading = true;
 
 // ---- ACADEMICO
 let academicoCache = {};
@@ -48,6 +49,8 @@ const studyWeeklyGoalHoursInput = document.getElementById("studyWeeklyGoalHoursI
 const btnStudyWeeklyGoalClose = document.getElementById("btnStudyWeeklyGoalClose");
 const btnStudyWeeklyGoalCancel = document.getElementById("btnStudyWeeklyGoalCancel");
 const btnStudyWeeklyGoalSave = document.getElementById("btnStudyWeeklyGoalSave");
+const studyRecentLogsBody = document.getElementById("studyRecentLogsBody");
+const studyRecentLogsViewAll = document.getElementById("studyRecentLogsViewAll");
 
 const acadGrid = document.getElementById("acadGrid");
 const acadMonthTitle = document.getElementById("acadMonthTitle");
@@ -189,6 +192,8 @@ function subscribeMySubjectsForStudy(uid){
 export function setCalendarioCaches({ estudios, academico } = {}){
   if (estudios && typeof estudios === "object") estudiosCache = estudios;
   if (academico && typeof academico === "object") academicoCache = academico;
+  studyLogsLoading = false;
+  refreshStudyRecentLogs();
 }
 
 export function getCalendarioCaches(){
@@ -731,6 +736,7 @@ function renderStudyDetailPanel(dateKey){
   studyDetailTitle.textContent = detailDate.toLocaleDateString("es-ES", { weekday:"long" });
   studyDetailDate.textContent = detailDate.toLocaleDateString("es-ES", { day:"numeric", month:"long", year:"numeric" });
   studyDetailTime.textContent = new Date().toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
+  refreshStudyRecentLogs();
 
   const events = getStudyEventsForDate(normalizedKey);
   studyDetailList.innerHTML = "";
@@ -772,6 +778,134 @@ function renderStudyDetailPanel(dateKey){
   });
 }
 
+function getFlattenedStudyEntries(){
+  const records = [];
+  Object.keys(estudiosCache || {}).forEach((dateKey) => {
+    const normalizedKey = getDayKey(dateKey);
+    if (!normalizedKey) return;
+    const entries = Array.isArray(estudiosCache[dateKey]) ? estudiosCache[dateKey] : [];
+    entries.forEach((entry, index) => {
+      records.push({
+        dateKey: normalizedKey,
+        index,
+        entry: entry || {}
+      });
+    });
+  });
+  records.sort((a, b) => {
+    if (a.dateKey === b.dateKey) return b.index - a.index;
+    return a.dateKey < b.dateKey ? 1 : -1;
+  });
+  return records;
+}
+
+function formatStudyRecordDate(dateKey){
+  const parts = ymdFromDateKey(dateKey);
+  if (!parts) return "Fecha inválida";
+  const date = new Date(parts.y, parts.m - 1, parts.d);
+  return date.toLocaleDateString("es-ES", {
+    day:"2-digit",
+    month:"short",
+    year:"numeric"
+  });
+}
+
+function formatStudyDuration(entry){
+  const total = getStudyDurationMinutes(entry);
+  const hours = Math.floor(total / 60);
+  const mins = total % 60;
+  if (!hours) return `${mins}m`;
+  if (!mins) return `${hours}h`;
+  return `${hours}h ${mins}m`;
+}
+
+export function renderStudyRecentLogsPanel(records = [], { loading = false, error = null } = {}){
+  if (!studyRecentLogsBody) return;
+  studyRecentLogsBody.innerHTML = "";
+
+  if (loading){
+    const loadingEl = document.createElement("div");
+    loadingEl.className = "small-muted";
+    loadingEl.textContent = "Cargando registros…";
+    studyRecentLogsBody.appendChild(loadingEl);
+    return;
+  }
+
+  if (error){
+    const errorEl = document.createElement("div");
+    errorEl.className = "small-muted";
+    errorEl.textContent = "No se pudieron cargar los registros.";
+    studyRecentLogsBody.appendChild(errorEl);
+    return;
+  }
+
+  if (!records.length){
+    const empty = document.createElement("div");
+    empty.className = "small-muted";
+    empty.innerHTML = `
+      <div>Todavía no hay registros guardados.</div>
+      <div>Usá el temporizador o cargá una sesión manual para empezar.</div>
+    `;
+    studyRecentLogsBody.appendChild(empty);
+    return;
+  }
+
+  const list = document.createElement("div");
+  list.className = "study-recent-logs-list";
+
+  records.forEach((record) => {
+    const card = document.createElement("article");
+    card.className = "study-recent-log-item";
+    card.innerHTML = `
+      <div class="study-recent-log-main">
+        <div class="study-recent-log-row">
+          <strong>${escapeHtml(record.entry?.materia || "Materia")}</strong>
+          <span>${escapeHtml(formatStudyDuration(record.entry))}</span>
+        </div>
+        <div class="study-recent-log-row study-recent-log-meta">
+          <span>${escapeHtml(formatStudyRecordDate(record.dateKey))}</span>
+          <span>${escapeHtml(record.entry?.tipo || "manual")}</span>
+        </div>
+        ${record.entry?.tema ? `<div class="study-recent-log-topic">${escapeHtml(record.entry.tema)}</div>` : ""}
+      </div>
+      <div class="study-recent-log-actions">
+        <button class="btn-danger btn-small" type="button" data-action="delete" data-date-key="${record.dateKey}" data-index="${record.index}">Eliminar</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  studyRecentLogsBody.appendChild(list);
+
+  studyRecentLogsBody.querySelectorAll("button[data-action='delete']").forEach((btn) => {
+    btn.addEventListener("click", async (event) => {
+      const dateKey = event.currentTarget.dataset.dateKey;
+      const index = Number.parseInt(event.currentTarget.dataset.index || "-1", 10);
+      if (!dateKey || Number.isNaN(index)) return;
+      await deleteStudyItem(dateKey, index);
+    });
+  });
+}
+
+export function refreshStudyRecentLogs(){
+  try {
+    if (studyLogsLoading){
+      renderStudyRecentLogsPanel([], { loading:true });
+      return;
+    }
+
+    const allRecords = getFlattenedStudyEntries();
+    const focusRecords = studyFocusDateKey
+      ? allRecords.filter((record) => record.dateKey === studyFocusDateKey)
+      : [];
+    const source = focusRecords.length ? focusRecords : allRecords;
+    renderStudyRecentLogsPanel(source.slice(0, 8));
+  } catch (error){
+    console.error("[calendario] error renderizando panel de registros recientes", error);
+    renderStudyRecentLogsPanel([], { error });
+  }
+}
+
 
 function openStudyModalForDate(dateKey, index = -1){
   const normalizedKey = getDayKey(dateKey) || getTodayKey();
@@ -808,7 +942,7 @@ function openStudyModalForDate(dateKey, index = -1){
   if (modalBg) modalBg.style.display = "flex";
 }
 
-async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
+async function saveStudyItem(dateKey, index, { materia, tema, horas, mins, tipo = "manual" }){
   const user = getCurrentUser();
   if (!user) return;
   const normalizedKey = getDayKey(dateKey);
@@ -836,7 +970,8 @@ async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
     horas: String(safeHoras),
     mins: String(safeMins),
     tema: tema || "",
-    materia
+    materia,
+    tipo
   };
 
   if (index >= 0){
@@ -850,6 +985,7 @@ async function saveStudyItem(dateKey, index, { materia, tema, horas, mins }){
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
   renderStudyStats();
+  refreshStudyRecentLogs();
 }
 
 async function deleteStudyItem(dateKey, index){
@@ -886,6 +1022,7 @@ async function deleteStudyItem(dateKey, index){
   paintStudyEvents();
   renderStudyDetailPanel(normalizedKey);
   renderStudyStats();
+  refreshStudyRecentLogs();
 }
 
 async function loadStudyWeeklyGoal(){
@@ -999,7 +1136,7 @@ function initStudyTimer(){
       const tema = studyTimerTema?.value || "";
       const horas = Math.floor(totalMin / 60);
       const mins = totalMin % 60;
-      await saveStudyItem(targetKey, -1, { materia, tema, horas, mins });
+      await saveStudyItem(targetKey, -1, { materia, tema, horas, mins, tipo:"timer" });
       stopStudyTimerInterval();
       studyTimerSeconds = 0;
       studyTimerState = "finished";
@@ -1105,7 +1242,7 @@ function initStudyModalUI(){
         CTX?.notifyWarn?.("Primero creá al menos una materia en la pestaña 'Materias'.");
         return;
       }
-      await saveStudyItem(selectedDate, editingIndex, { materia: materiaSel.value, tema, horas, mins });
+      await saveStudyItem(selectedDate, editingIndex, { materia: materiaSel.value, tema, horas, mins, tipo:"manual" });
       if (modalBg) modalBg.style.display = "none";
       paintStudyEvents();
       console.log("[calendario] save study event", { selectedDate, editingIndex });
@@ -1125,6 +1262,12 @@ function initStudyModalUI(){
   } else {
     warnMissing("modalBg", modalBg);
   }
+}
+
+if (studyRecentLogsViewAll){
+  studyRecentLogsViewAll.addEventListener("click", () => {
+    CTX?.notify?.("Próximamente vas a poder ver el historial completo.");
+  });
 }
 
 function initAcademicoNav(){
