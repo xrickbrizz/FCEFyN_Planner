@@ -341,9 +341,9 @@ async function cancelFriendRequest(id){
   }
   try{
     await updateDoc(doc(CTX.db,"friendRequests",id), {
-      status:"cancelled",
+      status:"canceled",
       updatedAt: serverTimestamp(),
-      cancelledBy: currentUser.uid
+      canceledBy: currentUser.uid
     });
     await loadFriendRequests();
     CTX?.notifyWarn?.("Solicitud cancelada.");
