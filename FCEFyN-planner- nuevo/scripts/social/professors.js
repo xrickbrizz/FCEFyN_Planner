@@ -821,16 +821,9 @@ async function submitComment(){
     const existingReview = existingReviewSnap.exists() ? (existingReviewSnap.data() || {}) : null;
     const now = serverTimestamp();
 
-    // Upsert en un doc con ID estable (uid): evita duplicados por usuario/profesor.
-    await setDoc(reviewRef, {
-      userId: currentUser.uid,
-      comment,
-      anonymous,
-      authorName: anonymous ? "" : (currentUser.displayName || "Estudiante"),
-      createdAt: existingReview?.createdAt || now,
-      updatedAt: now
-    }, { merge: true });
-
+const functions = getFunctions(app, "us-central1");
+const submitProfessorCommentCallable = httpsCallable(functions, "submitProfessorCommentCallable");
+await submitProfessorCommentCallable({ professorId, comment, anonymous });
     closeCommentModal();
     notifySuccess(existingReview ? "Comentario actualizado." : "Comentario publicado.");
 
