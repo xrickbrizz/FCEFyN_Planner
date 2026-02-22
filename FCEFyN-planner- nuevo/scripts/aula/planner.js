@@ -1,6 +1,8 @@
 import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, limit } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
+import { getPlanWithSubjects } from "../plans-data.js";
+import { ACTIVE_CAREER_CONTEXT_CHANGED_EVENT, getCorrelativasActiveCareerContext, resolveActiveCareerContext } from "../core/active-career-context.js";
 
 let CTX = null;
 
@@ -24,6 +26,7 @@ let renamePresetDialogRef = null;
 let didBindPresetToAgendaModalUI = false;
 let plannerSubjectStates = {};
 let plannerEligibilityMap = {};
+let plannerEligibilityContext = { careerSlug: "", planSlug: "", source: "fallback" };
 
 function norm(value){
   return String(value || "")
@@ -161,12 +164,59 @@ function ensureColorForSubject(subjectSlug){
 }
 
 function rebuildPlannerEligibilityMap(){
+  const context = resolveActiveCareerContext({
+    profileCareerSlug: CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || "",
+    fallbackCareerSlug: CTX?.aulaState?.careerSlug || CTX?.careerSlug || "",
+    fallbackPlanSlug: CTX?.aulaState?.plannerCareer?.slug || ""
+  });
+  plannerEligibilityContext = context;
+  const correlativasContext = getCorrelativasActiveCareerContext();
+  if (correlativasContext?.planSlug && correlativasContext.planSlug !== context.planSlug) {
+    console.warn("[Eligibility] career mismatch detected", {
+      correlativasCareerSlug: correlativasContext.careerSlug,
+      correlativasPlanSlug: correlativasContext.planSlug,
+      plannerCareerSlug: context.careerSlug,
+      plannerPlanSlug: context.planSlug
+    });
+  }
+  console.debug("[Eligibility] activeCareerSource:", context.source);
+  console.debug("[Eligibility] activeCareerSlug:", context.careerSlug || "(empty)");
+  console.debug("[Eligibility] activePlanSlug:", context.planSlug || "(empty)");
+
   plannerEligibilityMap = buildEligibilityMap({
     subjectsPlan: CTX?.aulaState?.careerSubjects || [],
     subjectStates: plannerSubjectStates || CTX?.plannerState?.subjectStates || {},
     planData: { materias: CTX?.aulaState?.careerSubjects || [] },
     debugTag: "Eligibility:Planner"
   });
+
+  const totalSubjects = Array.isArray(CTX?.aulaState?.careerSubjects) ? CTX.aulaState.careerSubjects.length : 0;
+  const visibleInPlanner = Object.values(plannerEligibilityMap || {}).filter((entry) => entry?.visibleInPlanner).length;
+  console.debug("[Eligibility:Planner] totalSubjects:", totalSubjects);
+  console.debug("[Eligibility:Planner] visibleInPlanner:", visibleInPlanner);
+}
+
+async function syncCareerSubjectsForPlanner(){
+  const context = resolveActiveCareerContext({
+    profileCareerSlug: CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || "",
+    fallbackCareerSlug: CTX?.aulaState?.careerSlug || CTX?.careerSlug || "",
+    fallbackPlanSlug: CTX?.aulaState?.plannerCareer?.slug || ""
+  });
+
+  if (!context.planSlug) return;
+  if (plannerEligibilityContext.planSlug === context.planSlug && Array.isArray(CTX?.aulaState?.careerSubjects) && CTX.aulaState.careerSubjects.length) return;
+
+  try {
+    const planData = await getPlanWithSubjects(context.planSlug);
+    CTX.aulaState.careerSubjects = Array.isArray(planData?.subjects) ? planData.subjects : [];
+    plannerEligibilityContext = context;
+  } catch (error) {
+    console.warn("[Eligibility:Planner] no se pudo cargar plan activo", {
+      planSlug: context.planSlug,
+      source: context.source,
+      message: error?.message
+    });
+  }
 }
 
 function getSectionSubjectSlug(section){
@@ -520,6 +570,7 @@ async function refreshPlannerSections(options = {}){
   plannerSectionsUiState = "loading";
   console.debug("[planner:debug] uiState -> loading");
   renderSectionsList();
+  await syncCareerSubjectsForPlanner();
   await loadPlannerSections();
   plannerSectionsUiState = "ready";
   console.debug("[planner:debug] uiState -> ready");
@@ -1325,8 +1376,13 @@ function bindPlannerGlobalListeners(){
     refreshPlannerSections().catch(() => {});
   });
 
+  window.addEventListener(ACTIVE_CAREER_CONTEXT_CHANGED_EVENT, () => {
+    refreshPlannerSections().catch(() => {});
+  });
+
   window.addEventListener("plannerSubjectStatesChanged", (event) => {
     plannerSubjectStates = event?.detail?.subjectStates || {};
+    rebuildPlannerEligibilityMap();
     renderSectionsList();
   });
 }

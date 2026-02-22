@@ -3,6 +3,7 @@ import { resolvePlanSlug, normalizeStr, getPlanWithSubjects } from "../plans-dat
 import { getPrereqsForSubject, normalizeSubjectKey } from "../core/prereqs.js";
 import { computeApproved, computeUnlocks, normalizeStatus, normalizeSubjectStateEntry, normalizeSubjectStatesWithFixes } from "../core/subject-states.js";
 import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
+import { setCorrelativasActiveCareerContext } from "../core/active-career-context.js";
 
 const SEMESTER_LABELS = [
   "Ingreso",
@@ -90,6 +91,17 @@ export async function mountPlansEmbedded({
     notifySuccess: typeof notifySuccess === "function" ? notifySuccess : null,
     notifyError: typeof notifyError === "function" ? notifyError : null
   };
+
+  function updateActiveCareerContext(source = "correlativas") {
+    const context = setCorrelativasActiveCareerContext({
+      careerSlug: careerSlug || state.planSlug,
+      planSlug: state.planSlug,
+      source
+    });
+    containerEl.dataset.careerSlug = context.careerSlug || "";
+    containerEl.dataset.planSlug = context.planSlug || "";
+    return context;
+  }
 
   containerEl.classList.add("plans-embedded-root");
   containerEl.innerHTML = "";
@@ -711,6 +723,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadIndex() {
+    updateActiveCareerContext("correlativas");
     renderTitleCareer();
     await loadPlan(state.planSlug);
     state.storageKey = `estadosMaterias_v2_${embedKey}_${state.planSlug}`;
@@ -806,7 +819,7 @@ export async function mountPlansEmbedded({
   return {
     reload(nextSlug) {
       state.planSlug = resolvePlanSlug(nextSlug || state.planSlug || "");
-      containerEl.dataset.planSlug = state.planSlug;
+      updateActiveCareerContext("correlativas");
       return loadIndex();
     },
     refreshCareerName() {
