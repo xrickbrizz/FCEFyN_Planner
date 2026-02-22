@@ -712,8 +712,6 @@ function handleChatMenuAction(action){
     patchActiveChatPrefs({ archived: true });
   } else if (action === "open-settings"){
     openChatSettingsModal();
-  } else if (action === "remove-friend"){
-    CTX.socialModules.Friends?.removeFriend?.();
   }
   closeContextMenu();
 }

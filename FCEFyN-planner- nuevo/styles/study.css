@@ -4800,7 +4800,47 @@ body[data-theme="dark"] #tab-mensajes .friend-row.selected .friend-chat-btn{
   gap:.4rem;
 }
 
-#tab-mensajes .friend-actions{ gap:.55rem; }
+#tab-mensajes .friend-actions{ gap:.55rem; position:relative; }
+#tab-mensajes .friend-actions-menu-btn{
+  border-radius:999px;
+  min-width:2rem;
+  min-height:2rem;
+  padding:.25rem;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+#tab-mensajes .friend-actions-menu-btn svg{
+  width:1rem;
+  height:1rem;
+  fill:currentColor;
+}
+#tab-mensajes .friend-row-menu{
+  position:absolute;
+  top:calc(100% + .35rem);
+  right:0;
+  min-width:10rem;
+  border:1px solid var(--border-30);
+  border-radius:.8rem;
+  background:var(--color-surface-3);
+  box-shadow:0 10px 22px rgba(15,23,42,.14);
+  padding:.35rem;
+  display:flex;
+  flex-direction:column;
+  z-index:25;
+}
+#tab-mensajes .friend-row-menu.hidden{ display:none; }
+#tab-mensajes .friend-row-menu button{
+  border:0;
+  background:transparent;
+  text-align:left;
+  padding:.45rem .55rem;
+  border-radius:.6rem;
+  cursor:pointer;
+}
+#tab-mensajes .friend-row-menu button:hover{
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3));
+}
 #tab-mensajes .friend-unread-badge{
   min-width:1.25rem;
   height:1.25rem;

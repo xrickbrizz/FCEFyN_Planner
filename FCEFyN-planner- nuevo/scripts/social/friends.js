@@ -18,6 +18,7 @@ let CTX = null;
 let requestsBadgeUnsubs = [];
 let requestsModalLiveUnsubs = [];
 let requestsModalBound = false;
+let friendRowMenusBound = false;
 
 const CHAT_ACCENTS = {
   green: "#7CC7A0",
@@ -668,9 +669,12 @@ function renderFriendsList(){
     const avatarUrl = CTX.resolveAvatarUrl?.(profile.photoURL);
     const isSelected = f.chatId === state.activeChatId;
     const pref = CTX.socialModules.Messaging?.getChatPref?.(CTX?.getCurrentUser?.()?.uid || "", f.chatId) || null;
+    const isMenuOpen = state.openFriendRowMenuUid === f.otherUid;
 
     const div = document.createElement("div");
     div.className = `friend-row ${isOnline ? "friend-online" : ""} ${isSelected ? "selected" : ""}`;
+    div.dataset.uid = f.otherUid;
+    div.dataset.chat = f.chatId;
     if (isSelected && pref?.theme){
       div.style.setProperty("--chat-accent", CHAT_ACCENTS[pref.theme] || CHAT_ACCENTS.green);
     }
@@ -687,11 +691,110 @@ function renderFriendsList(){
       </div>
       <div class="friend-actions">
         ${unreadCount > 0 ? `<span class="friend-unread-badge">${unreadCount}</span>` : ""}
-        <button class="btn-outline btn-small friend-chat-btn" data-chat="${f.chatId}">Chat</button>
+        <button class="btn-outline btn-small friend-chat-btn" type="button" data-chat="${f.chatId}" data-uid="${f.otherUid}" data-action="open-chat">Chat</button>
+        <button
+          class="btn-outline btn-small friend-actions-menu-btn"
+          type="button"
+          aria-label="Abrir acciones de ${name}"
+          title="Más acciones"
+          data-menu-toggle="friend-row"
+          data-chat="${f.chatId}"
+          data-uid="${f.otherUid}"
+          aria-expanded="${isMenuOpen ? "true" : "false"}"
+        >
+          ${buildFriendGearIcon()}
+        </button>
+        <div class="friend-row-menu ${isMenuOpen ? "" : "hidden"}" role="menu" aria-hidden="${isMenuOpen ? "false" : "true"}" data-menu-for="${f.otherUid}">
+          <button type="button" data-action="remove-friend" data-uid="${f.otherUid}">Eliminar amigo</button>
+        </div>
       </div>
     `;
-    div.querySelector("button")?.addEventListener("click", () => CTX.socialModules.Messaging?.openChatWithFriend?.(f));
     box.appendChild(div);
+  });
+}
+
+function buildFriendGearIcon(){
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.03-.66-.08-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.03 7.03 0 0 0-1.7-.99l-.38-2.65a.5.5 0 0 0-.5-.42h-4a.5.5 0 0 0-.5.42l-.38 2.65c-.6.24-1.17.57-1.7.99l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.05.32-.08.65-.08.98s.03.66.08.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46c.13.22.39.31.6.22l2.49-1c.53.42 1.1.75 1.7.99l.38 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.6-.24 1.17-.57 1.7-.99l2.49 1c.22.09.47 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5z"/>
+    </svg>
+  `;
+}
+
+function closeAllFriendRowMenus(){
+  if (!CTX?.socialState) return;
+  CTX.socialState.openFriendRowMenuUid = "";
+  const listBox = document.getElementById("friendsListBox");
+  if (!listBox) return;
+  listBox.querySelectorAll(".friend-actions-menu-btn[aria-expanded='true']").forEach((btn) => btn.setAttribute("aria-expanded", "false"));
+  listBox.querySelectorAll(".friend-row-menu").forEach((menu) => {
+    menu.classList.add("hidden");
+    menu.setAttribute("aria-hidden", "true");
+  });
+}
+
+function toggleFriendRowMenu(buttonEl){
+  const uid = buttonEl?.dataset?.uid || "";
+  if (!uid) return;
+  const isOpen = buttonEl.getAttribute("aria-expanded") === "true";
+  closeAllFriendRowMenus();
+  if (isOpen) return;
+
+  const row = buttonEl.closest(".friend-row");
+  const menu = row?.querySelector(".friend-row-menu");
+  if (!menu) return;
+
+  CTX.socialState.openFriendRowMenuUid = uid;
+  buttonEl.setAttribute("aria-expanded", "true");
+  menu.classList.remove("hidden");
+  menu.setAttribute("aria-hidden", "false");
+}
+
+function wireFriendsRowMenus(){
+  if (friendRowMenusBound) return;
+  friendRowMenusBound = true;
+
+  // El menú de acciones de amigos vive en friends.js para desacoplarlo del menú contextual del chat.
+  const listBox = document.getElementById("friendsListBox");
+  if (!listBox) return;
+
+  listBox.addEventListener("click", (event) => {
+    const toggleBtn = event.target.closest("button[data-menu-toggle='friend-row']");
+    if (toggleBtn){
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFriendRowMenu(toggleBtn);
+      return;
+    }
+
+    const actionBtn = event.target.closest("button[data-action]");
+    if (!actionBtn) return;
+
+    const action = actionBtn.dataset.action;
+    if (action === "open-chat"){
+      const chatId = actionBtn.dataset.chat;
+      const row = (CTX.socialState.friendsList || []).find((friend) => friend.chatId === chatId);
+      if (row) CTX.socialModules.Messaging?.openChatWithFriend?.(row);
+      closeAllFriendRowMenus();
+      return;
+    }
+
+    if (action === "remove-friend"){
+      const uid = actionBtn.dataset.uid || "";
+      closeAllFriendRowMenus();
+      removeFriend(uid);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const clickedInsideFriendsList = event.target.closest("#friendsListBox");
+    if (!clickedInsideFriendsList){
+      closeAllFriendRowMenus();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAllFriendRowMenus();
   });
 }
 
@@ -718,6 +821,7 @@ const Friends = {
     CTX = ctx;
     wireFriendRequestActions();
     wireFriendRequestsModal();
+    wireFriendsRowMenus();
     startRequestsBadgeSubscription();
   },
   loadFriendRequests,
