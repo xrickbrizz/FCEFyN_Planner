@@ -308,14 +308,22 @@ function cleanCommissionToken(rawValue){
   const raw = String(rawValue || "").trim();
   if (!raw) return "";
 
-  const withoutYear = raw.replace(/(?:[-_\s]|^)(?:19|20)\d{2}$/g, "").trim();
-  const readableSource = withoutYear || raw;
-  const decimalMatch = readableSource.match(/(?:^|[-_\s])(\d+(?:\.\d+)+)(?:$|[-_\s])/);
+  const normalized = raw
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/\b(?:19|20)\d{2}\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!normalized) return "";
+
+  const decimalMatch = normalized.match(/\b(\d+(?:\.\d+)+(?:[A-Za-z])?)\b/);
   if (decimalMatch?.[1]) return decimalMatch[1];
 
-  const compact = readableSource.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
-  if (/^[A-Za-z]\d+$/.test(compact) || /^\d+[A-Za-z]$/.test(compact)) return compact;
-  if (/^[A-Za-z0-9.]{1,12}$/.test(compact) && !/^(?:19|20)\d{2}$/.test(compact)) return compact;
+  const mixedToken = normalized.match(/\b([A-Za-z]\d+|\d+[A-Za-z])\b/);
+  if (mixedToken?.[1]) return mixedToken[1];
+
+  if (/^[A-Za-z]$/.test(normalized)) return normalized;
+  if (/^\d+$/.test(normalized)) return normalized;
   return "";
 }
 
@@ -326,18 +334,12 @@ function getReadableCommissionNumber(section){
   const fromId = cleanCommissionToken(section?.id);
   if (fromId) return fromId;
 
-  const fallback = String(section?.commission || "")
-    .replace(/(?:[-_\s]|^)(?:19|20)\d{2}$/g, "")
-    .replace(/^[-_\s]+|[-_\s]+$/g, "")
-    .replace(/[-_]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return fallback;
+  return "";
 }
 
-function getReadableCommissionLabel(section){
+function getReadableCommissionShortLabel(section){
   const number = getReadableCommissionNumber(section);
-  return number ? `Comisión ${number}` : "";
+  return number ? `Com. ${number}` : "";
 }
 
 function dayNameToKey(dayName){
@@ -416,11 +418,11 @@ function buildWeeklyDataFromSectionIds(sectionIds){
     const subject = getSubjectNameFromSection(sec) || "(Sin materia)";
     const subjectSlug = getSectionSubjectSlug(sec);
     const colorIndex = getSectionColorIndex(sec.id) ?? ensureColorForSubject(subjectSlug);
-    const commission = getReadableCommissionLabel(sec);
+    const commission = getReadableCommissionShortLabel(sec);
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
-      const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" • ");
+      const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" · ");
       data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "", subjectSlug, colorIndex, sectionId: sec.id });
     });
   });
@@ -1187,7 +1189,6 @@ function renderSectionsList(){
     if (Number.isFinite(colorIndex)) card.dataset.color = String(colorIndex);
     const teachers = getSectionTeachers(sec);
     const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
-    const commissionLabel = getReadableCommissionLabel(sec);
     const colorBadge = Number.isFinite(colorIndex)
       ? `<span class="subject-pill" aria-label="Color de materia">●</span>`
       : "";
@@ -1195,7 +1196,6 @@ function renderSectionsList(){
       <div class="section-academic-info">
         <div class="section-card-header planner-card-header">
           <h4 class="section-title planner-card-title">${colorBadge}${escapeHtml(formatAcademicTitle(sec))}</h4>
-          ${commissionLabel ? `<span class="planner-commission-chip">${escapeHtml(commissionLabel)}</span>` : ""}
         </div>
         <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
         <div class="section-schedule-wrap planner-card-body">
