@@ -15,6 +15,7 @@ import {
 } from "../core/firebase.js";
 
 let CTX = null;
+let confirmModalState = null;
 
 const CHAT_THEME_OPTIONS = [
   { key: "green", label: "Institutional Green", color: "#7CC7A0" },
@@ -701,6 +702,86 @@ function closeContextMenu(){
   menu.setAttribute("aria-hidden", "true");
 }
 
+function closeConfirmModal(resolveValue = false){
+  if (!confirmModalState) return;
+  const { overlay, keydownHandler, resolve, previousFocus } = confirmModalState;
+  document.removeEventListener("keydown", keydownHandler);
+  overlay.remove();
+  document.body.classList.remove("modal-open");
+  if (previousFocus?.focus) previousFocus.focus();
+  resolve(!!resolveValue);
+  confirmModalState = null;
+}
+
+function openConfirmModal({ title = "Confirmar acción", message = "", confirmText = "Confirmar", cancelText = "Cancelar", danger = false } = {}){
+  if (confirmModalState){
+    closeConfirmModal(false);
+  }
+
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.className = "chat-confirm-overlay";
+    overlay.setAttribute("role", "presentation");
+
+    const dialog = document.createElement("div");
+    dialog.className = "chat-confirm-modal";
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    dialog.setAttribute("aria-labelledby", "chatConfirmTitle");
+
+    const titleEl = document.createElement("h3");
+    titleEl.id = "chatConfirmTitle";
+    titleEl.textContent = title;
+
+    const messageEl = document.createElement("p");
+    messageEl.textContent = message;
+
+    const actions = document.createElement("div");
+    actions.className = "chat-confirm-actions";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "chat-confirm-cancel";
+    cancelBtn.textContent = cancelText;
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.type = "button";
+    confirmBtn.className = `chat-confirm-accept ${danger ? "danger" : ""}`.trim();
+    confirmBtn.textContent = confirmText;
+
+    actions.append(cancelBtn, confirmBtn);
+    dialog.append(titleEl, messageEl, actions);
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    document.body.classList.add("modal-open");
+
+    const keydownHandler = (event) => {
+      if (!confirmModalState) return;
+      if (event.key === "Escape"){
+        event.preventDefault();
+        closeConfirmModal(false);
+      }
+      trapModalFocus(event, dialog);
+    };
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) closeConfirmModal(false);
+    });
+    cancelBtn.addEventListener("click", () => closeConfirmModal(false));
+    confirmBtn.addEventListener("click", () => closeConfirmModal(true));
+    document.addEventListener("keydown", keydownHandler);
+
+    confirmModalState = {
+      overlay,
+      keydownHandler,
+      resolve,
+      previousFocus: document.activeElement
+    };
+
+    confirmBtn.focus();
+  });
+}
+
 function handleChatMenuAction(action){
   if (!CTX.socialState.activeChatId) return;
   if (action === "toggle-pin"){
@@ -900,7 +981,8 @@ const Messaging = {
   formatDateDDMMYYYY,
   formatDateTimeDDMMYYYY_HHmm,
   loadChatPrefs,
-  saveChatPrefs
+  saveChatPrefs,
+  openConfirmModal
 };
 
 export default Messaging;

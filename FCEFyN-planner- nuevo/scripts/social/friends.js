@@ -106,9 +106,19 @@ async function removeFriend(friendUidParam = ""){
     || [currentUid, friendUid].sort().join("__");
   const friendLabel = friendRow?.otherProfile?.name || friendRow?.otherProfile?.fullName || friendUid;
 
-  if (!window.confirm(`¿Eliminar a ${friendLabel} de tus amistades?\n\nNo se borrará el historial del chat.`)){
-    return;
-  }
+  const confirmOptions = {
+    title: "Eliminar amistad",
+    message: `¿Eliminar a ${friendLabel} de tus amistades?
+
+No se borrará el historial del chat.`,
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    danger: true
+  };
+  const confirmRemoval = await (CTX?.socialModules?.Messaging?.openConfirmModal?.(confirmOptions)
+    ?? CTX?.showConfirm?.(confirmOptions)
+    ?? Promise.resolve(false));
+  if (!confirmRemoval) return;
 
   try{
     console.debug("[Mensajeria][removeFriend] start", { currentUid, friendUid, chatId });

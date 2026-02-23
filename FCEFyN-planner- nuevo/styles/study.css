@@ -5745,3 +5745,118 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 #friendsListSection1{
       height: 48rem;
 }
+
+/* ===== Mensajería Fase 2: confirm custom + scroll interno estable ===== */
+.chat-confirm-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(18, 24, 28, .36);
+  backdrop-filter:blur(3px);
+  display:grid;
+  place-items:center;
+  z-index:140;
+}
+.chat-confirm-modal{
+  width:min(28rem, 92vw);
+  background:#fff;
+  border-radius:1rem;
+  border:1px solid var(--border-30);
+  box-shadow:0 22px 45px rgba(0,0,0,.16);
+  padding:1rem;
+}
+.chat-confirm-modal h3{
+  margin:0 0 .4rem;
+}
+.chat-confirm-modal p{
+  margin:0;
+  color:var(--text-soft);
+  line-height:1.4;
+  white-space:pre-line;
+}
+.chat-confirm-actions{
+  margin-top:1rem;
+  display:flex;
+  justify-content:flex-end;
+  gap:.55rem;
+}
+.chat-confirm-actions button{
+  border-radius:999px;
+  padding:.45rem .9rem;
+  border:1px solid var(--border-35);
+  cursor:pointer;
+}
+.chat-confirm-cancel{
+  background:#fff;
+  color:var(--color-text);
+}
+.chat-confirm-accept{
+  background:var(--accent-15);
+  color:var(--color-text);
+}
+.chat-confirm-accept.danger{
+  background:#ffeaea;
+  border-color:#efb9b9;
+  color:#9a2626;
+}
+
+#tab-mensajes{
+  overflow:hidden;
+}
+#tab-mensajes .mensajeria-layout{
+  height:calc(100vh - 16.25rem);
+  min-height:calc(100vh - 16.25rem);
+  overflow:hidden;
+}
+#tab-mensajes .mensajeria-chat,
+#tab-mensajes .mensajeria-chat-card,
+#tab-mensajes .chat-card,
+#tab-mensajes .messages-panel{
+  min-height:0;
+  overflow:hidden;
+}
+#tab-mensajes #messagesList.messages-box{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+#tab-mensajes .chat-input-row{
+  flex-shrink:0;
+}
+
+body.dark-mode .chat-confirm-modal,
+body[data-theme="dark"] .chat-confirm-modal{
+  background:var(--card-bg);
+  color:var(--color-text);
+  border-color:var(--border-50);
+}
+body.dark-mode .chat-confirm-modal p,
+body[data-theme="dark"] .chat-confirm-modal p{
+  color:var(--color-muted);
+}
+body.dark-mode .chat-confirm-cancel,
+body[data-theme="dark"] .chat-confirm-cancel{
+  background:var(--glass-soft);
+  color:var(--color-text);
+  border-color:var(--border-45);
+}
+body.dark-mode .chat-confirm-accept,
+body[data-theme="dark"] .chat-confirm-accept{
+  background:color-mix(in srgb, var(--chat-accent, #7CC7A0) 25%, var(--glass-soft));
+  border-color:var(--border-45);
+  color:var(--color-text);
+}
+body.dark-mode .chat-confirm-accept.danger,
+body[data-theme="dark"] .chat-confirm-accept.danger{
+  background:rgba(225, 80, 80, .18);
+  border-color:rgba(225, 80, 80, .32);
+  color:#ffbcbc;
+}
+
+@media (max-width: 1080px){
+  #tab-mensajes .mensajeria-layout{
+    height:auto;
+    min-height:auto;
+    overflow:visible;
+  }
+}
