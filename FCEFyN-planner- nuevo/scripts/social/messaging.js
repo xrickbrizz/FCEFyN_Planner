@@ -782,6 +782,21 @@ function openConfirmModal({ title = "Confirmar acción", message = "", confirmTe
   });
 }
 
+async function openDeleteFriendConfirmModal({ friendName = "", onConfirm = null } = {}){
+  const safeName = String(friendName || "este amigo").trim() || "este amigo";
+  const shouldDelete = await openConfirmModal({
+    title: "Eliminar amigo",
+    message: `¿Estás seguro que deseas eliminar a ${safeName}?\n\nNo se borrará el historial del chat.`,
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    danger: true
+  });
+
+  if (!shouldDelete || typeof onConfirm !== "function") return false;
+  await onConfirm();
+  return true;
+}
+
 function handleChatMenuAction(action){
   if (!CTX.socialState.activeChatId) return;
   if (action === "toggle-pin"){
@@ -978,11 +993,12 @@ const Messaging = {
   getFriendUnreadCount,
   getVisibleFriends,
   formatTimeHHmm,
+  openConfirmModal,
+  openDeleteFriendConfirmModal,
   formatDateDDMMYYYY,
   formatDateTimeDDMMYYYY_HHmm,
   loadChatPrefs,
-  saveChatPrefs,
-  openConfirmModal
+  saveChatPrefs
 };
 
 export default Messaging;
