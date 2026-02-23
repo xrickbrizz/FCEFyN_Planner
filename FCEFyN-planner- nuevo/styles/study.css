@@ -2437,12 +2437,6 @@ body[data-theme="light"] .event{
       font-size: .85rem;
       color:var(--color-muted-2);
     }
-    .profile-security{
-      display:flex;
-      flex-direction:column;
-      gap: .6rem;
-    }
-
     /* TAB PLANIFICADOR */
     .planner-layout{
       display:grid;
@@ -3695,6 +3689,7 @@ body.modal-open{
   gap: 1rem;
   align-items:stretch;
   min-height: calc(100vh - 16.25rem);
+  height: 58rem;
 }
 
 #tab-mensajes .mensajeria-sidebar,
@@ -3815,8 +3810,10 @@ body.modal-open{
 }
 
 #tab-perfil.profile-page .profile-avatar .profile-header-main{
-  position:relative;
-  width:8.25rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.8rem;
 }
 
 #tab-perfil.profile-page .social-links-panel{
@@ -3882,18 +3879,6 @@ body.modal-open{
   outline:none;
   border-color:var(--accent-border-strong);
   box-shadow:0 0 0 3px var(--accent-outline);
-}
-
-#tab-perfil.profile-page #btnProfileLogout{
-  position:absolute;
-  top:50%;
-  left:calc(100% + 2rem);
-  transform:translateY(-50%);
-  font-size:.78rem;
-  line-height:1.2;
-  padding:.4rem .7rem;
-  min-height:auto;
-  white-space:nowrap;
 }
 
 @media (min-width:900px){
@@ -4036,10 +4021,6 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
   background:var(--btn-primary-hover-bg);
 }
 
-#tab-perfil.profile-page .profile-security{
-  gap: .8rem;
-}
-
 #tab-perfil.profile-page #btnPasswordReset,
 #tab-perfil.profile-page #btnUploadAvatar,
 #tab-perfil.profile-page #btnRemoveAvatar,
@@ -4065,6 +4046,10 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
   border-color:#ff4d4d;
   color:#fff;
 }
+#tab-perfil.profile-page #btnPasswordReset,
+#tab-perfil.profile-page #btnProfileLogout{
+  flex:1 1 12rem;
+}
 
 #tab-perfil.profile-page #btnProfileLogout:hover{
   background:#e60000;
@@ -4081,8 +4066,8 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
     gap: 1.25rem;
   }
 
-  #tab-perfil.profile-page .profile-main-card,
-  #tab-perfil.profile-page .profile-security-card{
+
+  #tab-perfil.profile-page .profile-main-card{
     padding: 1.5rem;
   }
 
@@ -5466,5 +5451,5 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 
 
 #friendsListSection1{
-      height: 25rem;
+      height: 48rem;
 }
