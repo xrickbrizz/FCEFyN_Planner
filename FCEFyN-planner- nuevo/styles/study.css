@@ -5363,7 +5363,7 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 .correlativas-plans .plans-embedded-root .stats-actions{ display:flex; gap:8px; justify-content:space-between; align-items:center; flex-wrap:wrap; }
 .correlativas-plans .plans-embedded-root .stat-card{ background:var(--cor-plan-card); padding:.6rem; border-radius:.625rem; text-align:center; border:1px solid var(--cor-plan-border); }
 .correlativas-plans .plans-embedded-root .stat-card strong{ display:block; font-size:1.05rem; color:var(--color-text); }
-.correlativas-plans .plans-embedded-root .stat-label{ color:var(--cor-plan-muted); font-size:.85rem; margin-top:.3rem; }
+.correlativas-plans .plans-embedded-root .stat-label{ color:var(--cor-plan-muted); font-size:.76rem; margin-top:.3rem; }
 .correlativas-plans .plans-embedded-root .progress-wrap{ background:var(--cor-plan-card); border-radius:.75rem; padding:.5rem; border:1px solid var(--cor-plan-border); }
 .correlativas-plans .plans-embedded-root .progress{ height:1.125rem; background:var(--primary-12); border-radius:.75rem; overflow:hidden; }
 .correlativas-plans .plans-embedded-root .progress > .fill{ height:100%; width:0%; background:var(--color-ok); border-radius:.75rem; transition:width .6s ease-in-out; }
