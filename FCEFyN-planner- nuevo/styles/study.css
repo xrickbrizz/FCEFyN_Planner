@@ -2008,9 +2008,10 @@ body[data-theme="light"] .event{
     }
     .agenda-filters-toolbar{
       display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr)) auto;
-      gap:.75rem;
+      grid-template-columns:repeat(3, minmax(160px, 260px));
+      gap:.65rem;
       align-items:end;
+      justify-content:flex-start;
       min-width:0;
     }
     .agenda-filter-field{
@@ -2034,26 +2035,23 @@ body[data-theme="light"] .event{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:1rem;
-      margin-bottom:1rem;
+      gap:.75rem;
+      margin-bottom:.6rem;
       flex-wrap:wrap;
+      min-width:0;
     }
     .agenda-title{
-      flex:1;
+      flex:1 1 auto;
       min-width:220px;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .agenda-title h3{
-      margin:0;
-      font-size:1.05rem;
+      display:flex;
+      align-items:center;
     }
     .agenda-presets-inline{
       display:flex;
-      gap:.6rem;
+      gap:.45rem;
       align-items:center;
       min-width:0;
+      width:100%;
     }
     .agenda-actions{
       display:flex;
@@ -2061,6 +2059,7 @@ body[data-theme="light"] .event{
       align-items:center;
       flex-wrap:wrap;
       justify-content:flex-end;
+      flex:0 0 auto;
     }
     .agenda-shell{
       grid-column: 1 / -1;
@@ -2090,10 +2089,7 @@ body[data-theme="light"] .event{
     }
     @media (max-width:1160px){
       .agenda-filters-toolbar{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-      }
-      .agenda-filters-toolbar #btnApplyAgendaFilters{
-        grid-column:1 / -1;
+        grid-template-columns:repeat(2, minmax(160px, 1fr));
       }
     }
     @media (max-width:760px){
@@ -4444,7 +4440,23 @@ header{
   gap:.5rem;
   margin-top:.85rem;
 }
-.preset-chip-edit{ border:1px solid var(--border-60); background:transparent; color:var(--text-soft); border-radius:999px; padding:.2rem .45rem; }
+.preset-chip-edit{
+  border:none;
+  background:transparent;
+  color:var(--text-soft);
+  border-radius:999px;
+  padding:.2rem .35rem;
+  line-height:1;
+  cursor:pointer;
+  opacity:.75;
+  transition:background-color .18s ease, opacity .18s ease, color .18s ease;
+}
+.preset-chip-edit:hover,
+.preset-chip-edit:focus-visible{
+  opacity:1;
+  background:rgba(127, 140, 141, 0.15);
+  color:var(--text);
+}
 .preset-delete{
   background:transparent;
   border:none;

@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, limit } from "../core/firebase.js";
+import { doc, getDoc, setDoc, updateDoc, deleteField, collection, getDocs, query, limit, startAfter } from "../core/firebase.js";
 import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
 import { getPlanWithSubjects } from "../plans-data.js";
@@ -16,7 +16,7 @@ let plannerSearchQuery = "";
 const PLANNER_COLOR_COUNT = 7;
 const MAX_PLANS = 4;
 const MAX_PLAN_NAME_LENGTH = 24;
-const MAX_FETCH = 300;
+const MAX_FETCH = 600;
 const COLOR_KEY = "planner_subject_colors_v1";
 const CURSOR_KEY = "planner_color_cursor_v1";
 let plannerColorState = { map: {}, cursor: 0 };
@@ -465,6 +465,14 @@ function filterSectionsByCareer(sections = [], facultyMode = FACULTY_FILTER_CARE
     return careerSlugs.includes(careerSlug);
   });
   console.debug("[TEMP][Comisiones] commissions after career filter:", filteredByCareer.length);
+  if (filteredByCareer.length > 0 && filteredByCareer.length < 20){
+    console.warn("[planner:debug] cantidad de comisiones para 'Mi carrera' anormalmente baja", {
+      resolvedCareerSlug: careerSlug,
+      beforeCareer: sections.length,
+      afterCareer: filteredByCareer.length,
+      contextSource: resolvedContext?.source || "unknown"
+    });
+  }
   return filteredByCareer;
 }
 
@@ -494,7 +502,15 @@ function getAvailableYearsFromSections(sections = []){
 function getFilteredSectionsForPlanner(){
   const filters = getAgendaFiltersState();
   const baseSections = Array.isArray(CTX?.aulaState?.courseSections) ? CTX.aulaState.courseSections : [];
+  const { careerSlug } = getCurrentCareerContext();
   const afterCareer = filterSectionsByCareer(baseSections, filters.facultyMode);
+  if (filters.facultyMode === FACULTY_FILTER_CAREER){
+    console.debug("[planner:debug] aplicar filtro 'Mi carrera'", {
+      resolvedCareerSlug: careerSlug || "(empty)",
+      beforeCareer: baseSections.length,
+      afterCareer: afterCareer.length
+    });
+  }
   const afterYear = filters.year
     ? afterCareer.filter((section) => String(section?.year || "") === filters.year)
     : afterCareer;
@@ -584,7 +600,9 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
   const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
   const year = String(rawSection?.anioLectivo || rawSection?.year || rawSection?.anio || "").trim();
   const ownCareerSlugs = Array.isArray(rawSection?.careerSlugs) ? rawSection.careerSlugs : [];
-  const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs].map((slug) => String(slug || "").trim()).filter(Boolean))];
+  const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs]
+    .map((slug) => normalizeComisionCareerSlug(slug))
+    .filter(Boolean))];
   const hasHorariosObjects = Array.isArray(rawSection?.horarios) && rawSection.horarios.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
   const hasDaysObjects = Array.isArray(rawSection?.days) && rawSection.days.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
   const daysRaw = hasHorariosObjects
@@ -667,6 +685,62 @@ function debugLogComisionesSnapshot(snap, label = "[planner:debug] comisiones sn
   console.groupEnd();
 }
 
+function logComisionesCareerDistribution(sections = [], label = "[planner:debug] comisiones por carrera"){
+  const counts = new Map();
+  sections.forEach((section) => {
+    const slugs = Array.isArray(section?.careerSlugs) ? section.careerSlugs : [];
+    slugs.forEach((slug) => {
+      const normalizedSlug = normalizeComisionCareerSlug(slug);
+      if (!normalizedSlug) return;
+      counts.set(normalizedSlug, (counts.get(normalizedSlug) || 0) + 1);
+    });
+  });
+  const sample = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([careerSlug, total]) => ({ careerSlug, total }));
+  console.debug(label, {
+    careersCount: counts.size,
+    sampleTopCareerSlugs: sample
+  });
+}
+
+async function fetchComisionesPaginated(){
+  let lastDoc = null;
+  let keepFetching = true;
+  let page = 0;
+  const snapshots = [];
+
+  while (keepFetching){
+    page += 1;
+    const constraints = [limit(MAX_FETCH)];
+    if (lastDoc) constraints.push(startAfter(lastDoc));
+    const pageSnap = await getDocs(query(collection(CTX.db, "comisiones"), ...constraints));
+    snapshots.push(pageSnap);
+
+    if (page === 1 && pageSnap.size === MAX_FETCH){
+      console.warn("[planner:debug] snapshot de comisiones alcanzó MAX_FETCH en primera página", {
+        maxFetch: MAX_FETCH,
+        pageSize: pageSnap.size,
+        warning: "dataset posiblemente truncado si no hay más páginas"
+      });
+    }
+
+    console.debug("[planner:debug] fetch comisiones página", {
+      page,
+      pageSize: pageSnap.size,
+      maxFetch: MAX_FETCH
+    });
+
+    if (!pageSnap.empty){
+      lastDoc = pageSnap.docs[pageSnap.docs.length - 1];
+    }
+    keepFetching = pageSnap.size === MAX_FETCH;
+  }
+
+  return snapshots;
+}
+
 function filterSectionsByActiveCareer(sections = []){
   const filtered = filterSectionsByCareer(sections, FACULTY_FILTER_CAREER);
   const { resolvedContext, careerSlug } = getCurrentCareerContext();
@@ -708,9 +782,10 @@ async function loadPlannerSections(){
     const debugComisionesSnap = await getDocs(query(collection(CTX.db, "comisiones"), limit(500)));
     debugLogComisionesSnapshot(debugComisionesSnap, "[planner:debug] comisiones (limit 500)");
 
-    console.debug("[planner:debug] fetch comisiones sin filtro", { maxFetch: MAX_FETCH });
-    const snap = await getDocs(query(collection(CTX.db, "comisiones"), limit(MAX_FETCH)));
-    const normalizedSections = normalizeComisionesDocs(snap);
+    console.debug("[planner:debug] fetch comisiones paginado", { maxFetch: MAX_FETCH });
+    const paginatedSnaps = await fetchComisionesPaginated();
+    const normalizedSections = paginatedSnaps.flatMap((snap) => normalizeComisionesDocs(snap));
+    logComisionesCareerDistribution(normalizedSections);
 
     CTX.aulaState.plannerSections = normalizedSections;
     CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
@@ -719,7 +794,8 @@ async function loadPlannerSections(){
     const defaultCareerFiltered = filterSectionsByActiveCareer(normalizedSections);
 
     console.debug("[planner:debug] sections loaded", {
-      snapshotSize: snap?.size ?? null,
+      totalDocsLoaded: paginatedSnaps.reduce((acc, snap) => acc + (snap?.size || 0), 0),
+      pagesLoaded: paginatedSnaps.length,
       normalizedCount: normalizedSections.length,
       filteredByCareerCount: defaultCareerFiltered.length,
       courseSectionsCount: CTX.aulaState.courseSections.length
