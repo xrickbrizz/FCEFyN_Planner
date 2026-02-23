@@ -3816,6 +3816,14 @@ body.modal-open{
   gap:.8rem;
 }
 
+#tab-perfil.profile-page .profile-account-actions{
+  width:min(100%, 24rem);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.6rem;
+}
+
 #tab-perfil.profile-page .social-links-panel{
   width:min(100%, 21rem);
   text-align:left;

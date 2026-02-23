@@ -664,7 +664,11 @@
             <div class="profile-header">
               <div class="profile-header-main">
                 <img id="profileAvatarImg" alt="Foto de perfil" />
-                <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
+                <div class="profile-account-actions">
+                  <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
+                  <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
+                </div>
+                <div class="profile-status" id="passwordStatus"></div>
               </div>
             </div>
                 <label class="toggle-line">
@@ -727,21 +731,6 @@
           </div>
         </section>
 
-        <section class="profile-card profile-security-card">
-          <header class="profile-header">
-            <div>
-              <strong>Seguridad</strong>
-              <div class="small-muted">Gestioná tu contraseña desde el correo institucional.</div>
-            </div>
-          </header>
-          <div class="profile-security">
-            <div class="small-muted">
-              Al confirmar, te enviaremos un correo para cambiar tu contraseña de forma segura.
-            </div>
-            <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
-            <div class="profile-status" id="passwordStatus"></div>
-          </div>
-        </section>
       </div>
     </div>
   </main>
