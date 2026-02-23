@@ -29,6 +29,26 @@ let plannerSubjectStates = {};
 let plannerEligibilityMap = {};
 let plannerEligibilityContext = { careerSlug: "", planSlug: "", source: "fallback" };
 
+const FACULTY_FILTER_CAREER = "career";
+const FACULTY_FILTER_ALL = "all";
+const ALL_SUBJECTS_VALUE = "";
+const ALL_YEARS_VALUE = "";
+
+function ensureAgendaFiltersState(){
+  if (!CTX?.aulaState) return;
+  const current = CTX.aulaState.agendaFilters || {};
+  CTX.aulaState.agendaFilters = {
+    facultyMode: current.facultyMode === FACULTY_FILTER_ALL ? FACULTY_FILTER_ALL : FACULTY_FILTER_CAREER,
+    year: String(current.year || ALL_YEARS_VALUE),
+    subjectSlug: String(current.subjectSlug || ALL_SUBJECTS_VALUE)
+  };
+}
+
+function getAgendaFiltersState(){
+  ensureAgendaFiltersState();
+  return CTX.aulaState.agendaFilters;
+}
+
 function normalizeSectionColorMap(rawMap){
   if (!rawMap || typeof rawMap !== "object") return {};
   const normalizedMap = {};
@@ -397,39 +417,135 @@ function getConflictInfo(candidateSection){
   return { blocked: false, reason: "" };
 }
 
-function updateSectionsSubjectFilter(){
-  const subjectFilter = document.getElementById("sectionsSubjectFilter");
-  if (!subjectFilter) return new Set();
-  const current = subjectFilter.value || "";
-  const availableSubjectSlugs = new Set();
-  const subjectsBySlug = new Map();
+function getCurrentCareerContext(){
+  const resolvedContext = resolveActiveCareerContext({
+    profileCareerSlug: CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || "",
+    fallbackCareerSlug: CTX?.aulaState?.careerSlug || CTX?.careerSlug || "",
+    fallbackPlanSlug: CTX?.aulaState?.plannerCareer?.slug || ""
+  });
+  const careerSlug = normalizeComisionCareerSlug(
+    resolvedContext?.planSlug || resolvedContext?.careerSlug || ""
+  );
+  return { resolvedContext, careerSlug };
+}
 
-  CTX.aulaState.courseSections.forEach((section) => {
+function getCurrentCareerLabel(){
+  const plannerCareerName = String(CTX?.aulaState?.plannerCareer?.name || "").trim();
+  if (plannerCareerName) return plannerCareerName;
+  const profileCareerName = String(CTX?.getUserProfile?.()?.career || "").trim();
+  if (profileCareerName) return profileCareerName;
+  const { careerSlug } = getCurrentCareerContext();
+  return careerSlug || "Mi ingeniería";
+}
+
+function filterSectionsByCareer(sections = [], facultyMode = FACULTY_FILTER_CAREER){
+  if (facultyMode === FACULTY_FILTER_ALL) return sections.slice();
+  const { resolvedContext, careerSlug } = getCurrentCareerContext();
+  if (!careerSlug){
+    console.warn("[TEMP][comisiones] carrera no resuelta; omitiendo render hasta completar datos", {
+      profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
+      selectedCareer: CTX?.getCurrentCareer?.() || "",
+      context: resolvedContext
+    });
+    return [];
+  }
+  return sections.filter((section) => {
+    const careerSlugs = Array.isArray(section?.careerSlugs)
+      ? section.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug))
+      : [];
+    return careerSlugs.includes(careerSlug);
+  });
+}
+
+function getAvailableSubjectsFromSections(sections = []){
+  const map = new Map();
+  sections.forEach((section) => {
     const slug = slugify(getSectionSubjectSlug(section) || getSubjectNameFromSection(section));
     if (!slug) return;
-    availableSubjectSlugs.add(slug);
-    if (!subjectsBySlug.has(slug)) subjectsBySlug.set(slug, getSubjectNameFromSection(section));
+    if (map.has(slug)) return;
+    map.set(slug, getSubjectNameFromSection(section) || section?.subjectSlug || slug);
   });
-
-  const availableSubjects = [...availableSubjectSlugs]
-    .map((slug) => ({ slug, name: subjectsBySlug.get(slug) || slug }))
+  return [...map.entries()]
+    .map(([slug, name]) => ({ slug, name }))
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
+}
 
-  subjectFilter.innerHTML = "";
-  const allOpt = document.createElement("option");
-  allOpt.value = "";
-  allOpt.textContent = "Todas las materias";
-  subjectFilter.appendChild(allOpt);
-  availableSubjects.forEach(({ slug, name }) => {
-    const opt = document.createElement("option");
-    opt.value = slug;
-    opt.textContent = name;
-    subjectFilter.appendChild(opt);
+function getAvailableYearsFromSections(sections = []){
+  const years = new Set();
+  sections.forEach((section) => {
+    const year = String(section?.year || "").trim();
+    if (!year) return;
+    years.add(year);
   });
+  return [...years].sort((a, b) => Number(a) - Number(b) || a.localeCompare(b, "es"));
+}
 
-  const currentSlug = slugify(current);
-  subjectFilter.value = availableSubjectSlugs.has(currentSlug) ? currentSlug : "";
-  return availableSubjectSlugs;
+function getFilteredSectionsForPlanner(){
+  const filters = getAgendaFiltersState();
+  const baseSections = Array.isArray(CTX?.aulaState?.courseSections) ? CTX.aulaState.courseSections : [];
+  const afterCareer = filterSectionsByCareer(baseSections, filters.facultyMode);
+  const afterYear = filters.year
+    ? afterCareer.filter((section) => String(section?.year || "") === filters.year)
+    : afterCareer;
+  const availableSubjects = getAvailableSubjectsFromSections(afterYear);
+  const availableSubjectSlugs = new Set(availableSubjects.map((item) => item.slug));
+  const normalizedSelectedSubject = slugify(filters.subjectSlug);
+  if (normalizedSelectedSubject && !availableSubjectSlugs.has(normalizedSelectedSubject)){
+    filters.subjectSlug = ALL_SUBJECTS_VALUE;
+  }
+  const afterSubject = filters.subjectSlug
+    ? afterYear.filter((section) => slugify(getSectionSubjectSlug(section) || getSubjectNameFromSection(section)) === filters.subjectSlug)
+    : afterYear;
+
+  return {
+    sections: afterSubject,
+    availableSubjects,
+    availableYears: getAvailableYearsFromSections(afterCareer),
+    stats: {
+      totalBase: baseSections.length,
+      afterCareer: afterCareer.length,
+      afterYear: afterYear.length,
+      afterSubject: afterSubject.length
+    }
+  };
+}
+
+function populateSelectOptions(select, options, currentValue = ""){
+  if (!select) return;
+  select.innerHTML = "";
+  options.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.value;
+    option.textContent = item.label;
+    select.appendChild(option);
+  });
+  const hasCurrentValue = options.some((item) => item.value === currentValue);
+  select.value = hasCurrentValue ? currentValue : options[0]?.value || "";
+}
+
+function syncAgendaFilterControls(){
+  const filters = getAgendaFiltersState();
+  const { availableSubjects, availableYears } = getFilteredSectionsForPlanner();
+
+  const facultySelect = document.getElementById("agendaFacultyFilter");
+  const yearSelect = document.getElementById("agendaYearFilter");
+  const topSubjectSelect = document.getElementById("agendaSubjectFilter");
+  const plannerSubjectSelect = document.getElementById("sectionsSubjectFilter");
+
+  const careerLabel = getCurrentCareerLabel();
+  populateSelectOptions(facultySelect, [
+    { value: FACULTY_FILTER_CAREER, label: careerLabel },
+    { value: FACULTY_FILTER_ALL, label: "Todas las comisiones" }
+  ], filters.facultyMode);
+
+  const yearOptions = [{ value: ALL_YEARS_VALUE, label: "Todos los años" }, ...availableYears.map((year) => ({ value: year, label: year }))];
+  populateSelectOptions(yearSelect, yearOptions, filters.year);
+  filters.year = yearSelect?.value || ALL_YEARS_VALUE;
+
+  const subjectOptions = [{ value: ALL_SUBJECTS_VALUE, label: "Todas las materias" }, ...availableSubjects.map((item) => ({ value: item.slug, label: item.name }))];
+  populateSelectOptions(topSubjectSelect, subjectOptions, filters.subjectSlug);
+  populateSelectOptions(plannerSubjectSelect, subjectOptions, filters.subjectSlug);
+  filters.subjectSlug = topSubjectSelect?.value || ALL_SUBJECTS_VALUE;
 }
 
 function getCareerSlug(){
@@ -455,6 +571,7 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
   const label = String(rawSection?.label || rawSection?.commission || rawSection?.comision || rawSection?.name || rawSection?.id || sectionId).trim();
   const room = String(rawSection?.room || rawSection?.aula || "").trim();
   const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
+  const year = String(rawSection?.anioLectivo || rawSection?.year || rawSection?.anio || "").trim();
   const ownCareerSlugs = Array.isArray(rawSection?.careerSlugs) ? rawSection.careerSlugs : [];
   const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs].map((slug) => String(slug || "").trim()).filter(Boolean))];
   const hasHorariosObjects = Array.isArray(rawSection?.horarios) && rawSection.horarios.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
@@ -485,7 +602,8 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
         start,
         end,
         location,
-        room
+        room,
+        year
       };
     })
     .filter(Boolean);
@@ -504,6 +622,7 @@ function convertPlannerSectionsToCourseSections(sections){
         commission: item.label,
         room: item.room,
         campus: item.location,
+        year: item.year,
         days: []
       });
     }
@@ -538,43 +657,16 @@ function debugLogComisionesSnapshot(snap, label = "[planner:debug] comisiones sn
 }
 
 function filterSectionsByActiveCareer(sections = []){
-  const resolvedContext = resolveActiveCareerContext({
-    profileCareerSlug: CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || "",
-    fallbackCareerSlug: CTX?.aulaState?.careerSlug || CTX?.careerSlug || "",
-    fallbackPlanSlug: CTX?.aulaState?.plannerCareer?.slug || ""
-  });
-  const resolvedCareerSlug = normalizeComisionCareerSlug(
-    resolvedContext?.planSlug || resolvedContext?.careerSlug || ""
-  );
-
-  if (!resolvedCareerSlug){
-    console.warn("[TEMP][comisiones] carrera no resuelta; omitiendo render hasta completar datos", {
-      profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
-      selectedCareer: CTX?.getCurrentCareer?.() || "",
-      context: resolvedContext
-    });
-    return [];
-  }
-
-  const filtered = sections.filter((section) => {
-    const careerSlugs = Array.isArray(section?.careerSlugs) ? section.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug)) : [];
-    return careerSlugs.includes(resolvedCareerSlug);
-  });
-
+  const filtered = filterSectionsByCareer(sections, FACULTY_FILTER_CAREER);
+  const { resolvedContext, careerSlug } = getCurrentCareerContext();
   console.debug("[TEMP][comisiones] filtro por carrera", {
     profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
     selectedCareer: CTX?.getCurrentCareer?.() || "",
-    resolvedCareerSlug,
+    resolvedCareerSlug: careerSlug,
     contextSource: resolvedContext?.source || "unknown",
     totalComisiones: sections.length,
-    afterCareerFilter: filtered.length,
-    sampleIn: filtered.slice(0, 5).map((section) => section?.subjectSlug),
-    sampleOut: sections
-      .filter((section) => !filtered.includes(section))
-      .slice(0, 5)
-      .map((section) => section?.subjectSlug)
+    afterCareerFilter: filtered.length
   });
-
   return filtered;
 }
 
@@ -608,16 +700,17 @@ async function loadPlannerSections(){
     console.debug("[planner:debug] fetch comisiones sin filtro", { maxFetch: MAX_FETCH });
     const snap = await getDocs(query(collection(CTX.db, "comisiones"), limit(MAX_FETCH)));
     const normalizedSections = normalizeComisionesDocs(snap);
-    const filteredSections = filterSectionsByActiveCareer(normalizedSections);
 
-    CTX.aulaState.plannerSections = filteredSections;
-    CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(filteredSections);
+    CTX.aulaState.plannerSections = normalizedSections;
+    CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
     plannerSectionsUiState = "ready";
+
+    const defaultCareerFiltered = filterSectionsByActiveCareer(normalizedSections);
 
     console.debug("[planner:debug] sections loaded", {
       snapshotSize: snap?.size ?? null,
       normalizedCount: normalizedSections.length,
-      filteredByCareerCount: filteredSections.length,
+      filteredByCareerCount: defaultCareerFiltered.length,
       courseSectionsCount: CTX.aulaState.courseSections.length
     });
     console.groupEnd();
@@ -687,6 +780,18 @@ function renderPresetsList(){
       openRenamePresetDialog(p.id);
     });
     chip.appendChild(name);
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "preset-chip-edit";
+    editButton.setAttribute("aria-label", `Renombrar plan ${p.name || "Sin nombre"}`);
+    editButton.innerHTML = "✎";
+    editButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openRenamePresetDialog(p.id);
+    });
+    chip.appendChild(editButton);
 
     const deleteControl = document.createElement("span");
     deleteControl.className = "preset-x";
@@ -861,8 +966,9 @@ function renderSectionsList(){
   list.innerHTML = "";
 
   rebuildPlannerEligibilityMap();
-  const allSections = CTX.aulaState.courseSections.slice();
-  updateSectionsSubjectFilter();
+  syncAgendaFilterControls();
+  const filteredContext = getFilteredSectionsForPlanner();
+  const allSections = filteredContext.sections;
   const filtered = allSections.filter((section) => {
     const eligibility = getEligibilityForSubject(getSectionSubjectSlug(section), plannerEligibilityMap);
     return eligibility.visibleInPlanner;
@@ -877,7 +983,8 @@ function renderSectionsList(){
     .map(([slug]) => slug);
 
   console.debug("[TEMP][comisiones] elegibilidad para render", {
-    totalComisionesTrasCarrera: allSections.length,
+    totalComisionesTrasFiltros: allSections.length,
+    filtrosActivos: { ...getAgendaFiltersState() },
     materiasPuedoCursar: canTakeSubjects.length,
     materiasPromocionadas: promotedSubjects.length,
     comisionesFinalesRenderizadas: filtered.length,
@@ -1503,11 +1610,56 @@ function bindPlannerGlobalListeners(){
 
 function initPlanificadorUI(){
   normalizePlansState();
+  ensureAgendaFiltersState();
   initPresetToAgendaModalUI();
   const subjectFilter = document.getElementById("sectionsSubjectFilter");
+  const topSubjectFilter = document.getElementById("agendaSubjectFilter");
+  const facultyFilter = document.getElementById("agendaFacultyFilter");
+  const yearFilter = document.getElementById("agendaYearFilter");
+  const applyFiltersBtn = document.getElementById("btnApplyAgendaFilters");
   const plannerSearchInput = document.getElementById("plannerSearch");
 
-  subjectFilter?.addEventListener("change", renderSectionsList);
+  const applyFilters = () => {
+    const filters = getAgendaFiltersState();
+    filters.facultyMode = facultyFilter?.value === FACULTY_FILTER_ALL ? FACULTY_FILTER_ALL : FACULTY_FILTER_CAREER;
+    filters.year = yearFilter?.value || ALL_YEARS_VALUE;
+    filters.subjectSlug = slugify(topSubjectFilter?.value || subjectFilter?.value || ALL_SUBJECTS_VALUE);
+    renderSectionsList();
+    renderPlannerPreview();
+  };
+
+  subjectFilter?.addEventListener("change", () => {
+    const filters = getAgendaFiltersState();
+    filters.subjectSlug = slugify(subjectFilter.value || ALL_SUBJECTS_VALUE);
+    if (topSubjectFilter) topSubjectFilter.value = filters.subjectSlug;
+    renderSectionsList();
+  });
+
+  topSubjectFilter?.addEventListener("change", () => {
+    const filters = getAgendaFiltersState();
+    filters.subjectSlug = slugify(topSubjectFilter.value || ALL_SUBJECTS_VALUE);
+    if (subjectFilter) subjectFilter.value = filters.subjectSlug;
+    renderSectionsList();
+  });
+
+  facultyFilter?.addEventListener("change", applyFilters);
+  yearFilter?.addEventListener("change", applyFilters);
+  applyFiltersBtn?.addEventListener("click", applyFilters);
+
+  const debugResponsiveLayout = () => {
+    const pageLayout = document.getElementById("pageLayout");
+    const isTablet = window.matchMedia("(max-width: 1160px)").matches;
+    const isMobile = window.matchMedia("(max-width: 760px)").matches;
+    console.debug("[agenda:layout-debug] responsive", {
+      breakpoint: isMobile ? "mobile" : (isTablet ? "tablet" : "desktop"),
+      sidebarCollapsed: Boolean(pageLayout?.classList.contains("sidebar-collapsed")),
+      pageLayoutClasses: pageLayout?.className || "",
+      headerInsideAgendaWrapper: Boolean(document.querySelector("#agendaLayoutRoot .agenda-header-row"))
+    });
+  };
+  window.addEventListener("resize", debugResponsiveLayout);
+  debugResponsiveLayout();
+
   plannerSearchInput?.addEventListener("input", (e) => {
     plannerSearchQuery = e.target.value.toLowerCase();
     filterPlannerItems(plannerSearchQuery);
@@ -1525,6 +1677,7 @@ function initPlanificadorUI(){
   document.getElementById("subjectsModalBg")?.addEventListener("click", (e) => { if (e.target.id === "subjectsModalBg") closeSubjectsModal(); });
 
 
+  syncAgendaFilterControls();
   renderPlannerAll();
 }
 

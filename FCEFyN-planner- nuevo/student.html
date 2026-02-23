@@ -279,22 +279,41 @@
     </div>
 
     <div id="tab-agenda" class="tab-card" style="display:none;">
-      <div class="agenda-header-row">
-        <div class="agenda-title">
-          <h3>Agenda semanal (08:00 — 22:00)</h3>
-                  <div class="agenda-presets-inline">
-          <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
-        </div>
+      <div class="agenda-layout" id="agendaLayoutRoot">
+        <div class="agenda-filters-toolbar" id="agendaFiltersToolbar">
+          <label class="agenda-filter-field" for="agendaFacultyFilter">
+            <span>Facultad</span>
+            <select id="agendaFacultyFilter"></select>
+          </label>
+          <label class="agenda-filter-field" for="agendaYearFilter">
+            <span>Año lectivo</span>
+            <select id="agendaYearFilter"></select>
+          </label>
+          <label class="agenda-filter-field" for="agendaSubjectFilter">
+            <span>Materia</span>
+            <select id="agendaSubjectFilter"></select>
+          </label>
+          <button class="btn-plan-apply" id="btnApplyAgendaFilters" type="button">Aplicar filtros</button>
         </div>
 
-        <div class="agenda-actions">
-          <button class="btn-outline btn-small" id="btnDownloadAgendaPng">Descargar PNG</button>
-          <button class="btn-outline btn-small" id="btnDownloadAgendaPdf">Descargar PDF</button>
-          <button class="btn-outline btn-small" id="btnPlanificadorAgenda">Planificador de Agenda</button>
+        <div class="agenda-header-row">
+          <div class="agenda-title">
+            <h3>Agenda semanal (08:00 — 22:00)</h3>
+            <div class="agenda-presets-inline">
+              <div class="preset-chips-row" id="agendaPresetChips" role="tablist" aria-label="Presets de agenda"></div>
+            </div>
+          </div>
+
+          <div class="agenda-actions">
+            <button class="btn-outline btn-small" id="btnDownloadAgendaPng">Descargar PNG</button>
+            <button class="btn-outline btn-small" id="btnDownloadAgendaPdf">Descargar PDF</button>
+            <button class="btn-outline btn-small" id="btnPlanificadorAgenda">Planificador de Agenda</button>
+          </div>
         </div>
-      </div>
-      <div class="agenda-shell">
-        <div class="agenda-grid" id="agendaGrid"></div>
+
+        <div class="agenda-shell">
+          <div class="agenda-grid" id="agendaGrid"></div>
+        </div>
       </div>
     </div>
     <div id="tab-materias" class="tab-card" style="display:none;">

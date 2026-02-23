@@ -122,6 +122,7 @@ const Aula = {
         activePresetId: null,
         activePresetName: "",
         activeSelectedSectionIds: [],
+        agendaFilters: { facultyMode: "career", year: "", subjectSlug: "" },
         plannerSubjectColors: {},
         plannerColorCursor: 0,
         plannerSectionColors: {}
