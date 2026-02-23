@@ -115,6 +115,13 @@ const homeModules = [
     comingSoon: false
   },
   {
+    title: "Profesores",
+    description: "Buscá docentes, filtrá por materia y consultá reseñas para elegir mejor tu cursada.",
+    icon: "profesores",
+    route: "/profesores",
+    comingSoon: false
+  },
+  {
     title: "Comunidad",
     description: "Espacio para publicar consultas, compartir experiencias e interactuar con otros estudiantes.",
     icon: "users",
@@ -131,12 +138,6 @@ const homeModules = [
     description: "Materiales y recursos académicos centralizados.",
     icon: "library",
     comingSoon: true
-  },
-  {
-    title: "Transporte",
-    description: "Información de transporte cercana a la facultad.",
-    icon: "bus",
-    comingSoon: true
   }
 ];
 
@@ -146,10 +147,10 @@ const moduleIconMap = {
   "calendar": ICONS.agenda,
   "link": ICONS.plan,
   "materias": ICONS.materias,
+  "profesores": ICONS.profesores,
   "users": ICONS.comunidad,
   "gamepad": ICONS.recreo,
-  "library": ICONS.biblioteca,
-  "bus": ICONS.transporte
+  "library": ICONS.biblioteca
 };
 
 function navigateToModule(route){
@@ -159,7 +160,8 @@ function navigateToModule(route){
     "/academico": "academico",
     "/agenda": "agenda",
     "/correlativas": "planestudios",
-    "/materias": "materias"
+    "/materias": "materias",
+    "/profesores": "profesores"
   };
   const sectionId = sectionRouteMap[route];
   if (sectionId) {
