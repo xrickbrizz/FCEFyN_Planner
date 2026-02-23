@@ -1700,6 +1700,10 @@ body[data-theme="light"] .event{
       position:sticky;
       top:1rem;
       align-self:start;
+      height: 55rem;
+    }
+    #acadPendingWidget,#acadUpcomingWidget{
+      height: 20rem;
     }
     .acad-shell .day{
       min-height: 6.875rem;
@@ -2016,8 +2020,6 @@ body[data-theme="light"] .event{
 
     #tab-agenda{
       overflow:visible !important;
-      height: 60.327rem;
-
     }
 
     .main-shell{
@@ -4614,7 +4616,7 @@ body[data-theme="light"] #acadCompletedLink.widget-link:focus-visible{
   outline-offset:3px;
   border-radius:0.3rem;
 }
-#tab-materias,#tab-profesores,#tab-comunidad,#tab-recreo,#tab-biblioteca,#tab-transporte,#tab-mensajes, #tab-perfil{
+#tab-agenda,#tab-materias,#tab-profesores,#tab-academico,.acad-layout,#tab-comunidad,#tab-recreo,#tab-biblioteca,#tab-transporte,#tab-mensajes, #tab-perfil{
   height: 60.327rem;
 }
 body.dark-mode .coming-view h2,
