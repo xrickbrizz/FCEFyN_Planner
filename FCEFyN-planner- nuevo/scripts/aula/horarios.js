@@ -57,6 +57,31 @@ function computePxPerMinute(){
   return 40 / 60;
 }
 
+function splitAgendaMeta(item){
+  const aulaText = String(item?.aula || "").trim();
+  const explicitCommission = String(item?.commissionVisible || "").trim();
+
+  if (explicitCommission){
+    return {
+      venueText: aulaText,
+      commissionText: explicitCommission
+    };
+  }
+
+  const commissionMatch = aulaText.match(/^(.*)\s·\s(Com\.\s.+)$/i);
+  if (!commissionMatch){
+    return {
+      venueText: aulaText,
+      commissionText: ""
+    };
+  }
+
+  return {
+    venueText: String(commissionMatch[1] || "").trim(),
+    commissionText: String(commissionMatch[2] || "").trim()
+  };
+}
+
 function ensureAgendaStructure(){
   const state = CTX.aulaState;
   if (!state.agendaData || typeof state.agendaData !== "object") state.agendaData = {};
@@ -158,10 +183,19 @@ function renderAgendaGridInto(grid, data, allowEdit){
 
       const title = document.createElement("strong");
       title.textContent = formatVisibleSubjectLabel(item.materia) || "Materia";
+      const { venueText, commissionText } = splitAgendaMeta(item);
       const meta = document.createElement("small");
-      meta.textContent = `${item.inicio || "—"} – ${item.fin || "—"}${item.aula ? ` · ${item.aula}` : ""}`;
+      meta.className = "class-block-meta";
+      meta.textContent = `${item.inicio || "—"} – ${item.fin || "—"}${venueText ? ` · ${venueText}` : ""}`;
       block.appendChild(title);
       block.appendChild(meta);
+
+      if (commissionText){
+        const commission = document.createElement("small");
+        commission.className = "class-block-commission";
+        commission.textContent = commissionText;
+        block.appendChild(commission);
+      }
 
       if (allowEdit){
         block.tabIndex = 0;

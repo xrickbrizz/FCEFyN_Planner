@@ -2182,6 +2182,20 @@ body[data-theme="light"] .event{
       overflow:hidden;
       text-overflow:ellipsis;
     }
+    .class-block .class-block-meta{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .class-block .class-block-commission{
+      margin-top:2px;
+      font-size:.7rem;
+      line-height:1.2;
+      opacity:.95;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
 .calendar-event[data-color="0"],
 .planner-card[data-color="0"]{ --accent: var(--subj-1); }
