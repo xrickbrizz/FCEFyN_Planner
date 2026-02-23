@@ -188,16 +188,15 @@
   </footer>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import {
-      getAuth,
+      auth,
       onAuthStateChanged,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      sendPasswordResetEmail,
+      db
+    } from "./scripts/core/firebase.js";
     import {
-      getFirestore,
       doc,
       getDoc,
       setDoc,
@@ -211,19 +210,6 @@
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
     import { ICONS } from "./scripts/core/nav.js";
     import { getPlansIndex, normalizeStr } from "./scripts/plans-data.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
-      authDomain: "fcefyn-planner.firebaseapp.com",
-      projectId: "fcefyn-planner",
-      storageBucket: "fcefyn-planner.firebasestorage.app",
-      messagingSenderId: "713668406730",
-      appId: "1:713668406730:web:f41c459641bfdce0cd7333"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
 
     const pillClock = document.getElementById("pillClock");
     const dotFirebase = document.getElementById("dotFirebase");

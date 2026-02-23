@@ -457,14 +457,12 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { signOut, onAuthStateChanged, auth, db, storage } from "./scripts/core/firebase.js";
 import {
-  getFirestore, collection, doc, getDoc, getDocs,
+  collection, doc, getDoc, getDocs,
   addDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import {
-  getStorage,
   ref,
   uploadBytes,
   getDownloadURL,
@@ -472,21 +470,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 import { showToast, showConfirm, showPrompt } from "./scripts/ui/notifications.js";
 import { getPlansIndex, getPlanWithSubjects, mapCareersToPlans, normalizeStr } from "./scripts/plans-data.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0i7hkXi5C-x3UwAEsh6FzRFqrFE5jpd8",
-  authDomain: "fcefyn-planner.firebaseapp.com",
-  projectId: "fcefyn-planner",
-  storageBucket: "fcefyn-planner.firebasestorage.app",
-  messagingSenderId: "713668406730",
-  appId: "1:713668406730:web:f41c459641bfdce0cd7333",
-  measurementId: "G-HLBVB8QHM8"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-const storage = getStorage(app);
 
 let currentUser = null;
 
@@ -513,6 +496,18 @@ let editingAnnouncementId = null;
 
 /* ---------- helpers UI ---------- */
 const qs  = sel => document.querySelector(sel);
+
+const logAdminDebug = (step, payload) => {
+  console.info(`[Admin][${step}]`, payload);
+};
+
+const logAdminError = (step, error) => {
+  console.error(`[Admin][${step}]`, {
+    code: error?.code || "N/A",
+    message: error?.message || String(error),
+    error
+  });
+};
 
 const coerceDate = (value) => {
   if (!value) return null;
@@ -721,27 +716,45 @@ function wireSidebar(){
 
 /* ---------- sesión / acceso ---------- */
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "app.html";
-    return;
+  try {
+    if (!user) {
+      logAdminDebug("auth-state", { authenticated: false });
+      window.location.href = "app.html";
+      return;
+    }
+
+    logAdminDebug("auth-state", {
+      authenticated: true,
+      uid: user.uid,
+      email: user.email || null
+    });
+
+    const userRef = doc(db,"users",user.uid);
+    const snap = await getDoc(userRef);
+    logAdminDebug("users-doc", {
+      uid: user.uid,
+      exists: snap.exists(),
+      role: snap.exists() ? (snap.data().role || null) : null
+    });
+
+    if (!snap.exists() || snap.data().role !== "admin") {
+      window.location.href = "student.html";
+      return;
+    }
+
+    currentUser = user;
+    qs("#adminEmail").textContent = user.email || "—";
+
+    attachGlobalHandlers();
+    wireSidebar();
+    setActiveNav("users");
+
+    // Cargamos también loadProfessors()
+    await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials(), loadAnnouncements()]);
+  } catch (error) {
+    logAdminError("boot", error);
+    showToast({ message: `Error inicializando panel admin (${error?.code || "N/A"}): ${error?.message || error}`, type:"error" });
   }
-
-  const userRef = doc(db,"users",user.uid);
-  const snap = await getDoc(userRef);
-  if (!snap.exists() || snap.data().role !== "admin") {
-    window.location.href = "student.html";
-    return;
-  }
-
-  currentUser = user;
-  qs("#adminEmail").textContent = user.email || "—";
-
-  attachGlobalHandlers();
-  wireSidebar();
-  setActiveNav("users");
-
-  // Cargamos también loadProfessors()
-  await Promise.all([loadUsers(), loadSections(), loadProfessors(), loadIngresoMaterials(), loadAnnouncements()]);
 });
 
 function attachGlobalHandlers(){
@@ -1068,6 +1081,7 @@ async function loadUsers(){
   qs("#metricUsersDetail").textContent =
     `Admin: ${admins} · Estudiantes: ${students} · Suspendidos: ${suspended}`;
   qs("#badgeUsers").textContent = String(total);
+  logAdminDebug("loader-users", { total, admins, students, suspended });
 }
 
 /* ---------- horarios ---------- */
@@ -1148,6 +1162,7 @@ async function loadSections(){
   qs("#metricSectionsDetail").textContent =
     "Materias distintas: " + subjectsSet.size;
   qs("#badgeSections").textContent = String(totalDocs);
+  logAdminDebug("loader-courseSections", { total: totalDocs, distinctSubjects: subjectsSet.size });
 }
 
 /* ---------- NUEVO: funciones de profesores ---------- */
@@ -1159,7 +1174,8 @@ async function loadProfessors(){
   try{
     snap = await getDocs(collection(db,"professors"));
   }catch(e){
-    showToast({ message:"No se pudieron cargar profesores: " + (e.message || e), type:"error" });
+    logAdminError("loader-professors", e);
+    showToast({ message:`No se pudieron cargar profesores (${e?.code || "N/A"}): ${e?.message || e}`, type:"error" });
     qs("#badgeProfessors").textContent = "0";
     qs("#metricProfessorsTotal").textContent = "0";
     qs("#metricProfessorsDetail").textContent = "Activos: 0 · Ocultos: 0";
@@ -1203,6 +1219,7 @@ async function loadProfessors(){
   qs("#badgeProfessors").textContent = String(total);
   qs("#metricProfessorsTotal").textContent = String(total);
   qs("#metricProfessorsDetail").textContent = `Activos: ${activeCount} · Ocultos: ${hiddenCount}`;
+  logAdminDebug("loader-professors", { total, active: activeCount, hidden: hiddenCount });
 }
 
 function formatTimestamp(ts){
@@ -1235,7 +1252,8 @@ async function loadIngresoMaterials(){
   try{
     snap = await getDocs(collection(db,"ingresoMaterials"));
   }catch(e){
-    showToast({ message:"No se pudieron cargar materiales de ingreso: " + (e.message || e), type:"error" });
+    logAdminError("loader-ingresoMaterials", e);
+    showToast({ message:`No se pudieron cargar materiales de ingreso (${e?.code || "N/A"}): ${e?.message || e}`, type:"error" });
     qs("#badgeIngresoMaterials").textContent = "0";
     return;
   }
@@ -1274,6 +1292,7 @@ async function loadIngresoMaterials(){
   });
 
   qs("#badgeIngresoMaterials").textContent = String(ingresoMaterialsCache.length);
+  logAdminDebug("loader-ingresoMaterials", { total: ingresoMaterialsCache.length });
 }
 
 async function loadAnnouncements(){
@@ -1285,7 +1304,8 @@ async function loadAnnouncements(){
   try{
     snap = await getDocs(collection(db,"announcements"));
   }catch(e){
-    showToast({ message:"No se pudieron cargar avisos: " + (e.message || e), type:"error" });
+    logAdminError("loader-announcements", e);
+    showToast({ message:`No se pudieron cargar avisos (${e?.code || "N/A"}): ${e?.message || e}`, type:"error" });
     qs("#badgeAnnouncements").textContent = "0";
     return;
   }
@@ -1319,6 +1339,7 @@ async function loadAnnouncements(){
   });
 
   qs("#badgeAnnouncements").textContent = String(announcementsCache.length);
+  logAdminDebug("loader-announcements", { total: announcementsCache.length });
 }
 
 function renderIngresoCareerOptions(selected=[]) {

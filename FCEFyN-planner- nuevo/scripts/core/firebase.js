@@ -7,6 +7,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc,
   getDoc,
   setDoc,
@@ -23,8 +26,7 @@ import {
   orderBy,
   limit,
   startAfter,
-  getCountFromServer,
-  enableIndexedDbPersistence
+  getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import {
   getStorage,
@@ -66,19 +68,19 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+let db;
+try {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  });
+} catch (err) {
+  console.warn("[Firestore] initializeFirestore fallback:", err);
+  db = getFirestore(app);
+}
+
 const storage = getStorage(app);
 const functions = getFunctions(app, "us-central1");
-
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err?.code === "failed-precondition") {
-    console.warn("[Firestore] Persistence failed: múltiples pestañas.");
-  } else if (err?.code === "unimplemented") {
-    console.warn("[Firestore] Persistence no soportada en este navegador.");
-  } else {
-    console.warn("[Firestore] Persistence error:", err);
-  }
-});
 
 export {
   app,
@@ -106,7 +108,6 @@ export {
   limit,
   startAfter,
   getCountFromServer,
-  enableIndexedDbPersistence,
   storageRef,
   uploadBytes,
   getDownloadURL,
