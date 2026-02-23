@@ -3,6 +3,7 @@ import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
 import { getPlanWithSubjects } from "../plans-data.js";
 import { ACTIVE_CAREER_CONTEXT_CHANGED_EVENT, getCorrelativasActiveCareerContext, resolveActiveCareerContext } from "../core/active-career-context.js";
+import { normalizeCareerSlug as normalizeComisionCareerSlug } from "./comisiones.js";
 
 let CTX = null;
 
@@ -447,13 +448,15 @@ function getCareerSlug(){
   return normalized;
 }
 
-function normalizeSectionItems(rawSection, idSeed = ""){
+function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = []){
   const sectionId = String(rawSection?.sectionId || rawSection?.id || rawSection?.commission || idSeed || makeId()).trim();
   const subjectName = String(rawSection?.subjectName || rawSection?.subject || rawSection?.materia || rawSection?.name || rawSection?.subjectSlug || "").trim();
   const subjectSlug = slugify(rawSection?.subjectSlug || rawSection?.subjectId || rawSection?.code || subjectName);
   const label = String(rawSection?.label || rawSection?.commission || rawSection?.comision || rawSection?.name || rawSection?.id || sectionId).trim();
   const room = String(rawSection?.room || rawSection?.aula || "").trim();
   const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
+  const ownCareerSlugs = Array.isArray(rawSection?.careerSlugs) ? rawSection.careerSlugs : [];
+  const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs].map((slug) => String(slug || "").trim()).filter(Boolean))];
   const hasHorariosObjects = Array.isArray(rawSection?.horarios) && rawSection.horarios.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
   const hasDaysObjects = Array.isArray(rawSection?.days) && rawSection.days.some((slot) => slot && typeof slot === "object" && !Array.isArray(slot));
   const daysRaw = hasHorariosObjects
@@ -475,6 +478,7 @@ function normalizeSectionItems(rawSection, idSeed = ""){
         id: `${sectionId}_${index}`,
         subjectName,
         subjectSlug,
+        careerSlugs,
         sectionId,
         label,
         day: dayKey,
@@ -533,6 +537,47 @@ function debugLogComisionesSnapshot(snap, label = "[planner:debug] comisiones sn
   console.groupEnd();
 }
 
+function filterSectionsByActiveCareer(sections = []){
+  const resolvedContext = resolveActiveCareerContext({
+    profileCareerSlug: CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || "",
+    fallbackCareerSlug: CTX?.aulaState?.careerSlug || CTX?.careerSlug || "",
+    fallbackPlanSlug: CTX?.aulaState?.plannerCareer?.slug || ""
+  });
+  const resolvedCareerSlug = normalizeComisionCareerSlug(
+    resolvedContext?.planSlug || resolvedContext?.careerSlug || ""
+  );
+
+  if (!resolvedCareerSlug){
+    console.warn("[TEMP][comisiones] carrera no resuelta; omitiendo render hasta completar datos", {
+      profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
+      selectedCareer: CTX?.getCurrentCareer?.() || "",
+      context: resolvedContext
+    });
+    return [];
+  }
+
+  const filtered = sections.filter((section) => {
+    const careerSlugs = Array.isArray(section?.careerSlugs) ? section.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug)) : [];
+    return careerSlugs.includes(resolvedCareerSlug);
+  });
+
+  console.debug("[TEMP][comisiones] filtro por carrera", {
+    profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
+    selectedCareer: CTX?.getCurrentCareer?.() || "",
+    resolvedCareerSlug,
+    contextSource: resolvedContext?.source || "unknown",
+    totalComisiones: sections.length,
+    afterCareerFilter: filtered.length,
+    sampleIn: filtered.slice(0, 5).map((section) => section?.subjectSlug),
+    sampleOut: sections
+      .filter((section) => !filtered.includes(section))
+      .slice(0, 5)
+      .map((section) => section?.subjectSlug)
+  });
+
+  return filtered;
+}
+
 async function loadPlannerSections(){
   console.groupCollapsed("[planner:debug] loadPlannerSections");
   const normalizeComisionesDocs = (snap) => {
@@ -541,17 +586,17 @@ async function loadPlannerSections(){
       const payload = docSnap.data() || {};
       if (Array.isArray(payload.sections)){
         payload.sections.forEach((item, index) => {
-          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`));
+          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`, payload.careerSlugs || []));
         });
         return;
       }
       if (Array.isArray(payload.items)){
         payload.items.forEach((item, index) => {
-          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`));
+          list.push(...normalizeSectionItems(item, `${docSnap.id}_${index}`, payload.careerSlugs || []));
         });
         return;
       }
-      list.push(...normalizeSectionItems(payload, docSnap.id));
+      list.push(...normalizeSectionItems(payload, docSnap.id, payload.careerSlugs || []));
     });
     return list;
   };
@@ -563,14 +608,16 @@ async function loadPlannerSections(){
     console.debug("[planner:debug] fetch comisiones sin filtro", { maxFetch: MAX_FETCH });
     const snap = await getDocs(query(collection(CTX.db, "comisiones"), limit(MAX_FETCH)));
     const normalizedSections = normalizeComisionesDocs(snap);
+    const filteredSections = filterSectionsByActiveCareer(normalizedSections);
 
-    CTX.aulaState.plannerSections = normalizedSections;
-    CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(normalizedSections);
+    CTX.aulaState.plannerSections = filteredSections;
+    CTX.aulaState.courseSections = convertPlannerSectionsToCourseSections(filteredSections);
     plannerSectionsUiState = "ready";
 
     console.debug("[planner:debug] sections loaded", {
       snapshotSize: snap?.size ?? null,
       normalizedCount: normalizedSections.length,
+      filteredByCareerCount: filteredSections.length,
       courseSectionsCount: CTX.aulaState.courseSections.length
     });
     console.groupEnd();
@@ -819,6 +866,24 @@ function renderSectionsList(){
   const filtered = allSections.filter((section) => {
     const eligibility = getEligibilityForSubject(getSectionSubjectSlug(section), plannerEligibilityMap);
     return eligibility.visibleInPlanner;
+  });
+
+  const eligibilityEntries = Object.entries(plannerEligibilityMap || {});
+  const promotedSubjects = eligibilityEntries
+    .filter(([, item]) => item?.promoted)
+    .map(([slug]) => slug);
+  const canTakeSubjects = eligibilityEntries
+    .filter(([, item]) => item?.canTake)
+    .map(([slug]) => slug);
+
+  console.debug("[TEMP][comisiones] elegibilidad para render", {
+    totalComisionesTrasCarrera: allSections.length,
+    materiasPuedoCursar: canTakeSubjects.length,
+    materiasPromocionadas: promotedSubjects.length,
+    comisionesFinalesRenderizadas: filtered.length,
+    samplePuedoCursar: canTakeSubjects.slice(0, 8),
+    samplePromocionadas: promotedSubjects.slice(0, 8),
+    sampleRenderizadas: filtered.slice(0, 8).map((section) => getSectionSubjectSlug(section))
   });
 
   if (!allSections.length){

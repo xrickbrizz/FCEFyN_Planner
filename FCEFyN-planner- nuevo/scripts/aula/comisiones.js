@@ -1,3 +1,5 @@
+import { resolvePlanSlug } from "../plans-data.js";
+
 const COMISIONES_JSON_PATHS = [
   "./comisiones/ingenieria_agrimensura.json",
   "./comisiones/ingenieria_aeroespacial.json",
@@ -15,29 +17,27 @@ const COMISIONES_JSON_PATHS = [
 let comisionesCachePromise = null;
 
 const CAREER_ALIASES = {
-  industrial: "ingenieria_industrial",
-  ingenieria_industrial: "ingenieria_industrial",
-  "ingenieria industrial": "ingenieria_industrial",
-  civil: "ingenieria_civil",
-  quimica: "ingenieria_quimica",
-  mecanica: "ingenieria_mecanica",
-  computacion: "ingenieria_computacion",
-  electronica: "ingenieria_electronica",
-  electromecanica: "ingenieria_electromecanica",
-  aeroespacial: "ingenieria_aeroespacial",
-  ambiental: "ingenieria_ambiental",
-  biomedica: "ingenieria_biomedica",
-  agrimensura: "ingenieria_agrimensura"
+  industrial: "industrial",
+  ingenieria_industrial: "industrial",
+  "ingenieria industrial": "industrial",
+  civil: "civil",
+  quimica: "quimica",
+  mecanica: "mecanica",
+  computacion: "computacion",
+  electronica: "electronica",
+  electromecanica: "electromecanica",
+  aeroespacial: "aeroespacial",
+  ambiental: "ambiental",
+  biomedica: "biomedica",
+  agrimensura: "agrimensura"
 };
 
 function hasValue(value){
   return value !== undefined && value !== null && value !== "";
 }
 
-function normalizeCareerSlug(raw){
-  if (!hasValue(raw)){
-    return "";
-  }
+export function normalizeCareerSlug(raw){
+  if (!hasValue(raw)) return "";
 
   const normalized = String(raw)
     .toLowerCase()
@@ -46,19 +46,15 @@ function normalizeCareerSlug(raw){
     .trim()
     .replace(/[\s-]+/g, "_");
 
-  if (normalized.startsWith("ingenieria_")){
-    return normalized;
-  }
+  const fromCorrelativas = resolvePlanSlug(normalized.replace(/_/g, "-"));
+  if (fromCorrelativas) return fromCorrelativas;
 
   const spacedNormalized = normalized.replace(/_/g, " ");
   return CAREER_ALIASES[normalized] || CAREER_ALIASES[spacedNormalized] || normalized;
 }
 
 function shouldDebugCareerNormalization(){
-  if (typeof window === "undefined" || !window.location){
-    return false;
-  }
-
+  if (typeof window === "undefined" || !window.location) return false;
   const { hostname } = window.location;
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
@@ -80,30 +76,6 @@ async function loadAllComisiones(){
   return comisionesCachePromise;
 }
 
-//export async function getComisiones(filters = {}){
-  const { career, anio, tipo, sede, subjectSlug, yearAcademic, semester } = filters;
-  const careerSlug = normalizeCareerSlug(career);
-
-  if (!career){
-    throw new Error("El filtro 'career' es obligatorio.");
-  }
-
-  if (shouldDebugCareerNormalization()){
-    console.debug("[comisiones] career normalization", { career, careerSlug });
-  }
-
-  const allComisiones = await loadAllComisiones();
-
-  return allComisiones
-    .filter((comision) => Array.isArray(comision.careerSlugs) && comision.careerSlugs.includes(careerSlug))
-    .filter((comision) => !hasValue(anio) || comision.anio === anio)
-    .filter((comision) => !hasValue(tipo) || comision.tipo === tipo)
-    .filter((comision) => !hasValue(sede) || comision.sede === sede)
-    .filter((comision) => !hasValue(subjectSlug) || comision.subjectSlug === subjectSlug)
-    .filter((comision) => !hasValue(yearAcademic) || comision.yearAcademic === yearAcademic)
-    .filter((comision) => !hasValue(semester) || comision.semester === semester);
-//}
-
 export async function getComisiones(filters = {}){
   const { career, anio, tipo, sede, subjectSlug, yearAcademic, semester } = filters;
 
@@ -124,8 +96,6 @@ export async function getComisiones(filters = {}){
 
   if (debug){
     console.log("allComisiones total:", allComisiones.length);
-
-    // muestra slugs reales presentes en el dataset (para detectar mismatch)
     const slugsSet = new Set();
     for (const c of allComisiones.slice(0, 150)){
       (c?.careerSlugs || []).forEach((s) => slugsSet.add(s));
@@ -151,17 +121,6 @@ export async function getComisiones(filters = {}){
       yearAcademic: stepAcad.length,
       semester: stepSem.length
     });
-
-    if (stepCareer.length){
-      console.log("career matches sample:", stepCareer.slice(0, 3));
-    } else {
-      // ayuda extra: buscar comisiones donde careerSlugs contenga algo parecido
-      const hint = allComisiones.find((c) =>
-        Array.isArray(c.careerSlugs) && c.careerSlugs.some((s) => String(s).includes("industrial") || String(s).includes("ingenieria"))
-      );
-      console.warn("NO MATCH for careerSlug:", careerSlug, "hint sample:", hint);
-    }
-
     console.groupEnd();
   }
 
