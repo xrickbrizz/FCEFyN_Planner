@@ -25,6 +25,14 @@ const CHAT_THEME_OPTIONS = [
   { key: "beige", label: "Minimalist Beige", color: "#E6D6C3" }
 ];
 
+const TEMP_HIDDEN_CHAT_MENU_ACTIONS = new Set([
+  "mark-unread",
+  "mute-8h",
+  "mute-24h",
+  "mute-always",
+  "archive-chat"
+]);
+
 const DEFAULT_CHAT_PREF = {
   theme: "green",
   notificationsEnabled: true,
@@ -617,6 +625,14 @@ function updateContextMenuLabels(){
   if (pinBtn) pinBtn.textContent = pref.pinned ? "Desfijar chat" : "Fijar chat";
 }
 
+function applyChatContextMenuVisibility(menu){
+  if (!menu) return;
+  menu.querySelectorAll("button[data-action]").forEach((btn) => {
+    const action = btn.getAttribute("data-action") || "";
+    btn.hidden = TEMP_HIDDEN_CHAT_MENU_ACTIONS.has(action);
+  });
+}
+
 function patchActiveChatPrefs(patch){
   const uid = getCurrentUid();
   const chatId = CTX.socialState.activeChatId;
@@ -914,6 +930,7 @@ function initMessagingUI(){
   const menuButton = document.getElementById("chatMenuButton");
   const menu = document.getElementById("chatContextMenu");
   if (menuButton && menu){
+    applyChatContextMenuVisibility(menu);
     menuButton.addEventListener("click", (e) => {
       e.stopPropagation();
       if (menu.classList.contains("hidden")){
