@@ -1079,65 +1079,11 @@ body[data-theme="light"] .tab-card{
       justify-content:center;
     }
     .study-calendar-compact{
-      padding-top: 4.2rem;
       flex:1 1 auto;
       min-height:0;
       overflow:hidden;
     }
     .study-calendar-compact #calendarGrid{ margin-top: .5rem; }
-
-    .streak-overlay{
-      position:absolute;
-      top:12px;
-      left:12px;
-      z-index:5;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 10px;
-      border:1px solid #e5e7eb;
-      border-radius:14px;
-      backdrop-filter:blur(6px);
-      box-shadow:0 6px 18px rgba(0,0,0,.06);
-      pointer-events:auto;
-      left: 29rem;
-    }
-    .streak-overlay__label{
-      color:var(--text-soft);
-      font-size:.8rem;
-      font-weight:700;
-      letter-spacing:.01em;
-      white-space:nowrap;
-    }
-    .streak-overlay__value{
-      color:var(--text);
-      font-size:.9rem;
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    body.dark-mode .streak-overlay,
-    body[data-theme="dark"] .streak-overlay{
-      background:color-mix(in srgb, #0b1220 82%, transparent);
-      border-color:color-mix(in srgb, #cbd5e1 32%, transparent);
-      box-shadow:0 10px 24px rgba(0,0,0,.42);
-    }
-    body.dark-mode .streak-overlay__label,
-    body[data-theme="dark"] .streak-overlay__label{
-      color:rgba(248,250,252,.9);
-    }
-    body.dark-mode .streak-overlay__value,
-    body[data-theme="dark"] .streak-overlay__value{
-      color:#fff;
-    }
-    body.dark-mode .streak-overlay i,
-    body.dark-mode .streak-overlay svg,
-    body[data-theme="dark"] .streak-overlay i,
-    body[data-theme="dark"] .streak-overlay svg{
-      color:#f8fafc;
-      fill:currentColor;
-      opacity:.95;
-    }
 
     .streak-tiles,
     .streak-strip,
@@ -1147,7 +1093,7 @@ body[data-theme="light"] .tab-card{
 
     .study-stats-grid{
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
+      grid-template-columns:repeat(3,minmax(0,1fr));
       gap:.85rem;
     }
     .study-stat-card{
@@ -1179,21 +1125,11 @@ body[data-theme="light"] .tab-card{
 
     @media(max-width:900px){
       .tab-estudio-layout{ grid-template-columns:1fr; }
-      .study-stats-grid{ grid-template-columns:1fr; }
+      .study-stats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
       .study-recent-logs-list{ max-height:15.5rem; }
-      .study-calendar-compact{
-        padding-top: 4rem;
-      }
-      .streak-overlay{
-        top:43px;
-        left:8px;
-        gap:8px;
-        padding:6px 8px;
-      }
-      .streak-overlay__label,
-      .streak-overlay__value{
-        font-size:.78rem;
-      }
+    }
+    @media(max-width:620px){
+      .study-stats-grid{ grid-template-columns:1fr; }
     }
 
     .calendar-container{
@@ -2297,6 +2233,7 @@ body[data-theme="light"] .event{
     }
     #tab-planestudios{
       overflow: hidden;
+      padding-top: .4rem;
     }
     .plan-frame{
       width: 100%;
@@ -2564,6 +2501,7 @@ body[data-theme="light"] .event{
       align-items:center;
       gap: .6rem;
       flex-wrap:wrap;
+      margin-bottom: .4rem;
     }
     .planner-toolbar-left{
       display:flex;
@@ -5401,7 +5339,7 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
 }
 
 .correlativas-plans .plans-embedded-root .grid-wrap{ width:100%; max-width:100rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
-.correlativas-plans .plans-embedded-root .cell{ background:var(--glass-faint); border-radius:.875rem; padding:.9rem; border:1px solid var(--cor-plan-border); display:flex; flex-direction:column; }
+.correlativas-plans .plans-embedded-root .cell{ background:var(--glass-faint); border-radius:.875rem; padding:.9rem;padding-bottom: 0px;padding-top: 0px; border:1px solid var(--cor-plan-border); display:flex; flex-direction:column; }
 .correlativas-plans .plans-embedded-root .cell h2{ margin:0 0 .6rem; color:var(--color-accent); font-size:1rem; text-align:center; padding-bottom:.35rem; border-bottom:2px solid var(--accent-18); }
 .correlativas-plans .plans-embedded-root .subjects{ display:flex; flex-direction:column; gap:.35rem; margin-top:.45rem; overflow:visible; padding-right:0; }
 .correlativas-plans .plans-embedded-root .subject{ background:var(--cor-plan-card); padding:.55rem .6rem; border-radius:.625rem; font-weight:700; font-size:.92rem; text-align:center; cursor:pointer; transition:transform .12s, background .18s, border-color .12s; color:var(--color-text); border:1px solid transparent; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
@@ -5540,7 +5478,7 @@ body[data-theme="dark"] #tab-mensajes .msg-row.other .msg-meta{
   /* si tu .study-stats-grid en desktop es multi-columna, acá lo forzamos a 1 columna
      SOLO dentro de este wrapper (no afecta el resto del sitio) */
   .study-top-left.study-stats-grid{
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2,minmax(0,1fr));
   }
 
   .study-top-right{
