@@ -279,7 +279,30 @@ function getSubjectAccentColor(name){
   const match = subjects.find(subject => normalizeLabel(subject?.name) === target);
   return match?.color || null;
 }
-const ACTIVITY_TYPES = ["Examen", "Parcial", "TP", "Estudio", "Clase", "Práctico"];
+const ACTIVITY_TYPES = ["Examen", "Parcial", "TP", "Estudio", "Clase", "Evento", "Práctico"];
+function normalizeAcadTypeForUI(value){
+  const raw = String(value || "").trim();
+  const normalized = normalizeLabel(raw)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (normalized === "practico" || normalized === "evento") return "Evento";
+  return raw;
+}
+function isEventType(value){
+  return normalizeAcadTypeForUI(value) === "Evento";
+}
+function getAcadTypeLabel(value){
+  const normalized = normalizeAcadTypeForUI(value);
+  return normalized || "Item";
+}
+function syncAcadSubjectFieldState(typeValue){
+  const subjectField = document.getElementById("acadSubjectField");
+  const subjSel = document.getElementById("acadSubject");
+  if (!subjectField || !subjSel) return;
+  const eventType = isEventType(typeValue);
+  subjectField.style.display = eventType ? "none" : "";
+  subjSel.disabled = eventType;
+}
 function setPillSelection(container, value){
   if (!container) return;
   const target = value || "";
@@ -1651,14 +1674,17 @@ function handleAcadDayClick(dateKey){
 }
 
 function setAcadTypeSelection(value){
-  const safeValue = ACTIVITY_TYPES.includes(value) ? value : "Parcial";
+  const uiValue = normalizeAcadTypeForUI(value);
+  const safeValue = ACTIVITY_TYPES.includes(uiValue) ? uiValue : "Parcial";
   setPillSelection(acadTypePills, safeValue);
   const typeSel = document.getElementById("acadType");
   if (typeSel) typeSel.value = safeValue;
+  syncAcadSubjectFieldState(safeValue);
 }
 
 function getAcadTypeSelection(){
-  return getPillSelection(acadTypePills) || document.getElementById("acadType")?.value || "Parcial";
+  const selected = getPillSelection(acadTypePills) || document.getElementById("acadType")?.value || "Parcial";
+  return normalizeAcadTypeForUI(selected);
 }
 
 function openAcadDayModal(dateKey, focusIndex = -1){
@@ -1703,7 +1729,7 @@ function openAcadDayModal(dateKey, focusIndex = -1){
       left.className = "acad-detail-text activity-content";
       left.innerHTML = `
         <strong>${escapeHtml(item.titulo || "(sin título)")}</strong>
-        <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")} · ${escapeHtml(getAcadTimeLabel(item))}</div>
+        <div class="acad-detail-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(getAcadTypeLabel(item.tipo))} · ${escapeHtml(getAcadTimeLabel(item))}</div>
         <div class="acad-detail-notes">${escapeHtml(item.notas || item.notes || "")}</div>
       `;
 
@@ -1756,7 +1782,7 @@ function renderAcadRecordDetail(item, dateKey){
   acadRecordDetail.style.display = "block";
   acadRecordDetail.innerHTML = `
     <strong>${escapeHtml(item.titulo || "(sin título)")}</strong><br/>
-    <span>${escapeHtml(item.materia || "Materia")} · ${escapeHtml(item.tipo || "Item")}</span><br/>
+    <span>${escapeHtml(item.materia || "Materia")} · ${escapeHtml(getAcadTypeLabel(item.tipo))}</span><br/>
     <span>Fecha: ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}</span>
     ${item.notas || item.notes ? `<div style="margin-top:.45rem;">${escapeHtml(item.notas || item.notes || "")}</div>` : ""}
   `;
@@ -1901,7 +1927,9 @@ function initAcademicoModalUI(){
   const typeSel = document.getElementById("acadType");
 
   initPillGroup(acadTypePills, (value)=>{
-    if (typeSel) typeSel.value = value;
+    const normalized = normalizeAcadTypeForUI(value);
+    if (typeSel) typeSel.value = normalized;
+    syncAcadSubjectFieldState(normalized);
   });
 
   if (btnAcadClose && modalBg){
@@ -1930,7 +1958,9 @@ editingIndex = -1;
       const whenInp = document.getElementById("acadWhen");
       const notesTxt = document.getElementById("acadNotes");
 
-      if (!subjSel || !subjSel.value){
+      const selectedType = getAcadTypeSelection();
+      const requiresSubject = !isEventType(selectedType);
+      if (requiresSubject && (!subjSel || !subjSel.value)){
         CTX?.notifyWarn?.("Elegí materia.");
         return;
       }
@@ -1959,8 +1989,8 @@ editingIndex = -1;
       const estado = index >= 0 ? (previousItem?.estado || toAcadStatus(completed)) : "pending";
 
       const item = {
-        tipo: getAcadTypeSelection(),
-        materia: subjSel.value,
+        tipo: selectedType,
+        materia: requiresSubject ? (subjSel?.value || "") : (previousItem?.materia || ""),
         titulo: titleInp.value.trim(),
         minutos,
         notas: notesTxt?.value,

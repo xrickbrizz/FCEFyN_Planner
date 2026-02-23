@@ -977,7 +977,7 @@
             <button type="button" class="pill-btn" data-acad-type="Examen">Examen</button>
             <button type="button" class="pill-btn is-active" data-acad-type="Parcial">Parcial</button>
             <button type="button" class="pill-btn" data-acad-type="TP">TP</button>
-            <button type="button" class="pill-btn" data-acad-type="Práctico">Práctico</button>
+            <button type="button" class="pill-btn" data-acad-type="Evento">Evento</button>
           </div>
           <select id="acadType" class="sr-only" aria-hidden="true">
             <option value="Examen">Examen</option>
@@ -985,11 +985,12 @@
             <option value="TP">TP</option>
             <option value="Estudio">Estudio</option>
             <option value="Clase">Clase</option>
+            <option value="Evento">Evento</option>
             <option value="Práctico">Práctico</option>
           </select>
         </div>
 
-        <div class="modal-field">
+        <div class="modal-field" id="acadSubjectField">
           <label for="acadSubject">Materia</label>
           <select id="acadSubject"></select>
         </div>
