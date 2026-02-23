@@ -194,6 +194,18 @@ function formatSubjectLabel(value = ""){
   const normalizedBase = String(value || "").replaceAll("_", "-").trim();
   const spaced = normalizedBase.replaceAll("-", " ").replace(/\s+/g, " ").trim();
   const lower = spaced.toLowerCase();
+  const romanMap = {
+    i: "1",
+    ii: "2",
+    iii: "3",
+    iv: "4",
+    v: "5",
+    vi: "6",
+    vii: "7",
+    viii: "8",
+    ix: "9",
+    x: "10"
+  };
   const accentMap = {
     fisica: "física",
     matematica: "matemática",
@@ -208,11 +220,18 @@ function formatSubjectLabel(value = ""){
     computacion: "computación",
     introduccion: "introducción"
   };
-  return lower
+  const words = lower
     .split(" ")
     .map((word) => accentMap[word] || word)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+
+  const lastIndex = words.length - 1;
+  if (lastIndex >= 0){
+    const suffixNumber = romanMap[lower.split(" ")[lastIndex]];
+    if (suffixNumber) words[lastIndex] = suffixNumber;
+  }
+
+  return words.join(" ");
 }
 
 function normalizedSubject(value = ""){
