@@ -1929,6 +1929,29 @@ body[data-theme="light"] .event{
       justify-content:flex-end;
       margin-top:.8rem;
     }
+    .acad-completed-history-list{
+      display:flex;
+      flex-direction:column;
+      gap:.55rem;
+      max-height:min(60vh, 28rem);
+      overflow:auto;
+      padding-right:.15rem;
+    }
+    .acad-completed-history-row{
+      border:1px solid var(--border-85);
+      border-radius: var(--radius-md);
+      background:var(--color-surface-3);
+      padding:.6rem .7rem;
+    }
+    .acad-completed-history-title{
+      font-weight:700;
+      color:var(--color-text);
+    }
+    .acad-completed-history-meta{
+      margin-top:.2rem;
+      font-size:.84rem;
+      color:var(--text-soft);
+    }
     .acad-record-detail{
       margin-top:.75rem;
       padding: .75rem;
@@ -3445,9 +3468,8 @@ body[data-theme="dark"] .prof-subject-chip{
 }
 /* CSS DEL TAMAÑO DE LA BANDEJA DE MSJ*/
 .messages-box{
- /* min-height:260px;
-  max-height: 26.25rem; */
-  height: 60rem;
+  flex:1;
+  min-height:0;
   overflow:auto;
   border:1px solid var(--border-30);
   border-radius: 0.875rem;
@@ -3803,31 +3825,37 @@ body.modal-open{
   gap: 1rem;
   align-items:stretch;
   min-height: calc(100vh - 16.25rem);
-  height: 58rem;
 }
 
 #tab-mensajes .mensajeria-sidebar,
 #tab-mensajes .mensajeria-chat{
   min-width: 0;
+  min-height: 0;
   display:flex;
   flex-direction:column;
   gap: .85rem;
+}
+
+#tab-mensajes .mensajeria-chat{
+  overflow:hidden;
 }
 
 #tab-mensajes .mensajeria-card{
   overflow:hidden;
 }
 
-#tab-mensajes .mensajeria-chat-card{
+#tab-mensajes .mensajeria-chat-card,
+#tab-mensajes .chat-card{
   flex:1;
-  min-height: 35rem;
+  min-height: 0;
   display:flex;
   flex-direction:column;
+  overflow:hidden;
 }
 
 #tab-mensajes .messages-box{
   flex:1;
-  min-height: 17.5rem;
+  min-height: 0;
   max-height: none;
   height: auto;
   overflow:auto;
@@ -3844,7 +3872,7 @@ body.modal-open{
   }
 
   #tab-mensajes .mensajeria-chat-card{
-    min-height: 28.75rem;
+    min-height: 24rem;
   }
 }
 
@@ -5292,9 +5320,10 @@ color-mix(in srgb, var(--chat-accent, #7CC7A0) 20%, var(--color-surface-3)); }
   padding:2rem 1rem;
 }
 #tab-mensajes .chat-empty-icon{
-  width:3rem;
-  height:3rem;
-  color:#6dbb95;
+  width:3.25rem;
+  height:3.25rem;
+  margin:0 auto .4rem;
+  color:var(--chat-accent, #6dbb95);
 }
 #tab-mensajes .chat-empty-icon svg{ width:100%; height:100%; }
 

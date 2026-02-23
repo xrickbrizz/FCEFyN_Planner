@@ -76,6 +76,9 @@ const acadDayModalList = document.getElementById("acadDayModalList");
 const acadRecordDetail = document.getElementById("acadRecordDetail");
 const btnAcadDayAdd = document.getElementById("btnAcadDayAdd");
 const btnAcadDayClose = document.getElementById("btnAcadDayClose");
+const acadCompletedHistoryModalBg = document.getElementById("acadCompletedHistoryModalBg");
+const acadCompletedHistoryList = document.getElementById("acadCompletedHistoryList");
+const btnAcadCompletedHistoryClose = document.getElementById("btnAcadCompletedHistoryClose");
 
 let studyTimerSeconds = 0;
 let studyTimerInterval = null;
@@ -132,6 +135,7 @@ export function initCalendario(ctx){
   warnMissing("acadDetailList", acadDetailList);
   warnMissing("acadInfoEmpty", acadInfoEmpty);
   warnMissing("acadDayModalBg", acadDayModalBg);
+  warnMissing("acadCompletedHistoryModalBg", acadCompletedHistoryModalBg);
 
   initStudyNav();
   initAcademicoNav();
@@ -1325,6 +1329,18 @@ function initAcademicoNav(){
   if (acadDayModalBg){
     acadDayModalBg.addEventListener("click", (e)=>{ if (e.target.id === "acadDayModalBg") e.target.style.display = "none"; });
   }
+  if (btnAcadCompletedHistoryClose && acadCompletedHistoryModalBg){
+    btnAcadCompletedHistoryClose.addEventListener("click", closeAcadCompletedHistoryModal);
+  }
+  if (acadCompletedHistoryModalBg){
+    acadCompletedHistoryModalBg.addEventListener("click", (e)=>{
+      if (e.target.id === "acadCompletedHistoryModalBg") closeAcadCompletedHistoryModal();
+    });
+  }
+  document.addEventListener("keydown", (event)=>{
+    if (event.key !== "Escape") return;
+    if (acadCompletedHistoryModalBg?.style.display === "flex") closeAcadCompletedHistoryModal();
+  });
 }
 
 export function renderAcadCalendar(){
@@ -1477,7 +1493,7 @@ function countPendingForVisibleMonth(firstDay, lastDay){
 }
 
 async function updateMonthlyPendingList(firstDay, lastDay){
-  const items = buildPendingAcadItems({ referenceDateKey: acadSelectedDateKey || getTodayKey() });
+  const items = buildCompletedAcadItems({ referenceDateKey: acadSelectedDateKey || getTodayKey() });
   renderAcadPendingWidget(items);
 }
 
@@ -2095,6 +2111,66 @@ function buildUpcomingAcadItems({ daysAhead = 14, includeDone = false, reference
   return items;
 }
 
+function buildCompletedAcadItems(){
+  const items = [];
+  if (!academicoCache) return items;
+
+  Object.keys(academicoCache).forEach(storageKey => {
+    const normalizedKey = getDayKey(storageKey);
+    if (!normalizedKey) return;
+
+    const entries = Array.isArray(academicoCache[storageKey]) ? academicoCache[storageKey] : [];
+    entries.forEach((item, index) => {
+      if (!isAcadItemCompleted(item)) return;
+      const minutes = getAcadItemMinutes(item);
+      items.push({ dateKey: normalizedKey, item, index, minutes, storageKey, priority: getAcadPriority(item) });
+    });
+  });
+
+  items.sort((a, b) => {
+    if (a.dateKey !== b.dateKey) return b.dateKey.localeCompare(a.dateKey);
+    const am = a.minutes ?? -1;
+    const bm = b.minutes ?? -1;
+    return bm - am;
+  });
+
+  return items;
+}
+
+function closeAcadCompletedHistoryModal(){
+  if (!acadCompletedHistoryModalBg) return;
+  acadCompletedHistoryModalBg.style.display = "none";
+}
+
+function openAcadCompletedHistoryModal(){
+  if (!acadCompletedHistoryModalBg || !acadCompletedHistoryList) return;
+
+  const completedItems = buildCompletedAcadItems();
+  acadCompletedHistoryList.innerHTML = "";
+
+  if (!completedItems.length){
+    acadCompletedHistoryList.innerHTML = '<div class="small-muted">No hay tareas completadas aún.</div>';
+  } else {
+    completedItems.forEach(({ item, dateKey, minutes }) => {
+      const parts = ymdFromDateKey(dateKey);
+      const dateLabel = parts ? `${pad2(parts.d)}/${pad2(parts.m)}` : "—";
+      const hh = Number.isFinite(minutes) ? pad2(Math.floor(minutes / 60)) : "";
+      const mm = Number.isFinite(minutes) ? pad2(minutes % 60) : "";
+      const hourLabel = hh && mm ? `${hh}:${mm}` : "Sin hora";
+
+      const row = document.createElement("article");
+      row.className = "acad-completed-history-row";
+      row.innerHTML = `
+        <div class="acad-completed-history-title">${escapeHtml(item.titulo || "(sin título)")}</div>
+        <div class="acad-completed-history-meta">${escapeHtml(item.materia || "Materia")} · ${escapeHtml(dateLabel)} · ${escapeHtml(hourLabel)}</div>
+      `;
+      acadCompletedHistoryList.appendChild(row);
+    });
+  }
+
+  acadCompletedHistoryModalBg.style.display = "flex";
+}
+
 function renderAcadPendingWidget(items){
   if (!acadPendingWidget) return;
 
@@ -2103,17 +2179,16 @@ function renderAcadPendingWidget(items){
 
   acadPendingWidget.innerHTML = `
     <div class="widget-title-row">
-      <div class="widget-title">📋 Tareas Pendientes</div>
+      <div class="widget-title">✅ Tareas completadas</div>
       <span class="badge-soft">${total} total</span>
     </div>
-    ${visibleItems.length ? '<div class="acad-pending-list"></div>' : '<div class="small-muted">No hay tareas pendientes.</div>'}
+    ${visibleItems.length ? '<div class="acad-pending-list"></div>' : '<div class="small-muted">No hay tareas completadas aún.</div>'}
     <button class="widget-link" type="button" id="acadCompletedLink">Ver todas las tareas completadas →</button>
   `;
 
   const link = acadPendingWidget.querySelector("#acadCompletedLink");
   link?.addEventListener("click", ()=>{
-    const doneItems = buildUpcomingAcadItems({ daysAhead: 45, includeDone: true }).filter(({ item })=> isAcadItemCompleted(item));
-    CTX?.notifySuccess?.(`Tareas completadas en vista rápida: ${doneItems.length}`);
+    openAcadCompletedHistoryModal();
   });
 
   const list = acadPendingWidget.querySelector(".acad-pending-list");

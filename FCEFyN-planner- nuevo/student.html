@@ -258,8 +258,8 @@
           <div class="acad-action-group">
             <button class="btn-dark" id="acadNewEntry" type="button">Nuevo registro</button>
           </div>
-          <section id="acadPendingWidget" class="widget-card"></section>
           <section id="acadUpcomingWidget" class="widget-card"></section>
+          <section id="acadPendingWidget" class="widget-card"></section>
         </div>  
       </div>
     </div>
@@ -1032,6 +1032,19 @@
       <div class="acad-day-modal-actions">
         <button class="btn-gray btn-small" id="btnAcadDayClose">Cerrar</button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="acadCompletedHistoryModalBg">
+    <div class="modal">
+      <div class="acad-day-modal-top">
+        <div>
+          <h3 class="modal-title">Tareas completadas</h3>
+          <div class="small-muted">Historial completo</div>
+        </div>
+        <button class="modal-close" id="btnAcadCompletedHistoryClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="acad-detail-list acad-completed-history-list" id="acadCompletedHistoryList"></div>
     </div>
   </div>
 
