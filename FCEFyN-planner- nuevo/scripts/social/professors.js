@@ -219,6 +219,54 @@ function normalizedSubject(value = ""){
   return normalize(String(value || "").replaceAll("_", " ").replaceAll("-", " "));
 }
 
+function normalizeSubjectFilterValue(value = ""){
+  return normalize(String(value || "").replaceAll("_", "-").replaceAll(" ", "-").replace(/-+/g, "-")).replace(/^-|-$/g, "");
+}
+
+function romanToArabicSuffix(value = ""){
+  return String(value || "").replace(/(?:^|\s)(i|ii|iii|iv|v|vi|vii|viii|ix|x)(?=$|\s)/gi, (match, roman) => {
+    const map = { i:"1", ii:"2", iii:"3", iv:"4", v:"5", vi:"6", vii:"7", viii:"8", ix:"9", x:"10" };
+    const parsed = map[String(roman || "").toLowerCase()];
+    return parsed ? match.replace(roman, parsed) : match;
+  });
+}
+
+function buildSubjectAliases(value = ""){
+  const raw = String(value || "").trim();
+  if (!raw) return [];
+
+  const aliases = new Set();
+  const withArabic = romanToArabicSuffix(raw);
+  const variants = [raw, withArabic];
+
+  variants.forEach((candidate) => {
+    const text = String(candidate || "").trim();
+    if (!text) return;
+    aliases.add(normalizedSubject(text));
+    aliases.add(normalizeSubjectFilterValue(text));
+    aliases.add(normalizeSubjectFilterValue(normalizedSubject(text)));
+  });
+
+  return [...aliases].filter(Boolean);
+}
+
+function getCanonicalSubjectValue(subject = {}){
+  const canonical = subject?.subjectSlug || subject?.slug || subject?.id || subject?.nombre || subject?.name || "";
+  return normalizeSubjectFilterValue(canonical);
+}
+
+function matchesProfessorSubjectFilter(professor, selectedSubject = ""){
+  if (!selectedSubject) return true;
+  const selectedAliases = new Set(buildSubjectAliases(selectedSubject));
+  if (!selectedAliases.size) return false;
+
+  const subjects = Array.isArray(professor?.subjects) ? professor.subjects : [];
+  return subjects.some((subject) => {
+    const subjectAliases = buildSubjectAliases(subject);
+    return subjectAliases.some((alias) => selectedAliases.has(alias));
+  });
+}
+
 async function loadCareerSubjects(){
   const currentProfile = CTX?.AppState?.userProfile || CTX?.getUserProfile?.() || {};
   const slug = currentProfile?.careerSlug || "";
@@ -228,15 +276,15 @@ async function loadCareerSubjects(){
   }
   try{
     const { subjects } = await getPlanWithSubjects(slug);
-    const subjectNames = (subjects || [])
-      .map((subject) => subject?.nombre || subject?.name || subject?.id || "")
-      .filter(Boolean);
+
     const unique = new Map();
-    subjectNames.forEach((subject) => {
-      const key = normalizedSubject(subject);
+    (subjects || []).forEach((subject) => {
+      const label = formatSubjectLabel(subject?.nombre || subject?.name || subject?.subjectSlug || subject?.slug || subject?.id || "");
+      const key = getCanonicalSubjectValue(subject);
       if (!key || unique.has(key)) return;
-      unique.set(key, formatSubjectLabel(subject));
+      unique.set(key, label);
     });
+
     state.subjectsForCareer = [...unique.entries()].map(([value, label]) => ({ value, label }));
   }catch(error){
     console.error("[Profesores] No se pudieron cargar materias del plan", error);
@@ -285,10 +333,7 @@ function applySearchFilter(items){
 
 function applySubjectFilter(items){
   if (!state.filters.subject) return items;
-  return items.filter((professor) => {
-    const subjects = Array.isArray(professor.subjects) ? professor.subjects : [];
-    return subjects.some((subject) => normalizedSubject(subject) === state.filters.subject);
-  });
+  return items.filter((professor) => matchesProfessorSubjectFilter(professor, state.filters.subject));
 }
 
 function paginate(items){
