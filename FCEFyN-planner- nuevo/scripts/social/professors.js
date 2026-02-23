@@ -219,6 +219,63 @@ function normalizedSubject(value = ""){
   return normalize(String(value || "").replaceAll("_", " ").replaceAll("-", " "));
 }
 
+function normalizeSubjectFilterValue(value = ""){
+  return normalize(String(value || "").replaceAll("_", "-").replaceAll(" ", "-").replace(/-+/g, "-")).replace(/^-|-$/g, "");
+}
+
+function looksLikeSlug(value = ""){
+  const raw = String(value || "").trim();
+  if (!raw) return false;
+  return /^[a-z0-9]+(?:[-_][a-z0-9]+)+$/i.test(raw);
+}
+
+function romanToArabicSuffix(value = ""){
+  return String(value || "").replace(/(^|[\s_-])(i|ii|iii|iv|v|vi|vii|viii|ix|x)(?=$|[\s_-])/gi, (match, prefix, roman) => {
+    const map = { i:"1", ii:"2", iii:"3", iv:"4", v:"5", vi:"6", vii:"7", viii:"8", ix:"9", x:"10" };
+    const parsed = map[String(roman || "").toLowerCase()];
+    return parsed ? `${prefix}${parsed}` : match;
+  });
+}
+
+function buildSubjectAliases(value = ""){
+  const raw = String(value || "").trim();
+  if (!raw) return [];
+
+  const aliases = new Set();
+  const withArabic = romanToArabicSuffix(raw);
+  const variants = [raw, withArabic];
+
+  variants.forEach((candidate) => {
+    const text = String(candidate || "").trim();
+    if (!text) return;
+    aliases.add(normalizedSubject(text));
+    aliases.add(normalizeSubjectFilterValue(text));
+    aliases.add(normalizeSubjectFilterValue(normalizedSubject(text)));
+  });
+
+  return [...aliases].filter(Boolean);
+}
+
+function getCanonicalSubjectValue(subject = {}){
+  const slug = subject?.subjectSlug || subject?.slug || "";
+  const byName = subject?.nombre || subject?.name || "";
+  const safeId = looksLikeSlug(subject?.id) ? subject.id : "";
+  const canonical = slug || byName || safeId || subject?.id || "";
+  return normalizeSubjectFilterValue(canonical);
+}
+
+function matchesProfessorSubjectFilter(professor, selectedSubject = ""){
+  if (!selectedSubject) return true;
+  const selectedAliases = new Set(buildSubjectAliases(selectedSubject));
+  if (!selectedAliases.size) return false;
+
+  const subjects = Array.isArray(professor?.subjects) ? professor.subjects : [];
+  return subjects.some((subject) => {
+    const subjectAliases = buildSubjectAliases(subject);
+    return subjectAliases.some((alias) => selectedAliases.has(alias));
+  });
+}
+
 async function loadCareerSubjects(){
   const currentProfile = CTX?.AppState?.userProfile || CTX?.getUserProfile?.() || {};
   const slug = currentProfile?.careerSlug || "";
@@ -228,15 +285,15 @@ async function loadCareerSubjects(){
   }
   try{
     const { subjects } = await getPlanWithSubjects(slug);
-    const subjectNames = (subjects || [])
-      .map((subject) => subject?.nombre || subject?.name || subject?.id || "")
-      .filter(Boolean);
+
     const unique = new Map();
-    subjectNames.forEach((subject) => {
-      const key = normalizedSubject(subject);
+    (subjects || []).forEach((subject) => {
+      const label = formatSubjectLabel(subject?.nombre || subject?.name || subject?.subjectSlug || subject?.slug || subject?.id || "");
+      const key = getCanonicalSubjectValue(subject);
       if (!key || unique.has(key)) return;
-      unique.set(key, formatSubjectLabel(subject));
+      unique.set(key, label);
     });
+
     state.subjectsForCareer = [...unique.entries()].map(([value, label]) => ({ value, label }));
   }catch(error){
     console.error("[Profesores] No se pudieron cargar materias del plan", error);
@@ -285,10 +342,19 @@ function applySearchFilter(items){
 
 function applySubjectFilter(items){
   if (!state.filters.subject) return items;
-  return items.filter((professor) => {
-    const subjects = Array.isArray(professor.subjects) ? professor.subjects : [];
-    return subjects.some((subject) => normalizedSubject(subject) === state.filters.subject);
-  });
+  const selectedSubject = state.filters.subject;
+  const selectedAliases = buildSubjectAliases(selectedSubject);
+  const filtered = items.filter((professor) => matchesProfessorSubjectFilter(professor, selectedSubject));
+  const sampleSubjects = filtered
+    .slice(0, 3)
+    .map((professor) => ({ id: professor.id, subjects: (professor.subjects || []).slice(0, 4) }));
+
+  console.debug("[ProfFilter] selected subject value:", selectedSubject);
+  console.debug("[ProfFilter] selected aliases:", selectedAliases);
+  console.debug("[ProfFilter] count before/after:", { before: items.length, after: filtered.length });
+  console.debug("[ProfFilter] filtered subjects sample:", sampleSubjects);
+
+  return filtered;
 }
 
 function paginate(items){
