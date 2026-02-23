@@ -4013,6 +4013,13 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
   gap: .65rem;
 }
 
+#tab-perfil.profile-page .profile-actions-buttons{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  flex-wrap:wrap;
+}
+
 #tab-perfil.profile-page #btnProfileSave{
   width: 100%;
   min-height: 3.125rem;
@@ -4023,6 +4030,11 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
   font-size: 1rem;
   font-weight:700;
   box-shadow:var(--shadow-btn);
+}
+
+#tab-perfil.profile-page .profile-actions-buttons #btnPasswordReset{
+  min-height: 3.125rem;
+  padding-inline:1.4rem;
 }
 
 #tab-perfil.profile-page #btnProfileSave:hover{
@@ -4054,7 +4066,6 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
   border-color:#ff4d4d;
   color:#fff;
 }
-#tab-perfil.profile-page #btnPasswordReset,
 #tab-perfil.profile-page #btnProfileLogout{
   flex:1 1 12rem;
 }
@@ -4100,6 +4111,11 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-grid .form-group label
     width: auto;
     min-width: 15rem;
     padding-inline:1.8rem;
+  }
+
+  #tab-perfil.profile-page .profile-actions-buttons #btnPasswordReset{
+    width:auto;
+    min-width: 13.5rem;
   }
 }
 

@@ -665,7 +665,6 @@
               <div class="profile-header-main">
                 <img id="profileAvatarImg" alt="Foto de perfil" />
                 <div class="profile-account-actions">
-                  <button class="btn-outline btn-small" id="btnPasswordReset" type="button">Cambiar contraseña</button>
                   <button class="btn-outline btn-small" id="btnProfileLogout" type="button" onclick="window.logout && window.logout()">Cerrar sesión</button>
                 </div>
                 <div class="profile-status" id="passwordStatus"></div>
@@ -726,7 +725,10 @@
           </section>
 
           <div class="profile-actions">
-            <button class="btn-blue" id="btnProfileSave" type="button">Guardar cambios</button>
+            <div class="profile-actions-buttons">
+              <button class="btn-blue" id="btnProfileSave" type="button">Guardar cambios</button>
+              <button class="btn-outline" id="btnPasswordReset" type="button">Cambiar contraseña</button>
+            </div>
             <div class="profile-status" id="profileStatus"></div>
           </div>
         </section>
