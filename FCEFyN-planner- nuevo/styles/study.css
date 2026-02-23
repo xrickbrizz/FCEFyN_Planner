@@ -2177,6 +2177,10 @@ body[data-theme="light"] .event{
       font-size: .72rem;
       opacity:.9;
       color:color-mix(in srgb, var(--text) 82%, var(--muted));
+      line-height:1.25;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
 .calendar-event[data-color="0"],
@@ -2649,6 +2653,7 @@ body[data-theme="light"] .event{
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:.6rem;
       margin-bottom:.5rem;
     }
     .planner-card-title{
@@ -2657,6 +2662,21 @@ body[data-theme="light"] .event{
       margin:0;
       display:flex;
       align-items:center;
+      min-width:0;
+      flex:1;
+    }
+    .planner-commission-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.15rem .5rem;
+      border-radius:999px;
+      font-size:.74rem;
+      font-weight:700;
+      color:#1f3047;
+      background:#edf3ff;
+      border:1px solid #d2def6;
+      white-space:nowrap;
     }
     .section-card-layout{
       display:grid;

@@ -304,6 +304,42 @@ function getSubjectNameFromSection(section){
   return formatVisibleSubjectLabel(slug);
 }
 
+function cleanCommissionToken(rawValue){
+  const raw = String(rawValue || "").trim();
+  if (!raw) return "";
+
+  const withoutYear = raw.replace(/(?:[-_\s]|^)(?:19|20)\d{2}$/g, "").trim();
+  const readableSource = withoutYear || raw;
+  const decimalMatch = readableSource.match(/(?:^|[-_\s])(\d+(?:\.\d+)+)(?:$|[-_\s])/);
+  if (decimalMatch?.[1]) return decimalMatch[1];
+
+  const compact = readableSource.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  if (/^[A-Za-z]\d+$/.test(compact) || /^\d+[A-Za-z]$/.test(compact)) return compact;
+  if (/^[A-Za-z0-9.]{1,12}$/.test(compact) && !/^(?:19|20)\d{2}$/.test(compact)) return compact;
+  return "";
+}
+
+function getReadableCommissionNumber(section){
+  const fromCommission = cleanCommissionToken(section?.commission);
+  if (fromCommission) return fromCommission;
+
+  const fromId = cleanCommissionToken(section?.id);
+  if (fromId) return fromId;
+
+  const fallback = String(section?.commission || "")
+    .replace(/(?:[-_\s]|^)(?:19|20)\d{2}$/g, "")
+    .replace(/^[-_\s]+|[-_\s]+$/g, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return fallback;
+}
+
+function getReadableCommissionLabel(section){
+  const number = getReadableCommissionNumber(section);
+  return number ? `Comisión ${number}` : "";
+}
+
 function dayNameToKey(dayName){
   const n = CTX.normalizeStr(dayName);
   if (n.startsWith("lun")) return "lunes";
@@ -338,15 +374,7 @@ function escapeHtml(value){
 }
 
 function formatAcademicTitle(section){
-  const subjectName = formatVisibleSubjectLabel(getSubjectNameFromSection(section) || "Comisión");
-  const commissionRaw = String(section?.commission || "").trim();
-  if (!commissionRaw) return subjectName;
-  const commissionLabel = formatVisibleSubjectLabel(commissionRaw);
-  const sameLabel = norm(subjectName) === norm(commissionLabel);
-  if (sameLabel) return subjectName;
-  const hasReadableCommission = commissionRaw.length <= 18;
-  if (!hasReadableCommission) return subjectName;
-  return `${subjectName} - ${commissionLabel}`;
+  return formatVisibleSubjectLabel(getSubjectNameFromSection(section) || "Comisión");
 }
 
 function buildScheduleTableRows(section){
@@ -388,7 +416,7 @@ function buildWeeklyDataFromSectionIds(sectionIds){
     const subject = getSubjectNameFromSection(sec) || "(Sin materia)";
     const subjectSlug = getSectionSubjectSlug(sec);
     const colorIndex = getSectionColorIndex(sec.id) ?? ensureColorForSubject(subjectSlug);
-    const commission = sec.commission ? `Comisión ${sec.commission}` : "";
+    const commission = getReadableCommissionLabel(sec);
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
@@ -416,7 +444,7 @@ function getConflictInfo(candidateSection){
       const candidateSubject = getSubjectNameFromSection(candidateSection);
       const selectedSubject = getSubjectNameFromSection(s);
       if (candidateSubject && CTX.normalizeStr(selectedSubject) === CTX.normalizeStr(candidateSubject)){
-        return { blocked: true, reason: `Ya seleccionaste otra comisión de ${selectedSubject}.` };
+        return { blocked: true, reason: "Ya seleccionaste otra comisión de esta materia." };
       }
       for (const sd of (s.days || [])){
         if (dayNameToKey(sd.day) !== dayKey) continue;
@@ -1159,6 +1187,7 @@ function renderSectionsList(){
     if (Number.isFinite(colorIndex)) card.dataset.color = String(colorIndex);
     const teachers = getSectionTeachers(sec);
     const teacherLine = teachers.length ? teachers.join(" - ") : "Sin asignar";
+    const commissionLabel = getReadableCommissionLabel(sec);
     const colorBadge = Number.isFinite(colorIndex)
       ? `<span class="subject-pill" aria-label="Color de materia">●</span>`
       : "";
@@ -1166,6 +1195,7 @@ function renderSectionsList(){
       <div class="section-academic-info">
         <div class="section-card-header planner-card-header">
           <h4 class="section-title planner-card-title">${colorBadge}${escapeHtml(formatAcademicTitle(sec))}</h4>
+          ${commissionLabel ? `<span class="planner-commission-chip">${escapeHtml(commissionLabel)}</span>` : ""}
         </div>
         <div class="section-sub"><strong>Docentes:</strong> ${escapeHtml(teacherLine)}</div>
         <div class="section-schedule-wrap planner-card-body">
