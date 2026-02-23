@@ -5863,3 +5863,34 @@ body[data-theme="dark"] .chat-confirm-accept.danger{
     overflow:visible;
   }
 }
+
+/* FIX FINAL - Agenda filtros (dark mode) */
+body.dark-mode .agenda-filters-toolbar .agenda-filter-field select,
+body[data-theme="dark"] .agenda-filters-toolbar .agenda-filter-field select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+
+  background-color: #0f172a !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7 5 5 5-5' stroke='%23cbd5e1' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 16px 16px !important;
+
+  color: #e5edf7 !important;
+  border-color: rgba(148, 163, 184, .35) !important;
+}
+
+/* Evita que el focus/hover vuelva a poner fondo blanco */
+body.dark-mode .agenda-filters-toolbar .agenda-filter-field select:hover,
+body.dark-mode .agenda-filters-toolbar .agenda-filter-field select:focus,
+body.dark-mode .agenda-filters-toolbar .agenda-filter-field select:focus-visible,
+body[data-theme="dark"] .agenda-filters-toolbar .agenda-filter-field select:hover,
+body[data-theme="dark"] .agenda-filters-toolbar .agenda-filter-field select:focus,
+body[data-theme="dark"] .agenda-filters-toolbar .agenda-filter-field select:focus-visible {
+  background-color: #0f172a !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 16px 16px !important;
+  color: #f8fbff !important;
+}
