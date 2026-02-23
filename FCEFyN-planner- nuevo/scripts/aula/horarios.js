@@ -33,6 +33,17 @@ const AGENDA_PALETTE = [
 ];
 
 function pad2(n){ return String(n).padStart(2, "0"); }
+function formatVisibleSubjectLabel(value){
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const spaced = raw.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  const hasUppercase = /[A-ZÁÉÍÓÚÑÜ]/.test(spaced);
+  if (hasUppercase) return spaced;
+  return spaced
+    .split(" ")
+    .map((word) => word ? word.charAt(0).toUpperCase() + word.slice(1) : "")
+    .join(" ");
+}
 function timeToMinutes(t){
   const parts = (t || "").split(":").map(Number);
   if (parts.length !== 2) return NaN;
@@ -146,7 +157,7 @@ function renderAgendaGridInto(grid, data, allowEdit){
       block.style.height = `${(endM - startM) * pxPerMinute}px`;
 
       const title = document.createElement("strong");
-      title.textContent = item.materia || "Materia";
+      title.textContent = formatVisibleSubjectLabel(item.materia) || "Materia";
       const meta = document.createElement("small");
       meta.textContent = `${item.inicio || "—"} – ${item.fin || "—"}${item.aula ? ` · ${item.aula}` : ""}`;
       block.appendChild(title);

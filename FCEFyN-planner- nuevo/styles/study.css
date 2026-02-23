@@ -1962,28 +1962,56 @@ body[data-theme="light"] .event{
     }
     .agenda-filters-toolbar{
       display:grid;
-      grid-template-columns:repeat(3, minmax(160px, 260px));
-      gap:.65rem;
+      grid-template-columns:repeat(3, minmax(180px, 300px));
+      gap:.85rem;
       align-items:end;
       justify-content:flex-start;
       min-width:0;
+      padding:.4rem .45rem;
+      border-radius:14px;
+      background:color-mix(in srgb, var(--surface-94) 88%, var(--color-white) 12%);
+      border:1px solid color-mix(in srgb, var(--border-75) 78%, var(--accent-40) 22%);
     }
     .agenda-filter-field{
       display:flex;
       flex-direction:column;
-      gap:.25rem;
+      gap:.34rem;
       min-width:0;
     }
     .agenda-filter-field > span{
-      font-size:.76rem;
-      font-weight:700;
-      color:var(--text-soft);
-      letter-spacing:.02em;
+      font-size:.68rem;
+      font-weight:800;
+      color:var(--text-strong);
+      letter-spacing:.06em;
       text-transform:uppercase;
+      padding-left:.1rem;
     }
     .agenda-filter-field select{
       width:100%;
       min-width:0;
+      border-radius:12px;
+      border:1px solid color-mix(in srgb, var(--accent-70) 38%, var(--border-75) 62%);
+      background-color:var(--color-surface-3);
+      min-height:2.35rem;
+      padding:.42rem 2.1rem .42rem .72rem;
+      font-weight:600;
+      color:var(--text-strong);
+      appearance:none;
+      -webkit-appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23146b60' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right .58rem center;
+      background-size:1.05rem;
+      transition:border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+    }
+    .agenda-filter-field select:hover{
+      border-color:color-mix(in srgb, var(--accent-80) 58%, var(--border-75) 42%);
+      background-color:var(--surface-96);
+    }
+    .agenda-filter-field select:focus-visible{
+      outline:none;
+      border-color:var(--accent-80);
+      box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-18) 70%, transparent);
     }
     .agenda-header-row{
       display:flex;
@@ -2045,6 +2073,22 @@ body[data-theme="light"] .event{
       .agenda-filters-toolbar{
         grid-template-columns:repeat(2, minmax(160px, 1fr));
       }
+    }
+    body.dark-mode .agenda-filters-toolbar,
+    body[data-theme="dark"] .agenda-filters-toolbar{
+      background:color-mix(in srgb, var(--inverse-03) 84%, var(--surface-9) 16%);
+      border-color:var(--inverse-10);
+    }
+    body.dark-mode .agenda-filter-field > span,
+    body[data-theme="dark"] .agenda-filter-field > span{
+      color:var(--color-text);
+    }
+    body.dark-mode .agenda-filter-field select,
+    body[data-theme="dark"] .agenda-filter-field select{
+      border-color:var(--inverse-10);
+      background-color:var(--surface-9);
+      color:var(--color-text);
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23c3d2e6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     }
     @media (max-width:760px){
       .agenda-filters-toolbar{
@@ -4603,6 +4647,37 @@ body[data-theme="light"] .planner-modal{
   transform:none;
 }
 
+body.light-mode .btn-plan-apply:hover,
+body[data-theme="light"] .btn-plan-apply:hover,
+body.light-mode .btn-plan-apply:focus-visible,
+body[data-theme="light"] .btn-plan-apply:focus-visible{
+  background:color-mix(in srgb, var(--success, #146b60) 82%, var(--black) 18%);
+  color:#fff;
+}
+
+body.light-mode #plannerModalBg .planner-modal-footer #btnPlannerCancel:hover,
+body[data-theme="light"] #plannerModalBg .planner-modal-footer #btnPlannerCancel:hover,
+body.light-mode #presetToAgendaModalBg #btnPresetApplyCancel:hover,
+body[data-theme="light"] #presetToAgendaModalBg #btnPresetApplyCancel:hover{
+  background:var(--surface-92);
+  color:var(--text-strong);
+  border-color:var(--border-45);
+  filter:none;
+}
+body.light-mode #plannerModalBg .planner-modal-footer #btnPlannerCancel:focus-visible,
+body[data-theme="light"] #plannerModalBg .planner-modal-footer #btnPlannerCancel:focus-visible,
+body.light-mode #plannerModalBg .planner-modal-footer #btnPlannerApplyToAgenda:focus-visible,
+body[data-theme="light"] #plannerModalBg .planner-modal-footer #btnPlannerApplyToAgenda:focus-visible,
+body.light-mode #presetToAgendaModalBg #btnPresetApplyCancel:focus-visible,
+body[data-theme="light"] #presetToAgendaModalBg #btnPresetApplyCancel:focus-visible{
+  outline:2px solid var(--accent-70);
+  outline-offset:2px;
+}
+body.light-mode #plannerModalBg .planner-modal-footer #btnPlannerApplyToAgenda:hover,
+body[data-theme="light"] #plannerModalBg .planner-modal-footer #btnPlannerApplyToAgenda:hover{
+  color:#fff;
+}
+
 @keyframes plannerModalIn{
   from{ opacity:0; transform:translateY(8px) scale(.985); }
   to{ opacity:1; transform:translateY(0) scale(1); }
@@ -4813,6 +4888,14 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-section legend{
 .subjects-modern-header--row{ display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
 .subjects-active-total{ text-align:right; text-transform:uppercase; font-size:.64rem; color:var(--color-muted-2); letter-spacing:.04em; }
 .subjects-active-total strong{ display:block; font-size:1.2rem; color:var(--accent-90); line-height:1.1; }
+body.light-mode .subjects-active-total,
+body[data-theme="light"] .subjects-active-total{
+  color:var(--black);
+}
+body.light-mode .subjects-active-total strong,
+body[data-theme="light"] .subjects-active-total strong{
+  color:var(--success, #146b60);
+}
 .subjects-active-list{ display:flex; flex-direction:column; gap:.55rem; }
 .subject-modern-row{
   display:grid; grid-template-columns:6px 1fr auto; gap:.7rem; align-items:center;

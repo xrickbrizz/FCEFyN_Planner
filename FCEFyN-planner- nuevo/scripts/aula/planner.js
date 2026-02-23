@@ -277,19 +277,31 @@ function getSectionSubjectSlug(section){
   return CTX.normalizeStr(rawSlug);
 }
 
+function formatVisibleSubjectLabel(value){
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const spaced = raw.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  const hasUppercase = /[A-ZÁÉÍÓÚÑÜ]/.test(spaced);
+  if (hasUppercase) return spaced;
+  return spaced
+    .split(" ")
+    .map((word) => word ? word.charAt(0).toUpperCase() + word.slice(1) : "")
+    .join(" ");
+}
+
 function getSubjectNameFromSection(section){
-  if (section.subject) return section.subject;
+  if (section.subject) return formatVisibleSubjectLabel(section.subject);
   const slug = section.subjectSlug;
   if (!slug) return "";
   const normalize = CTX.normalizeStr;
 
   const careerMatch = (CTX.aulaState.careerSubjects || []).find((item) => normalize(item?.slug || item?.id || item?.nombre || item?.name || "") === slug);
-  if (careerMatch) return careerMatch.nombre || careerMatch.name || slug;
+  if (careerMatch) return careerMatch.nombre || careerMatch.name || formatVisibleSubjectLabel(slug);
 
   const customMatch = (CTX.aulaState.subjects || []).find((item) => normalize(item?.slug || "") === slug);
-  if (customMatch) return customMatch.name || slug;
+  if (customMatch) return customMatch.name || formatVisibleSubjectLabel(slug);
 
-  return slug;
+  return formatVisibleSubjectLabel(slug);
 }
 
 function dayNameToKey(dayName){
@@ -326,12 +338,15 @@ function escapeHtml(value){
 }
 
 function formatAcademicTitle(section){
-  const subjectName = getSubjectNameFromSection(section) || "Comisión";
-  const normalizedSubject = subjectName.toUpperCase();
+  const subjectName = formatVisibleSubjectLabel(getSubjectNameFromSection(section) || "Comisión");
   const commissionRaw = String(section?.commission || "").trim();
-  const hasReadableCommission = commissionRaw.length <= 12 && !commissionRaw.includes("-");
-  if (!hasReadableCommission) return normalizedSubject;
-  return `${normalizedSubject} - ${commissionRaw.toUpperCase()}`;
+  if (!commissionRaw) return subjectName;
+  const commissionLabel = formatVisibleSubjectLabel(commissionRaw);
+  const sameLabel = norm(subjectName) === norm(commissionLabel);
+  if (sameLabel) return subjectName;
+  const hasReadableCommission = commissionRaw.length <= 18;
+  if (!hasReadableCommission) return subjectName;
+  return `${subjectName} - ${commissionLabel}`;
 }
 
 function buildScheduleTableRows(section){
@@ -1116,7 +1131,7 @@ function renderSectionsList(){
 
   if (!allSections.length){
     const careerSlug = getCareerSlug() || "(sin carrera)";
-    list.innerHTML = `<div class="small-muted">No hay comisiones cargadas para ${escapeHtml(careerSlug)}.</div>`;
+    list.innerHTML = `<div class="small-muted">No hay comisiones cargadas para ${escapeHtml(formatVisibleSubjectLabel(careerSlug))}.</div>`;
     const retry = document.createElement("button");
     retry.type = "button";
     retry.className = "btn-outline btn-small";
