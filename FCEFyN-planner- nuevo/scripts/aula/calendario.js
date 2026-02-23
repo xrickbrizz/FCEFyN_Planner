@@ -41,6 +41,7 @@ const studyTimerReset = document.getElementById("studyTimerReset");
 const studyTimerRegister = document.getElementById("studyTimerRegister");
 const studyTimerStatus = document.getElementById("studyTimerStatus");
 const studyStreakValue = document.getElementById("studyStreakValue");
+const studyStreakCard = document.getElementById("studyStreakCard");
 const studyTodayHoursValue = document.getElementById("studyTodayHoursValue");
 const studyWeeklyGoalValue = document.getElementById("studyWeeklyGoalValue");
 const studyWeeklyGoalCard = document.getElementById("studyWeeklyGoalCard");
@@ -49,6 +50,9 @@ const studyWeeklyGoalHoursInput = document.getElementById("studyWeeklyGoalHoursI
 const btnStudyWeeklyGoalClose = document.getElementById("btnStudyWeeklyGoalClose");
 const btnStudyWeeklyGoalCancel = document.getElementById("btnStudyWeeklyGoalCancel");
 const btnStudyWeeklyGoalSave = document.getElementById("btnStudyWeeklyGoalSave");
+const studyStreakInfoModalBg = document.getElementById("studyStreakInfoModalBg");
+const btnStudyStreakInfoClose = document.getElementById("btnStudyStreakInfoClose");
+const btnStudyStreakInfoOk = document.getElementById("btnStudyStreakInfoOk");
 const studyRecentLogsBody = document.getElementById("studyRecentLogsBody");
 const studyRecentLogsViewAll = document.getElementById("studyRecentLogsViewAll");
 
@@ -86,6 +90,7 @@ let studyTimerState = "idle";
 let studyWeeklyGoalHours = 10;
 let unsubscribeStudySubjects = null;
 let didBindStudySubjectsPlanChanged = false;
+let didBindStudyStreakInfoUI = false;
 
 const getSubjects = () => {
   if (!CTX) return [];
@@ -141,6 +146,7 @@ export function initCalendario(ctx){
   initAcademicoNav();
   initStudyModalUI();
   initStudyWeeklyGoalUI();
+  initStudyStreakInfoUI();
   initStudyTimer();
   initAcademicoModalUI();
 
@@ -1092,6 +1098,44 @@ function initStudyWeeklyGoalUI(){
       closeModal();
     });
   }
+}
+
+function initStudyStreakInfoUI(){
+  if (didBindStudyStreakInfoUI) return;
+  didBindStudyStreakInfoUI = true;
+
+  const openModal = () => {
+    if (!studyStreakInfoModalBg) return;
+    studyStreakInfoModalBg.style.display = "flex";
+    studyStreakInfoModalBg.setAttribute("aria-hidden", "false");
+    btnStudyStreakInfoClose?.focus();
+  };
+
+  const closeModal = () => {
+    if (!studyStreakInfoModalBg) return;
+    studyStreakInfoModalBg.style.display = "none";
+    studyStreakInfoModalBg.setAttribute("aria-hidden", "true");
+  };
+
+  studyStreakCard?.addEventListener("click", openModal);
+  studyStreakCard?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " "){
+      event.preventDefault();
+      openModal();
+    }
+  });
+
+  btnStudyStreakInfoClose?.addEventListener("click", closeModal);
+  btnStudyStreakInfoOk?.addEventListener("click", closeModal);
+
+  studyStreakInfoModalBg?.addEventListener("click", (event) => {
+    if (event.target?.id === "studyStreakInfoModalBg") closeModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (studyStreakInfoModalBg?.style.display === "flex") closeModal();
+  });
 }
 
 function initStudyTimer(){

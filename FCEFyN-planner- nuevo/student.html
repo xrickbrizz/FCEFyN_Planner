@@ -165,7 +165,7 @@
               <div class="study-stat-label">🎯 Meta semanal</div>
               <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
             </article>
-            <article class="study-stat-card study-stat-card--streak" aria-label="Racha de estudio">
+            <article class="study-stat-card study-stat-card--streak study-stat-card-clickable" id="studyStreakCard" role="button" tabindex="0" aria-label="Ver información sobre la racha de estudio">
               <div class="study-stat-label">🔥 Racha</div>
               <div class="study-stat-value" id="studyStreakValue">0 días</div>
             </article>
@@ -1076,6 +1076,22 @@
       <div class="modal-footer">
         <button class="btn-outline" id="btnStudyWeeklyGoalCancel" type="button">Cancelar</button>
         <button class="btn-blue btn-large" id="btnStudyWeeklyGoalSave" type="button">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="studyStreakInfoModalBg" aria-hidden="true">
+    <div class="modal modal-planner" role="dialog" aria-modal="true" aria-labelledby="studyStreakInfoModalTitle">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studyStreakInfoModalTitle">Sobre la racha</h3>
+        <button class="modal-close" id="btnStudyStreakInfoClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>La racha se calcula por días consecutivos con actividad de estudio.</p>
+        <p>Para que un día cuente, debés registrar <strong>mínimo 30 minutos</strong>.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-dark" id="btnStudyStreakInfoOk" type="button">Entendido</button>
       </div>
     </div>
   </div>

@@ -129,6 +129,12 @@ function semesterTagClass(semester){
   return `sem-${safeSem}`;
 }
 
+function formatCatalogSemesterLabel(semester){
+  const sem = Number.isFinite(Number(semester)) ? Number(semester) : 1;
+  if (sem <= 1) return "INGRESO";
+  return `SEMESTRE ${sem - 1}`;
+}
+
 const themeColor = (varName, fallback) => {
   const value = getComputedStyle(document.documentElement).getPropertyValue(varName);
   return (value || "").trim() || fallback;
@@ -429,7 +435,7 @@ function renderCatalog(){
 
     const tag = document.createElement("span");
     tag.className = `catalog-semester-tag ${semesterTagClass(semester)}`;
-    tag.textContent = `SEMESTRE ${semester}`;
+    tag.textContent = formatCatalogSemesterLabel(semester);
 
     const summary = document.createElement("span");
     summary.className = "catalog-semester-summary";
