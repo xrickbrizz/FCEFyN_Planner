@@ -20,16 +20,28 @@ const CAREER_ALIASES = {
   industrial: "industrial",
   ingenieria_industrial: "industrial",
   "ingenieria industrial": "industrial",
+  ing_industrial: "industrial",
+  "ing industrial": "industrial",
   civil: "civil",
+  ing_civil: "civil",
   quimica: "quimica",
+  ing_quimica: "quimica",
   mecanica: "mecanica",
+  ing_mecanica: "mecanica",
   computacion: "computacion",
+  ing_computacion: "computacion",
   electronica: "electronica",
+  ing_electronica: "electronica",
   electromecanica: "electromecanica",
+  ing_electromecanica: "electromecanica",
   aeroespacial: "aeroespacial",
+  ing_aeroespacial: "aeroespacial",
   ambiental: "ambiental",
+  ing_ambiental: "ambiental",
   biomedica: "biomedica",
-  agrimensura: "agrimensura"
+  ing_biomedica: "biomedica",
+  agrimensura: "agrimensura",
+  ing_agrimensura: "agrimensura"
 };
 
 function hasValue(value){
@@ -46,11 +58,24 @@ export function normalizeCareerSlug(raw){
     .trim()
     .replace(/[\s-]+/g, "_");
 
+  const normalizedVariants = [normalized, normalized.replace(/^ingenieria_/, "ing_")];
   const fromCorrelativas = resolvePlanSlug(normalized.replace(/_/g, "-"));
-  if (fromCorrelativas) return fromCorrelativas;
+  if (fromCorrelativas){
+    normalizedVariants.push(
+      fromCorrelativas,
+      String(fromCorrelativas).replace(/[\s-]+/g, "_"),
+      String(fromCorrelativas).replace(/^ingenieria_/, "ing_")
+    );
+  }
 
-  const spacedNormalized = normalized.replace(/_/g, " ");
-  return CAREER_ALIASES[normalized] || CAREER_ALIASES[spacedNormalized] || normalized;
+  const allVariants = [...new Set(normalizedVariants.filter(Boolean))];
+  for (const variant of allVariants){
+    const spacedVariant = variant.replace(/_/g, " ");
+    if (CAREER_ALIASES[variant]) return CAREER_ALIASES[variant];
+    if (CAREER_ALIASES[spacedVariant]) return CAREER_ALIASES[spacedVariant];
+  }
+
+  return allVariants[0] || "";
 }
 
 function shouldDebugCareerNormalization(){

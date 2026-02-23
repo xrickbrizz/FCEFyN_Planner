@@ -441,6 +441,15 @@ function getCurrentCareerLabel(){
 function filterSectionsByCareer(sections = [], facultyMode = FACULTY_FILTER_CAREER){
   if (facultyMode === FACULTY_FILTER_ALL) return sections.slice();
   const { resolvedContext, careerSlug } = getCurrentCareerContext();
+  const userCareerRaw = CTX?.getCurrentCareer?.() || CTX?.getUserProfile?.()?.careerSlug || CTX?.getUserProfile?.()?.career || "";
+  console.debug("[TEMP][Comisiones] user career raw:", userCareerRaw);
+  console.debug("[TEMP][Comisiones] resolved career slug:", careerSlug || "(empty)");
+  console.debug("[TEMP][Comisiones] facultad filter value:", facultyMode);
+  console.debug("[TEMP][Comisiones] total commissions:", sections.length);
+  console.debug(
+    "[TEMP][Comisiones] first careerSlugs samples:",
+    sections.slice(0, 6).map((section) => Array.isArray(section?.careerSlugs) ? section.careerSlugs : [])
+  );
   if (!careerSlug){
     console.warn("[TEMP][comisiones] carrera no resuelta; omitiendo render hasta completar datos", {
       profileCareer: CTX?.getUserProfile?.()?.careerSlug || "",
@@ -449,12 +458,14 @@ function filterSectionsByCareer(sections = [], facultyMode = FACULTY_FILTER_CARE
     });
     return [];
   }
-  return sections.filter((section) => {
+  const filteredByCareer = sections.filter((section) => {
     const careerSlugs = Array.isArray(section?.careerSlugs)
       ? section.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug))
       : [];
     return careerSlugs.includes(careerSlug);
   });
+  console.debug("[TEMP][Comisiones] commissions after career filter:", filteredByCareer.length);
+  return filteredByCareer;
 }
 
 function getAvailableSubjectsFromSections(sections = []){
@@ -992,6 +1003,7 @@ function renderSectionsList(){
     samplePromocionadas: promotedSubjects.slice(0, 8),
     sampleRenderizadas: filtered.slice(0, 8).map((section) => getSectionSubjectSlug(section))
   });
+  console.debug("[TEMP][Comisiones] final rendered commissions:", filtered.length);
 
   if (!allSections.length){
     const careerSlug = getCareerSlug() || "(sin carrera)";
@@ -1616,10 +1628,9 @@ function initPlanificadorUI(){
   const topSubjectFilter = document.getElementById("agendaSubjectFilter");
   const facultyFilter = document.getElementById("agendaFacultyFilter");
   const yearFilter = document.getElementById("agendaYearFilter");
-  const applyFiltersBtn = document.getElementById("btnApplyAgendaFilters");
   const plannerSearchInput = document.getElementById("plannerSearch");
 
-  const applyFilters = () => {
+  const applyFiltersAndRender = () => {
     const filters = getAgendaFiltersState();
     filters.facultyMode = facultyFilter?.value === FACULTY_FILTER_ALL ? FACULTY_FILTER_ALL : FACULTY_FILTER_CAREER;
     filters.year = yearFilter?.value || ALL_YEARS_VALUE;
@@ -1632,19 +1643,18 @@ function initPlanificadorUI(){
     const filters = getAgendaFiltersState();
     filters.subjectSlug = slugify(subjectFilter.value || ALL_SUBJECTS_VALUE);
     if (topSubjectFilter) topSubjectFilter.value = filters.subjectSlug;
-    renderSectionsList();
+    applyFiltersAndRender();
   });
 
   topSubjectFilter?.addEventListener("change", () => {
     const filters = getAgendaFiltersState();
     filters.subjectSlug = slugify(topSubjectFilter.value || ALL_SUBJECTS_VALUE);
     if (subjectFilter) subjectFilter.value = filters.subjectSlug;
-    renderSectionsList();
+    applyFiltersAndRender();
   });
 
-  facultyFilter?.addEventListener("change", applyFilters);
-  yearFilter?.addEventListener("change", applyFilters);
-  applyFiltersBtn?.addEventListener("click", applyFilters);
+  facultyFilter?.addEventListener("change", applyFiltersAndRender);
+  yearFilter?.addEventListener("change", applyFiltersAndRender);
 
   const debugResponsiveLayout = () => {
     const pageLayout = document.getElementById("pageLayout");
