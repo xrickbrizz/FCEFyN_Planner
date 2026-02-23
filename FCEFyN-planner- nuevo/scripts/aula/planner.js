@@ -277,6 +277,16 @@ function getSectionSubjectSlug(section){
   return CTX.normalizeStr(rawSlug);
 }
 
+function formatVisibleLabelFromSlug(value){
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const spaced = raw.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  return spaced
+    .split(" ")
+    .map((word) => word ? word.charAt(0).toUpperCase() + word.slice(1) : "")
+    .join(" ");
+}
+
 function getSubjectNameFromSection(section){
   if (section.subject) return section.subject;
   const slug = section.subjectSlug;
@@ -289,7 +299,7 @@ function getSubjectNameFromSection(section){
   const customMatch = (CTX.aulaState.subjects || []).find((item) => normalize(item?.slug || "") === slug);
   if (customMatch) return customMatch.name || slug;
 
-  return slug;
+  return formatVisibleLabelFromSlug(slug);
 }
 
 function dayNameToKey(dayName){
@@ -1116,7 +1126,7 @@ function renderSectionsList(){
 
   if (!allSections.length){
     const careerSlug = getCareerSlug() || "(sin carrera)";
-    list.innerHTML = `<div class="small-muted">No hay comisiones cargadas para ${escapeHtml(careerSlug)}.</div>`;
+    list.innerHTML = `<div class="small-muted">No hay comisiones cargadas para ${escapeHtml(formatVisibleLabelFromSlug(careerSlug))}.</div>`;
     const retry = document.createElement("button");
     retry.type = "button";
     retry.className = "btn-outline btn-small";

@@ -4603,6 +4603,31 @@ body[data-theme="light"] .planner-modal{
   transform:none;
 }
 
+body.light-mode .btn-plan-apply:hover,
+body[data-theme="light"] .btn-plan-apply:hover,
+body.light-mode .btn-plan-apply:focus-visible,
+body[data-theme="light"] .btn-plan-apply:focus-visible{
+  background:color-mix(in srgb, var(--success, #146b60) 82%, var(--black) 18%);
+  color:#fff;
+}
+
+body.light-mode #btnPlannerCancel:hover,
+body[data-theme="light"] #btnPlannerCancel:hover,
+body.light-mode #btnPresetApplyCancel:hover,
+body[data-theme="light"] #btnPresetApplyCancel:hover{
+  background:var(--surface-92);
+  color:var(--text-strong);
+  border-color:var(--border-45);
+  filter:none;
+}
+body.light-mode #btnPlannerCancel:focus-visible,
+body[data-theme="light"] #btnPlannerCancel:focus-visible,
+body.light-mode #btnPresetApplyCancel:focus-visible,
+body[data-theme="light"] #btnPresetApplyCancel:focus-visible{
+  outline:2px solid var(--accent-70);
+  outline-offset:2px;
+}
+
 @keyframes plannerModalIn{
   from{ opacity:0; transform:translateY(8px) scale(.985); }
   to{ opacity:1; transform:translateY(0) scale(1); }
@@ -4813,6 +4838,14 @@ body[data-theme="dark"] #tab-perfil.profile-page .profile-section legend{
 .subjects-modern-header--row{ display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
 .subjects-active-total{ text-align:right; text-transform:uppercase; font-size:.64rem; color:var(--color-muted-2); letter-spacing:.04em; }
 .subjects-active-total strong{ display:block; font-size:1.2rem; color:var(--accent-90); line-height:1.1; }
+body.light-mode .subjects-active-total,
+body[data-theme="light"] .subjects-active-total{
+  color:var(--black);
+}
+body.light-mode .subjects-active-total strong,
+body[data-theme="light"] .subjects-active-total strong{
+  color:var(--success, #146b60);
+}
 .subjects-active-list{ display:flex; flex-direction:column; gap:.55rem; }
 .subject-modern-row{
   display:grid; grid-template-columns:6px 1fr auto; gap:.7rem; align-items:center;
