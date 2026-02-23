@@ -4642,63 +4642,9 @@ body[data-theme="light"] .planner-modal{
 .btn-plan-apply:active,
 .btn-plan-add:active{ transform:translateY(0); }
 .btn-plan-apply:disabled{
-  opacity:.9;
+  opacity:.65;
   cursor:default;
   transform:none;
-}
-
-/* Overrides específicos del planificador para conservar contraste */
-.planner-modal-footer .btn-plan-apply{
-  border-color:color-mix(in srgb, var(--success, #146b60) 74%, #000 10%);
-  background:color-mix(in srgb, var(--success, #146b60) 90%, var(--surface-94) 10%);
-  color:#ffffff;
-}
-.planner-modal-footer .btn-plan-apply:hover{
-  border-color:color-mix(in srgb, var(--success, #146b60) 68%, #000 32%);
-  background:color-mix(in srgb, var(--success, #146b60) 74%, #000 26%);
-  color:#ffffff;
-}
-.planner-modal-footer .btn-plan-apply:focus-visible{
-  border-color:color-mix(in srgb, var(--success, #146b60) 66%, #000 34%);
-  background:color-mix(in srgb, var(--success, #146b60) 72%, #000 28%);
-  color:#ffffff;
-  outline:2px solid color-mix(in srgb, var(--success, #146b60) 44%, #ffffff 56%);
-  outline-offset:2px;
-}
-.planner-modal-footer .btn-plan-apply:disabled{
-  border-color:color-mix(in srgb, var(--success, #146b60) 34%, #475569 66%);
-  background:color-mix(in srgb, var(--success, #146b60) 28%, #64748b 72%);
-  color:color-mix(in srgb, #ffffff 82%, #dbeafe 18%);
-  box-shadow:none;
-  opacity:.9;
-  cursor:not-allowed;
-}
-
-.planner-list .btn-plan-add:hover{
-  border-color:color-mix(in srgb, var(--success, #146b60) 70%, #000 30%);
-  background:color-mix(in srgb, var(--success, #146b60) 78%, #000 22%);
-  color:#ffffff;
-}
-.planner-list .btn-plan-add:focus-visible{
-  border-color:color-mix(in srgb, var(--success, #146b60) 68%, #000 32%);
-  background:color-mix(in srgb, var(--success, #146b60) 76%, #000 24%);
-  color:#ffffff;
-  outline:2px solid color-mix(in srgb, var(--success, #146b60) 38%, #ffffff 62%);
-  outline-offset:2px;
-}
-
-.planner-modal-footer .btn-outline.btn-small:hover{
-  background:color-mix(in srgb, var(--surface-95) 84%, #cbd5e1 16%);
-  color:var(--text-strong);
-  border-color:color-mix(in srgb, var(--border-45) 76%, #64748b 24%);
-  filter:none;
-}
-.planner-modal-footer .btn-outline.btn-small:focus-visible{
-  background:color-mix(in srgb, var(--surface-95) 82%, #cbd5e1 18%);
-  color:var(--text-strong);
-  border-color:color-mix(in srgb, var(--border-45) 72%, #64748b 28%);
-  outline:2px solid color-mix(in srgb, var(--accent-70) 78%, #ffffff 22%);
-  outline-offset:2px;
 }
 
 body.light-mode .btn-plan-apply:hover,
