@@ -987,6 +987,7 @@ body[data-theme="light"] .tab-card{
       border:1px solid color-mix(in srgb, var(--border) 74%, transparent);
       box-shadow: 0 0.375rem 1.25rem rgba(15, 23, 42, 0.06);
       transition: box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
+      height: auto;
     }
     .study-timer-card.running{
       box-shadow: 0 .55rem 1.35rem rgba(59, 130, 246, 0.16);
@@ -1274,6 +1275,8 @@ body[data-theme="light"] .tab-card{
     }
 
     .study-recent-logs-panel{
+      grid-column: 1 / -1;
+      width: 100%;
       background:var(--card);
       border:1px solid var(--border);
       border-radius:var(--radius);
@@ -1281,7 +1284,9 @@ body[data-theme="light"] .tab-card{
       display:flex;
       flex-direction:column;
       gap:.75rem;
-      min-height: 14rem;
+      min-height: 0;
+      max-height: 16.5rem;
+      overflow: hidden;
     }
     .study-recent-logs-header{
       display:flex;
@@ -1301,13 +1306,17 @@ body[data-theme="light"] .tab-card{
       color:var(--text-soft);
     }
     .study-recent-logs-body{
-      min-height: 9rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
     }
     .study-recent-logs-list{
       display:flex;
       flex-direction:column;
       gap:.55rem;
-      max-height: 19.5rem;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       overflow-y:auto;
       padding-right:.2rem;
     }
