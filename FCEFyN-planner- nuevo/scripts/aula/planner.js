@@ -640,8 +640,13 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
 
 function convertPlannerSectionsToCourseSections(sections){
   const grouped = new Map();
+
   (sections || []).forEach((item) => {
     const key = item.sectionId || item.id;
+    const itemCareerSlugs = Array.isArray(item?.careerSlugs)
+      ? item.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug)).filter(Boolean)
+      : [];
+
     if (!grouped.has(key)){
       grouped.set(key, {
         id: key,
@@ -652,11 +657,31 @@ function convertPlannerSectionsToCourseSections(sections){
         room: item.room,
         campus: item.location,
         year: item.year,
+        careerSlugs: [...new Set(itemCareerSlugs)], // ✅ conservar careerSlugs
         days: []
       });
+    } else {
+      // ✅ unir careerSlugs por si llegan múltiples slots del mismo sectionId
+      const bucket = grouped.get(key);
+      const mergedCareerSlugs = new Set([
+        ...(Array.isArray(bucket.careerSlugs) ? bucket.careerSlugs : []),
+        ...itemCareerSlugs
+      ]);
+      bucket.careerSlugs = [...mergedCareerSlugs];
+
+      // Fallbacks por si algún slot trae datos faltantes
+      if (!bucket.subject && item.subjectName) bucket.subject = item.subjectName;
+      if (!bucket.subjectSlug && item.subjectSlug) bucket.subjectSlug = item.subjectSlug;
+      if (!bucket.code && item.subjectSlug) bucket.code = item.subjectSlug;
+      if (!bucket.commission && item.label) bucket.commission = item.label;
+      if (!bucket.room && item.room) bucket.room = item.room;
+      if (!bucket.campus && item.location) bucket.campus = item.location;
+      if (!bucket.year && item.year) bucket.year = item.year;
     }
+
     grouped.get(key).days.push({ day: item.day, start: item.start, end: item.end });
   });
+
   return [...grouped.values()];
 }
 
@@ -757,6 +782,14 @@ function filterSectionsByActiveCareer(sections = []){
 
 async function loadPlannerSections(){
   console.groupCollapsed("[planner:debug] loadPlannerSections");
+  console.debug(
+  "[TEMP][courseSections] sample careerSlugs",
+  (CTX.aulaState.courseSections || []).slice(0, 8).map((s) => ({
+    id: s.id,
+    subjectSlug: s.subjectSlug,
+    careerSlugs: s.careerSlugs
+  }))
+);
   const normalizeComisionesDocs = (snap) => {
     const list = [];
     snap.forEach((docSnap) => {
