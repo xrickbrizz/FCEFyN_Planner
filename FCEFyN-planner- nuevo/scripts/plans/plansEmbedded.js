@@ -186,11 +186,12 @@ export async function mountPlansEmbedded({
   function updateStatusButtonsGate(subjectKey) {
     const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
     const eligibility = getEligibilityForSubject(subjectKey, state.eligibilityMap);
+    const allowEditingExistingStatus = hasAssignedStatus(subjectKey);
     const options = modalActionsEl?.querySelectorAll(".status-pill-option") || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.statusValue || "");
       const isUnlockOption = !!value && computeUnlocks(value);
-      buttonEl.disabled = (!eligibility.canChangeState) || (isUnlockOption && !gate.ok);
+      buttonEl.disabled = (!eligibility.canChangeState && !allowEditingExistingStatus) || (isUnlockOption && !gate.ok);
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
@@ -199,14 +200,32 @@ export async function mountPlansEmbedded({
   function updateInlineStatusButtonsGate(subjectKey) {
     const gate = canApproveSubject(subjectKey, state.subjectStates, state.planData || { materias: state.materias });
     const eligibility = getEligibilityForSubject(subjectKey, state.eligibilityMap);
+    const allowEditingExistingStatus = hasAssignedStatus(subjectKey);
     const options = gridEl?.querySelectorAll(`.status-chips[data-subject-id="${subjectKey}"] .status-pill-option`) || [];
     options.forEach((buttonEl) => {
       const value = normalizeStatus(buttonEl.dataset.inlineStatusValue || "");
       const isUnlockOption = !!value && computeUnlocks(value);
-      buttonEl.disabled = (!eligibility.canChangeState) || (isUnlockOption && !gate.ok);
+      buttonEl.disabled = (!eligibility.canChangeState && !allowEditingExistingStatus) || (isUnlockOption && !gate.ok);
       if (buttonEl.disabled) buttonEl.title = `Requiere: ${gate.missing.map((entry) => getSubjectName(entry)).join(", ")}`;
       else buttonEl.removeAttribute("title");
     });
+  }
+
+  function hasAssignedStatus(subjectKey) {
+    const key = String(subjectKey || "").trim();
+    if (!key) return false;
+    return !!normalizeSubjectStateEntry(state.subjectStates?.[key]);
+  }
+
+  function canEditSubjectState(subjectKey) {
+    const eligibility = getEligibilityForSubject(subjectKey, state.eligibilityMap);
+    return eligibility.canChangeState || hasAssignedStatus(subjectKey);
+  }
+
+  function findSubjectBySlug(subjectKey) {
+    const key = String(subjectKey || "").trim();
+    if (!key) return null;
+    return state.materias.find((subject) => String(subject?.subjectSlug || "").trim() === key) || null;
   }
 
   function renderTitleCareer() {
@@ -349,7 +368,7 @@ export async function mountPlansEmbedded({
       const chips = document.createElement("div");
       chips.className = "status-chips";
       chips.dataset.subjectId = subject.subjectSlug;
-      chips.style.display = (state.openedInlineSelectorId === subject.subjectSlug && eligibility.canChangeState) ? "inline-flex" : "none";
+      chips.style.display = (state.openedInlineSelectorId === subject.subjectSlug && canEditSubjectState(subject.subjectSlug)) ? "inline-flex" : "none";
       chips.innerHTML = `
         <button class="status-pill-option status-pill-pro" type="button" data-inline-status-value="promocionada">PRO</button>
         <button class="status-pill-option status-pill-reg" type="button" data-inline-status-value="regular">REG</button>
@@ -377,8 +396,7 @@ export async function mountPlansEmbedded({
   }
 
   function toggleInlineStatusSelector(subjectEl, subjectId) {
-    const eligibility = getEligibilityForSubject(subjectId, state.eligibilityMap);
-    if (!eligibility.canChangeState) return;
+    if (!canEditSubjectState(subjectId)) return;
     const chipsEl = subjectEl.parentElement?.querySelector(`.status-chips[data-subject-id="${subjectId}"]`);
     if (!(chipsEl instanceof HTMLElement)) return;
 
@@ -537,13 +555,29 @@ export async function mountPlansEmbedded({
   async function applyStatus(statusValue) {
     const slug = String(state.selectedSubjectId || "").trim();
     if (!slug) return;
+    if (!findSubjectBySlug(slug)) {
+      showSectionMsg("No se encontró la materia seleccionada.");
+      return;
+    }
     const eligibility = getEligibilityForSubject(slug, state.eligibilityMap);
-    if (!eligibility.canChangeState) {
+    const allowEditingExistingStatus = hasAssignedStatus(slug);
+    if (!eligibility.canChangeState && !allowEditingExistingStatus) {
       showSectionMsg("Materia bloqueada por correlativas o ya promocionada.");
       return;
     }
     const previous = getEstadoSimpleMap();
     const normalized = statusValue === "ninguno" ? null : normalizeStatus(statusValue);
+    if (statusValue !== "ninguno" && !normalized) {
+      showSectionMsg("Estado inválido.");
+      return;
+    }
+    const currentStatus = normalizeStatus(previous[slug]);
+    if ((normalized || null) === (currentStatus || null)) {
+      closeInlineStatusSelector();
+      closeStatusModal();
+      hideSectionMsg();
+      return;
+    }
     if (normalized && computeUnlocks(normalized)) {
       const gate = canApproveSubject(slug, state.subjectStates, state.planData || { materias: state.materias });
       if (!gate.ok) {
