@@ -423,6 +423,7 @@ body[data-theme="dark"] .quick-toggle-btn{
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  height: 25rem;
 }
 
 .study-event-card,

@@ -1277,7 +1277,8 @@ body[data-theme="light"] .tab-card{
       display:flex;
       flex-direction:column;
       gap:.75rem;
-      height: 13.56rem;
+      height: 32.8rem;
+      justify-content: space-between;
     }
 
     .study-recent-logs-panel{
@@ -1399,6 +1400,7 @@ body[data-theme="light"] .calendar-container{
   background:var(--card);
   border-color: var(--border);
   box-shadow:none;
+  height: 54.24rem;
 }
 body.light-mode .day,
 body[data-theme="light"] .day{

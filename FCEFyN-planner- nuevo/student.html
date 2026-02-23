@@ -115,16 +115,6 @@
     <div id="tab-estudio" class="tab-card" style="display:none;">
       <div class="tab-estudio-layout">
         <div class="study-main-column study-top-layout">
-          <section class="study-stats-grid study-top-left" aria-label="Resumen de estudio">
-            <article class="study-stat-card">
-              <div class="study-stat-label">⏱ Horas hoy</div>
-              <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
-            </article>
-            <article class="study-stat-card study-stat-card-clickable study-top-item" id="studyWeeklyGoalCard" role="button" tabindex="0" aria-label="Editar meta semanal">
-              <div class="study-stat-label">🎯 Meta semanal</div>
-              <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
-            </article>
-          </section>
           <section id="studyTimerWidget" class="widget-card study-timer-card study-top-right">
             <div class="widget-title">Temporizador de estudio</div>
             <div class="study-timer-status" id="studyTimerStatus">Estado: listo para comenzar</div>
@@ -166,6 +156,16 @@
         </div>
 
         <aside class="study-side-column">
+        <section class="study-stats-grid study-top-left" aria-label="Resumen de estudio">
+            <article class="study-stat-card">
+              <div class="study-stat-label">⏱ Horas hoy</div>
+              <div class="study-stat-value" id="studyTodayHoursValue">0 h 0 m</div>
+            </article>
+            <article class="study-stat-card study-stat-card-clickable study-top-item" id="studyWeeklyGoalCard" role="button" tabindex="0" aria-label="Editar meta semanal">
+              <div class="study-stat-label">🎯 Meta semanal</div>
+              <div class="study-stat-value" id="studyWeeklyGoalValue">0%</div>
+            </article>
+          </section>
           <div class="calendar-container study-calendar-compact">
             <div class="streak-overlay" aria-label="Racha de estudio">
               <span class="streak-overlay__label">🔥 Racha</span>
@@ -198,20 +198,6 @@
             </div>
             <div class="grid" id="calendarGrid"></div>
           </div>
-
-          <section class="study-recent-logs-panel" id="studyRecentLogsPanel" aria-live="polite">
-            <div class="study-recent-logs-header">
-              <div>
-                <h3 class="study-recent-logs-title">Registros recientes</h3>
-                <p class="study-recent-logs-subtitle">Tus últimas sesiones guardadas</p>
-              </div>
-              <button class="btn-outline btn-small" id="studyRecentLogsViewAll" type="button">Ver todos</button>
-            </div>
-            <div class="study-recent-logs-body" id="studyRecentLogsBody">
-              <div class="small-muted">Cargando registros…</div>
-            </div>
-          </section>
-
         </aside>
       </div>
     </div>
