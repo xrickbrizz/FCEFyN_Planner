@@ -1120,19 +1120,6 @@ body[data-theme="light"] .tab-card{
   box-shadow:0 0 0 2px color-mix(in srgb, var(--info-45) 28%, transparent);
 }
 
-.study-stat-card--streak.streak-active{
-  border-color:#ff9a3a;
-  box-shadow:0 0 0 2px rgba(255,154,58,.22);
-}
-.study-stat-card--streak.streak-pending{
-  border-color:var(--border);
-  opacity:.86;
-}
-.study-stat-card--streak.streak-broken{
-  border-color:var(--border);
-  opacity:.72;
-}
-
 .study-stat-label{ color:var(--text-soft); font-size:.84rem; font-weight:600; }
     .study-stat-value{ color:var(--text); font-size:1.15rem; font-weight:700; }
 

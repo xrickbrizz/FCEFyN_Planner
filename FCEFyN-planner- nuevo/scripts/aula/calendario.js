@@ -53,10 +53,6 @@ const btnStudyWeeklyGoalSave = document.getElementById("btnStudyWeeklyGoalSave")
 const studyStreakInfoModalBg = document.getElementById("studyStreakInfoModalBg");
 const btnStudyStreakInfoClose = document.getElementById("btnStudyStreakInfoClose");
 const btnStudyStreakInfoOk = document.getElementById("btnStudyStreakInfoOk");
-const studyStreakStatusText = document.getElementById("studyStreakStatusText");
-const studyStreakSummaryText = document.getElementById("studyStreakSummaryText");
-const studyStreakTodayState = document.getElementById("studyStreakTodayState");
-const studyStreakCurrentDays = document.getElementById("studyStreakCurrentDays");
 const studyRecentLogsBody = document.getElementById("studyRecentLogsBody");
 const studyRecentLogsViewAll = document.getElementById("studyRecentLogsViewAll");
 
@@ -745,83 +741,19 @@ function renderStudyStats(){
     studyWeeklyGoalValue.textContent = `${percentage}%`;
   }
 
-  const streakState = getStudyStreakVisualState();
   if (studyStreakValue){
-    studyStreakValue.textContent = `${streakState.streakDays} días`;
-  }
-  applyStudyStreakVisualState(streakState);
-}
+    let streak = 0;
+    const cursor = new Date(todayDate);
+    cursor.setHours(0, 0, 0, 0);
 
-function countConsecutiveValidDaysFrom(date, minMinutes = 30){
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return 0;
-  const cursor = new Date(date);
-  cursor.setHours(0, 0, 0, 0);
-  let streak = 0;
-  while (true){
-    const key = dateKeyFromYMD(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
-    if (getTotalStudyMinutesForDay(key) < minMinutes) break;
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
-}
+    while (true){
+      const key = dateKeyFromYMD(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
+      if (getTotalStudyMinutesForDay(key) < 30) break;
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
 
-function getStudyStreakVisualState(minMinutes = 30){
-  // Estado visual derivado: no altera la lógica de guardado/racha histórica.
-  const todayKey = getTodayKey();
-  const todayMinutes = getTotalStudyMinutesForDay(todayKey);
-  const cumplioHoy = todayMinutes >= minMinutes;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (cumplioHoy){
-    return {
-      streakDays: countConsecutiveValidDaysFrom(today, minMinutes),
-      estadoVisual: "active",
-      cumplioHoy,
-      minutosHoy: todayMinutes,
-      minutosHoyValidos: Math.min(todayMinutes, minMinutes)
-    };
-  }
-
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const streakFromYesterday = countConsecutiveValidDaysFrom(yesterday, minMinutes);
-  const estadoVisual = streakFromYesterday > 0 ? "pending" : "broken";
-  return {
-    streakDays: streakFromYesterday,
-    estadoVisual,
-    cumplioHoy,
-    minutosHoy: todayMinutes,
-    minutosHoyValidos: Math.min(todayMinutes, minMinutes)
-  };
-}
-
-function applyStudyStreakVisualState(streakState){
-  const safeState = streakState || { streakDays: 0, estadoVisual: "broken", cumplioHoy: false, minutosHoy: 0 };
-  const visualState = ["active", "pending", "broken"].includes(safeState.estadoVisual) ? safeState.estadoVisual : "broken";
-  if (studyStreakCard){
-    studyStreakCard.classList.remove("streak-active", "streak-pending", "streak-broken");
-    studyStreakCard.classList.add(`streak-${visualState}`);
-  }
-
-  if (studyStreakStatusText){
-    const labels = {
-      active: "Tu racha está activa. Hoy ya cumpliste el mínimo de estudio.",
-      pending: "Tu racha sigue viva, pero hoy todavía no registraste 30 minutos de estudio.",
-      broken: "No registraste el mínimo de estudio a tiempo y la racha se reinició."
-    };
-    studyStreakStatusText.textContent = labels[visualState] || labels.broken;
-  }
-
-  if (studyStreakTodayState){
-    studyStreakTodayState.textContent = safeState.cumplioHoy ? "Cumplido" : "Pendiente";
-  }
-  if (studyStreakCurrentDays){
-    studyStreakCurrentDays.textContent = `${Math.max(0, safeState.streakDays || 0)} días`;
-  }
-  if (studyStreakSummaryText){
-    studyStreakSummaryText.textContent = "Para mantener la racha, registrá al menos 30 minutos de estudio por día.";
+    studyStreakValue.textContent = `${streak} días`;
   }
 }
 
@@ -1197,7 +1129,6 @@ function initStudyStreakInfoUI(){
 
   const openModal = () => {
     if (!studyStreakInfoModalBg) return;
-    applyStudyStreakVisualState(getStudyStreakVisualState());
     studyStreakInfoModalBg.style.display = "flex";
     studyStreakInfoModalBg.setAttribute("aria-hidden", "false");
     btnStudyStreakInfoClose?.focus();
