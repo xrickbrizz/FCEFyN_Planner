@@ -1088,8 +1088,10 @@
         <button class="modal-close" id="btnStudyStreakInfoClose" type="button" aria-label="Cerrar">✕</button>
       </div>
       <div class="modal-body">
-        <p>La racha se calcula por días consecutivos con actividad de estudio.</p>
-        <p>Para que un día cuente, debés registrar <strong>mínimo 30 minutos</strong>.</p>
+        <p id="studyStreakStatusText">Tu racha está activa. Hoy ya cumpliste el mínimo de estudio.</p>
+        <p id="studyStreakSummaryText">Para mantener la racha, registrá al menos 30 minutos de estudio por día.</p>
+        <p><strong>Estado de hoy:</strong> <span id="studyStreakTodayState">Pendiente</span></p>
+        <p><strong>Días actuales de racha:</strong> <span id="studyStreakCurrentDays">0 días</span></p>
       </div>
       <div class="modal-footer">
         <button class="btn-dark" id="btnStudyStreakInfoOk" type="button">Entendido</button>
