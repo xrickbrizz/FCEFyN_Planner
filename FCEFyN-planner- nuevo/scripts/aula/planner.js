@@ -359,12 +359,30 @@ function getSectionById(id){
   return CTX.aulaState.courseSections.find(s => s.id === id) || null;
 }
 
+function humanizeProfessorSlug(slug){
+  const normalized = String(slug || "").trim();
+  if (!normalized) return "";
+  return normalized
+    .replace(/[-_]+/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function getSectionTeachers(section){
   const names = [];
   if (section.titular) names.push(section.titular);
   (section.docentes || []).forEach(d => {
     if (d?.name) names.push(d.role ? `${d.name} (${d.role})` : d.name);
   });
+  if (names.length) return names;
+
+  if (Array.isArray(section?.professorIds)) {
+    return [...new Set(section.professorIds
+      .map((slug) => humanizeProfessorSlug(slug))
+      .filter(Boolean))];
+  }
   return names;
 }
 
@@ -670,6 +688,9 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
   const year = String(rawSection?.anioLectivo || rawSection?.year || rawSection?.anio || "").trim();
   const tipo = String(rawSection?.tipo || rawSection?.type || "").trim();
   const ownCareerSlugs = Array.isArray(rawSection?.careerSlugs) ? rawSection.careerSlugs : [];
+  const professorIds = Array.isArray(rawSection?.professorIds)
+    ? rawSection.professorIds.map((id) => String(id || "").trim()).filter(Boolean)
+    : [];
   const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs]
     .map((slug) => normalizeComisionCareerSlug(slug))
     .filter(Boolean))];
@@ -703,7 +724,8 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
         location,
         room,
         year,
-        tipo
+        tipo,
+        professorIds: professorIds.slice()
       };
     })
     .filter(Boolean);
@@ -716,6 +738,9 @@ function convertPlannerSectionsToCourseSections(sections){
     const key = item.sectionId || item.id;
     const itemCareerSlugs = Array.isArray(item?.careerSlugs)
       ? item.careerSlugs.map((slug) => normalizeComisionCareerSlug(slug)).filter(Boolean)
+      : [];
+    const itemProfessorIds = Array.isArray(item?.professorIds)
+      ? item.professorIds.map((id) => String(id || "").trim()).filter(Boolean)
       : [];
 
     if (!grouped.has(key)){
@@ -730,6 +755,7 @@ function convertPlannerSectionsToCourseSections(sections){
         year: item.year,
         tipo: item.tipo,
         careerSlugs: [...new Set(itemCareerSlugs)], // ✅ conservar careerSlugs
+        professorIds: [...new Set(itemProfessorIds)],
         days: []
       });
     } else {
@@ -740,6 +766,11 @@ function convertPlannerSectionsToCourseSections(sections){
         ...itemCareerSlugs
       ]);
       bucket.careerSlugs = [...mergedCareerSlugs];
+      const mergedProfessorIds = new Set([
+        ...(Array.isArray(bucket.professorIds) ? bucket.professorIds : []),
+        ...itemProfessorIds
+      ]);
+      bucket.professorIds = [...mergedProfessorIds];
 
       // Fallbacks por si algún slot trae datos faltantes
       if (!bucket.subject && item.subjectName) bucket.subject = item.subjectName;
