@@ -3,7 +3,7 @@ import { dayKeys, timeToMinutes, renderAgendaGridInto } from "./horarios.js";
 import { buildEligibilityMap, getEligibilityForSubject } from "../core/eligibility.js";
 import { getPlanWithSubjects } from "../plans-data.js";
 import { ACTIVE_CAREER_CONTEXT_CHANGED_EVENT, getCorrelativasActiveCareerContext, resolveActiveCareerContext } from "../core/active-career-context.js";
-import { normalizeCareerSlug as normalizeComisionCareerSlug } from "./comisiones.js";
+import { normalizeCareerSlug as normalizeComisionCareerSlug, isRecursadoCommission } from "./comisiones.js";
 
 let CTX = null;
 
@@ -33,6 +33,8 @@ const FACULTY_FILTER_CAREER = "career";
 const FACULTY_FILTER_ALL = "all";
 const ALL_SUBJECTS_VALUE = "";
 const ALL_YEARS_VALUE = "";
+const RECURSADOS_FILTER_VALUE = "redictados";
+const YEAR_FILTER_OPTIONS = ["1", "2", "3", "4"];
 
 function ensureAgendaFiltersState(){
   if (!CTX?.aulaState) return;
@@ -537,8 +539,9 @@ function getAvailableSubjectsFromSections(sections = []){
 function getAvailableYearsFromSections(sections = []){
   const years = new Set();
   sections.forEach((section) => {
+    if (isRecursadoCommission(section)) return;
     const year = String(section?.year || "").trim();
-    if (!year) return;
+    if (!YEAR_FILTER_OPTIONS.includes(year)) return;
     years.add(year);
   });
   return [...years].sort((a, b) => Number(a) - Number(b) || a.localeCompare(b, "es"));
@@ -556,9 +559,25 @@ function getFilteredSectionsForPlanner(){
       afterCareer: afterCareer.length
     });
   }
-  const afterYear = filters.year
-    ? afterCareer.filter((section) => String(section?.year || "") === filters.year)
-    : afterCareer;
+  const afterYear = (() => {
+    if (!filters.year) return afterCareer;
+    if (filters.year === RECURSADOS_FILTER_VALUE){
+      return afterCareer.filter((section) => isRecursadoCommission(section));
+    }
+    if (YEAR_FILTER_OPTIONS.includes(filters.year)){
+      return afterCareer.filter((section) => String(section?.year || "") === filters.year && !isRecursadoCommission(section));
+    }
+    return afterCareer;
+  })();
+
+  // DEBUG temporal: dejar comentado para activar rápido si hace falta diagnosticar filtros de año/redictados.
+  // const recursadosCount = afterCareer.filter((section) => isRecursadoCommission(section)).length;
+  // console.debug("[agenda:debug] filtro año", {
+  //   selectedYear: filters.year || "all",
+  //   totalAfterCareer: afterCareer.length,
+  //   recursadosDetected: recursadosCount,
+  //   afterYear: afterYear.length
+  // });
   const availableSubjects = getAvailableSubjectsFromSections(afterYear);
   const availableSubjectSlugs = new Set(availableSubjects.map((item) => item.slug));
   const normalizedSelectedSubject = slugify(filters.subjectSlug);
@@ -597,7 +616,7 @@ function populateSelectOptions(select, options, currentValue = ""){
 
 function syncAgendaFilterControls(){
   const filters = getAgendaFiltersState();
-  const { availableSubjects, availableYears } = getFilteredSectionsForPlanner();
+  const { availableSubjects } = getFilteredSectionsForPlanner();
 
   const facultySelect = document.getElementById("agendaFacultyFilter");
   const yearSelect = document.getElementById("agendaYearFilter");
@@ -610,7 +629,12 @@ function syncAgendaFilterControls(){
     { value: FACULTY_FILTER_ALL, label: "Todas las comisiones" }
   ], filters.facultyMode);
 
-  const yearOptions = [{ value: ALL_YEARS_VALUE, label: "Todos los años" }, ...availableYears.map((year) => ({ value: year, label: year }))];
+  const numericYearOptions = YEAR_FILTER_OPTIONS.map((year) => ({ value: year, label: year }));
+  const yearOptions = [
+    { value: ALL_YEARS_VALUE, label: "Todos los años" },
+    ...numericYearOptions,
+    { value: RECURSADOS_FILTER_VALUE, label: "Redictados" }
+  ];
   populateSelectOptions(yearSelect, yearOptions, filters.year);
   filters.year = yearSelect?.value || ALL_YEARS_VALUE;
 
@@ -644,6 +668,7 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
   const room = String(rawSection?.room || rawSection?.aula || "").trim();
   const location = String(rawSection?.location || rawSection?.campus || rawSection?.sede || "").trim();
   const year = String(rawSection?.anioLectivo || rawSection?.year || rawSection?.anio || "").trim();
+  const tipo = String(rawSection?.tipo || rawSection?.type || "").trim();
   const ownCareerSlugs = Array.isArray(rawSection?.careerSlugs) ? rawSection.careerSlugs : [];
   const careerSlugs = [...new Set([...inheritedCareerSlugs, ...ownCareerSlugs]
     .map((slug) => normalizeComisionCareerSlug(slug))
@@ -677,7 +702,8 @@ function normalizeSectionItems(rawSection, idSeed = "", inheritedCareerSlugs = [
         end,
         location,
         room,
-        year
+        year,
+        tipo
       };
     })
     .filter(Boolean);
@@ -702,6 +728,7 @@ function convertPlannerSectionsToCourseSections(sections){
         room: item.room,
         campus: item.location,
         year: item.year,
+        tipo: item.tipo,
         careerSlugs: [...new Set(itemCareerSlugs)], // ✅ conservar careerSlugs
         days: []
       });
@@ -722,6 +749,7 @@ function convertPlannerSectionsToCourseSections(sections){
       if (!bucket.room && item.room) bucket.room = item.room;
       if (!bucket.campus && item.location) bucket.campus = item.location;
       if (!bucket.year && item.year) bucket.year = item.year;
+      if (!bucket.tipo && item.tipo) bucket.tipo = item.tipo;
     }
 
     grouped.get(key).days.push({ day: item.day, start: item.start, end: item.end });

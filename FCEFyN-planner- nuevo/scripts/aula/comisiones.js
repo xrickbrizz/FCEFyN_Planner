@@ -48,6 +48,28 @@ function hasValue(value){
   return value !== undefined && value !== null && value !== "";
 }
 
+function normalizeTextValue(value){
+  return String(value || "").toLowerCase().trim();
+}
+
+export function isRecursadoCommission(comision = {}){
+  const tipo = normalizeTextValue(comision?.tipo);
+  if (tipo === "recursado") return true;
+
+  const fallbackFields = [
+    comision?.condition,
+    comision?.condicion,
+    comision?.modalidad,
+    comision?.category,
+    comision?.descripcion,
+    comision?.description
+  ];
+
+  return fallbackFields
+    .map((value) => normalizeTextValue(value))
+    .some((value) => value === "recursado" || value === "redictado");
+}
+
 export function normalizeCareerSlug(raw){
   if (!hasValue(raw)) return "";
 
