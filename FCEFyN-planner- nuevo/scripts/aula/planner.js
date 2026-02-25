@@ -306,34 +306,65 @@ function getSubjectNameFromSection(section){
   return formatVisibleSubjectLabel(slug);
 }
 
+function isYearLikeToken(value){
+  return /^(?:19|20)\d{2}$/.test(String(value || "").trim());
+}
+
+function normalizeCommissionCandidate(rawToken){
+  const token = String(rawToken || "")
+    .trim()
+    .replace(/^[^\p{L}\p{N}.]+|[^\p{L}\p{N}.]+$/gu, "");
+  if (!token) return "";
+
+  if (/^\d+$/.test(token)) return token;
+  if (/^\d+(?:\.\d+)+(?:[A-Za-z])?$/.test(token)) return token;
+  return "";
+}
+
 function cleanCommissionToken(rawValue){
   const raw = String(rawValue || "").trim();
   if (!raw) return "";
 
-  const normalized = raw
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .replace(/\b(?:19|20)\d{2}\b/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!normalized) return "";
+  const compact = raw.replace(/[,_/\-]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!compact) return "";
 
-  const decimalMatch = normalized.match(/\b(\d+(?:\.\d+)+(?:[A-Za-z])?)\b/);
-  if (decimalMatch?.[1]) return decimalMatch[1];
+  const tokens = compact.split(/\s+/).map(normalizeCommissionCandidate).filter(Boolean);
+  const directMatch = tokens.find((token) => !isYearLikeToken(token));
+  if (directMatch) return directMatch;
 
-  const mixedToken = normalized.match(/\b([A-Za-z]\d+|\d+[A-Za-z])\b/);
-  if (mixedToken?.[1]) return mixedToken[1];
-
-  if (/^[A-Za-z]$/.test(normalized)) return normalized;
-  if (/^\d+$/.test(normalized)) return normalized;
+  const fallbackMatch = compact.match(/\b(\d+(?:\.\d+)+(?:[A-Za-z])?|\d+)\b/);
+  if (fallbackMatch?.[1] && !isYearLikeToken(fallbackMatch[1])) return fallbackMatch[1];
   return "";
+}
+
+function getCommissionFromSectionId(sectionId){
+  const rawId = String(sectionId || "").trim();
+  if (!rawId) return "";
+
+  const tokens = rawId
+    .split(/[-_]+/)
+    .map((token) => String(token || "").trim())
+    .filter(Boolean);
+  if (!tokens.length) return "";
+
+  let endIndex = tokens.length - 1;
+  if (isYearLikeToken(tokens[endIndex])) endIndex -= 1;
+
+  for (let index = endIndex; index >= 0; index -= 1){
+    const candidate = normalizeCommissionCandidate(tokens[index]);
+    if (!candidate) continue;
+    if (isYearLikeToken(candidate)) continue;
+    return candidate;
+  }
+
+  return cleanCommissionToken(rawId);
 }
 
 function getReadableCommissionNumber(section){
   const fromCommission = cleanCommissionToken(section?.commission);
   if (fromCommission) return fromCommission;
 
-  const fromId = cleanCommissionToken(section?.id);
+  const fromId = getCommissionFromSectionId(section?.id);
   if (fromId) return fromId;
 
   return "";
@@ -389,6 +420,30 @@ function getSectionTeachers(section){
   return [...new Set(names.filter(Boolean))];
 }
 
+function getCompactTeacherLabel(section){
+  const teachers = getSectionTeachers(section);
+  if (!teachers.length) return "";
+
+  const toCompactName = (name) => {
+    const cleanName = String(name || "")
+      .replace(/\s*\([^)]*\)\s*/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!cleanName) return "";
+    const parts = cleanName.split(" ").filter(Boolean);
+    if (!parts.length) return "";
+    return parts.length === 1 ? parts[0] : parts[parts.length - 1];
+  };
+
+  const compactNames = teachers
+    .map(toCompactName)
+    .filter(Boolean)
+    .slice(0, 2);
+  if (!compactNames.length) return "";
+  const suffix = teachers.length > compactNames.length ? "…" : "";
+  return `Doc.: ${compactNames.join(" / ")}${suffix}`;
+}
+
 function escapeHtml(value){
   return String(value || "")
     .replaceAll("&", "&amp;")
@@ -442,11 +497,22 @@ function buildWeeklyDataFromSectionIds(sectionIds){
     const subjectSlug = getSectionSubjectSlug(sec);
     const colorIndex = getSectionColorIndex(sec.id) ?? ensureColorForSubject(subjectSlug);
     const commission = getReadableCommissionShortLabel(sec);
+    const teachersVisible = getCompactTeacherLabel(sec);
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
       const aula = [sec.campus || "", sec.room ? `Aula ${sec.room}` : "", commission].filter(Boolean).join(" · ");
-      data[k].push({ materia: subject, aula, inicio: d.start || "", fin: d.end || "", subjectSlug, colorIndex, sectionId: sec.id });
+      data[k].push({
+        materia: subject,
+        aula,
+        commissionVisible: commission,
+        teachersVisible,
+        inicio: d.start || "",
+        fin: d.end || "",
+        subjectSlug,
+        colorIndex,
+        sectionId: sec.id
+      });
     });
   });
 

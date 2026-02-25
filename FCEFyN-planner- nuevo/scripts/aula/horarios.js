@@ -197,6 +197,13 @@ function renderAgendaGridInto(grid, data, allowEdit){
         block.appendChild(commission);
       }
 
+      if (item.teachersVisible){
+        const teachers = document.createElement("small");
+        teachers.className = "class-block-teachers";
+        teachers.textContent = item.teachersVisible;
+        block.appendChild(teachers);
+      }
+
       if (allowEdit){
         block.tabIndex = 0;
         block.setAttribute("role", "button");

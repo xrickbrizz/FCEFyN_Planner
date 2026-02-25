@@ -2177,12 +2177,12 @@ body[data-theme="light"] .event{
       position:absolute;
       left: 0.25rem; right:0.25rem;
       border-radius: 0.5rem;
-      padding: 0.375rem 0.5rem;
+      padding: 0.45rem 0.5rem;
       /* color:var(--color-text); */
       color:black;
 
       
-      font-size: .75rem;
+      font-size: .77rem;
       box-shadow:0 4px 10px color-mix(in srgb, var(--materia-color, var(--accent)) 16%, transparent);
       border:none;
       border-left:6px solid var(--materia-color, var(--accent));
@@ -2193,14 +2193,14 @@ body[data-theme="light"] .event{
     }
     .class-block strong{
       display:block;
-      font-size: .8rem;
+      font-size: .84rem;
       line-height: 1.2;
       letter-spacing: .01em;
       color:var(--text);
     }
     .class-block small{
       display:block;
-      font-size: .72rem;
+      font-size: .75rem;
       opacity:.9;
       color:color-mix(in srgb, var(--text) 82%, var(--muted));
       line-height:1.25;
@@ -2215,9 +2215,18 @@ body[data-theme="light"] .event{
     }
     .class-block .class-block-commission{
       margin-top:2px;
-      font-size:.7rem;
+      font-size:.73rem;
       line-height:1.2;
       opacity:.95;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .class-block .class-block-teachers{
+      margin-top:1px;
+      font-size:.73rem;
+      line-height:1.2;
+      opacity:.92;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
