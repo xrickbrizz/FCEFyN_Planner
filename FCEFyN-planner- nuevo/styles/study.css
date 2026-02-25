@@ -2270,13 +2270,23 @@ body[data-theme="light"] .event{
       text-overflow:ellipsis;
     }
     .class-block .class-block-teachers{
-      margin-top:1px;
-      font-size:.72rem;
+      margin-top:2px;
+      font-size:.7rem;
       line-height:1.2;
-      opacity:.9;
-      white-space:nowrap;
+      opacity:.92;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:3;
+      line-clamp:3;
+      overflow:hidden;
+      white-space:normal;
+      max-height:calc(1.2em * 3);
+    }
+    .class-block .class-block-teachers-line{
+      display:block;
       overflow:hidden;
       text-overflow:ellipsis;
+      white-space:nowrap;
     }
 
 .calendar-event[data-color="0"],

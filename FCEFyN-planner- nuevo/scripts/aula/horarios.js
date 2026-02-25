@@ -93,27 +93,32 @@ function splitAgendaMeta(item){
   };
 }
 
-function formatAgendaTeachersLabel(rawTeachers){
-  const raw = String(rawTeachers || "").trim();
-  if (!raw) return "";
-
-  const content = raw
+function normalizeTeacherNames(rawValue){
+  return String(rawValue || "")
     .replace(/^Doc\.:?\s*/i, "")
-    .trim();
-  if (!content) return "";
-
-  const hadEllipsis = /[…]|\.\.\./.test(content);
-  const normalized = content.replace(/[…]|\.\.\./g, "");
-  const teacherNames = normalized
+    .replace(/[…]|\.\.\./g, "")
     .split(/\s*\/\s*|\s*,\s*|\s*;\s*/)
     .map((name) => name.trim())
     .filter(Boolean);
+}
 
-  if (!teacherNames.length) return "";
+function getAgendaTeacherLines(item){
+  const teachersFromArray = Array.isArray(item?.teacherNames)
+    ? item.teacherNames.map((name) => String(name || "").trim()).filter(Boolean)
+    : [];
+  if (teachersFromArray.length) return [...new Set(teachersFromArray)];
 
-  const visibleNames = teacherNames.slice(0, 2);
-  const needsEllipsis = hadEllipsis || teacherNames.length > visibleNames.length;
-  return `Doc.: ${visibleNames.join(", ")}${needsEllipsis ? "…" : ""}`;
+  const teachersFromLegacyDocentes = Array.isArray(item?.docentes)
+    ? item.docentes
+      .map((teacher) => {
+        if (typeof teacher === "string") return teacher.trim();
+        return String(teacher?.name || "").trim();
+      })
+      .filter(Boolean)
+    : [];
+  if (teachersFromLegacyDocentes.length) return [...new Set(teachersFromLegacyDocentes)];
+
+  return [...new Set(normalizeTeacherNames(item?.teachersVisible))];
 }
 
 function ensureAgendaStructure(){
@@ -232,13 +237,24 @@ function renderAgendaGridInto(grid, data, allowEdit){
       }
 
       const classDurationMinutes = endM - startM;
-      const teachersLabel = formatAgendaTeachersLabel(item.teachersVisible);
-      const shouldShowTeachers = classDurationMinutes >= 90 && Boolean(teachersLabel);
+      const anio = Number.parseInt(String(item?.anio ?? "").trim(), 10);
+      const teacherLines = getAgendaTeacherLines(item);
+      const shouldShowTeachers = (
+        (anio === 1 || anio === 2)
+        && item?.recursado !== true
+        && classDurationMinutes >= 90
+        && teacherLines.length > 0
+      );
 
       if (shouldShowTeachers){
         const teachers = document.createElement("small");
         teachers.className = "class-block-teachers";
-        teachers.textContent = teachersLabel;
+        teacherLines.slice(0, 3).forEach((teacherName, teacherIndex) => {
+          const line = document.createElement("span");
+          line.className = "class-block-teachers-line";
+          line.textContent = teacherIndex === 0 ? `Doc.: ${teacherName}` : teacherName;
+          teachers.appendChild(line);
+        });
         block.appendChild(teachers);
       }
 

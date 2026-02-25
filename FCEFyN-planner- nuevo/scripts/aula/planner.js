@@ -395,7 +395,7 @@ function getSectionTeachers(section){
 
   if (section.titular) names.push(section.titular);
   (section.docentes || []).forEach(d => {
-    if (d?.name) names.push(d.role ? `${d.name} (${d.role})` : d.name);
+    if (d?.name) names.push(String(d.name).trim());
   });
 
   const humanizeProfessorSlug = (value) => String(value || "")
@@ -416,6 +416,15 @@ function getSectionTeachers(section){
     if (!normalizedId) return;
     names.push(humanizeProfessorSlug(normalizedId));
   });
+
+  if (!names.length && typeof section?.teachersVisible === "string"){
+    section.teachersVisible
+      .replace(/^Doc\.:?\s*/i, "")
+      .split(/\s*\/\s*|\s*,\s*|\s*;\s*/)
+      .map((name) => String(name || "").trim())
+      .filter(Boolean)
+      .forEach((name) => names.push(name));
+  }
 
   return [...new Set(names.filter(Boolean))];
 }
@@ -498,6 +507,10 @@ function buildWeeklyDataFromSectionIds(sectionIds){
     const colorIndex = getSectionColorIndex(sec.id) ?? ensureColorForSubject(subjectSlug);
     const commission = getReadableCommissionShortLabel(sec);
     const teachersVisible = getCompactTeacherLabel(sec);
+    const teacherNames = getSectionTeachers(sec);
+    const parsedYear = Number.parseInt(String(sec?.year ?? sec?.anio ?? "").trim(), 10);
+    const anio = Number.isFinite(parsedYear) ? parsedYear : null;
+    const recursado = isRecursadoCommission(sec);
     (sec.days || []).forEach(d => {
       const k = dayNameToKey(d.day);
       if (!k) return;
@@ -507,6 +520,9 @@ function buildWeeklyDataFromSectionIds(sectionIds){
         aula,
         commissionVisible: commission,
         teachersVisible,
+        teacherNames,
+        anio,
+        recursado,
         inicio: d.start || "",
         fin: d.end || "",
         subjectSlug,
