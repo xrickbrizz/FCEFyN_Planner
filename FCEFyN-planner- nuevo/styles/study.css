@@ -2066,6 +2066,52 @@ body[data-theme="light"] .event{
       justify-content:flex-end;
       flex:0 0 auto;
     }
+    .agenda-planner-btn--primary{
+      background:#45697a;
+      color:#fff;
+      border:1px solid #3e6070;
+      border-radius:999px;
+      font-weight:700;
+      padding:.3rem .92rem;
+      box-shadow:0 7px 16px -12px rgba(25, 49, 62, .62), 0 1px 0 rgba(255, 255, 255, .15) inset;
+      transition:background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+    .agenda-planner-btn--primary:hover{
+      background:#3d5e6f;
+      color:#fff;
+      border-color:#365564;
+      box-shadow:0 9px 18px -12px rgba(19, 38, 49, .66), 0 1px 0 rgba(255, 255, 255, .14) inset;
+      transform:translateY(-1px);
+    }
+    .agenda-planner-btn--primary:active{
+      background:#355260;
+      color:#fff;
+      box-shadow:0 4px 10px -10px rgba(19, 38, 49, .66), 0 1px 0 rgba(255, 255, 255, .12) inset;
+      transform:translateY(0);
+    }
+    .agenda-planner-btn--primary:focus-visible{
+      outline:none;
+      color:#fff;
+      box-shadow:0 0 0 3px color-mix(in srgb, #6c98ad 58%, transparent),
+        0 8px 18px -12px rgba(19, 38, 49, .6),
+        0 1px 0 rgba(255, 255, 255, .15) inset;
+    }
+    .agenda-planner-btn--primary:disabled,
+    .agenda-planner-btn--primary:disabled:hover,
+    .agenda-planner-btn--primary:disabled:focus-visible{
+      background:#6f8895;
+      border-color:#68818f;
+      color:rgba(255, 255, 255, .9);
+      box-shadow:none;
+      transform:none;
+      cursor:not-allowed;
+      opacity:.82;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .agenda-planner-btn--primary{
+        transition:none;
+      }
+    }
     .agenda-shell{
       grid-column: 1 / -1;
       /* esto controla el fondo del calendario  background:var(--surface-94);*/
