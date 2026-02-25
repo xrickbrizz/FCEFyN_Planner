@@ -32,8 +32,7 @@
 
   #quickSidebarMount,
   .quick-sidebar,
-  .quick-sidebar-wrap,
-  .quick-toggle-btn {
+  .quick-sidebar-wrap {
     display: none !important;
   }
 

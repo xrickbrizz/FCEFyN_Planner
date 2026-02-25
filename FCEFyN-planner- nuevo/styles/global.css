@@ -819,7 +819,7 @@ body[data-theme="light"] .quick-toggle-btn{
   border-color: var(--color-border);
   box-shadow:var(--shadow-btn);
 }
-
+/*
 @media (min-width:769px) and (max-width:1000px){
   .quick-sidebar{
     position:fixed;
@@ -858,7 +858,7 @@ body[data-theme="light"] .quick-toggle-btn{
   #pageLayout .quick-sidebar{
     max-width:16.25rem;
   }
-}
+} */
 
 /* ---------- Toasts ---------- */
 .toast-stack{
