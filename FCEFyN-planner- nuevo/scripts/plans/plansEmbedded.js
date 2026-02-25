@@ -20,8 +20,6 @@ const SEMESTER_LABELS = [
 ];
 
 const STATUS_VALUES = ["promocionada", "regular", "libre", "en_curso"];
-const DEBUG_CORRELATIVAS = false;
-
 function isApproved(status) {
   return computeApproved(status);
 }
@@ -332,37 +330,13 @@ export async function mountPlansEmbedded({
     return { blocked: false, missing: gate.missing, reqs: gate.reqs };
   }
 
-  function areSubjectStatesEquivalent(nextStates, currentStates) {
-    const next = nextStates || {};
-    const current = currentStates || {};
-    const nextKeys = Object.keys(next);
-    const currentKeys = Object.keys(current);
-    if (nextKeys.length !== currentKeys.length) return false;
-
-    for (const key of nextKeys) {
-      const normalizedNext = normalizeSubjectStateEntry(next[key]);
-      const normalizedCurrent = normalizeSubjectStateEntry(current[key]);
-      if (!normalizedNext && !normalizedCurrent) continue;
-      if (!normalizedNext || !normalizedCurrent) return false;
-      if (normalizedNext.status !== normalizedCurrent.status) return false;
-      if (!!normalizedNext.approved !== !!normalizedCurrent.approved) return false;
-    }
-    return true;
-  }
-
   function renderSubjects() {
-    const semesterContainers = new Map();
-    gridEl.querySelectorAll(".subjects").forEach((el) => {
-      el.innerHTML = "";
-      const sem = Number(el.dataset.sem || 0);
-      if (Number.isFinite(sem) && sem > 0) semesterContainers.set(sem, el);
-    });
-
+    gridEl.querySelectorAll(".subjects").forEach((el) => { el.innerHTML = ""; });
     const estados = getEstadoSimpleMap();
 
     state.materias.forEach((subject) => {
       const sem = Number(subject.semester || 1);
-      const listEl = semesterContainers.get(sem);
+      const listEl = gridEl.querySelector(`.subjects[data-sem="${sem}"]`);
       if (!listEl) return;
 
       const row = document.createElement("div");
@@ -378,9 +352,7 @@ export async function mountPlansEmbedded({
       const status = estados[subject.subjectSlug] || null;
       const eligibility = getEligibilityForSubject(subject.subjectSlug, state.eligibilityMap);
       const gate = computeBlocked(subject, estados);
-      if (DEBUG_CORRELATIVAS) {
-        console.debug("[gate] subject:", subject.subjectSlug, "reqs:", gate.reqs, "missing:", gate.missing);
-      }
+      console.log("[gate] subject:", subject.subjectSlug, "reqs:", gate.reqs, "missing:", gate.missing);
       if (status) item.classList.add(status);
       if (gate.blocked) {
         item.classList.add("locked");
@@ -445,7 +417,6 @@ export async function mountPlansEmbedded({
   }
 
   function updateUI() {
-    // Future-safe: aquí se puede introducir diff incremental para evitar repaint completo.
     rebuildEligibilityMap();
     renderSubjects();
     const estados = getEstadoSimpleMap();
@@ -701,7 +672,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadPlan(slug) {
-    if (DEBUG_CORRELATIVAS) console.debug("[Materias] loadStudyPlan() [correlativas]");
+    console.log("[Materias] loadStudyPlan() [correlativas]");
     const resolved = resolvePlanSlug(slug || "");
     if (!resolved) {
       state.materias = [];
@@ -741,7 +712,7 @@ export async function mountPlansEmbedded({
   }
 
   async function loadStates() {
-    if (DEBUG_CORRELATIVAS) console.debug("[Materias] loadCorrelativasOrStates() [correlativas]");
+    console.log("[Materias] loadCorrelativasOrStates() [correlativas]");
     try {
       const localRaw = localStorage.getItem(state.storageKey);
       if (localRaw) setEstadoSimpleMap(JSON.parse(localRaw));
@@ -754,15 +725,11 @@ export async function mountPlansEmbedded({
   function startPlannerSubscription() {
     if (!state.plannerRef) return;
     state.plannerUnsubscribe?.();
-    if (DEBUG_CORRELATIVAS) console.debug("[Materias] loadCorrelativasOrStates() plannerPath:", `planner/${state.userUid}`);
+    console.log("[Materias] loadCorrelativasOrStates() plannerPath:", `planner/${state.userUid}`);
     state.plannerUnsubscribe = onSnapshot(state.plannerRef, (snap) => {
       const remote = snap.exists() ? (snap.data()?.subjectStates || {}) : {};
+      console.log("[Materias] states keys:", Object.keys(remote || {}).length);
       const { normalizedStates, fixes } = normalizeSubjectStatesWithFixes(remote);
-      const hasRelevantChanges = !areSubjectStatesEquivalent(normalizedStates, state.subjectStates);
-      if (!hasRelevantChanges && !Object.keys(fixes || {}).length) {
-        hideSectionMsg();
-        return;
-      }
       state.subjectStates = normalizedStates;
       persistLocal();
       dispatchSubjectStatesChanged();
