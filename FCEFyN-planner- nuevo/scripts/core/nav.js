@@ -15,11 +15,11 @@ export const ICONS = {
 
 export const navItems = [
   { id:"inicio", label:"Inicio", icon:ICONS.home },
-  { id:"agenda", label:"Agenda", icon:ICONS.agenda },
-  { id:"estudio", label:"Estudio", icon:ICONS.study },
-  { id:"academico", label:"Académico", icon:ICONS.academic },
-  { id:"materias", label:"Materias", icon:ICONS.materias },
   { id:"planestudios", label:"Correlativas", icon:ICONS.plan },
+  { id:"materias", label:"Materias", icon:ICONS.materias },
+  { id:"agenda", label:"Agenda", icon:ICONS.agenda },
+  { id:"academico", label:"Académico", icon:ICONS.academic },
+  { id:"estudio", label:"Estudio", icon:ICONS.study },
   { id:"profesores", label:"Profesores", icon:ICONS.profesores },
   { id:"comunidad", label:"Comunidad", icon:ICONS.comunidad, comingSoon:true },
   { id:"recreo", label:"Recreo", icon:ICONS.recreo, comingSoon:true },
