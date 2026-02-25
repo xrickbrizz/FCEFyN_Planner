@@ -2255,6 +2255,7 @@ body[data-theme="light"] .event{
       text-overflow:ellipsis;
     }
     .class-block .class-block-meta{
+      margin-top:1px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -2270,9 +2271,9 @@ body[data-theme="light"] .event{
     }
     .class-block .class-block-teachers{
       margin-top:1px;
-      font-size:.73rem;
+      font-size:.72rem;
       line-height:1.2;
-      opacity:.92;
+      opacity:.9;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;

@@ -61,9 +61,20 @@ function splitAgendaMeta(item){
   const aulaText = String(item?.aula || "").trim();
   const explicitCommission = String(item?.commissionVisible || "").trim();
 
+  const stripCommissionFromVenue = (value, commission) => {
+    const rawValue = String(value || "").trim();
+    if (!rawValue) return "";
+    if (!commission) return rawValue;
+
+    const escapedCommission = commission.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return rawValue
+      .replace(new RegExp(`\\s*[·-]\\s*${escapedCommission}$`, "i"), "")
+      .trim();
+  };
+
   if (explicitCommission){
     return {
-      venueText: aulaText,
+      venueText: stripCommissionFromVenue(aulaText, explicitCommission),
       commissionText: explicitCommission
     };
   }
@@ -80,6 +91,29 @@ function splitAgendaMeta(item){
     venueText: String(commissionMatch[1] || "").trim(),
     commissionText: String(commissionMatch[2] || "").trim()
   };
+}
+
+function formatAgendaTeachersLabel(rawTeachers){
+  const raw = String(rawTeachers || "").trim();
+  if (!raw) return "";
+
+  const content = raw
+    .replace(/^Doc\.:?\s*/i, "")
+    .trim();
+  if (!content) return "";
+
+  const hadEllipsis = /[…]|\.\.\./.test(content);
+  const normalized = content.replace(/[…]|\.\.\./g, "");
+  const teacherNames = normalized
+    .split(/\s*\/\s*|\s*,\s*|\s*;\s*/)
+    .map((name) => name.trim())
+    .filter(Boolean);
+
+  if (!teacherNames.length) return "";
+
+  const visibleNames = teacherNames.slice(0, 2);
+  const needsEllipsis = hadEllipsis || teacherNames.length > visibleNames.length;
+  return `Doc.: ${visibleNames.join(", ")}${needsEllipsis ? "…" : ""}`;
 }
 
 function ensureAgendaStructure(){
@@ -197,10 +231,14 @@ function renderAgendaGridInto(grid, data, allowEdit){
         block.appendChild(commission);
       }
 
-      if (item.teachersVisible){
+      const classDurationMinutes = endM - startM;
+      const teachersLabel = formatAgendaTeachersLabel(item.teachersVisible);
+      const shouldShowTeachers = classDurationMinutes >= 90 && Boolean(teachersLabel);
+
+      if (shouldShowTeachers){
         const teachers = document.createElement("small");
         teachers.className = "class-block-teachers";
-        teachers.textContent = item.teachersVisible;
+        teachers.textContent = teachersLabel;
         block.appendChild(teachers);
       }
 
