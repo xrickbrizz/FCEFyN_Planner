@@ -1,0 +1,3494 @@
+[
+  {
+    "id": "analisis-matematico-1-1.1-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "mors-horacio-anibal",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "analisis-matematico-1-1.2v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "mors-horacio-anibal"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-1.3-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gomez-rivera-ivan-dario",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-1.4-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "rodriguez-carlos-hector",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-1.5v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vega-leonor-teresa",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-1.6-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "marioni-ornela-florentina"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-1.7v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vignoli-adolfo-leonardo",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-1.8-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "berardo-silvia-marina",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "analisis-matematico-1-2.1-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "apessetche-dora-yesica",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-2.2-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "valenzuela-maria-alejandra",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-2.3v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "delgado-pinol-erika-mercedes"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-2.4-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "ferreyra-marcos-agustin",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-2.5-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "rodriguez-alfio-antonio",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-2.6v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "santillan-mauricio-alejandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-2.7-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "ferreyra-marcos-agustin"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-3.2-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cuneo-alejandro-javier",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-3.3-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "analisis-matematico-1-3.4-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "gimenez-paola-alejandra"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-3.5v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "zarate-melina"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-3.6-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "hidalgo-juan-vidal-alejandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-4.1-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "natali-osvaldo",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-4.2-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "brenta-agustina-rocio"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-4.3v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cuneo-alejandro-javier",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-4.4v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-4.5-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "analisis-matematico-1-4.6-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "reta-berg-diego-ernesto",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-3.1-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "berardo-silvia-marina",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ]
+  },
+  {
+    "id": "analisis-matematico-1-3.7v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vera-sonia-vanesa",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "introduccion-a-la-ingenieria-iq-1.1-2026",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "mancini-carlos-eduardo",
+      "bruni-cecilia-alejandra"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "introduccion-a-la-ingenieria-iq-3.1-2026",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "iznardo-ferreyra-luciano-martin",
+      "mancini-carlos-eduardo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-1.1-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lopez-maria-laura",
+      "o-mill-patricia",
+      "barrera-vazquez-maria-fernanda"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "10:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:15",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:15",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-1.2-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "barrera-vazquez-maria-fernanda",
+      "lopez-maria-laura",
+      "o-mill-patricia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "10:00",
+        "fin": "12:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:15",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:15",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-1.3-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lopez-maria-laura",
+      "o-mill-patricia",
+      "barrera-vazquez-maria-fernanda"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "12:00",
+        "fin": "14:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:15",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:15",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-3.1-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carraro-paola-maria",
+      "barbero-gonzalo-pedro",
+      "agazzi-lucas-oscar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "12:00",
+        "fin": "14:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:00"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-3.2-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carraro-paola-maria",
+      "agazzi-lucas-oscar",
+      "barbero-gonzalo-pedro"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "14:30",
+        "fin": "16:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:00"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-general-iq-tq-3.3-2026",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carraro-paola-maria",
+      "barbero-gonzalo-pedro",
+      "agazzi-lucas-oscar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "16:30",
+        "fin": "18:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:00"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-iq-2.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "novillo-david",
+      "gauna-marco-antonio-amadeo",
+      "cordova-alfredo-daniel"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-iq-3.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cordova-alfredo-daniel",
+      "campasso-diego-esteban",
+      "adami-agustin",
+      "novillo-david"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-iq-4.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cordova-alfredo-daniel",
+      "cuestas-luis-miguel"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.1-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "egea-claudia-maria",
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.2-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr",
+      "ferreyra-marcos-agustin"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.3-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "ferreyra-marcos-agustin",
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.4-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cabrera-enrique-angel",
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.5-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "del-soldato-carlos-federico",
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-2.1-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-2.2-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr",
+      "cuneo-alejandro-javier"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-2.3-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "rodriguez-carlos-ramiro",
+      "cuneo-alejandro-javier",
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-3.1-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-3.2-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr",
+      "joaquin-daniel-alberto"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-4.1-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandr",
+      "herrera-andrea-cecilia"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-2.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pedrotti-beatriz-isabel",
+      "weber-juan-francisco",
+      "heredia-angel-nicolas"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-2.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "weber-juan-francisco",
+      "pedrotti-beatriz-isabel",
+      "fernandez-carlos-andres"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-4.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "weber-juan-francisco",
+      "monerris-lucas-santiago"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-4.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "furer-mauro-leonel",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-1.1-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lazarte-gustavo",
+      "soutadet-aaron-jose",
+      "leguizamon-carlos-raul"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 6,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      4,
+      6
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-1.2-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lazarte-gustavo",
+      "lasheras-gonzalo-daniel"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-1.3-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lazarte-gustavo",
+      "bovina-walter-julio",
+      "leguizamon-carlos-raul"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "17:00",
+        "fin": "20:15"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-1.4-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lazarte-gustavo",
+      "peralta-maria-florencia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-1.5-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "miranda-juan-v",
+      "lazarte-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-2.1-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "miranda-juan-v",
+      "lazarte-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "14:00",
+        "fin": "17:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "12:15",
+        "fin": "15:30"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-2.2-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "correa-perelmuter-gabriel",
+      "bovina-walter-julio",
+      "lazarte-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "14:00",
+        "fin": "17:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "14:00",
+        "fin": "17:15"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-2.3-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "castillo-eduardo-jorge",
+      "lazarte-gustavo",
+      "correa-perelmuter-gabriel"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:45",
+        "fin": "18:59"
+      },
+      {
+        "dia": 5,
+        "inicio": "14:00",
+        "fin": "17:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-3.1-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "casanova-guillermo-andres",
+      "perez-lucero-alejandra-lucia",
+      "lazarte-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "19:15",
+        "fin": "22:30"
+      },
+      {
+        "dia": 3,
+        "inicio": "19:15",
+        "fin": "22:30"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-3.2-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lasheras-gonzalo-daniel",
+      "lazarte-gustavo",
+      "maglione-cesar-german"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "19:15",
+        "fin": "22:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "19:15",
+        "fin": "22:30"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-3.3-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "murua-carlos-alejandro",
+      "lazarte-gustavo",
+      "maglione-cesar-german"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "19:15",
+        "fin": "22:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "19:15",
+        "fin": "22:30"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-2-comun-3.4-2026",
+    "subjectSlug": "fisica-2",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "castillo-eduardo-jorge",
+      "lazarte-gustavo",
+      "perez-lucero-alejandra-lucia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "19:15",
+        "fin": "22:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:45",
+        "fin": "19:00"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-inorganica-iq-tuaqui-1-2026",
+    "subjectSlug": "quimica-inorganica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "severini-hernan-claudio",
+      "martinez-marcela-lilian",
+      "krapacher-claudio-ricardo",
+      "piloni-roxana-veronica",
+      "burgos-martha-ines"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "17:15",
+        "fin": "20:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:00"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-inorganica-iq-tuaqui-2-2026",
+    "subjectSlug": "quimica-inorganica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "burgos-martha-ines",
+      "piloni-roxana-veronica",
+      "krapacher-claudio-ricardo",
+      "martinez-marcela-lilian",
+      "severini-hernan-claudio"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "17:15",
+        "fin": "20:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "09:45",
+        "fin": "12:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-inorganica-iq-tuaqui-3-2026",
+    "subjectSlug": "quimica-inorganica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "severini-hernan-claudio",
+      "krapacher-claudio-ricardo",
+      "burgos-martha-ines",
+      "martinez-marcela-lilian",
+      "piloni-roxana-veronica"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "17:15",
+        "fin": "20:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "13:15",
+        "fin": "16:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "balance-de-materia-y-energia-iq24-4-2026",
+    "subjectSlug": "balance-de-materia-y-energia",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "edelstein-andres-ivan",
+      "severini-hernan-claudio"
+    ],
+    "horarios": [
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fenomenos-de-transporte-iq25-2026",
+    "subjectSlug": "fenomenos-de-transporte",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carrillo-parra-esteban-josue",
+      "alasino-noelia-pia-ximena",
+      "ganan-nicolas-alberto"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "modulo-de-ingles-comun-1-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "modulo-de-ingles-comun-2-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "10:00",
+        "fin": "12:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "modulo-de-ingles-comun-3-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "12:00",
+        "fin": "14:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "modulo-de-ingles-comun-4-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carrera-paul-alexis"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "14:00",
+        "fin": "16:00"
+      }
+    ],
+    "days": [
+      3
+    ]
+  },
+  {
+    "id": "modulo-de-ingles-comun-5-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "carrera-paul-alexis"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "16:00",
+        "fin": "18:00"
+      }
+    ],
+    "days": [
+      3
+    ]
+  },
+  {
+    "id": "quimica-analitica-instrumental-y-aplicada-iq25-1-2026",
+    "subjectSlug": "quimica-analitica-instrumental-y-aplicada",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "penci-maria-cecilia",
+      "ibanez-fabian-rolando",
+      "sottile-adolfo-emiliano",
+      "reyna-musso-laura-analia",
+      "corpora-roxana-maria"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "13:15",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-analitica-instrumental-y-aplicada-iq25-2-2026",
+    "subjectSlug": "quimica-analitica-instrumental-y-aplicada",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "penci-maria-cecilia",
+      "sottile-adolfo-emiliano",
+      "reyna-musso-laura-analia",
+      "corpora-roxana-maria",
+      "ibanez-fabian-rolando"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "13:15",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-fisica-iq25-1-2026",
+    "subjectSlug": "quimica-fisica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "rovetto-laura-jorgelina",
+      "tejeda-pablo-gustavo",
+      "velez-alexis-rafael",
+      "ibanez-fabian-rolando"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "16:30"
+      },
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "20:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "13:15",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-fisica-iq25-2-2026",
+    "subjectSlug": "quimica-fisica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "velez-alexis-rafael",
+      "rovetto-laura-jorgelina",
+      "edelstein-andres-ivan",
+      "tejeda-pablo-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "16:45",
+        "fin": "18:15"
+      },
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "20:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "13:15",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "bromatologia-y-toxicologia-iq25-2-2026",
+    "subjectSlug": "bromatologia-y-toxicologia",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "ribotta-pablo",
+      "barrera-gabriela-noel"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "13:15",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "17:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "instrumental-industrial-control-y-electrotecnia-iq25-2-2026",
+    "subjectSlug": "instrumental-industrial-control-y-electrotecnia",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vanella-oscar-rodolfo",
+      "prados-edgar-lautaro"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-gestion-de-la-calidad-e-inocuidad-iq25-1-2026",
+    "subjectSlug": "sistemas-de-gestion-de-la-calidad-e-inocuidad",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "lopez-abel-gerardo",
+      "vanella-oscar-rodolfo",
+      "musicante-sauma-paula-maria"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:30"
+      }
+    ],
+    "days": [
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-1.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "dimitroff-magdalena",
+      "cabrera-enrique-angel",
+      "dussel-maria-emilia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-1.2-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "hidalgo-juan-vidal-alejandro",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-2.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "dimitroff-magdalena",
+      "ruiz-linares-agustina-abril",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-2.2-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "dimitroff-magdalena",
+      "almeira-joaquin"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-3.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "salinas-rios-federico-estefano",
+      "santillan-mauricio-alejandro",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-4.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gomez-rivera-ivan-dario",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.1-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinelli-cesar-o",
+      "alaniz-horacio",
+      "carubelli-marianela",
+      "gomez-gustavo-cesar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.2-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinelli-cesar-o",
+      "alaniz-horacio",
+      "merino-hugo-alfredo",
+      "gomez-gustavo-cesar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.3-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gomez-carlos-gustavo",
+      "alaniz-horacio",
+      "gomez-gustavo-cesar",
+      "martinelli-cesar-o"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.4-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "alaniz-horacio",
+      "gomez-gustavo-cesar",
+      "martinelli-cesar-o",
+      "guzman-luis-gustavo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-2.1-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinez-elizabeth-marcela-de-lourdes",
+      "merino-hugo-alfredo",
+      "alaniz-horacio"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-2.2-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "menendez-pablo-sebastian",
+      "alaniz-horacio",
+      "martinez-elizabeth-marcela-de-lourdes"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-2.3-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "alaniz-horacio",
+      "menendez-pablo-sebastian",
+      "catan-julio-c"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-2.4-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "alaniz-horacio",
+      "catan-julio-c",
+      "berardo-silvia-marina",
+      "brenta-agustina-rocio"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.1-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "perez-lucero-alejandra-lucia",
+      "roitman-mirta-susana",
+      "baca-carlos-alberto",
+      "alaniz-horacio"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.2-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "natali-osvaldo",
+      "alaniz-horacio",
+      "vega-leonor-teresa",
+      "mariotti-cardozo-alejandro-david"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.3-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "alaniz-horacio",
+      "mariotti-cardozo-alejandro-david",
+      "torri-david-armando",
+      "natali-osvaldo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.4-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "mariotti-cardozo-alejandro-david",
+      "alaniz-horacio",
+      "bovina-walter-julio",
+      "natali-osvaldo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.5-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "miranda-alberto-daniel",
+      "roitman-mirta-susana",
+      "alaniz-horacio",
+      "perez-lucero-alejandra-lucia"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fundamentos-de-los-procesos-quimicos-red-iq-1-2026",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pisoni-gerardo-oscar",
+      "saldis-nancy-edith",
+      "gomez-marcelo-martin",
+      "o-mill-patricia",
+      "barbero-gonzalo-pedro",
+      "agazzi-lucas-oscar",
+      "colasanto-carina-maria"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "16:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estatica-y-resistencia-de-materiales-red-iq25-1.1-2026",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pirard-constancia-a-m",
+      "naveiro-silvia-analia",
+      "hunicken-diego-ricardo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "13:15",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "09:45",
+        "fin": "13:00"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estatica-y-resistencia-de-materiales-red-iq25-3.1-2026",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "hunicken-diego-ricardo",
+      "caffaro-geronimo",
+      "ostorero-gaston-nicolas"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estatica-y-resistencia-de-materiales-red-iq25-3.2-2026",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "berardo-silvia-marina",
+      "crespi-lucas-emanuel",
+      "hunicken-diego-ricardo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "termodinamica-quimica-red-iq25-1-2026",
+    "subjectSlug": "termodinamica-quimica",
+    "careerSlugs": [
+      "quimica"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martini-raquel-evangelina",
+      "lujan-lautaro",
+      "milanesio-juan-manuel"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "13:30"
+      },
+      {
+        "dia": 1,
+        "inicio": "09:00",
+        "fin": "11:00"
+      }
+    ],
+    "days": [
+      1
+    ],
+    "sede": "C univ"
+  }
+]

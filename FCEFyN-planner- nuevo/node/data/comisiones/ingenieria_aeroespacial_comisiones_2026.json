@@ -1,13 +1,13 @@
 [
   {
-    "id": "analisis-matematico-1-1.1-2025",
+    "id": "analisis-matematico-1-1.1-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "mors-horacio-anibal",
@@ -32,18 +32,18 @@
     "sede": "CENTRO"
   },
   {
-    "id": "analisis-matematico-1-1.2v-2025",
+    "id": "analisis-matematico-1-1.2v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "mors-horacio-anibal",
-      "pastore-liliana-beatriz"
+      "pastore-liliana-beatriz",
+      "mors-horacio-anibal"
     ],
     "horarios": [
       {
@@ -64,14 +64,14 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-1.3-2025",
+    "id": "analisis-matematico-1-1.3-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "gomez-rivera-ivan-dario",
@@ -96,18 +96,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-1.4-2025",
+    "id": "analisis-matematico-1-1.4-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "pastore-liliana-beatriz",
-      "rodriguez-carlos-hector"
+      "rodriguez-carlos-hector",
+      "pastore-liliana-beatriz"
     ],
     "horarios": [
       {
@@ -128,18 +128,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-1.5v-2025",
+    "id": "analisis-matematico-1-1.5v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "pastore-liliana-beatriz",
-      "vega-leonor-teresa"
+      "vega-leonor-teresa",
+      "pastore-liliana-beatriz"
     ],
     "horarios": [
       {
@@ -160,17 +160,49 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-1.6-2025",
+    "id": "analisis-matematico-1-1.6-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "marioni-ornela-florentina",
+      "pastore-liliana-beatriz",
+      "marioni-ornela-florentina"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-1.7v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vignoli-adolfo-l",
       "pastore-liliana-beatriz"
     ],
     "horarios": [
@@ -189,53 +221,21 @@
       2,
       4
     ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-1-1.7v-2025",
-    "subjectSlug": "analisis-matematico-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "pastore-liliana-beatriz",
-      "vignoli-adolfo-l"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-1.8-2025",
+    "id": "analisis-matematico-1-1.8-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "pastore-liliana-beatriz",
-      "romero-jose-luis"
+      "berardo-silvia-marina",
+      "pastore-liliana-beatriz"
     ],
     "horarios": [
       {
@@ -253,17 +253,17 @@
       2,
       4
     ],
-    "sede": "C univ"
+    "sede": "CENTRO"
   },
   {
-    "id": "analisis-matematico-1-2.1-2025",
+    "id": "analisis-matematico-1-2.1-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "apessetche-dora-yesica",
@@ -288,18 +288,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-2.2-2025",
+    "id": "analisis-matematico-1-2.2-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "pastore-liliana-beatriz",
-      "valenzuela-maria-alejandra"
+      "valenzuela-maria-alejandra",
+      "pastore-liliana-beatriz"
     ],
     "horarios": [
       {
@@ -320,18 +320,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-2.3v-2025",
+    "id": "analisis-matematico-1-2.3v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "ferreyra-marcos-agustin",
-      "pastore-liliana-beatriz"
+      "pastore-liliana-beatriz",
+      "delgado-pinol-erika-mercedes"
     ],
     "horarios": [
       {
@@ -352,14 +352,14 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-2.4-2025",
+    "id": "analisis-matematico-1-2.4-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "ferreyra-marcos-agustin",
@@ -384,18 +384,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-2.5-2025",
+    "id": "analisis-matematico-1-2.5-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "pastore-liliana-beatriz",
-      "rodriguez-alfio-antonio"
+      "rodriguez-alfio-antonio",
+      "pastore-liliana-beatriz"
     ],
     "horarios": [
       {
@@ -416,18 +416,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-2.6v-2025",
+    "id": "analisis-matematico-1-2.6v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "mauricio-alejandro-santillan",
-      "pastore-liliana-beatriz"
+      "pastore-liliana-beatriz",
+      "santillan-mauricio-alejandro"
     ],
     "horarios": [
       {
@@ -448,29 +448,29 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-3.1-2025",
+    "id": "analisis-matematico-1-2.7-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "delgado-pinol-erika-mercedes",
-      "pastore-liliana-beatriz"
+      "pastore-liliana-beatriz",
+      "ferreyra-marcos-agustin"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "15:00",
-        "fin": "18:15"
+        "inicio": "11:30",
+        "fin": "14:45"
       },
       {
         "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
+        "inicio": "11:30",
+        "fin": "14:45"
       }
     ],
     "days": [
@@ -480,14 +480,14 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-3.2-2025",
+    "id": "analisis-matematico-1-3.2-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "cuneo-alejandro-javier",
@@ -512,14 +512,14 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-3.3v-2025",
+    "id": "analisis-matematico-1-3.3-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "pastore-liliana-beatriz"
@@ -540,21 +540,21 @@
       1,
       3
     ],
-    "sede": "virtual sincronica"
+    "sede": "CENTRO"
   },
   {
-    "id": "analisis-matematico-1-3.4-2025",
+    "id": "analisis-matematico-1-3.4-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "pastore-liliana-beatriz",
-      "vera-sonia-vanesa"
+      "gimenez-paola-alejandra"
     ],
     "horarios": [
       {
@@ -563,30 +563,30 @@
         "fin": "18:15"
       },
       {
-        "dia": 4,
+        "dia": 5,
         "inicio": "15:00",
         "fin": "18:15"
       }
     ],
     "days": [
       2,
-      4
+      5
     ],
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-3.5v-2025",
+    "id": "analisis-matematico-1-3.5v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "pastore-liliana-beatriz",
-      "vera-sonia-vanesa"
+      "zarate-melina"
     ],
     "horarios": [
       {
@@ -595,30 +595,30 @@
         "fin": "18:15"
       },
       {
-        "dia": 4,
+        "dia": 5,
         "inicio": "15:00",
         "fin": "18:15"
       }
     ],
     "days": [
       2,
-      4
+      5
     ],
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-3.6-2025",
+    "id": "analisis-matematico-1-3.6-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "hidalgo-juan-vidal-alejandro",
-      "pastore-liliana-beatriz"
+      "pastore-liliana-beatriz",
+      "hidalgo-juan-vidal-alejandro"
     ],
     "horarios": [
       {
@@ -627,26 +627,26 @@
         "fin": "18:15"
       },
       {
-        "dia": 4,
+        "dia": 5,
         "inicio": "15:00",
         "fin": "18:15"
       }
     ],
     "days": [
       2,
-      4
+      5
     ],
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-4.1-2025",
+    "id": "analisis-matematico-1-4.1-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "natali-osvaldo",
@@ -671,18 +671,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-4.2-2025",
+    "id": "analisis-matematico-1-4.2-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "pastore-liliana-beatriz",
-      "tesando-micaela-andrea"
+      "brenta-agustina-rocio"
     ],
     "horarios": [
       {
@@ -703,14 +703,142 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-1-4.3v-2025",
+    "id": "analisis-matematico-1-4.3v-2026",
     "subjectSlug": "analisis-matematico-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "cuneo-alejandro-javier",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-4.4v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "analisis-matematico-1-4.5-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pastore-liliana-beatriz",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "CENTRO"
+  },
+  {
+    "id": "analisis-matematico-1-4.6-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "reta-berg-diego-ernesto",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-1-3.1-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "berardo-silvia-marina",
@@ -719,13 +847,44 @@
     "horarios": [
       {
         "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
+        "inicio": "15:00",
+        "fin": "18:15"
       },
       {
         "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ]
+  },
+  {
+    "id": "analisis-matematico-1-3.7v-2026",
+    "subjectSlug": "analisis-matematico-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "vera-sonia-vanesa",
+      "pastore-liliana-beatriz"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
       }
     ],
     "days": [
@@ -735,145 +894,17 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-1-4.4v-2025",
-    "subjectSlug": "analisis-matematico-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "montoya-gerardo-federico",
-      "pastore-liliana-beatriz"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "analisis-matematico-1-4.5-2025",
-    "subjectSlug": "analisis-matematico-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "montoya-gerardo-federico",
-      "pastore-liliana-beatriz"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "CENTRO"
-  },
-  {
-    "id": "analisis-matematico-1-4.6-2025",
-    "subjectSlug": "analisis-matematico-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "pastore-liliana-beatriz",
-      "reta-berg-diego-ernesto"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-1-4.7-2025",
-    "subjectSlug": "analisis-matematico-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "pagot-daniel-eduardo",
-      "pastore-liliana-beatriz"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      1,
-      5
-    ],
-    "sede": "CENTRO"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iaer-2.1-2025",
+    "id": "introduccion-a-la-ingenieria-iaer-2.1-2026",
     "subjectSlug": "introduccion-a-la-ingenieria",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "litvack-federico-julio",
+      "del-prete-pablo",
       "mancini-carlos-eduardo"
     ],
     "horarios": [
@@ -889,101 +920,42 @@
     "sede": "C univ"
   },
   {
-    "id": "introduccion-a-la-ingenieria-iaer-3.1-2025",
+    "id": "introduccion-a-la-ingenieria-iaer-3.1-2026",
     "subjectSlug": "introduccion-a-la-ingenieria",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "mancini-carlos-eduardo",
-      "roitman-claudia-alejandra"
-    ],
-    "horarios": [
-      {
-        "dia": 5,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 2,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      5,
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iag-1.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "iznardo-ferreyra-luciano-martin",
+      "beale-laura-claudina",
       "mancini-carlos-eduardo"
     ],
     "horarios": [
       {
         "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
+        "inicio": "15:00",
+        "fin": "18:15"
       }
     ],
     "days": [
       5
-    ],
-    "sede": "C univ"
+    ]
   },
   {
-    "id": "introduccion-a-la-ingenieria-iamb-1.1-2025",
+    "id": "introduccion-a-la-ingenieria-iaer-3.2-2026",
     "subjectSlug": "introduccion-a-la-ingenieria",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "del-prete-pablo",
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iamb-3.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "iznardo-luciano",
+      "roitman-claudia-alejandra",
       "mancini-carlos-eduardo"
     ],
     "horarios": [
@@ -996,227 +968,54 @@
     "days": [
       2
     ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-ic-1.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "capdevila-lisandro-adriel",
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      1
-    ],
     "sede": "C univ"
   },
   {
-    "id": "introduccion-a-la-ingenieria-ic-4.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iem-im-1.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "mancini-carlos-eduardo",
-      "rodriguez-maria-eugenia"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iem-im-3.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "da-vila-alejandro",
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iind-1.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "bruni-cecilia-alejandra",
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iind-3.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "corvera-patricia-beatriz",
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iq-1.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "introduccion-a-la-ingenieria-iq-4.1-2025",
-    "subjectSlug": "introduccion-a-la-ingenieria",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "mancini-carlos-eduardo"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      1
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-1.1-2025",
+    "id": "quimica-1.1-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "aimar-mario-leandro",
       "bordon-daniela-laura",
-      "falletti-paulina"
+      "della-mea-eliana-luciana",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:00"
+      },
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "13:30"
+      }
+    ],
+    "days": [
+      1
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-1.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "erro-eustaquio-martin",
+      "aimar-mario-leandro",
+      "bordon-daniela-laura"
     ],
     "horarios": [
       {
@@ -1237,18 +1036,18 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-1.2-2025",
+    "id": "quimica-1.3-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
+      "gigena-enzo",
       "aimar-mario-leandro",
-      "avendano-mara-constanza",
       "bordon-daniela-laura"
     ],
     "horarios": [
@@ -1270,47 +1069,14 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-1.3-2025",
+    "id": "quimica-2.1-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "bordon-daniela-laura",
-      "diaz-panero-mariangeles"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "11:30",
-        "fin": "13:30"
-      },
-      {
-        "dia": 2,
-        "inicio": "18:00",
-        "fin": "21:00"
-      }
-    ],
-    "days": [
-      1,
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-2.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
@@ -1319,8 +1085,8 @@
     "horarios": [
       {
         "dia": 1,
-        "inicio": "11:15",
-        "fin": "14:15"
+        "inicio": "11:30",
+        "fin": "14:30"
       },
       {
         "dia": 2,
@@ -1335,24 +1101,24 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-2.2-2025",
+    "id": "quimica-2.2-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
-      "fernandez-pablo-andres"
+      "spahn-baltazar"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "14:30",
-        "fin": "17:30"
+        "inicio": "14:45",
+        "fin": "17:45"
       },
       {
         "dia": 2,
@@ -1367,50 +1133,50 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-2.3-2025",
+    "id": "quimica-2.3-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "aimar-mario-leandro",
-      "della-mea-eliana-luciana"
+      "glatstein-daniel-alejandro",
+      "aimar-mario-leandro"
     ],
     "horarios": [
       {
-        "dia": 1,
-        "inicio": "14:30",
-        "fin": "17:30"
-      },
-      {
         "dia": 2,
         "inicio": "10:45",
         "fin": "12:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:30"
       }
     ],
     "days": [
-      1,
-      2
+      2,
+      3
     ],
     "sede": "C univ"
   },
   {
-    "id": "quimica-3.1-2025",
+    "id": "quimica-3.1-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "aimar-mario-leandro",
       "avendano-mara-constanza",
+      "aimar-mario-leandro",
       "comin-romina"
     ],
     "horarios": [
@@ -1420,108 +1186,140 @@
         "fin": "10:00"
       },
       {
-        "dia": 3,
-        "inicio": "11:15",
-        "fin": "14:15"
+        "dia": 4,
+        "inicio": "14:45",
+        "fin": "17:45"
       }
     ],
     "days": [
       3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-3.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "comin-romina",
+      "aimar-mario-leandro",
+      "martinez-maria-soledad"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "10:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:00"
+      }
+    ],
+    "days": [
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-3.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "comin-romina",
+      "zampar-vanesa-paola",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "10:00"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:30"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-4.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "villagran-constanza",
+      "della-mea-eliana-luciana",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "13:30"
+      },
+      {
+        "dia": 3,
+        "inicio": "14:45",
+        "fin": "17:45"
+      }
+    ],
+    "days": [
       3
     ],
     "sede": "C univ"
   },
   {
-    "id": "quimica-3.2-2025",
+    "id": "quimica-4.2-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
-      "comin-romina",
-      "zampar-vanesa-paola"
+      "villagran-constanza",
+      "barrera-vazquez-maria-fernanda"
     ],
     "horarios": [
       {
         "dia": 3,
-        "inicio": "08:00",
-        "fin": "10:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "11:15",
-        "fin": "14:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-3.3-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "comin-romina",
-      "zampar-vanesa-paola"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "08:00",
-        "fin": "10:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "14:30",
-        "fin": "17:30"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-4.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "martinez-maria-soledad",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "12:00",
-        "fin": "14:00"
+        "inicio": "11:30",
+        "fin": "13:30"
       },
       {
         "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:00"
+        "inicio": "11:30",
+        "fin": "14:30"
       }
     ],
     "days": [
@@ -1531,393 +1329,63 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-4.2-2025",
+    "id": "quimica-4.3-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
-      "barrera-vazquez-maria-fernanda",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "12:00",
-        "fin": "14:00"
-      },
-      {
-        "dia": 4,
-        "inicio": "11:15",
-        "fin": "14:15"
-      }
-    ],
-    "days": [
-      3,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-4.3-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "turco-mauricio-daniel",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "12:00",
-        "fin": "14:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:00"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-5.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "della-mea-eliana-luciana",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "14:30",
-        "fin": "17:30"
-      },
-      {
-        "dia": 4,
-        "inicio": "12:00",
-        "fin": "14:00"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-5.2-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "suchetti-laura-fabiana",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "12:00",
-        "fin": "14:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:00",
-        "fin": "21:00"
-      }
-    ],
-    "days": [
-      4,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-5.3-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "martinez-guillermo-gabriel",
-      "villagran-constanza"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "12:00",
-        "fin": "14:00"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:00",
-        "fin": "21:00"
-      }
-    ],
-    "days": [
-      4,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-6.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "avendano-mara-constanza",
-      "salvatierra-nancy-alicia"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:00"
-      },
-      {
-        "dia": 4,
-        "inicio": "10:00",
-        "fin": "12:00"
-      }
-    ],
-    "days": [
-      1,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-6.2-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "erro-eustaquio-martin",
-      "salvatierra-nancy-alicia"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "11:15",
-        "fin": "14:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "10:00",
-        "fin": "12:00"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-6.3-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "della-mea-eliana-luciana",
-      "salvatierra-nancy-alicia"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "14:30",
-        "fin": "17:30"
-      },
-      {
-        "dia": 4,
-        "inicio": "10:00",
-        "fin": "12:00"
-      }
-    ],
-    "days": [
-      3,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-7.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "borneo-benista-rafael",
-      "racca-maria-agustina"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "17:30",
-        "fin": "20:30"
-      },
-      {
-        "dia": 4,
-        "inicio": "14:00",
-        "fin": "16:00"
-      }
-    ],
-    "days": [
-      3,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-7.2-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "borneo-benista-rafael",
-      "erro-eustaquio-martin"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "14:00",
-        "fin": "16:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:00",
-        "fin": "21:00"
-      }
-    ],
-    "days": [
-      4,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-7.3-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "borneo-benista-rafael",
-      "glatstein-daniel-alejandro"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "14:30",
-        "fin": "17:30"
-      },
-      {
-        "dia": 4,
-        "inicio": "14:00",
-        "fin": "16:00"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "quimica-8.1-2025",
-    "subjectSlug": "quimica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "aimar-mario-leandro",
-      "ferrayoli-carlos-guillermo",
+      "villagran-constanza",
       "turco-mauricio-daniel"
     ],
     "horarios": [
       {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "13:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:00"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "villagran-constanza",
+      "fernandez-pablo-andres"
+    ],
+    "horarios": [
+      {
         "dia": 1,
-        "inicio": "18:00",
-        "fin": "21:00"
+        "inicio": "14:45",
+        "fin": "17:45"
       },
       {
         "dia": 4,
-        "inicio": "18:30",
-        "fin": "20:30"
+        "inicio": "11:30",
+        "fin": "13:30"
       }
     ],
     "days": [
@@ -1927,51 +1395,215 @@
     "sede": "C univ"
   },
   {
-    "id": "quimica-8.2-2025",
+    "id": "quimica-5.2-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
-      "ferrayoli-carlos-guillermo",
-      "vidal-carlos-daniel"
+      "villagran-constanza",
+      "della-mea-eliana-luciana"
     ],
     "horarios": [
       {
         "dia": 2,
+        "inicio": "14:45",
+        "fin": "17:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "13:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "falletti-paulina",
+      "villagran-constanza",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "14:45",
+        "fin": "17:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "13:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.4-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "zampar-vanesa-paola",
+      "villagran-constanza",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "13:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "14:45",
+        "fin": "17:45"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-6.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "racca-maria-agustina",
+      "borneo-benista-rafael"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
         "inicio": "17:45",
         "fin": "20:45"
       },
       {
         "dia": 4,
-        "inicio": "18:30",
-        "fin": "20:30"
+        "inicio": "13:30",
+        "fin": "15:30"
       }
     ],
     "days": [
-      2,
+      3,
       4
     ],
     "sede": "C univ"
   },
   {
-    "id": "quimica-8.3-2025",
+    "id": "quimica-6.2-2026",
     "subjectSlug": "quimica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "aimar-mario-leandro",
-      "daniele-maria-laura",
+      "martinez-guillermo-gabriel",
+      "borneo-benista-rafael"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "13:30",
+        "fin": "15:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:15",
+        "fin": "21:15"
+      }
+    ],
+    "days": [
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-6.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "borneo-benista-rafael",
+      "suchetti-laura-fabiana",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "13:30",
+        "fin": "15:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:15",
+        "fin": "21:15"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "turco-mauricio-daniel",
+      "aimar-mario-leandro",
       "ferrayoli-carlos-guillermo"
     ],
     "horarios": [
@@ -1993,19 +1625,120 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-1.1-2025",
+    "id": "quimica-7.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinez-guillermo-gabriel",
+      "aimar-mario-leandro",
+      "ferrayoli-carlos-guillermo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "ferrayoli-carlos-guillermo",
+      "aimar-mario-leandro",
+      "daniele-maria-laura"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.4-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "falletti-paulina",
+      "ferrayoli-carlos-guillermo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-comun-1.1-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "bianchotti-paola-andrea",
+      "maligno-emilio-pedro",
+      "cordova-alfredo-daniel",
       "gauna-marco-antonio-amadeo",
-      "gomez-gustavo-cesar"
+      "gomez-gustavo-cesar",
+      "bianchotti-paola-andrea"
     ],
     "horarios": [
       {
@@ -2026,19 +1759,20 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-1.2-2025",
+    "id": "sistemas-de-representacion-comun-1.2-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "arguello-luna-diego-ivan",
       "bianchotti-paola-andrea",
-      "cordova-alfredo-daniel"
+      "maligno-emilio-pedro",
+      "cordova-alfredo-daniel",
+      "arguello-luna-diego-ivan"
     ],
     "horarios": [
       {
@@ -2059,17 +1793,18 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-1.3-2025",
+    "id": "sistemas-de-representacion-comun-1.3-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "campasso-diego-esteban",
+      "maligno-emilio-pedro",
       "cordova-alfredo-daniel",
       "parada-larrosa-francisco"
     ],
@@ -2080,32 +1815,66 @@
         "fin": "11:15"
       },
       {
-        "dia": 3,
+        "dia": 4,
         "inicio": "11:30",
         "fin": "14:45"
       }
     ],
     "days": [
       3,
-      3
+      4
     ],
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-2.1-2025",
+    "id": "sistemas-de-representacion-comun-1.4-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "cordova-alfredo-daniel",
+      "bianchotti-paola-andrea",
+      "novillo-david",
+      "campasso-diego-esteban",
+      "maligno-emilio-pedro"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-comun-2.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinez-pablo-agustin",
+      "cordova-alfredo-daniel",
       "gonzalez-gramaglia-hernan-ezequiel",
-      "maligno-emilio-pedro",
-      "martinez-pablo-agustin"
+      "maligno-emilio-pedro"
     ],
     "horarios": [
       {
@@ -2126,20 +1895,21 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-2.2-2025",
+    "id": "sistemas-de-representacion-comun-2.2-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "arguello-luna-diego-ivan",
       "cordova-alfredo-daniel",
+      "maligno-emilio-pedro",
+      "gomez-gustavo-cesar",
       "destefanis-eduardo",
-      "gomez-gustavo-cesar"
+      "arguello-luna-diego-ivan"
     ],
     "horarios": [
       {
@@ -2160,20 +1930,21 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-2.3-2025",
+    "id": "sistemas-de-representacion-comun-2.3-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "bianchotti-paola-andrea",
-      "cordova-alfredo-daniel",
+      "maligno-emilio-pedro",
       "gauna-marco-antonio-amadeo",
-      "parada-larrosa-francisco"
+      "parada-larrosa-francisco",
+      "bianchotti-paola-andrea",
+      "cordova-alfredo-daniel"
     ],
     "horarios": [
       {
@@ -2188,26 +1959,63 @@
       }
     ],
     "days": [
-      4,
       4
     ],
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-3.1-2025",
+    "id": "sistemas-de-representacion-comun-2.4-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
+      "maligno-emilio-pedro",
+      "gauna-marco-antonio-amadeo",
+      "arguello-luna-diego-ivan",
+      "gonzalez-gramaglia-hernan-ezequiel",
       "cordova-alfredo-daniel",
-      "cuestas-luis-miguel",
-      "martinez-pablo-agustin",
+      "parada-larrosa-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:15",
+        "fin": "21:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-comun-3.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
       "ruiz-paola-fabiana",
+      "maligno-emilio-pedro",
+      "bianchotti-paola-andrea",
+      "cordova-alfredo-daniel",
+      "martinez-pablo-agustin",
+      "cuestas-luis-miguel",
       "sapuppo-daniel-salvador"
     ],
     "horarios": [
@@ -2229,21 +2037,21 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-3.2-2025",
+    "id": "sistemas-de-representacion-comun-3.2-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "cordova-alfredo-daniel",
+      "sanchez-ignacio-roberto",
       "gonzalez-gramaglia-hernan-ezequiel",
-      "maligno-emilio-pedro",
       "martinez-pablo-agustin",
-      "sanchez-ignacio-roberto"
+      "maligno-emilio-pedro",
+      "cordova-alfredo-daniel"
     ],
     "horarios": [
       {
@@ -2264,18 +2072,19 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-comun-3.3-2025",
+    "id": "sistemas-de-representacion-comun-3.3-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "cordova-alfredo-daniel",
       "cuestas-luis-miguel",
+      "maligno-emilio-pedro",
       "gauna-marco-antonio-amadeo"
     ],
     "horarios": [
@@ -2286,8 +2095,8 @@
       },
       {
         "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
+        "inicio": "18:30",
+        "fin": "21:45"
       }
     ],
     "days": [
@@ -2297,210 +2106,50 @@
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-ie-2.1-2025",
+    "id": "sistemas-de-representacion-comun-3.4-2026",
     "subjectSlug": "sistemas-de-representacion",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 1,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "escribano-victor-ezequie",
-      "gomez-gustavo-cesar",
-      "muguiro-nestor-osvaldo"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "sistemas-de-representacion-ie-3.1-2025",
-    "subjectSlug": "sistemas-de-representacion",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "destefanis-eduardo",
-      "escribano-victor-ezequie",
-      "martinez-elizabeth-m"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "sistemas-de-representacion-ie-4.1-2025",
-    "subjectSlug": "sistemas-de-representacion",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "arguello-luna-diego-ivan",
+      "maligno-emilio-pedro",
       "cordova-alfredo-daniel",
-      "escribano-victor-ezequie",
-      "gallo-cesar-hugo"
+      "martinez-pablo-agustin",
+      "cuestas-luis-miguel",
+      "dotta-leones-matias-nicolas",
+      "sapuppo-daniel-salvador"
     ],
     "horarios": [
       {
-        "dia": 3,
+        "dia": 4,
         "inicio": "18:30",
         "fin": "21:45"
       },
       {
         "dia": 5,
-        "inicio": "18:30",
-        "fin": "21:45"
+        "inicio": "18:15",
+        "fin": "21:30"
       }
     ],
     "days": [
-      3,
+      4,
       5
     ],
     "sede": "C univ"
   },
   {
-    "id": "sistemas-de-representacion-iq-2.1-2025",
-    "subjectSlug": "sistemas-de-representacion",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "cordova-alfredo-daniel",
-      "gauna-marco-antonio-amadeo"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "11:30",
-        "fin": "14:45"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "sistemas-de-representacion-iq-3.1-2025",
-    "subjectSlug": "sistemas-de-representacion",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "adami-agustin",
-      "cordova-alfredo-daniel"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "sistemas-de-representacion-iq-4.1-2025",
-    "subjectSlug": "sistemas-de-representacion",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "cordova-alfredo-daniel",
-      "cuestas-luis-miguel"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-2-1.1-2025",
+    "id": "analisis-matematico-2-1.1-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "egea-claudia-maria",
@@ -2525,14 +2174,46 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-1.2-2025",
+    "id": "analisis-matematico-2-1.2-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "roitman-claudia-alejandra",
+      "ferreyra-marcos-agustin"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "analisis-matematico-2-1.3-2026",
+    "subjectSlug": "analisis-matematico-2",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "ferreyra-marcos-agustin",
@@ -2540,7 +2221,7 @@
     ],
     "horarios": [
       {
-        "dia": 2,
+        "dia": 1,
         "inicio": "08:00",
         "fin": "11:15"
       },
@@ -2551,52 +2232,20 @@
       }
     ],
     "days": [
-      2,
+      1,
       3
     ],
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-1.3-2025",
+    "id": "analisis-matematico-2-1.4-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "ferreyra-ricardo-tomas",
-      "roitman-claudia-alejandra"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      1,
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-2-1.4-2025",
-    "subjectSlug": "analisis-matematico-2",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "cabrera-enrique-angel",
@@ -2621,14 +2270,14 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-1.5-2025",
+    "id": "analisis-matematico-2-1.5-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "del-soldato-carlos-federico",
@@ -2653,17 +2302,16 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-2.1-2025",
+    "id": "analisis-matematico-2-2.1-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "herrera-andrea-cecilia",
       "roitman-claudia-alejandra"
     ],
     "horarios": [
@@ -2685,18 +2333,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-2.2-2025",
+    "id": "analisis-matematico-2-2.2-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "cuneo-alejandro-javier",
-      "roitman-claudia-alejandra"
+      "roitman-claudia-alejandra",
+      "cuneo-alejandro-javier"
     ],
     "horarios": [
       {
@@ -2717,18 +2365,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-2.3-2025",
+    "id": "analisis-matematico-2-2.3-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "cuneo-alejandro-javier",
       "rodriguez-carlos-ramiro",
+      "cuneo-alejandro-javier",
       "roitman-claudia-alejandra"
     ],
     "horarios": [
@@ -2750,14 +2398,14 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-3.1-2025",
+    "id": "analisis-matematico-2-3.1-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "roitman-claudia-alejandra"
@@ -2781,18 +2429,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-3.2-2025",
+    "id": "analisis-matematico-2-3.2-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "joaquin-daniel-alberto",
-      "roitman-claudia-alejandra"
+      "roitman-claudia-alejandra",
+      "joaquin-daniel-alberto"
     ],
     "horarios": [
       {
@@ -2813,18 +2461,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-2-4.1-2025",
+    "id": "analisis-matematico-2-4.1-2026",
     "subjectSlug": "analisis-matematico-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "ferreyra-marcos-agustin",
-      "roitman-claudia-alejandra"
+      "roitman-claudia-alejandra",
+      "herrera-andrea-cecilia"
     ],
     "horarios": [
       {
@@ -2845,19 +2493,19 @@
     "sede": "CENTRO"
   },
   {
-    "id": "estructuras-isostaticas-comun-1.1-2025",
+    "id": "estructuras-isostaticas-comun-1.1-2026",
     "subjectSlug": "estructuras-isostaticas",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
+      "pirard-constancia-a-m",
       "maza-mauro-sebastian",
-      "monaldi-lucas",
-      "pirard-constancia"
+      "monaldi-lucas"
     ],
     "horarios": [
       {
@@ -2878,20 +2526,20 @@
     "sede": "C univ"
   },
   {
-    "id": "estructuras-isostaticas-comun-3.1-2025",
+    "id": "estructuras-isostaticas-comun-3.1-2026",
     "subjectSlug": "estructuras-isostaticas",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "maza-mauro-sebastian",
+      "trono-adriano",
       "monaldi-lucas",
-      "pagliero-jorge-maximo",
-      "trono-adriano"
+      "maza-mauro-sebastian",
+      "pagliero-jorge-maximo"
     ],
     "horarios": [
       {
@@ -2901,8 +2549,8 @@
       },
       {
         "dia": 4,
-        "inicio": "15:30",
-        "fin": "18:00"
+        "inicio": "13:30",
+        "fin": "16:00"
       }
     ],
     "days": [
@@ -2912,19 +2560,19 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-1.1-2025",
+    "id": "fisica-2-comun-1.1-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "lazarte-gustavo",
-      "perez-lucero-alejandra-lucia",
-      "soutadet-aaron-jose"
+      "soutadet-aaron-jose",
+      "leguizamon-carlos-raul"
     ],
     "horarios": [
       {
@@ -2945,18 +2593,18 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-1.2-2025",
+    "id": "fisica-2-comun-1.2-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "lazarte-gustavo"
+      "lazarte-gustavo",
+      "lasheras-gonzalo-daniel"
     ],
     "horarios": [
       {
@@ -2977,19 +2625,19 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-1.3-2025",
+    "id": "fisica-2-comun-1.3-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "lazarte-gustavo",
-      "maglione-cesar-german",
-      "perez-lucero-alejandra-lucia"
+      "bovina-walter-julio",
+      "leguizamon-carlos-raul"
     ],
     "horarios": [
       {
@@ -2999,8 +2647,8 @@
       },
       {
         "dia": 5,
-        "inicio": "14:00",
-        "fin": "17:15"
+        "inicio": "17:00",
+        "fin": "20:15"
       }
     ],
     "days": [
@@ -3010,18 +2658,17 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-1.4-2025",
+    "id": "fisica-2-comun-1.4-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "lazarte-gustavo",
-      "miranda-juan-v",
       "peralta-maria-florencia"
     ],
     "horarios": [
@@ -3043,18 +2690,18 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-1.5-2025",
+    "id": "fisica-2-comun-1.5-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "lazarte-gustavo",
-      "maglione-cesar-german"
+      "miranda-juan-v",
+      "lazarte-gustavo"
     ],
     "horarios": [
       {
@@ -3075,19 +2722,18 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-2.1-2025",
+    "id": "fisica-2-comun-2.1-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "chiappero-victor-eduardo",
-      "lazarte-gustavo",
-      "miranda-juan-v"
+      "miranda-juan-v",
+      "lazarte-gustavo"
     ],
     "horarios": [
       {
@@ -3108,22 +2754,23 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-2.2-2025",
+    "id": "fisica-2-comun-2.2-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "lazarte-gustavo",
-      "moyano-angaramo-esteban-tomas"
+      "correa-perelmuter-gabriel",
+      "bovina-walter-julio",
+      "lazarte-gustavo"
     ],
     "horarios": [
       {
-        "dia": 4,
+        "dia": 1,
         "inicio": "14:00",
         "fin": "17:15"
       },
@@ -3134,24 +2781,25 @@
       }
     ],
     "days": [
-      4,
+      1,
       5
     ],
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-2.3-2025",
+    "id": "fisica-2-comun-2.3-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "castillo-eduardo-jorge",
-      "lazarte-gustavo"
+      "lazarte-gustavo",
+      "correa-perelmuter-gabriel"
     ],
     "horarios": [
       {
@@ -3172,19 +2820,19 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-3.1-2025",
+    "id": "fisica-2-comun-3.1-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "casanova-guillermo-andres",
-      "lazarte-gustavo",
-      "leguizamon-carlos-raul"
+      "perez-lucero-alejandra-lucia",
+      "lazarte-gustavo"
     ],
     "horarios": [
       {
@@ -3205,18 +2853,19 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-3.2-2025",
+    "id": "fisica-2-comun-3.2-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
+      "lasheras-gonzalo-daniel",
       "lazarte-gustavo",
-      "moyano-angaramo-esteban-tomas"
+      "maglione-cesar-german"
     ],
     "horarios": [
       {
@@ -3237,52 +2886,52 @@
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-3.3-2025",
+    "id": "fisica-2-comun-3.3-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "chiappero-victor-eduardo",
+      "murua-carlos-alejandro",
       "lazarte-gustavo",
-      "murua-carlos-alejandro"
+      "maglione-cesar-german"
     ],
     "horarios": [
       {
-        "dia": 5,
+        "dia": 4,
         "inicio": "19:15",
         "fin": "22:30"
       },
       {
-        "dia": 6,
-        "inicio": "09:00",
-        "fin": "12:15"
+        "dia": 5,
+        "inicio": "19:15",
+        "fin": "22:30"
       }
     ],
     "days": [
-      5,
-      6
+      4,
+      5
     ],
     "sede": "C univ"
   },
   {
-    "id": "fisica-2-comun-3.4-2025",
+    "id": "fisica-2-comun-3.4-2026",
     "subjectSlug": "fisica-2",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "castillo-eduardo-jorge",
       "lazarte-gustavo",
-      "leguizamon-carlos-raul"
+      "perez-lucero-alejandra-lucia"
     ],
     "horarios": [
       {
@@ -3303,14 +2952,14 @@
     "sede": "C univ"
   },
   {
-    "id": "probabilidad-y-estadistica-comun-1.1-2025",
+    "id": "probabilidad-y-estadistica-comun-1.1-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "gonzalez-analia",
@@ -3319,274 +2968,56 @@
     "horarios": [
       {
         "dia": 1,
-        "inicio": "08:30",
-        "fin": "13:00"
-      }
-    ],
-    "days": [
-      1
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-1.2-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia",
-      "zanazzi-jose-francisco"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "13:00"
-      }
-    ],
-    "days": [
-      1
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-1.3-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia",
-      "nepote-valeria"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "13:00"
-      }
-    ],
-    "days": [
-      1
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-1.4-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia",
-      "vera-leonardo-gabriel"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "12:45"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-1.5-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "ferrero-maria-cecilia",
-      "gonzalez-analia"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "12:45"
-      }
-    ],
-    "days": [
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-1.6-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 3,
         "inicio": "08:00",
         "fin": "09:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
       }
     ],
     "days": [
       1,
-      3
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-2.1-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "dimitroff-magdalena",
-      "gonzalez-analia"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "11:30",
-        "fin": "14:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "11:30",
-        "fin": "14:00"
-      }
-    ],
-    "days": [
-      4,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-3.1-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia",
-      "oliva-cuneo-facundo-nicolas"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "15:30",
-        "fin": "17:15"
-      },
-      {
-        "dia": 3,
-        "inicio": "14:00",
-        "fin": "17:15"
-      }
-    ],
-    "days": [
-      1,
-      3
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-3.2-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "barbero-alexis-damian",
-      "gonzalez-analia"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "14:00",
-        "fin": "18:45"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "probabilidad-y-estadistica-comun-3.3-2025",
-    "subjectSlug": "probabilidad-y-estadistica",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "gonzalez-analia"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "14:00",
-        "fin": "18:45"
-      }
-    ],
-    "days": [
       4
     ],
     "sede": "C univ"
   },
   {
-    "id": "probabilidad-y-estadistica-comun-3.4-2025",
+    "id": "probabilidad-y-estadistica-comun-1.2-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "nepote-valeria",
+      "gonzalez-analia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "13:00"
+      }
+    ],
+    "days": [
+      1
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-1.3-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "gonzalez-analia",
@@ -3595,8 +3026,8 @@
     "horarios": [
       {
         "dia": 5,
-        "inicio": "14:00",
-        "fin": "18:30"
+        "inicio": "08:00",
+        "fin": "13:00"
       }
     ],
     "days": [
@@ -3605,40 +3036,302 @@
     "sede": "C univ"
   },
   {
-    "id": "probabilidad-y-estadistica-comun-4.1-2025",
+    "id": "probabilidad-y-estadistica-comun-1.5-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "gonzalez-analia",
-      "trono-adriano"
+      "dimitroff-magdalena",
+      "gonzalez-analia"
     ],
     "horarios": [
       {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
         "dia": 3,
-        "inicio": "17:30",
-        "fin": "22:00"
+        "inicio": "08:00",
+        "fin": "09:30"
       }
     ],
     "days": [
+      2,
       3
     ],
     "sede": "C univ"
   },
   {
-    "id": "electrotecnia-y-electricidad-iaer25-3-2025",
+    "id": "probabilidad-y-estadistica-comun-2.1-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-2.2-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia",
+      "barbero-alexis-damian"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "13:15",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-3.1-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia",
+      "filipigh-sebastian-michael"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "16:30"
+      },
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:30"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-3.2-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "filipigh-sebastian-michael",
+      "gonzalez-analia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "16:45",
+        "fin": "18:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-3.3-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia",
+      "zanazzi-jose-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-4.1-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia",
+      "ferrero-maria-cecilia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "16:45",
+        "fin": "18:30"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "probabilidad-y-estadistica-comun-4.2-2026",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gonzalez-analia",
+      "vera-leonardo-gabriel"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:45",
+        "fin": "20:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "aeronautica-general-seminarios-y-aeropuertos-iaer25-3-2026",
+    "subjectSlug": "aeronautica-general-seminarios-y-aeropuertos",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "galeasso-angel-andres",
+      "garcia-jorge-osvaldo",
+      "krause-gustavo-javier"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-y-electricidad-iaer25-3-2026",
     "subjectSlug": "electrotecnia-y-electricidad",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "barcena-carlos-osvaldo",
@@ -3647,13 +3340,13 @@
     "horarios": [
       {
         "dia": 1,
-        "inicio": "19:00",
-        "fin": "21:59"
+        "inicio": "18:30",
+        "fin": "20:00"
       },
       {
         "dia": 3,
-        "inicio": "19:00",
-        "fin": "21:59"
+        "inicio": "18:30",
+        "fin": "21:45"
       }
     ],
     "days": [
@@ -3663,29 +3356,30 @@
     "sede": "C univ"
   },
   {
-    "id": "mecanica-racional-iaer25-2-2025",
+    "id": "mecanica-racional-iaer25-2-2026",
     "subjectSlug": "mecanica-racional",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "garzon-duarte-santiago",
-      "natali-osvaldo"
+      "abud-daniel-juan",
+      "natali-osvaldo",
+      "inaudi-jose-antonio"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "14:00",
-        "fin": "17:00"
+        "inicio": "08:00",
+        "fin": "10:00"
       },
       {
         "dia": 3,
-        "inicio": "14:00",
-        "fin": "17:00"
+        "inicio": "08:00",
+        "fin": "10:30"
       }
     ],
     "days": [
@@ -3695,46 +3389,47 @@
     "sede": "C univ"
   },
   {
-    "id": "mecanica-racional-iaer25-3-2025",
+    "id": "mecanica-racional-iaer25-3-2026",
     "subjectSlug": "mecanica-racional",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "mariotti-cardozo-alejandro-david",
-      "natali-osvaldo"
+      "inaudi-jose-antonio",
+      "natali-osvaldo",
+      "mariotti-cardozo-alejandro-david"
     ],
     "horarios": [
       {
-        "dia": 3,
-        "inicio": "14:00",
-        "fin": "17:00"
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "10:00"
       },
       {
         "dia": 3,
-        "inicio": "18:00",
-        "fin": "21:00"
+        "inicio": "15:00",
+        "fin": "17:30"
       }
     ],
     "days": [
-      3,
+      1,
       3
     ],
     "sede": "C univ"
   },
   {
-    "id": "modulo-de-ingles-comun-1-2025",
+    "id": "modulo-de-ingles-comun-1-2026",
     "subjectSlug": "modulo-de-ingles",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "soliz-monica-elizabeth"
@@ -3749,17 +3444,17 @@
     "days": [
       2
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "modulo-de-ingles-comun-2-2025",
+    "id": "modulo-de-ingles-comun-2-2026",
     "subjectSlug": "modulo-de-ingles",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "soliz-monica-elizabeth"
@@ -3774,17 +3469,17 @@
     "days": [
       2
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "modulo-de-ingles-comun-3-2025",
+    "id": "modulo-de-ingles-comun-3-2026",
     "subjectSlug": "modulo-de-ingles",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "soliz-monica-elizabeth"
@@ -3799,138 +3494,70 @@
     "days": [
       2
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "modulo-de-ingles-comun-4-2025",
+    "id": "modulo-de-ingles-comun-4-2026",
     "subjectSlug": "modulo-de-ingles",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "carrera-paul-alexis"
     ],
     "horarios": [
       {
-        "dia": 5,
+        "dia": 3,
         "inicio": "14:00",
         "fin": "16:00"
       }
     ],
     "days": [
-      5
-    ],
-    "sede": "virtual sincronica"
+      3
+    ]
   },
   {
-    "id": "modulo-de-ingles-comun-5-2025",
+    "id": "modulo-de-ingles-comun-5-2026",
     "subjectSlug": "modulo-de-ingles",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "regular",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "carrera-paul-alexis"
     ],
     "horarios": [
       {
-        "dia": 5,
+        "dia": 3,
         "inicio": "16:00",
         "fin": "18:00"
       }
     ],
     "days": [
-      5
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "algebra-lineal-recursado-1.1-2025",
-    "subjectSlug": "algebra-lineal",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "blanco-villacorta-carmen-luz",
-      "dimitroff-magdalena",
-      "romero-jose-luis"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "09:30"
-      },
-      {
-        "dia": 3,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      1,
       3
-    ],
-    "sede": "virtual sincronica"
+    ]
   },
   {
-    "id": "algebra-lineal-recursado-2.1-2025",
-    "subjectSlug": "algebra-lineal",
+    "id": "aerodinamica-1-iaer25-2-2026",
+    "subjectSlug": "aerodinamica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "dimitroff-magdalena",
-      "mauricio-alejandro-santillan",
-      "montoya-gerardo-federico"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "15:00",
-        "fin": "16:30"
-      },
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      1,
-      3
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "algebra-lineal-recursado-3.1-2025",
-    "subjectSlug": "algebra-lineal",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "cabrera-enrique-angel",
-      "dimitroff-magdalena",
-      "oliva-cuneo-facundo-nicolas"
+      "garcia-jorge-osvaldo",
+      "bonvin-eugenio",
+      "saldia-juan-pablo"
     ],
     "horarios": [
       {
@@ -3941,92 +3568,97 @@
       {
         "dia": 5,
         "inicio": "18:30",
-        "fin": "20:00"
+        "fin": "21:45"
       }
     ],
     "days": [
       2,
       5
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-1.1-2025",
-    "subjectSlug": "fisica-1",
+    "id": "calculo-estructural-1-comun25-4-2026",
+    "subjectSlug": "calculo-estructural-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "carubelli-marianela"
+      "perez-segura-martin-eduardo",
+      "maza-mauro-sebastian",
+      "trono-adriano",
+      "ribero-santiago"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
+        "inicio": "18:30",
+        "fin": "20:45"
       },
       {
-        "dia": 2,
-        "inicio": "09:00",
-        "fin": "12:12"
+        "dia": 4,
+        "inicio": "14:00",
+        "fin": "16:30"
       }
     ],
     "days": [
       1,
-      2
+      4
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-1.2-2025",
-    "subjectSlug": "fisica-1",
+    "id": "dinamica-de-los-gases-1-iaer25-2-2026",
+    "subjectSlug": "dinamica-de-los-gases-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
+    "tipo": "regular",
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "merino-hugo-alfredo"
+      "schulz-walkiria",
+      "elaskar-sergio-amado",
+      "lorenzon-denis",
+      "cid-guillermo-martin"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
+        "inicio": "15:00",
+        "fin": "18:15"
       },
       {
-        "dia": 3,
-        "inicio": "08:00",
-        "fin": "11:15"
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
       }
     ],
     "days": [
       1,
-      3
+      5
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-1.3-2025",
-    "subjectSlug": "fisica-1",
+    "id": "algebra-lineal-recursado-1.1-2026",
+    "subjectSlug": "algebra-lineal",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "gomez-carlos-gustavo"
+      "dimitroff-magdalena",
+      "cabrera-enrique-angel",
+      "dussel-maria-emilia"
     ],
     "horarios": [
       {
@@ -4044,20 +3676,286 @@
       1,
       4
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-1.4-2025",
+    "id": "algebra-lineal-recursado-1.2-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "hidalgo-juan-vidal-alejandro",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-2.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "dimitroff-magdalena",
+      "ruiz-linares-agustina-abril",
+      "montoya-gerardo-federico"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-2.2-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "dimitroff-magdalena",
+      "almeira-joaquin"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-3.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "salinas-rios-federico-estefano",
+      "santillan-mauricio-alejandro",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "algebra-lineal-recursado-4.1-2026",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gomez-rivera-ivan-dario",
+      "dimitroff-magdalena"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.1-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
+      "martinelli-cesar-o",
+      "alaniz-horacio",
+      "carubelli-marianela",
+      "gomez-gustavo-cesar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.2-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "martinelli-cesar-o",
+      "alaniz-horacio",
+      "merino-hugo-alfredo",
+      "gomez-gustavo-cesar"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.3-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "gomez-carlos-gustavo",
+      "alaniz-horacio",
+      "gomez-gustavo-cesar",
+      "martinelli-cesar-o"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-1.4-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "alaniz-horacio",
+      "gomez-gustavo-cesar",
+      "martinelli-cesar-o",
       "guzman-luis-gustavo"
     ],
     "horarios": [
@@ -4076,21 +3974,54 @@
       1,
       5
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-2.1-2025",
+    "id": "fisica-1-recursado-2.1-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "guzman-luis-gustavo",
+      "martinez-elizabeth-m",
+      "merino-hugo-alfredo",
+      "alaniz-horacio"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-2.2-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "menendez-pablo-sebastian",
+      "alaniz-horacio",
       "martinez-elizabeth-m"
     ],
     "horarios": [
@@ -4109,55 +4040,22 @@
       2,
       3
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-2.2-2025",
+    "id": "fisica-1-recursado-2.3-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "martinez-elizabeth-m",
-      "menendez-pablo-sebastian"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      2,
-      3
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "fisica-1-recursado-2.3-2025",
-    "subjectSlug": "fisica-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "alaniz-andrada-horacio",
-      "catan-julio-c",
-      "menendez-pablo-sebastian"
+      "alaniz-horacio",
+      "menendez-pablo-sebastian",
+      "catan-julio-c"
     ],
     "horarios": [
       {
@@ -4175,23 +4073,23 @@
       1,
       4
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-2.4-2025",
+    "id": "fisica-1-recursado-2.4-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
-      "berardo-silvia-marina",
+      "alaniz-horacio",
       "catan-julio-c",
-      "moyano-angaramo-esteban-tomas"
+      "berardo-silvia-marina",
+      "brenta-agustina-rocio"
     ],
     "horarios": [
       {
@@ -4209,22 +4107,23 @@
       1,
       5
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-3.1-2025",
+    "id": "fisica-1-recursado-3.1-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
+      "perez-lucero-alejandra-lucia",
+      "roitman-mirta-susana",
       "baca-carlos-alberto",
-      "roitman-mirta-susana"
+      "alaniz-horacio"
     ],
     "horarios": [
       {
@@ -4242,55 +4141,23 @@
       1,
       3
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-3.2-2025",
+    "id": "fisica-1-recursado-3.2-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
       "natali-osvaldo",
-      "vega-leonor-teresa"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 3,
-        "inicio": "19:00",
-        "fin": "22:15"
-      }
-    ],
-    "days": [
-      2,
-      3
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "fisica-1-recursado-3.3-2025",
-    "subjectSlug": "fisica-1",
-    "careerSlugs": [
-      "aeroespacial"
-    ],
-    "anio": 4,
-    "tipo": "recursado",
-    "yearAcademic": 2025,
-    "semester": 1,
-    "professorIds": [
-      "alaniz-andrada-horacio",
-      "natali-osvaldo",
-      "torri-david-armando"
+      "alaniz-horacio",
+      "vega-leonor-teresa",
+      "mariotti-cardozo-alejandro-david"
     ],
     "horarios": [
       {
@@ -4308,20 +4175,55 @@
       2,
       3
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-3.4-2025",
+    "id": "fisica-1-recursado-3.3-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
+      "alaniz-horacio",
+      "mariotti-cardozo-alejandro-david",
+      "torri-david-armando",
+      "natali-osvaldo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "fisica-1-recursado-3.4-2026",
+    "subjectSlug": "fisica-1",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 4,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "mariotti-cardozo-alejandro-david",
+      "alaniz-horacio",
       "bovina-walter-julio",
       "natali-osvaldo"
     ],
@@ -4341,22 +4243,23 @@
       2,
       4
     ],
-    "sede": "virtual sincronica"
+    "sede": "C univ"
   },
   {
-    "id": "fisica-1-recursado-3.5-2025",
+    "id": "fisica-1-recursado-3.5-2026",
     "subjectSlug": "fisica-1",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 4,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "alaniz-andrada-horacio",
       "miranda-alberto-daniel",
-      "roitman-mirta-susana"
+      "roitman-mirta-susana",
+      "alaniz-horacio",
+      "perez-lucero-alejandra-lucia"
     ],
     "horarios": [
       {
@@ -4377,17 +4280,18 @@
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-3-comun25-2025",
+    "id": "analisis-matematico-3-comun25-2026",
     "subjectSlug": "analisis-matematico-3",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 2,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
-      "craparotta-salvador"
+      "craparotta-salvador",
+      "ferreyra-ricardo-tomas"
     ],
     "horarios": [
       {
@@ -4397,8 +4301,8 @@
       },
       {
         "dia": 5,
-        "inicio": "13:30",
-        "fin": "16:45"
+        "inicio": "11:30",
+        "fin": "14:45"
       }
     ],
     "days": [
@@ -4408,19 +4312,19 @@
     "sede": "C univ"
   },
   {
-    "id": "mecanica-de-las-estructuras-comun-1-2025",
+    "id": "mecanica-de-las-estructuras-comun-1-2026",
     "subjectSlug": "mecanica-de-las-estructuras",
     "careerSlugs": [
       "aeroespacial"
     ],
     "anio": 3,
     "tipo": "recursado",
-    "yearAcademic": 2025,
+    "yearAcademic": 2026,
     "semester": 1,
     "professorIds": [
       "beltramo-emmanuel",
-      "crespi-lucas-emanuel",
-      "estrada-carlos-f"
+      "estrada-carlos-f",
+      "crespi-lucas-emanuel"
     ],
     "horarios": [
       {
@@ -4437,6 +4341,136 @@
     "days": [
       3,
       4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-recursado-2.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 3,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pedrotti-beatriz-isabel",
+      "heredia-angel-nicolas",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-recursado-2.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 3,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "pedrotti-beatriz-isabel",
+      "fernandez-carlos-andres",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-recursado-4.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 3,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "monerris-lucas-santiago",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-recursado-4.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "aeroespacial"
+    ],
+    "anio": 3,
+    "tipo": "recursado",
+    "yearAcademic": 2026,
+    "semester": 1,
+    "professorIds": [
+      "weber-juan-francisco",
+      "furer-mauro-leonel"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      5
     ],
     "sede": "C univ"
   }
