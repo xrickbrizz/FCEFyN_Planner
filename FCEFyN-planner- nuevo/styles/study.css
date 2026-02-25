@@ -1659,7 +1659,7 @@ body[data-theme="light"] .event{
       position:sticky;
       top:1rem;
       align-self:start;
-      height: 55rem;
+      height: 60rem;
       display:flex;
       flex-direction:column;
       gap:.8rem;
@@ -1667,7 +1667,7 @@ body[data-theme="light"] .event{
       overflow:hidden;
     }
     #acadPendingWidget,#acadUpcomingWidget{
-      height: 20rem;
+      height: 21rem;
       min-height:0;
       overflow:hidden;
       display:flex;
