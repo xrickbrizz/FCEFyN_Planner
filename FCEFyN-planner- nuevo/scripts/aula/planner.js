@@ -33,8 +33,10 @@ const FACULTY_FILTER_CAREER = "career";
 const FACULTY_FILTER_ALL = "all";
 const ALL_SUBJECTS_VALUE = "";
 const ALL_YEARS_VALUE = "";
+const ALL_SEMESTERS_VALUE = "";
 const RECURSADOS_FILTER_VALUE = "redictados";
 const YEAR_FILTER_OPTIONS = ["1", "2", "3", "4"];
+const SEMESTER_FILTER_OPTIONS = ["1", "2"];
 
 function ensureAgendaFiltersState(){
   if (!CTX?.aulaState) return;
@@ -42,6 +44,7 @@ function ensureAgendaFiltersState(){
   CTX.aulaState.agendaFilters = {
     facultyMode: current.facultyMode === FACULTY_FILTER_ALL ? FACULTY_FILTER_ALL : FACULTY_FILTER_CAREER,
     year: String(current.year || ALL_YEARS_VALUE),
+    semester: SEMESTER_FILTER_OPTIONS.includes(String(current.semester || ALL_SEMESTERS_VALUE)) ? String(current.semester || ALL_SEMESTERS_VALUE) : ALL_SEMESTERS_VALUE,
     subjectSlug: String(current.subjectSlug || ALL_SUBJECTS_VALUE)
   };
 }
@@ -681,15 +684,19 @@ function getFilteredSectionsForPlanner(){
   //   recursadosDetected: recursadosCount,
   //   afterYear: afterYear.length
   // });
-  const availableSubjects = getAvailableSubjectsFromSections(afterYear);
+  const afterSemester = filters.semester
+    ? afterYear.filter((section) => String(section?.semester || "").trim() === filters.semester)
+    : afterYear;
+
+  const availableSubjects = getAvailableSubjectsFromSections(afterSemester);
   const availableSubjectSlugs = new Set(availableSubjects.map((item) => item.slug));
   const normalizedSelectedSubject = slugify(filters.subjectSlug);
   if (normalizedSelectedSubject && !availableSubjectSlugs.has(normalizedSelectedSubject)){
     filters.subjectSlug = ALL_SUBJECTS_VALUE;
   }
   const afterSubject = filters.subjectSlug
-    ? afterYear.filter((section) => slugify(getSectionSubjectSlug(section) || getSubjectNameFromSection(section)) === filters.subjectSlug)
-    : afterYear;
+    ? afterSemester.filter((section) => slugify(getSectionSubjectSlug(section) || getSubjectNameFromSection(section)) === filters.subjectSlug)
+    : afterSemester;
 
   return {
     sections: afterSubject,
@@ -699,6 +706,7 @@ function getFilteredSectionsForPlanner(){
       totalBase: baseSections.length,
       afterCareer: afterCareer.length,
       afterYear: afterYear.length,
+      afterSemester: afterSemester.length,
       afterSubject: afterSubject.length
     }
   };
@@ -723,6 +731,7 @@ function syncAgendaFilterControls(){
 
   const facultySelect = document.getElementById("agendaFacultyFilter");
   const yearSelect = document.getElementById("agendaYearFilter");
+  const semesterSelect = document.getElementById("agendaSemesterFilter");
   const topSubjectSelect = document.getElementById("agendaSubjectFilter");
   const plannerSubjectSelect = document.getElementById("sectionsSubjectFilter");
 
@@ -740,6 +749,14 @@ function syncAgendaFilterControls(){
   ];
   populateSelectOptions(yearSelect, yearOptions, filters.year);
   filters.year = yearSelect?.value || ALL_YEARS_VALUE;
+
+  const semesterOptions = [
+    { value: ALL_SEMESTERS_VALUE, label: "Todos los semestres" },
+    { value: "1", label: "Primer semestre" },
+    { value: "2", label: "Segundo semestre" }
+  ];
+  populateSelectOptions(semesterSelect, semesterOptions, filters.semester);
+  filters.semester = semesterSelect?.value || ALL_SEMESTERS_VALUE;
 
   const subjectOptions = [{ value: ALL_SUBJECTS_VALUE, label: "Todas las materias" }, ...availableSubjects.map((item) => ({ value: item.slug, label: item.name }))];
   populateSelectOptions(topSubjectSelect, subjectOptions, filters.subjectSlug);
@@ -1930,12 +1947,14 @@ function initPlanificadorUI(){
   const topSubjectFilter = document.getElementById("agendaSubjectFilter");
   const facultyFilter = document.getElementById("agendaFacultyFilter");
   const yearFilter = document.getElementById("agendaYearFilter");
+  const semesterFilter = document.getElementById("agendaSemesterFilter");
   const plannerSearchInput = document.getElementById("plannerSearch");
 
   const applyFiltersAndRender = () => {
     const filters = getAgendaFiltersState();
     filters.facultyMode = facultyFilter?.value === FACULTY_FILTER_ALL ? FACULTY_FILTER_ALL : FACULTY_FILTER_CAREER;
     filters.year = yearFilter?.value || ALL_YEARS_VALUE;
+    filters.semester = SEMESTER_FILTER_OPTIONS.includes(semesterFilter?.value || "") ? semesterFilter.value : ALL_SEMESTERS_VALUE;
     filters.subjectSlug = slugify(topSubjectFilter?.value || subjectFilter?.value || ALL_SUBJECTS_VALUE);
     renderSectionsList();
     renderPlannerPreview();
@@ -1957,6 +1976,7 @@ function initPlanificadorUI(){
 
   facultyFilter?.addEventListener("change", applyFiltersAndRender);
   yearFilter?.addEventListener("change", applyFiltersAndRender);
+  semesterFilter?.addEventListener("change", applyFiltersAndRender);
 
   const debugResponsiveLayout = () => {
     const pageLayout = document.getElementById("pageLayout");

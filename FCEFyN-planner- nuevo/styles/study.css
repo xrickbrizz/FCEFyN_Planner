@@ -1985,7 +1985,7 @@ body[data-theme="light"] .event{
     }
     .agenda-filters-toolbar{
       display:grid;
-      grid-template-columns:repeat(3, minmax(180px, 300px));
+      grid-template-columns:repeat(4, minmax(180px, 300px));
       gap:.85rem;
       align-items:end;
       justify-content:flex-start;
