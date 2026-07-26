@@ -1,0 +1,3298 @@
+[
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Pozzi Piacenza Cecilia Elena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Bazan Leandro Gaston"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Egea Claudia Maria",
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.7",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.7",
+    "commissionCode": "C1.7",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Santillan Mauricio Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Montoya Gerardo Federico"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.5",
+    "commissionCode": "C2.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.6",
+    "commissionCode": "C2.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gomez Rivera Ivan Dario",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dussel María Emilia",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Santillan Mauricio Alejandro",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C4.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Salinas Rios Federico Estefano"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C4.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Rivera Ivan Dario",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C4.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Almeira Joaquin"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Martinelli Cesar O.",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Guzman Luis Gustavo",
+      "Merino Hugo Alfredo",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo",
+      "Berardo Silvia Marina"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Gomez Carlos Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinelli Cesar O.",
+      "Carubelli Marianela",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.6",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Menendez Pablo Sebastian",
+      "Merino Hugo Alfredo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Carubelli Marianela"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Menendez Pablo Sebastian",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Mirta Susana",
+      "Natali Osvaldo",
+      "Baca Carlos Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Torri David Armando"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Bovina Walter Julio",
+      "Roitman Mirta Susana"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Natali Osvaldo",
+      "Miranda Alberto Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-3.5",
+    "commissionCode": "C3.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Merino Hugo Alfredo",
+      "Vega Leonor Teresa",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C1.1",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Colasanto Carina Maria",
+      "Barbero Gonzalo Pedro",
+      "Gomez Marcelo Martin",
+      "Saldis Nancy Edith"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C1.2",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Marcelo Martin",
+      "Barbero Gonzalo Pedro",
+      "Colasanto Carina Maria",
+      "Saldis Nancy Edith"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C1.3",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Saldis Nancy Edith",
+      "O Mill Patricia",
+      "Gomez Marcelo Martin",
+      "Colasanto Carina Maria"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C3.1",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Marcelo Martin",
+      "Saldis Nancy Edith",
+      "Pisoni Gerardo Oscar",
+      "O Mill Patricia"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C3.2",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pisoni Gerardo Oscar",
+      "Agazzi Lucas Oscar",
+      "Gomez Marcelo Martin",
+      "Saldis Nancy Edith"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C3.3",
+    "subjectName": "Fundamentos de los Procesos Químicos",
+    "subjectSlug": "fundamentos-de-los-procesos-quimicos",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Saldis Nancy Edith",
+      "Gomez Marcelo Martin",
+      "Agazzi Lucas Oscar",
+      "Pisoni Gerardo Oscar"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Luczywo Nadia Ayelen",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Nepote Valeria",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pierotti Silvia Marcela",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Oliva Cuneo Facundo Nicolas",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Barbero Alexis Damian"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C3.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Zanazzi José Francisco",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C4.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C4.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN 4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Vera Leonardo Gabriel"
+    ]
+  },
+  {
+    "id": "IQ25-IQUI-S2-2026-C2",
+    "subjectName": "Estática y Resistencia de Materiales",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ25-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Hunicken Diego Ricardo",
+      "Pinto Villegas Roberto Enrique",
+      "Naveiro Silvia Analia",
+      "Pirard. Constancia A.m."
+    ]
+  },
+  {
+    "id": "IQ25-IQUI-S2-2026-C3",
+    "subjectName": "Estática y Resistencia de Materiales",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ25-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Naveiro Silvia Analia",
+      "Berardo Silvia Marina",
+      "Hunicken Diego Ricardo",
+      "Pinto Villegas Roberto Enrique"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C1",
+    "subjectName": "Química Analítica General",
+    "subjectSlug": "quimica-analitica-general",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Krapacher Claudio Ricardo",
+      "Aburra Rogelio Ernesto",
+      "Ibañez Fabian Rolando"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Química Analítica General",
+    "subjectSlug": "quimica-analitica-general",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Krapacher Claudio Ricardo",
+      "Pajon Nevor",
+      "Piloni Roxana Verónica"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C1",
+    "subjectName": "Química Orgánica",
+    "subjectSlug": "quimica-organica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Montoya Patricia Alejandra",
+      "Grasso Florencia Veronic",
+      "Calandri Edgardo Luis"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Química Orgánica",
+    "subjectSlug": "quimica-organica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Montoya Patricia Alejandra",
+      "Grasso Florencia Veronic",
+      "Calandri Edgardo Luis"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C5",
+    "subjectName": "Química Orgánica",
+    "subjectSlug": "quimica-organica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Grasso Florencia Veronic",
+      "Montoya Patricia Alejandra",
+      "Calandri Edgardo Luis"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C6",
+    "subjectName": "Química Orgánica",
+    "subjectSlug": "quimica-organica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Calandri Edgardo Luis",
+      "Μoντoya Patricia Alejandra",
+      "Grasso Florencia Veronic"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C1",
+    "subjectName": "Termodinámica Química",
+    "subjectSlug": "termodinamica-quimica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "17:15",
+        "endTime": "19:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "09:30",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Lujan Lautaro",
+      "Milanesio Juan Manuel",
+      "Martini Raquel Evangelina",
+      "Tejeda Pablo Gustavo"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Termodinámica Química",
+    "subjectSlug": "termodinamica-quimica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "17:15",
+        "endTime": "19:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "09:30",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Lujan Lautaro",
+      "Milanesio Juan Manuel",
+      "Martini Raquel Evangelina",
+      "Tejeda Pablo Gustavo"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C3",
+    "subjectName": "Termodinámica Química",
+    "subjectSlug": "termodinamica-quimica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "19:30",
+        "endTime": "21:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "09:30",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martini Raquel Evangelina",
+      "Milanesio Juan Manuel",
+      "Tejeda Pablo Gustavo",
+      "Lujan Lautaro"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C4",
+    "subjectName": "Termodinámica Química",
+    "subjectSlug": "termodinamica-quimica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Lunes",
+        "startTime": "19:30",
+        "endTime": "21:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "09:30",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Tejeda Pablo Gustavo",
+      "Lujan Lautaro",
+      "Martini Raquel Evangelina",
+      "Milanesio Juan Manuel"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Gestión Institucional",
+    "subjectSlug": "gestion-institucional",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Miropolsky Ariel Gustavo",
+      "Musicante Sauma Paula Maria",
+      "Antonini Sebastian Emilio"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Materiales de la Industria Química",
+    "subjectSlug": "materiales-de-la-industria-quimica",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "12:45",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Orellano Herrera Christian Pedro Alejandro",
+      "Losano Luis Guillermo",
+      "Castellano Francucci Daniel",
+      "Rafael Karim"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C1",
+    "subjectName": "Microbiología Industrial y Aplicada",
+    "subjectSlug": "microbiologia-industrial-y-aplicada",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Lopez Abel Gerardo",
+      "Larrosa Nancy",
+      "Bazan Raquel Del Valle",
+      "Calvimonte Helena"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Microbiología Industrial y Aplicada",
+    "subjectSlug": "microbiologia-industrial-y-aplicada",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Calvimonte Helena",
+      "Lopez Abel Gerardo",
+      "Bazan Raquel Del Valle",
+      "Larrosa Nancy"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C3",
+    "subjectName": "Microbiología Industrial y Aplicada",
+    "subjectSlug": "microbiologia-industrial-y-aplicada",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Bazan Raquel Del Valle",
+      "Lopez Abel Gerardo",
+      "Larrosa Nancy",
+      "Calvimonte Helena"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Operaciones Unitarias I",
+    "subjectSlug": "operaciones-unitarias-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gili Renato Daniel",
+      "Carrillo Parra Esteban Josue",
+      "Glatstein Daniel Alejandro",
+      "Alasino Noelia Pia Ximena",
+      "Palavecino Pablo Martin"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C2",
+    "subjectName": "Ingeniería de las Reacciones Químicas",
+    "subjectSlug": "ingenieria-de-las-reacciones-quimicas",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Magario Ivana Maria",
+      "Vega Pablo Raul",
+      "Tavella Marcelo Andres",
+      "Lerici Laura Carolina"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C3",
+    "subjectName": "Minerología e Industrias Extractivas",
+    "subjectSlug": "minerologia-e-industrias-extractivas",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aguirre Viviana Ruth",
+      "Paredes Lucia",
+      "Robles Jose Luis"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C1.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Mors Horacio Anibal",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C1.3V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 1.3V",
+    "commissionCode": "C1.3V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Vignoli Adolfo Leonardo"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C2.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C2.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 2.2V",
+    "commissionCode": "C2.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Brenta Agustina Rocio",
+      "Vega Leonor Teresa",
+      "Rodriguez Carlos Hector",
+      "Ferreyra Marcos Agustin",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C3.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 3.2V",
+    "commissionCode": "C3.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Valenzuela Maria Alejandra",
+      "Pastore Liliana Beatriz",
+      "Zarate Melina"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C4.1V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO 4.1V",
+    "commissionCode": "C4.1V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Reta Berg Diego Ernesto",
+      "Rodriguez Alfio Antonio",
+      "Cuneo Alejandro Javier",
+      "Hidalgo Juan Vidal Alejandro",
+      "Santillan Mauricio Alejandro",
+      "Delgado Piñol Erika Mercedes",
+      "Apessetche Dora Yesica",
+      "Gomez Rivera Ivan Dario",
+      "Tesando Micaela Andrea"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C1",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "COMUN-IQUI-S2-2026-C2",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMUN-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "REDICTADO-IQUI-S2-2026-C1",
+    "subjectName": "Química General",
+    "subjectSlug": "quimica-general",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "UNICA REDICTADO",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Carraro Paola Maria",
+      "O Mill Patricia",
+      "Lopez Maria Laura"
+    ]
+  },
+  {
+    "id": "IQ-IQUI-S2-2026-C3.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cuestas Luis Miguel",
+      "Cordova Alfredo Daniel",
+      "Novillo David",
+      "Gauna Marco Antonio Amadeo"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IQUI-S2-2026-C1",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISIÓN 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IQUI-S2-2026-C2",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISIÓN 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Sábado",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Del Soldato Carlos Federico"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IQUI-S2-2026-C3",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISIÓN 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Herrera Andrea Cecilia"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IQUI-S2-2026-C4",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISIÓN 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cuneo Alejandro Javier",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISION-IQUI-S2-2026-C5",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISION 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Ferreyra Marcos Agustin"
+    ]
+  },
+  {
+    "id": "COMISION-IQUI-S2-2026-C6",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "COMISION 6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rodriguez Carlos Ramiro",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C1.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO IQ 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Heredia Angel Nicolas",
+      "Weber Juan Francisco",
+      "Pedrotti Beatriz Isabel"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C2.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO IQ 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedrotti Beatriz Isabel",
+      "Weber Juan Francisco",
+      "Fernandez Carlos Andres"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C3.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO IQ 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Benelli Federico Ezequiel",
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C3.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO IQ 3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Corral Briones Graciela",
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "RECURSADO-IQUI-S2-2026-C4.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "RECURSADO IQ 4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Monerris Lucas Santiago",
+      "Weber Juan Francisco",
+      "Pisoni Gerardo Oscar"
+    ]
+  },
+  {
+    "id": "IQ24-IQUI-S2-2026-C3",
+    "subjectName": "Balance de Materia y Energía",
+    "subjectSlug": "balance-de-materia-y-energia",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "IQ24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Edelstein Andres Ivan",
+      "Severini Hernan Claudio"
+    ]
+  },
+  {
+    "id": "CONT-IQUI-S2-2026-C2",
+    "subjectName": "Higiene y Seguridad Industrial",
+    "subjectSlug": "higiene-y-seguridad-industrial",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "CONT IQ24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Miropolsky Ariel Gustavo",
+      "Gonzalez Daniel Hugo",
+      "Barrera Veronica Natalia"
+    ]
+  },
+  {
+    "id": "CONT-IQUI-S2-2026-C23",
+    "subjectName": "Operaciones Unitarias II",
+    "subjectSlug": "operaciones-unitarias-ii",
+    "careerSlugs": [
+      "ingenieria-quimica"
+    ],
+    "commissionName": "CONT IQ24-23",
+    "commissionCode": "C23",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gili Renato Daniel",
+      "Butti Guillermo",
+      "Rovetto Laura Jorgelina",
+      "Edelstein Andres Ivan",
+      "Durand Maria Eugenia"
+    ]
+  }
+]

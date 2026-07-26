@@ -1,0 +1,3863 @@
+[
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Pozzi Piacenza Cecilia Elena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Bazan Leandro Gaston"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Egea Claudia Maria",
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.7",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.7",
+    "commissionCode": "C1.7",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Santillan Mauricio Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Montoya Gerardo Federico"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.5",
+    "commissionCode": "C2.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.6",
+    "commissionCode": "C2.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gomez Rivera Ivan Dario",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dussel María Emilia",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Santillan Mauricio Alejandro",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C4.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Salinas Rios Federico Estefano"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C4.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Rivera Ivan Dario",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C4.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Almeira Joaquin"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Martinelli Cesar O.",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Guzman Luis Gustavo",
+      "Merino Hugo Alfredo",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo",
+      "Berardo Silvia Marina"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Gomez Carlos Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinelli Cesar O.",
+      "Carubelli Marianela",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.6",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Menendez Pablo Sebastian",
+      "Merino Hugo Alfredo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Carubelli Marianela"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Menendez Pablo Sebastian",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Mirta Susana",
+      "Natali Osvaldo",
+      "Baca Carlos Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Torri David Armando"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Bovina Walter Julio",
+      "Roitman Mirta Susana"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Natali Osvaldo",
+      "Miranda Alberto Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.5",
+    "commissionCode": "C3.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Merino Hugo Alfredo",
+      "Vega Leonor Teresa",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.3",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "12:00",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:00",
+        "endTime": "16:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth",
+      "Carrera Paul Alexis"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.2",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "16:00",
+        "endTime": "18:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth",
+      "Carrera Paul Alexis"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Ruiz Paola Fabiana",
+      "Adami Agustin"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ruiz Paola Fabiana",
+      "Argüello Andrea Yolanda",
+      "Uema Ariel Shigeru",
+      "Cejas Gabriela Alejandra"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Cejas Gabriela Alejandra"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Reina Minnig Maria Georgina",
+      "Uema Ariel Shigeru",
+      "Gutierrez Franco Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Gonzalez Jorge Eduardo",
+      "Llanos Maria Alejandra",
+      "Serra Manuel"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C4.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Gonzalez Jorge Eduardo",
+      "Da Vila Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C4.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Uema Ariel Shigeru",
+      "Gonzalez Jorge Eduardo",
+      "Kunda Miguel Angel",
+      "Gutierrez Franco Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedrotti Beatriz Isabel",
+      "Heredia Angel Nicolas",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Comerci Sandro Mauricio",
+      "Pedrotti Beatriz Isabel",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedrotti Beatriz Isabel",
+      "Weber Juan Francisco",
+      "Fernandez Carlos Andres"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Benelli Federico Ezequiel",
+      "Weber Juan Francisco",
+      "Pedrotti Beatriz Isabel"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco",
+      "Benelli Federico Ezequiel"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Quinzio Martina Julieta",
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.1",
+    "subjectName": "Física II",
+    "subjectSlug": "fisica-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Castillo Eduardo Jorge",
+      "Lazarte Gustavo",
+      "Gutierrez Edgardo A."
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.2",
+    "subjectName": "Física II",
+    "subjectSlug": "fisica-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Sábado",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soutadet Aaron Jose",
+      "Gutierrez Edgardo A.",
+      "Lazarte Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1.3",
+    "subjectName": "Física II",
+    "subjectSlug": "fisica-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Bovina Walter Julio",
+      "Lazarte Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2.1",
+    "subjectName": "Física II",
+    "subjectSlug": "fisica-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Lazarte Gustavo",
+      "Lasheras Gonzalo Daniel",
+      "Maglione Cesar German"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C3.1",
+    "subjectName": "Física II",
+    "subjectSlug": "fisica-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Casanova Guillermo Andres",
+      "Maglione Cesar German",
+      "Lazarte Gustavo"
+    ]
+  },
+  {
+    "id": "IC05-ICIV-S2-2026-C1",
+    "subjectName": "Mecánica de las Estructuras",
+    "subjectSlug": "mecanica-de-las-estructuras",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC05-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ameijeiras Mariano Pablo",
+      "Estrada Carlos F",
+      "Roca Garbiglia Maria D."
+    ]
+  },
+  {
+    "id": "IC05-ICIV-S2-2026-C3",
+    "subjectName": "Mecánica de las Estructuras",
+    "subjectSlug": "mecanica-de-las-estructuras",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC05-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Canigia Ignacio",
+      "Ameijeiras Mariano Pablo"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Topografía Aplicada",
+    "subjectSlug": "topografia-aplicada",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Carrara Ivana",
+      "Bacile Osvaldo Luis Antonio",
+      "O'connor Eduardo Javier"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2",
+    "subjectName": "Topografía Aplicada",
+    "subjectSlug": "topografia-aplicada",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "13:15",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Carrara Ivana",
+      "Paez Camila Natalia"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1.1",
+    "subjectName": "Análisis Estructural",
+    "subjectSlug": "analisis-estructural",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:30",
+        "endTime": "10:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:30",
+        "endTime": "10:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soffietti Franco Primo",
+      "Pinto Federico",
+      "Ameijeiras Mariano Pablo",
+      "Turello Diego Fernando",
+      "Novillo Narciso",
+      "Ceballos Marcelo Alejandro",
+      "Ribero Santiago"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C3.1",
+    "subjectName": "Análisis Estructural",
+    "subjectSlug": "analisis-estructural",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "17:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "17:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soffietti Franco Primo",
+      "Turello Diego Fernando",
+      "Ribero Santiago",
+      "Pinto Federico",
+      "Novillo Narciso",
+      "Ceballos Marcelo Alejandro",
+      "Ameijeiras Mariano Pablo"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2.1",
+    "subjectName": "Instalaciones Sanitarias y Eléctricas",
+    "subjectSlug": "instalaciones-sanitarias-y-electricas",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Marcó Ana Clara",
+      "Molinari Lucas Alberto",
+      "Perez Santiago Ramiro",
+      "Sangoy Diego Exequiel",
+      "Carro Perez Magali Evelin",
+      "Giordana Rodolfo Sergio Nicolas",
+      "Alonso Facundo Jose",
+      "Villanueva Daniela Griselda"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2.2",
+    "subjectName": "Instalaciones Sanitarias y Eléctricas",
+    "subjectSlug": "instalaciones-sanitarias-y-electricas",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Giordana Rodolfo Sergio Nicolas",
+      "Villanueva Daniela Griselda",
+      "Sangoy Diego Exequiel",
+      "Perez Santiago Ramiro",
+      "Molinari Lucas Alberto",
+      "Marcó Ana Clara",
+      "Alonso Facundo Jose",
+      "Carro Perez Magali Evelin"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Mecánica de Suelos y Rocas",
+    "subjectSlug": "mecanica-de-suelos-y-rocas",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "10:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Skorepa Agustina",
+      "Adami Agustin",
+      "Rinaldi Victor A."
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2",
+    "subjectName": "Mecánica de Suelos y Rocas",
+    "subjectSlug": "mecanica-de-suelos-y-rocas",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cruz Maria Pia",
+      "Francisca Franco Matias",
+      "Rinaldi Victor A."
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C3",
+    "subjectName": "Mecánica de Suelos y Rocas",
+    "subjectSlug": "mecanica-de-suelos-y-rocas",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Claria Juan Jose",
+      "Rinaldi Victor A.",
+      "Goyechea Ramos Luis Nataniel",
+      "Montoro Marcos Alexis"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Tecnología de la Construcción",
+    "subjectSlug": "tecnologia-de-la-construccion",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Salomon Jorge Eduardo",
+      "Capdevila Julio Alfredo",
+      "Costantini Adriana Belen",
+      "Goyechea Ramos Luis Nataniel",
+      "Harada Ricardo Gabriel",
+      "Sabaini Zapata Fernando Luis"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2",
+    "subjectName": "Diseño de Infraestructura del Transporte",
+    "subjectSlug": "diseno-de-infraestructura-del-transporte",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Vanoli Faustinelli Franco Daniel",
+      "Tartabini Mauro I.",
+      "Freire Rodolfo Guillermo",
+      "Grenada Santiago",
+      "Marchesini Paula Andrea",
+      "Dapas Oscar Milton",
+      "Vanoli Gustavo Daniel"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C4.1",
+    "subjectName": "Estructuras Metálicas y de Madera",
+    "subjectSlug": "estructuras-metalicas-y-de-madera",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Juan Emilio",
+      "Angulo Bocco Jose Miguel Pio",
+      "Troglia Daniel Osvaldo",
+      "Nieva Pablo Martin",
+      "Fragueiro Agustin"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C4.2",
+    "subjectName": "Estructuras Metálicas y de Madera",
+    "subjectSlug": "estructuras-metalicas-y-de-madera",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Nieva Pablo Martin",
+      "Troglia Daniel Osvaldo",
+      "Angulo Bocco Jose Miguel Pio",
+      "Fragueiro Agustin",
+      "Fernandez Juan Emilio"
+    ]
+  },
+  {
+    "id": "IC-CONS24-ICIV-S2-2026-C2",
+    "subjectName": "Hormigón Armado y Pretensado",
+    "subjectSlug": "hormigon-armado-y-pretensado",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC-CONS24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:00",
+        "endTime": "18:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Bolatti Alejandro Gustavo",
+      "Gerbaudo Carlos Fabian",
+      "Ochat Ernesto"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C1.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Mors Horacio Anibal",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C1.3V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 1.3V",
+    "commissionCode": "C1.3V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Vignoli Adolfo Leonardo"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C2.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C2.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 2.2V",
+    "commissionCode": "C2.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Brenta Agustina Rocio",
+      "Vega Leonor Teresa",
+      "Rodriguez Carlos Hector",
+      "Ferreyra Marcos Agustin",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C3.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 3.2V",
+    "commissionCode": "C3.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Valenzuela Maria Alejandra",
+      "Pastore Liliana Beatriz",
+      "Zarate Melina"
+    ]
+  },
+  {
+    "id": "RECURSADO-ICIV-S2-2026-C4.1V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RECURSADO 4.1V",
+    "commissionCode": "C4.1V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Reta Berg Diego Ernesto",
+      "Rodriguez Alfio Antonio",
+      "Cuneo Alejandro Javier",
+      "Hidalgo Juan Vidal Alejandro",
+      "Santillan Mauricio Alejandro",
+      "Delgado Piñol Erika Mercedes",
+      "Apessetche Dora Yesica",
+      "Gomez Rivera Ivan Dario",
+      "Tesando Micaela Andrea"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1.1",
+    "subjectName": "Economía",
+    "subjectSlug": "economia",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Suaid Camila Teresita",
+      "Boiola Jorge Eduardo",
+      "Bracamonte Juan Pablo"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1.2",
+    "subjectName": "Economía",
+    "subjectSlug": "economia",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Boiola Jorge Eduardo",
+      "Arranz Pablo",
+      "Suaid Camila Teresita",
+      "Gallo Jose Francisco",
+      "Marhuenda Fernando Daniel"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C2.1",
+    "subjectName": "Economía",
+    "subjectSlug": "economia",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Arranz Pablo",
+      "Suaid Camila Teresita",
+      "Boiola Jorge Eduardo"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C4.1",
+    "subjectName": "Economía",
+    "subjectSlug": "economia",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Talamoni Silvina",
+      "Suaid Camila Teresita",
+      "Boiola Jorge Eduardo"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C1",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "COMUN-ICIV-S2-2026-C2",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMUN-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Comin Romina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Maria Soledad",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C2.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Glatstein Daniel Alejandro",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C2.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Spahn Baltazar",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C2.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Erro Eustaquio Martin",
+      "Villagran Constanza"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C3.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura",
+      "Gigena Enzo"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C3.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Erro Eustaquio Martin",
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C4.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C4.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Pablo Andres",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C5.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-5.1",
+    "commissionCode": "C5.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C5.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-5.2",
+    "commissionCode": "C5.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "14:30",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C5.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-5.3",
+    "commissionCode": "C5.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C6.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-6.1",
+    "commissionCode": "C6.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Villagran Constanza",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C6.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-6.2",
+    "commissionCode": "C6.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C6.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-6.3",
+    "commissionCode": "C6.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "17:45",
+        "endTime": "20:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Aimar Mario Leandro",
+      "Racca Maria Agustina"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C7.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-7.1",
+    "commissionCode": "C7.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C7.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-7.2",
+    "commissionCode": "C7.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ferrayoli Carlos Guillermo",
+      "Daniele Maria Laura",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C7.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED-7.3",
+    "commissionCode": "C7.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "COMISIÓN-ICIV-S2-2026-C1",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISIÓN 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISIÓN-ICIV-S2-2026-C2",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISIÓN 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Sábado",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Del Soldato Carlos Federico"
+    ]
+  },
+  {
+    "id": "COMISIÓN-ICIV-S2-2026-C3",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISIÓN 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Herrera Andrea Cecilia"
+    ]
+  },
+  {
+    "id": "COMISIÓN-ICIV-S2-2026-C4",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISIÓN 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cuneo Alejandro Javier",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISION-ICIV-S2-2026-C5",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISION 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Ferreyra Marcos Agustin"
+    ]
+  },
+  {
+    "id": "COMISION-ICIV-S2-2026-C6",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "COMISION 6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rodriguez Carlos Ramiro",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1",
+    "subjectName": "Estática",
+    "subjectSlug": "estatica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN24",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Tita Alejandra Graciela",
+      "Cocco Leonardo Jose",
+      "Ochat Ernesto",
+      "Aichino Agostina Cecilia",
+      "Turello Diego Fernando",
+      "Prato Antonio Manuel"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C2.1",
+    "subjectName": "Ingeniería Geológica y Geotécnica",
+    "subjectSlug": "ingenieria-geologica-y-geotecnica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Montoro Marcos Alexis",
+      "Rouzaut Sabrina",
+      "Francisca Franco Matias"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C3.1",
+    "subjectName": "Ingeniería Geológica y Geotécnica",
+    "subjectSlug": "ingenieria-geologica-y-geotecnica",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mozejko Clara Alexandra",
+      "Nieva Pablo Martin",
+      "Francisca Franco Matias"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Mecánica de los Fluidos",
+    "subjectSlug": "mecanica-de-los-fluidos",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:45",
+        "endTime": "12:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Garcia Rodriguez Carlos Marcelo",
+      "Labaque Maria Del Rosario",
+      "Guillen Nicolas Federico",
+      "Diaz Lozada José Manuel",
+      "Corral Mariano Andres",
+      "Castello Edgar Manuel",
+      "Tarrab Leticia",
+      "Pozzi Piacenza Cecilia Elena"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Planificación y Operación del Transporte",
+    "subjectSlug": "planificacion-y-operacion-del-transporte",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "10:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falavigna Claudio",
+      "Riera Alicia",
+      "Depiante Violeta Silvia Irene",
+      "Garcia Ramiro Manuel",
+      "Martinazzo Lucila Antonella",
+      "Assadourian Ignacio Jose",
+      "Rico Miguel Ruben"
+    ]
+  },
+  {
+    "id": "IC24-ICIV-S2-2026-C1",
+    "subjectName": "Tecnología de los Materiales",
+    "subjectSlug": "tecnologia-de-los-materiales",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "IC24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Stumpf Pablo Gustavo",
+      "Campos Dario Gabriel",
+      "Lopez Raul Alberto",
+      "Pagliero Jorge Maximo",
+      "Luque Ana Belen"
+    ]
+  },
+  {
+    "id": "RED-ICIV-S2-2026-C1",
+    "subjectName": "Hidrología y Procesos Hidráulicos",
+    "subjectSlug": "hidrologia-y-procesos-hidraulicos",
+    "careerSlugs": [
+      "ingenieria-civil"
+    ],
+    "commissionName": "RED COMUN24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:15",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Bertoni Juan Carlos",
+      "Testa Tacchino Alejo Juan Sebastian",
+      "Alonso Facundo Jose",
+      "Diaz Erica Betiana",
+      "Moya Gonzalo Gabriel",
+      "Reyna Teresa Maria",
+      "Vicario Leticia Del Valle",
+      "Eder Matias",
+      "Heredia Ligorria Ana Ines",
+      "Herrero Horacio Sebastian Julian",
+      "Patalano Antoine",
+      "Pierobon Edgardo Gabriel"
+    ]
+  }
+]

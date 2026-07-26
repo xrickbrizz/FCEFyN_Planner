@@ -1,0 +1,3933 @@
+[
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Pozzi Piacenza Cecilia Elena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Bazan Leandro Gaston"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Egea Claudia Maria",
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.7",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.7",
+    "commissionCode": "C1.7",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Santillan Mauricio Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Montoya Gerardo Federico"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.5",
+    "commissionCode": "C2.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.6",
+    "commissionCode": "C2.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gomez Rivera Ivan Dario",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dussel María Emilia",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Santillan Mauricio Alejandro",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Salinas Rios Federico Estefano"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Rivera Ivan Dario",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Almeira Joaquin"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Martinelli Cesar O.",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Guzman Luis Gustavo",
+      "Merino Hugo Alfredo",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo",
+      "Berardo Silvia Marina"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Gomez Carlos Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinelli Cesar O.",
+      "Carubelli Marianela",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.6",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Menendez Pablo Sebastian",
+      "Merino Hugo Alfredo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Carubelli Marianela"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Menendez Pablo Sebastian",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Mirta Susana",
+      "Natali Osvaldo",
+      "Baca Carlos Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Torri David Armando"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Bovina Walter Julio",
+      "Roitman Mirta Susana"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Natali Osvaldo",
+      "Miranda Alberto Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.5",
+    "commissionCode": "C3.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Merino Hugo Alfredo",
+      "Vega Leonor Teresa",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C2",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Gallo Jose Francisco",
+      "Marhuenda Fernando Daniel",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C3",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Marhuenda Fernando Daniel",
+      "Gallo Jose Francisco",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C4",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Marhuenda Fernando Daniel",
+      "Gallo Jose Francisco",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Luczywo Nadia Ayelen",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Nepote Valeria",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pierotti Silvia Marcela",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Oliva Cuneo Facundo Nicolas",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Barbero Alexis Damian"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Zanazzi José Francisco",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Vera Leonardo Gabriel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedrotti Beatriz Isabel",
+      "Heredia Angel Nicolas",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Comerci Sandro Mauricio",
+      "Pedrotti Beatriz Isabel",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedrotti Beatriz Isabel",
+      "Weber Juan Francisco",
+      "Fernandez Carlos Andres"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Benelli Federico Ezequiel",
+      "Weber Juan Francisco",
+      "Pedrotti Beatriz Isabel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco",
+      "Benelli Federico Ezequiel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Quinzio Martina Julieta",
+      "Fernandez Carlos Andres",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.1",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Weber Juan Francisco",
+      "Pisoni Gerardo Oscar",
+      "Quinzio Martina Julieta"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.2",
+    "subjectName": "Computación y Cálculo Numérico",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pisoni Gerardo Oscar",
+      "Monerris Lucas Santiago",
+      "Weber Juan Francisco"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C1.1",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Serra Gabriel Horacio",
+      "Barcena Carlos Osvaldo",
+      "Fioravanti Marcelo F.",
+      "Alonso Enrique"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C1.2",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Serra Gabriel Horacio",
+      "Alonso Enrique",
+      "Fioravanti Marcelo F.",
+      "Barcena Carlos Osvaldo"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C1.3",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:45",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fioravanti Marcelo F.",
+      "Serra Gabriel Horacio",
+      "Costero Jorge Dario"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C2.1",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Costero Jorge Dario",
+      "Fioravanti Marcelo F.",
+      "Serra Gabriel Horacio"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C3.1",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Daniel Federico",
+      "Serra Gabriel Horacio",
+      "Fioravanti Marcelo F."
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C3.2",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Daniel Federico",
+      "Fioravanti Marcelo F.",
+      "Serra Gabriel Horacio"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C4.1",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Giordano Alejandro Holmes",
+      "Serra Gabriel Horacio",
+      "Fioravanti Marcelo F."
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C4.2",
+    "subjectName": "Electrotecnia e Instalaciones Eléctricas",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "20:15",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Giordano Alejandro Holmes",
+      "Serra Gabriel Horacio",
+      "Fioravanti Marcelo F."
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C1",
+    "subjectName": "Estática y Resistencia de Materiales",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ruiz Caturelli Miguel Esteban",
+      "Roca Garbiglia Maria D.",
+      "Naveiro Silvia Analia"
+    ]
+  },
+  {
+    "id": "IIND25-IIND-S2-2026-C2",
+    "subjectName": "Estática y Resistencia de Materiales",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND25-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "13:15",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Bussetti Bonet Franco",
+      "Ruiz Caturelli Miguel Esteban",
+      "Ostorero Gaston Nicolas"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C1",
+    "subjectName": "Estudio del Trabajo",
+    "subjectSlug": "estudio-del-trabajo",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "22:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ghietto Lucrecia Andrea",
+      "Namur Nicolas",
+      "Gimenez Yob Guillermo Emilio",
+      "Cuozzo Jose Domingo"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C3",
+    "subjectName": "Gestión de Calidad",
+    "subjectSlug": "gestion-de-calidad",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Moya Vanesa Veronica",
+      "Beale Laura Claudina",
+      "Orecchini Maria Cecilia"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C1",
+    "subjectName": "Higiene y Seguridad",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pontelli Daniel Alberto",
+      "Picone Juan",
+      "Melero Maria Veronica"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C3",
+    "subjectName": "Higiene y Seguridad",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pontelli Daniel Alberto",
+      "Melero Maria Veronica"
+    ]
+  },
+  {
+    "id": "COMUN24-IIND-S2-2026-C4",
+    "subjectName": "Higiene y Seguridad",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Picone Juan",
+      "Pontelli Daniel Alberto",
+      "Amavet Hernan"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C3",
+    "subjectName": "Mantenimiento Industrial",
+    "subjectSlug": "mantenimiento-industrial",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "19:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gangi Sergio Oscar"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C3",
+    "subjectName": "Planificación y Control de la Producción",
+    "subjectSlug": "planificacion-y-control-de-la-produccion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ruiz Hector Eduardo",
+      "Brunazzo Leonardo David"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C3",
+    "subjectName": "Mercadotecnia",
+    "subjectSlug": "mercadotecnia",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "17:30",
+        "endTime": "19:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rigazio Rinaldo Sebastia",
+      "Gomez Monica Cecilia",
+      "Astini Maria Del Rosario"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.3",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "12:00",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:00",
+        "endTime": "16:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth",
+      "Carrera Paul Alexis"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.2",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "16:00",
+        "endTime": "18:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth",
+      "Carrera Paul Alexis"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C3",
+    "subjectName": "Procesos de Manufactura II",
+    "subjectSlug": "procesos-de-manufactura-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Elaskar Omar"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C1.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Mors Horacio Anibal",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C1.3V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 1.3V",
+    "commissionCode": "C1.3V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Vignoli Adolfo Leonardo"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C2.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C2.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 2.2V",
+    "commissionCode": "C2.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Brenta Agustina Rocio",
+      "Vega Leonor Teresa",
+      "Rodriguez Carlos Hector",
+      "Ferreyra Marcos Agustin",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C3.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 3.2V",
+    "commissionCode": "C3.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Valenzuela Maria Alejandra",
+      "Pastore Liliana Beatriz",
+      "Zarate Melina"
+    ]
+  },
+  {
+    "id": "RECURSADO-IIND-S2-2026-C4.1V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RECURSADO 4.1V",
+    "commissionCode": "C4.1V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Reta Berg Diego Ernesto",
+      "Rodriguez Alfio Antonio",
+      "Cuneo Alejandro Javier",
+      "Hidalgo Juan Vidal Alejandro",
+      "Santillan Mauricio Alejandro",
+      "Delgado Piñol Erika Mercedes",
+      "Apessetche Dora Yesica",
+      "Gomez Rivera Ivan Dario",
+      "Tesando Micaela Andrea"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2",
+    "subjectName": "Introducción a la Ingeniería",
+    "subjectSlug": "introduccion-a-la-ingenieria",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Capdevila Lisandro Adriel"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C1.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Comin Romina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C1.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Maria Soledad",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C1.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C2.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Glatstein Daniel Alejandro",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C2.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Spahn Baltazar",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C2.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Erro Eustaquio Martin",
+      "Villagran Constanza"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C3.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura",
+      "Gigena Enzo"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C3.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Erro Eustaquio Martin",
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C4.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C4.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Pablo Andres",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C5.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-5.1",
+    "commissionCode": "C5.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C5.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-5.2",
+    "commissionCode": "C5.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "14:30",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C5.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-5.3",
+    "commissionCode": "C5.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C6.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-6.1",
+    "commissionCode": "C6.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Villagran Constanza",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C6.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-6.2",
+    "commissionCode": "C6.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C6.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-6.3",
+    "commissionCode": "C6.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "17:45",
+        "endTime": "20:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Aimar Mario Leandro",
+      "Racca Maria Agustina"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C7.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-7.1",
+    "commissionCode": "C7.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C7.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-7.2",
+    "commissionCode": "C7.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ferrayoli Carlos Guillermo",
+      "Daniele Maria Laura",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IIND-S2-2026-C7.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "RED-7.3",
+    "commissionCode": "C7.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Arguello Luna Diego Ivan",
+      "Cordova Alfredo Daniel",
+      "Gauna Marco Antonio Amadeo",
+      "Gomez Gustavo Cesar",
+      "Maligno Emilio Pedro",
+      "Campasso Diego Esteban",
+      "Destefanis Eduardo",
+      "Novillo David"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C1.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Destefanis Eduardo",
+      "Gauna Marco Antonio Amadeo",
+      "Maligno Emilio Pedro",
+      "Ruiz Paola Fabiana",
+      "Sapuppo Daniel Salvador",
+      "Cordova Alfredo Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C2.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Parada Larrosa Francisco",
+      "Cordova Alfredo Daniel",
+      "Maligno Emilio Pedro",
+      "Gauna Marco Antonio Amadeo",
+      "Gomez Gustavo Cesar",
+      "Destefanis Eduardo",
+      "Reina Minnig Maria Georgina"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C3.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Pablo Agustin",
+      "Parada Larrosa Francisco",
+      "Dotta Leones Matias Nicolás",
+      "Gonzalez Gramaglia Hernan Ezequiel",
+      "Cuestas Luis Miguel",
+      "Maligno Emilio Pedro",
+      "Bianchotti Paola Andrea",
+      "Cordova Alfredo Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-IIND-S2-2026-C4.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Gramaglia Hernan Ezequiel",
+      "Martinez Pablo Agustin",
+      "Cordova Alfredo Daniel",
+      "Maligno Emilio Pedro",
+      "Gauna Marco Antonio Amadeo",
+      "Bianchotti Paola Andrea",
+      "Dotta Leones Matias Nicolás",
+      "Cuestas Luis Miguel"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IIND-S2-2026-C1",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISIÓN 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IIND-S2-2026-C2",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISIÓN 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Sábado",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Del Soldato Carlos Federico"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IIND-S2-2026-C3",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISIÓN 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Herrera Andrea Cecilia"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IIND-S2-2026-C4",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISIÓN 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cuneo Alejandro Javier",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISION-IIND-S2-2026-C5",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISION 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Ferreyra Marcos Agustin"
+    ]
+  },
+  {
+    "id": "COMISION-IIND-S2-2026-C6",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "COMISION 6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rodriguez Carlos Ramiro",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "IIND24-IIND-S2-2026-C2",
+    "subjectName": "Mecanismos y Elementos de Máquinas",
+    "subjectSlug": "mecanismos-y-elementos-de-maquinas",
+    "careerSlugs": [
+      "ingenieria-industrial"
+    ],
+    "commissionName": "IIND24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": null
+      }
+    ],
+    "professors": [
+      "Mestrallet Alejandro Gustavo",
+      "Ladron De G Fernando A.",
+      "Dutto Esteban Ariel",
+      "Pilati Martin Lucas",
+      "Hereñu Pablo Ernesto"
+    ]
+  }
+]

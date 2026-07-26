@@ -1,0 +1,4521 @@
+[
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Pozzi Piacenza Cecilia Elena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Bazan Leandro Gaston"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Egea Claudia Maria",
+      "Mayorga Quarin Santiago",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.7",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.7",
+    "commissionCode": "C1.7",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Santillan Mauricio Alejandro"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Montoya Gerardo Federico"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.5",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.5",
+    "commissionCode": "C2.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.6",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.6",
+    "commissionCode": "C2.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gomez Rivera Ivan Dario",
+      "Joaquin Daniel Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dussel María Emilia",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Rulloni Valeria Soledad",
+      "Maldonado Ana Carolina",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.4",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Santillan Mauricio Alejandro",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.1",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Salinas Rios Federico Estefano"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.2",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Rivera Ivan Dario",
+      "Dimitroff Magdalena"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.3",
+    "subjectName": "Algebra Lineal",
+    "subjectSlug": "algebra-lineal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Almeira Joaquin"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Martinelli Cesar O.",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Guzman Luis Gustavo",
+      "Merino Hugo Alfredo",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo",
+      "Berardo Silvia Marina"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Gomez Carlos Gustavo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.5",
+    "commissionCode": "C1.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinelli Cesar O.",
+      "Carubelli Marianela",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.6",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.6",
+    "commissionCode": "C1.6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Alonso Sebastian Javier",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Menendez Pablo Sebastian",
+      "Merino Hugo Alfredo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Catan Julio C.",
+      "Mariotti Cardozo Alejandro David",
+      "Carubelli Marianela"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Menendez Pablo Sebastian",
+      "Natali Osvaldo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Mirta Susana",
+      "Natali Osvaldo",
+      "Baca Carlos Alberto"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.2",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Torri David Armando"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.3",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.3",
+    "commissionCode": "C3.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Bovina Walter Julio",
+      "Roitman Mirta Susana"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.4",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.4",
+    "commissionCode": "C3.4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Natali Osvaldo",
+      "Miranda Alberto Daniel"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.5",
+    "subjectName": "Física I",
+    "subjectSlug": "fisica-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.5",
+    "commissionCode": "C3.5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Merino Hugo Alfredo",
+      "Vega Leonor Teresa",
+      "Natali Osvaldo",
+      "Martinez Elizabeth Marcela De Lourdes"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cragnolini Andrea Beatriz",
+      "Cid Mariana Paula"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C2",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "12:15",
+        "endTime": "16:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mottola Milagro",
+      "Cid Mariana Paula"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C3",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "16:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cid Mariana Paula",
+      "Gaston Maria Soledad"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C4",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:00",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gaston Maria Soledad",
+      "Cid Mariana Paula"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C5",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cid Mariana Paula",
+      "Cragnolini Andrea Beatriz"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C6",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "12:15",
+        "endTime": "16:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cid Mariana Paula",
+      "Mottola Milagro"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C7",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-7",
+    "commissionCode": "C7",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "16:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cid Mariana Paula",
+      "Gaston Maria Soledad"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C8",
+    "subjectName": "Química Orgánica y Biológica",
+    "subjectSlug": "quimica-organica-y-biologica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-8",
+    "commissionCode": "C8",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "09:00",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cid Mariana Paula",
+      "Gaston Maria Soledad"
+    ]
+  },
+  {
+    "id": "IB-IBIO-S2-2026-C1.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gomez Gustavo Cesar",
+      "Muguiro Nestor Osvaldo",
+      "Sapuppo Daniel Salvador"
+    ]
+  },
+  {
+    "id": "IB-IBIO-S2-2026-C2.1",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Argüello Andrea Yolanda",
+      "Muguiro Nestor Osvaldo",
+      "Sapuppo Daniel Salvador"
+    ]
+  },
+  {
+    "id": "IB-IBIO-S2-2026-C4.2",
+    "subjectName": "Sistemas de Representación",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "19:00",
+        "endTime": "22:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "19:00",
+        "endTime": "22:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Muguiro Nestor Osvaldo",
+      "Kunda Miguel Angel",
+      "Dotta Leones Matias Nicolás"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.1",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.2",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.1",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rojas Nadina Elizabeth",
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dabbas Claudia Belen",
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.2",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ferreyra Ricardo Tomas",
+      "Craparotta Salvador"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.1",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Del Soldato Carlos Federico",
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.2",
+    "subjectName": "Análisis Matemático III",
+    "subjectSlug": "analisis-matematico-iii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rodriguez Carlos Ramiro",
+      "Ferreyra Ricardo Tomas"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Electrónica",
+    "subjectSlug": "electronica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Garcia Marcelo Ramon",
+      "Lizarraga Enrique Mariano"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1",
+    "subjectName": "Electrónica",
+    "subjectSlug": "electronica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Leguizamon Santiago Francisco",
+      "Lizarraga Enrique Mariano"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.2",
+    "subjectName": "Electrónica",
+    "subjectSlug": "electronica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Picco Facundo",
+      "Lizarraga Enrique Mariano"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.1",
+    "subjectName": "Electrónica",
+    "subjectSlug": "electronica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Curetti Jose",
+      "Lizarraga Enrique Mariano",
+      "Gay Caramuti Ivo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.2",
+    "subjectName": "Electrónica",
+    "subjectSlug": "electronica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Curetti Jose",
+      "Lizarraga Enrique Mariano"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1.1",
+    "subjectName": "Histología para Ingenieros",
+    "subjectSlug": "histologia-para-ingenieros",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "09:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Juri Gustavo Andrés",
+      "Gay Stabile Romina Lorena",
+      "Toselli Leonor Claudina",
+      "Martinelli Agnese"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1.2",
+    "subjectName": "Histología para Ingenieros",
+    "subjectSlug": "histologia-para-ingenieros",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Gay Stabile Romina Lorena",
+      "Martinelli Agnese",
+      "Toselli Leonor Claudina",
+      "Juri Gustavo Andrés"
+    ]
+  },
+  {
+    "id": "PRESENCIAL-IBIO-S2-2026-C1",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "PRESENCIAL 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mendoza Horacio Aurelio",
+      "Madoery Pablo Gustavo"
+    ]
+  },
+  {
+    "id": "PRESENCIAL-IBIO-S2-2026-C2",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "PRESENCIAL 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Montoro Juan Nehuen",
+      "Mendoza Horacio Aurelio"
+    ]
+  },
+  {
+    "id": "PRESENCIAL-IBIO-S2-2026-C3",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "PRESENCIAL 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mendoza Horacio Aurelio",
+      "Brandolin Salvador Eduardo"
+    ]
+  },
+  {
+    "id": "PRESENCIAL-IBIO-S2-2026-C4",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "PRESENCIAL 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Scilipoti Jose Antonio",
+      "Mendoza Horacio Aurelio"
+    ]
+  },
+  {
+    "id": "PRESENCIAL-IBIO-S2-2026-C5",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "PRESENCIAL 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Mendoza Horacio Aurelio",
+      "Detke Ramiro Fernando"
+    ]
+  },
+  {
+    "id": "REMOTA-IBIO-S2-2026-C1",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "REMOTA 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Mendoza Horacio Aurelio",
+      "Madoery Pablo Gustavo"
+    ]
+  },
+  {
+    "id": "REMOTA-IBIO-S2-2026-C2",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "REMOTA 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Gonzalez Montoro Juan Nehuen",
+      "Mendoza Horacio Aurelio"
+    ]
+  },
+  {
+    "id": "REMOTA-IBIO-S2-2026-C3",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "REMOTA 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Mendoza Horacio Aurelio",
+      "Brandolin Salvador Eduardo"
+    ]
+  },
+  {
+    "id": "REMOTA-IBIO-S2-2026-C4",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "REMOTA 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Scilipoti Jose Antonio",
+      "Mendoza Horacio Aurelio"
+    ]
+  },
+  {
+    "id": "REMOTA-IBIO-S2-2026-C5",
+    "subjectName": "Informática y Cálculo Numérico",
+    "subjectSlug": "informatica-y-calculo-numerico",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "REMOTA 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Detke Ramiro Fernando",
+      "Mendoza Horacio Aurelio"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Luczywo Nadia Ayelen",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Nepote Valeria",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "13:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pierotti Silvia Marcela",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 1.4",
+    "commissionCode": "C1.4",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "09:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Oliva Cuneo Facundo Nicolas",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Barbero Alexis Damian"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.4",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 2.4",
+    "commissionCode": "C2.4",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "13:15",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Dimitroff Magdalena",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "16:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Zanazzi José Francisco",
+      "Gonzalez Analia"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.2",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "16:45",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Filipigh Sebastian Michael"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.3",
+    "subjectName": "Probabilidad y Estadística",
+    "subjectSlug": "probabilidad-y-estadistica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN 4.3",
+    "commissionCode": "C4.3",
+    "semester": 2,
+    "yearAcademic": 2,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Gonzalez Analia",
+      "Vera Leonardo Gabriel"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C2.1",
+    "subjectName": "Biomateriales",
+    "subjectSlug": "biomateriales",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "09:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": null
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Grinschpun Luciano",
+      "Cortese Ignacio",
+      "Losano Luis Guillermo"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1.1",
+    "subjectName": "Electrónica Digital II",
+    "subjectSlug": "electronica-digital-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Petrashin Pablo Antonio",
+      "Grimas Cristian Fabian"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2.1",
+    "subjectName": "Electrónica Digital II",
+    "subjectSlug": "electronica-digital-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Petrashin Pablo Antonio",
+      "Gomez Mauro Gaston"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3.1",
+    "subjectName": "Electrónica Digital II",
+    "subjectSlug": "electronica-digital-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Del Barco Martin Ignacio",
+      "Petrashin Pablo Antonio"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.1",
+    "subjectName": "Electrónica Digital II",
+    "subjectSlug": "electronica-digital-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Migliore Emiliano Elvio",
+      "Petrashin Pablo Antonio"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4.2",
+    "subjectName": "Electrónica Digital II",
+    "subjectSlug": "electronica-digital-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Petrashin Pablo Antonio",
+      "Blasco Marcos Javier"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1",
+    "subjectName": "Física Biomédica",
+    "subjectSlug": "fisica-biomedica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "16:45",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": null
+      }
+    ],
+    "professors": [
+      "Nieva Eduardo Gabriel",
+      "Martinelli Agnese",
+      "Juri Gustavo Andrés"
+    ]
+  },
+  {
+    "id": "COMUN24-IBIO-S2-2026-C2",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Gallo Jose Francisco",
+      "Marhuenda Fernando Daniel",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "COMUN24-IBIO-S2-2026-C3",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Marhuenda Fernando Daniel",
+      "Gallo Jose Francisco",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "COMUN24-IBIO-S2-2026-C4",
+    "subjectName": "Ingeniería Económica y Legal",
+    "subjectSlug": "ingenieria-economica-y-legal",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Marhuenda Fernando Daniel",
+      "Gallo Jose Francisco",
+      "Ahumada Raul Emilio"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1.1",
+    "subjectName": "Teoría de Redes y Control",
+    "subjectSlug": "teoria-de-redes-y-control",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fabio Ernesto Javier",
+      "Prados Edgar Lautaro",
+      "Pedroni Juan Pablo"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C1.2",
+    "subjectName": "Teoría de Redes y Control",
+    "subjectSlug": "teoria-de-redes-y-control",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Prados Edgar Lautaro",
+      "Fabio Ernesto Javier",
+      "Pedroni Juan Pablo"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C3.1",
+    "subjectName": "Teoría de Redes y Control",
+    "subjectSlug": "teoria-de-redes-y-control",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Polliotto Martin Dario",
+      "Pedroni Juan Pablo",
+      "Prados Edgar Lautaro"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C3.2",
+    "subjectName": "Teoría de Redes y Control",
+    "subjectSlug": "teoria-de-redes-y-control",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Pedroni Juan Pablo",
+      "Prados Edgar Lautaro",
+      "Migliore Emiliano Elvio"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C2",
+    "subjectName": "Biomecánica",
+    "subjectSlug": "biomecanica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "20:00",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Elizabeth Marcela De Lourdes",
+      "Rivarola Marcela Fabiana"
+    ]
+  },
+  {
+    "id": "IB24-IBIO-S2-2026-C3",
+    "subjectName": "Instrumentación Biomédica",
+    "subjectSlug": "instrumentacion-biomedica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "IB24-3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 4,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Del Aguila Heidenrei Ronald",
+      "Rodriguez Miguel D.",
+      "Gomez Walter Hugo"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C1.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Berardo Silvia Marina",
+      "Mors Horacio Anibal",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C1.3V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 1.3V",
+    "commissionCode": "C1.3V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Vignoli Adolfo Leonardo"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C2.1",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Centro"
+      }
+    ],
+    "professors": [
+      "Brenta Agustina Rocio",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C2.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 2.2V",
+    "commissionCode": "C2.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Natali Osvaldo",
+      "Brenta Agustina Rocio",
+      "Vega Leonor Teresa",
+      "Rodriguez Carlos Hector",
+      "Ferreyra Marcos Agustin",
+      "Pastore Liliana Beatriz"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C3.2V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 3.2V",
+    "commissionCode": "C3.2V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Valenzuela Maria Alejandra",
+      "Pastore Liliana Beatriz",
+      "Zarate Melina"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C4.1V",
+    "subjectName": "Análisis Matemático I",
+    "subjectSlug": "analisis-matematico-i",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO 4.1V",
+    "commissionCode": "C4.1V",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Pastore Liliana Beatriz",
+      "Reta Berg Diego Ernesto",
+      "Rodriguez Alfio Antonio",
+      "Cuneo Alejandro Javier",
+      "Hidalgo Juan Vidal Alejandro",
+      "Santillan Mauricio Alejandro",
+      "Delgado Piñol Erika Mercedes",
+      "Apessetche Dora Yesica",
+      "Gomez Rivera Ivan Dario",
+      "Tesando Micaela Andrea"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C1.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Comin Romina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C1.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Maria Soledad",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C1.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Comin Romina"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C2.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-2.1",
+    "commissionCode": "C2.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Glatstein Daniel Alejandro",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C2.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Spahn Baltazar",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C2.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-2.3",
+    "commissionCode": "C2.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Erro Eustaquio Martin",
+      "Villagran Constanza"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C3.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "11:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura",
+      "Gigena Enzo"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C3.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-3.2",
+    "commissionCode": "C3.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Erro Eustaquio Martin",
+      "Aimar Mario Leandro",
+      "Bordon Daniela Laura"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C4.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-4.1",
+    "commissionCode": "C4.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C4.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-4.2",
+    "commissionCode": "C4.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "11:30",
+        "endTime": "13:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Fernandez Pablo Andres",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C5.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-5.1",
+    "commissionCode": "C5.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C5.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-5.2",
+    "commissionCode": "C5.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "14:30",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Della Mea Eliana Luciana",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C5.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-5.3",
+    "commissionCode": "C5.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "14:45",
+        "endTime": "17:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Aimar Mario Leandro",
+      "Borneo Benista Rafael"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C6.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-6.1",
+    "commissionCode": "C6.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Falletti Paulina",
+      "Villagran Constanza",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C6.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-6.2",
+    "commissionCode": "C6.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C6.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-6.3",
+    "commissionCode": "C6.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "17:45",
+        "endTime": "20:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Villagran Constanza",
+      "Aimar Mario Leandro",
+      "Racca Maria Agustina"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C7.1",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-7.1",
+    "commissionCode": "C7.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Turco Mauricio Daniel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C7.2",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-7.2",
+    "commissionCode": "C7.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Ferrayoli Carlos Guillermo",
+      "Daniele Maria Laura",
+      "Aimar Mario Leandro"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C7.3",
+    "subjectName": "Química",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED-7.3",
+    "commissionCode": "C7.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "20:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:15",
+        "endTime": "21:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Guillermo Gabriel",
+      "Aimar Mario Leandro",
+      "Ferrayoli Carlos Guillermo"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C1.1",
+    "subjectName": "Taller y Laboratorio",
+    "subjectSlug": "taller-y-laboratorio",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO - 1.1",
+    "commissionCode": "C1.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "08:00",
+        "endTime": "12:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Chesini Ezequiel",
+      "Gallardo Gonzalo Miguel"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C1.2",
+    "subjectName": "Taller y Laboratorio",
+    "subjectSlug": "taller-y-laboratorio",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO - 1.2",
+    "commissionCode": "C1.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "12:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Chesini Ezequiel",
+      "Enrico Pablo Ernesto"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C1.3",
+    "subjectName": "Taller y Laboratorio",
+    "subjectSlug": "taller-y-laboratorio",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO - 1.3",
+    "commissionCode": "C1.3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "12:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Chesini Ezequiel",
+      "Olivares Emiliano"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C2.2",
+    "subjectName": "Taller y Laboratorio",
+    "subjectSlug": "taller-y-laboratorio",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO - 2.2",
+    "commissionCode": "C2.2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Viernes",
+        "startTime": "13:00",
+        "endTime": "17:30",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Chesini Ezequiel",
+      "Bustos Guillermo Hernán"
+    ]
+  },
+  {
+    "id": "RECURSADO-IBIO-S2-2026-C3.1",
+    "subjectName": "Taller y Laboratorio",
+    "subjectSlug": "taller-y-laboratorio",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RECURSADO - 3.1",
+    "commissionCode": "C3.1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "14:45",
+        "endTime": "19:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Chesini Ezequiel"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IBIO-S2-2026-C1",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISIÓN 1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cabrera Enrique Angel",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IBIO-S2-2026-C2",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISIÓN 2",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Sábado",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Del Soldato Carlos Federico"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IBIO-S2-2026-C3",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISIÓN 3",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Herrera Andrea Cecilia"
+    ]
+  },
+  {
+    "id": "COMISIÓN-IBIO-S2-2026-C4",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISIÓN 4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "11:30",
+        "endTime": "14:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Cuneo Alejandro Javier",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMISION-IBIO-S2-2026-C5",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISION 5",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Miércoles",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Roitman Claudia Alejandr",
+      "Ferreyra Marcos Agustin"
+    ]
+  },
+  {
+    "id": "COMISION-IBIO-S2-2026-C6",
+    "subjectName": "Análisis Matemático II",
+    "subjectSlug": "analisis-matematico-ii",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMISION 6",
+    "commissionCode": "C6",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "15:00",
+        "endTime": "18:15",
+        "classroom": null,
+        "building": "Virtual Sincrónica"
+      }
+    ],
+    "professors": [
+      "Rodriguez Carlos Ramiro",
+      "Roitman Claudia Alejandr"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C1",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-1 RED",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "08:00",
+        "endTime": "10:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C2",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-2 RED",
+    "commissionCode": "C2",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "10:00",
+        "endTime": "12:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C3",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-3 RED",
+    "commissionCode": "C3",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "12:00",
+        "endTime": "14:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C4",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-4 RED",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "14:00",
+        "endTime": "16:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Soliz Monica Elizabeth",
+      "Carrera Paul Alexis"
+    ]
+  },
+  {
+    "id": "COMUN-IBIO-S2-2026-C5",
+    "subjectName": "Módulo de Inglés",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "COMUN-5 RED",
+    "commissionCode": "C5",
+    "semester": 2,
+    "yearAcademic": 1,
+    "schedule": [
+      {
+        "day": "Martes",
+        "startTime": "16:00",
+        "endTime": "18:00",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Carrera Paul Alexis",
+      "Soliz Monica Elizabeth"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C1",
+    "subjectName": "Señales y Sistemas",
+    "subjectSlug": "senales-y-sistemas",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED COMUN24-1",
+    "commissionCode": "C1",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Jueves",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Viernes",
+        "startTime": "08:00",
+        "endTime": "11:15",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Martinez Balsa Agustin",
+      "Hueda Mario Rafael",
+      "Borgnino Leandro Ezequiel",
+      "Smrekar Marcelo Roberto"
+    ]
+  },
+  {
+    "id": "RED-IBIO-S2-2026-C4",
+    "subjectName": "Señales y Sistemas",
+    "subjectSlug": "senales-y-sistemas",
+    "careerSlugs": [
+      "ingenieria-biomedica"
+    ],
+    "commissionName": "RED COMUN24-4",
+    "commissionCode": "C4",
+    "semester": 2,
+    "yearAcademic": 3,
+    "schedule": [
+      {
+        "day": "Lunes",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      },
+      {
+        "day": "Jueves",
+        "startTime": "18:30",
+        "endTime": "21:45",
+        "classroom": null,
+        "building": "Sede Ciudad Universitaria"
+      }
+    ],
+    "professors": [
+      "Hueda Mario Rafael",
+      "Vazquez Maria Del H.",
+      "Lazarte Gustavo"
+    ]
+  }
+]
