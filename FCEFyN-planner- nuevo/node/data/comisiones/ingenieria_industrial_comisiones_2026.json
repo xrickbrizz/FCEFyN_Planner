@@ -3,7 +3,7 @@
     "id": "algebra-lineal-1.1-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -35,7 +35,7 @@
     "id": "algebra-lineal-1.2-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -67,7 +67,7 @@
     "id": "algebra-lineal-1.3-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -99,7 +99,7 @@
     "id": "algebra-lineal-1.4-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -131,7 +131,7 @@
     "id": "algebra-lineal-1.5-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -163,7 +163,7 @@
     "id": "algebra-lineal-1.6-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -196,7 +196,7 @@
     "id": "algebra-lineal-1.7-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -227,7 +227,7 @@
     "id": "algebra-lineal-2.1-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -259,7 +259,7 @@
     "id": "algebra-lineal-2.2-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -291,7 +291,7 @@
     "id": "algebra-lineal-2.3-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -323,7 +323,7 @@
     "id": "algebra-lineal-2.4-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -354,7 +354,7 @@
     "id": "algebra-lineal-2.5-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -386,7 +386,7 @@
     "id": "algebra-lineal-2.6-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -417,7 +417,7 @@
     "id": "algebra-lineal-3.1-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -450,7 +450,7 @@
     "id": "algebra-lineal-3.2-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -482,7 +482,7 @@
     "id": "algebra-lineal-3.3-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -515,7 +515,7 @@
     "id": "algebra-lineal-3.4-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -548,7 +548,7 @@
     "id": "algebra-lineal-4.1-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -580,7 +580,7 @@
     "id": "algebra-lineal-4.2-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -612,7 +612,7 @@
     "id": "algebra-lineal-4.3-2026",
     "subjectSlug": "algebra-lineal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -641,108 +641,10 @@
     "sede": "C univ"
   },
   {
-    "id": "algoritmos-y-estructuras-de-datos-2-2026",
-    "subjectSlug": "algoritmos-y-estructuras-de-datos",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "ayme-ruben",
-      "algorry-aldo-marcelo"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "16:45",
-        "fin": "19:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "11:30",
-        "fin": "14:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "algoritmos-y-estructuras-de-datos-3-2026",
-    "subjectSlug": "algoritmos-y-estructuras-de-datos",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "detke-ramiro-fernando",
-      "algorry-aldo-marcelo",
-      "ayme-ruben"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "16:45",
-        "fin": "19:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "algoritmos-y-estructuras-de-datos-4v-2026",
-    "subjectSlug": "algoritmos-y-estructuras-de-datos",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "gomez-roberto-pablo",
-      "ayme-ruben",
-      "algorry-aldo-marcelo"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "16:45",
-        "fin": "19:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
     "id": "fisica-i-1.1-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -775,7 +677,7 @@
     "id": "fisica-i-1.2-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -808,7 +710,7 @@
     "id": "fisica-i-1.3-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -841,7 +743,7 @@
     "id": "fisica-i-1.4-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -873,7 +775,7 @@
     "id": "fisica-i-1.5-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -906,7 +808,7 @@
     "id": "fisica-i-1.6-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -939,7 +841,7 @@
     "id": "fisica-i-2.1-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -974,7 +876,7 @@
     "id": "fisica-i-2.2-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1008,7 +910,7 @@
     "id": "fisica-i-2.3-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1041,7 +943,7 @@
     "id": "fisica-i-2.4-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1074,7 +976,7 @@
     "id": "fisica-i-3.1-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1107,7 +1009,7 @@
     "id": "fisica-i-3.2-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1140,7 +1042,7 @@
     "id": "fisica-i-3.3-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1173,7 +1075,7 @@
     "id": "fisica-i-3.4-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1206,7 +1108,7 @@
     "id": "fisica-i-3.5-2026",
     "subjectSlug": "fisica-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -1237,503 +1139,75 @@
     "sede": "C univ"
   },
   {
-    "id": "modulo-de-ingles-1.1-2026",
-    "subjectSlug": "modulo-de-ingles",
+    "id": "ingenieria-economica-y-legal-2-2026",
+    "subjectSlug": "ingenieria-economica-y-legal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "soliz-monica-elizabeth"
+      "gallo-jose-francisco",
+      "marhuenda-fernando-daniel",
+      "ahumada-raul-emilio"
     ],
     "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "10:00"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "modulo-de-ingles-1.2-2026",
-    "subjectSlug": "modulo-de-ingles",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "soliz-monica-elizabeth"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "10:00",
-        "fin": "12:00"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "modulo-de-ingles-1.3-2026",
-    "subjectSlug": "modulo-de-ingles",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "soliz-monica-elizabeth"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "12:00",
-        "fin": "14:00"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "modulo-de-ingles-2.1-2026",
-    "subjectSlug": "modulo-de-ingles",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "soliz-monica-elizabeth",
-      "carrera-paul-alexis"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "14:00",
-        "fin": "16:00"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "modulo-de-ingles-2.2-2026",
-    "subjectSlug": "modulo-de-ingles",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "soliz-monica-elizabeth",
-      "carrera-paul-alexis"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "16:00",
-        "fin": "18:00"
-      }
-    ],
-    "days": [
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "analisis-matematico-iii-1.1-2026",
-    "subjectSlug": "analisis-matematico-iii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "ferreyra-ricardo-tomas"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      1,
-      2
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-iii-1.2-2026",
-    "subjectSlug": "analisis-matematico-iii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "ferreyra-ricardo-tomas"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
       {
         "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      3,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "analisis-matematico-iii-2.1-2026",
-    "subjectSlug": "analisis-matematico-iii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "rojas-nadina-elizabeth",
-      "ferreyra-ricardo-tomas"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 5,
         "inicio": "11:30",
         "fin": "14:45"
       }
     ],
     "days": [
-      3,
-      5
+      4
     ],
     "sede": "virtual sincronica"
   },
   {
-    "id": "analisis-matematico-iii-3.1-2026",
-    "subjectSlug": "analisis-matematico-iii",
+    "id": "ingenieria-economica-y-legal-3-2026",
+    "subjectSlug": "ingenieria-economica-y-legal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "dabbas-claudia-belen",
-      "ferreyra-ricardo-tomas"
+      "marhuenda-fernando-daniel",
+      "gallo-jose-francisco",
+      "ahumada-raul-emilio"
     ],
     "horarios": [
       {
         "dia": 1,
         "inicio": "15:00",
         "fin": "18:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
       }
     ],
     "days": [
-      1,
-      4
+      1
     ],
     "sede": "C univ"
   },
   {
-    "id": "analisis-matematico-iii-3.2-2026",
-    "subjectSlug": "analisis-matematico-iii",
+    "id": "ingenieria-economica-y-legal-4-2026",
+    "subjectSlug": "ingenieria-economica-y-legal",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "ferreyra-ricardo-tomas",
-      "craparotta-salvador"
+      "marhuenda-fernando-daniel",
+      "gallo-jose-francisco",
+      "ahumada-raul-emilio"
     ],
     "horarios": [
-      {
-        "dia": 2,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "analisis-matematico-iii-4.1-2026",
-    "subjectSlug": "analisis-matematico-iii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "del-soldato-carlos-federico",
-      "ferreyra-ricardo-tomas"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      1,
-      2
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "analisis-matematico-iii-4.2-2026",
-    "subjectSlug": "analisis-matematico-iii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "rodriguez-carlos-ramiro",
-      "ferreyra-ricardo-tomas"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "virtual sincronica"
-  },
-  {
-    "id": "electronica-3.1-2026",
-    "subjectSlug": "electronica",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "garcia-marcelo-ramon",
-      "lizarraga-enrique-mariano"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-1-2026",
-    "subjectSlug": "electronica",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "leguizamon-santiago-francisco",
-      "lizarraga-enrique-mariano"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-3.2-2026",
-    "subjectSlug": "electronica",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "picco-facundo",
-      "lizarraga-enrique-mariano"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      3,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-4.1-2026",
-    "subjectSlug": "electronica",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "curetti-jose",
-      "lizarraga-enrique-mariano",
-      "gay-caramuti-ivo"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      3,
-      3
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-4.2-2026",
-    "subjectSlug": "electronica",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "curetti-jose",
-      "lizarraga-enrique-mariano"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
       {
         "dia": 5,
         "inicio": "18:30",
@@ -1741,167 +1215,6 @@
       }
     ],
     "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-digital-ii-1.1-2026",
-    "subjectSlug": "electronica-digital-ii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "petrashin-pablo-antonio",
-      "grimas-cristian-fabian"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-digital-ii-2.1-2026",
-    "subjectSlug": "electronica-digital-ii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "petrashin-pablo-antonio",
-      "gomez-mauro-gaston"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-digital-ii-3.1-2026",
-    "subjectSlug": "electronica-digital-ii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "del-barco-martin-ignacio",
-      "petrashin-pablo-antonio"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      3,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-digital-ii-4.1-2026",
-    "subjectSlug": "electronica-digital-ii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "migliore-emiliano-elvio",
-      "petrashin-pablo-antonio"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      1,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "electronica-digital-ii-4.2-2026",
-    "subjectSlug": "electronica-digital-ii",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 2,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "petrashin-pablo-antonio",
-      "blasco-marcos-javier"
-    ],
-    "horarios": [
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      5,
       5
     ],
     "sede": "C univ"
@@ -1910,9 +1223,9 @@
     "id": "probabilidad-y-estadistica-1.1-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -1942,9 +1255,9 @@
     "id": "probabilidad-y-estadistica-1.2-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -1968,9 +1281,9 @@
     "id": "probabilidad-y-estadistica-1.3-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -1994,9 +1307,9 @@
     "id": "probabilidad-y-estadistica-1.4-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2026,9 +1339,9 @@
     "id": "probabilidad-y-estadistica-2.1-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2057,9 +1370,9 @@
     "id": "probabilidad-y-estadistica-2.2-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2089,9 +1402,9 @@
     "id": "probabilidad-y-estadistica-2.3-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2121,9 +1434,9 @@
     "id": "probabilidad-y-estadistica-2.4-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2153,9 +1466,9 @@
     "id": "probabilidad-y-estadistica-3.1-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2185,9 +1498,9 @@
     "id": "probabilidad-y-estadistica-3.2-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2217,9 +1530,9 @@
     "id": "probabilidad-y-estadistica-4.2-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2249,9 +1562,9 @@
     "id": "probabilidad-y-estadistica-4.3-2026",
     "subjectSlug": "probabilidad-y-estadistica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 2,
+    "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
@@ -2278,114 +1591,19 @@
     "sede": "C univ"
   },
   {
-    "id": "procesamiento-de-senales-1-2026",
-    "subjectSlug": "procesamiento-de-senales",
+    "id": "computacion-y-calculo-numerico-1.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
-    "anio": 3,
+    "anio": 2,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "corral-briones-graciela",
-      "ayarde-juan-martin"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "20:00",
-        "fin": "22:00"
-      },
-      {
-        "dia": 5,
-        "inicio": "18:30",
-        "fin": "22:30"
-      }
-    ],
-    "days": [
-      2,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "programacion-concurrente-y-paralela-3-2026",
-    "subjectSlug": "programacion-concurrente-y-paralela",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 3,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "ventre-luis-orlando"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "15:00",
-        "fin": "18:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "15:00",
-        "fin": "18:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "redes-de-computadoras-3-2026",
-    "subjectSlug": "redes-de-computadoras",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 3,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "oliva-cuneo-facundo-nicolas",
-      "henn-santiago-martin"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:00"
-      },
-      {
-        "dia": 4,
-        "inicio": "18:30",
-        "fin": "21:00"
-      }
-    ],
-    "days": [
-      1,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "sistemas-de-control-i-1.1-2026",
-    "subjectSlug": "sistemas-de-control-i",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 3,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "perez-guillermo-ariel",
-      "pedroni-juan-pablo",
-      "aguero-claudio"
+      "pedrotti-beatriz-isabel",
+      "heredia-angel-nicolas",
+      "weber-juan-francisco"
     ],
     "horarios": [
       {
@@ -2395,8 +1613,8 @@
       },
       {
         "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
+        "inicio": "08:00",
+        "fin": "11:15"
       }
     ],
     "days": [
@@ -2406,10 +1624,1028 @@
     "sede": "C univ"
   },
   {
+    "id": "computacion-y-calculo-numerico-1.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "comerci-sandro-mauricio",
+      "pedrotti-beatriz-isabel",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-2.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "pedrotti-beatriz-isabel",
+      "weber-juan-francisco",
+      "fernandez-carlos-andres"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-2.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "benelli-federico-ezequiel",
+      "weber-juan-francisco",
+      "pedrotti-beatriz-isabel"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-3.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "fernandez-carlos-andres",
+      "weber-juan-francisco",
+      "benelli-federico-ezequiel"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-3.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "quinzio-martina-julieta",
+      "fernandez-carlos-andres",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-4.1-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "weber-juan-francisco",
+      "pisoni-gerardo-oscar",
+      "quinzio-martina-julieta"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "computacion-y-calculo-numerico-4.2-2026",
+    "subjectSlug": "computacion-y-calculo-numerico",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "pisoni-gerardo-oscar",
+      "monerris-lucas-santiago",
+      "weber-juan-francisco"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-1.1-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "serra-gabriel-horacio",
+      "barcena-carlos-osvaldo",
+      "fioravanti-marcelo-f",
+      "alonso-enrique"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "09:30"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-1.2-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "serra-gabriel-horacio",
+      "alonso-enrique",
+      "fioravanti-marcelo-f",
+      "barcena-carlos-osvaldo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "09:45",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-1.3-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "fioravanti-marcelo-f",
+      "serra-gabriel-horacio",
+      "costero-jorge-dario"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "09:45",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-2.1-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "costero-jorge-dario",
+      "fioravanti-marcelo-f",
+      "serra-gabriel-horacio"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "13:00"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-3.1-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "gomez-daniel-federico",
+      "serra-gabriel-horacio",
+      "fioravanti-marcelo-f"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-3.2-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "gomez-daniel-federico",
+      "fioravanti-marcelo-f",
+      "serra-gabriel-horacio"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "16:45",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-4.1-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "giordano-alejandro-holmes",
+      "serra-gabriel-horacio",
+      "fioravanti-marcelo-f"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:00"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "electrotecnia-e-instalaciones-electricas-4.2-2026",
+    "subjectSlug": "electrotecnia-e-instalaciones-electricas",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "giordano-alejandro-holmes",
+      "serra-gabriel-horacio",
+      "fioravanti-marcelo-f"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "13:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "20:15",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estatica-y-resistencia-de-materiales-1-2026",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "ruiz-caturelli-miguel-esteban",
+      "roca-garbiglia-maria-d",
+      "naveiro-silvia-analia"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "09:30"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estatica-y-resistencia-de-materiales-2-2026",
+    "subjectSlug": "estatica-y-resistencia-de-materiales",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "bussetti-bonet-franco",
+      "ruiz-caturelli-miguel-esteban",
+      "ostorero-gaston-nicolas"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "13:15",
+        "fin": "14:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "13:15",
+        "fin": "16:30"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "estudio-del-trabajo-1-2026",
+    "subjectSlug": "estudio-del-trabajo",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 2,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "ghietto-lucrecia-andrea",
+      "namur-nicolas",
+      "gimenez-yob-guillermo-emilio",
+      "cuozzo-jose-domingo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "22:15"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "gestion-de-calidad-3-2026",
+    "subjectSlug": "gestion-de-calidad",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "moya-vanesa-veronica",
+      "beale-laura-claudina",
+      "orecchini-maria-cecilia"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "16:45",
+        "fin": "18:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "higiene-y-seguridad-1-2026",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "pontelli-daniel-alberto",
+      "picone-juan",
+      "melero-maria-veronica"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      3,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "higiene-y-seguridad-3-2026",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "pontelli-daniel-alberto",
+      "melero-maria-veronica"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "15:00",
+        "fin": "18:15"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "higiene-y-seguridad-4-2026",
+    "subjectSlug": "higiene-y-seguridad",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "picone-juan",
+      "pontelli-daniel-alberto",
+      "amavet-hernan"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "mantenimiento-industrial-3-2026",
+    "subjectSlug": "mantenimiento-industrial",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "gangi-sergio-oscar"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "19:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "planificacion-y-control-de-la-produccion-3-2026",
+    "subjectSlug": "planificacion-y-control-de-la-produccion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 3,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "ruiz-hector-eduardo",
+      "brunazzo-leonardo-david"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "mercadotecnia-3-2026",
+    "subjectSlug": "mercadotecnia",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "rigazio-rinaldo-sebastia",
+      "gomez-monica-cecilia",
+      "astini-maria-del-rosario"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "17:30",
+        "fin": "19:00"
+      }
+    ],
+    "days": [
+      1,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "modulo-de-ingles-1.1-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "modulo-de-ingles-1.2-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "10:00",
+        "fin": "12:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "modulo-de-ingles-1.3-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "soliz-monica-elizabeth"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "12:00",
+        "fin": "14:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "modulo-de-ingles-2.1-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "soliz-monica-elizabeth",
+      "carrera-paul-alexis"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "14:00",
+        "fin": "16:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "modulo-de-ingles-2.2-2026",
+    "subjectSlug": "modulo-de-ingles",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "soliz-monica-elizabeth",
+      "carrera-paul-alexis"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "16:00",
+        "fin": "18:00"
+      }
+    ],
+    "days": [
+      2
+    ],
+    "sede": "virtual sincronica"
+  },
+  {
+    "id": "procesos-de-manufactura-ii-3-2026",
+    "subjectSlug": "procesos-de-manufactura-ii",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 4,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "elaskar-omar"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
     "id": "analisis-matematico-i-1.1-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2442,7 +2678,7 @@
     "id": "analisis-matematico-i-1.3v-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2474,7 +2710,7 @@
     "id": "analisis-matematico-i-2.1-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2506,7 +2742,7 @@
     "id": "analisis-matematico-i-2.2v-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2542,7 +2778,7 @@
     "id": "analisis-matematico-i-3.2v-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2575,7 +2811,7 @@
     "id": "analisis-matematico-i-4.1v-2026",
     "subjectSlug": "analisis-matematico-i",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2612,218 +2848,23 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "estructuras-discretas-1.1-2026",
-    "subjectSlug": "estructuras-discretas",
+    "id": "introduccion-a-la-ingenieria-1-2026",
+    "subjectSlug": "introduccion-a-la-ingenieria",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "cherini-renato",
-      "acosta-araceli-natalia",
-      "raverta-fernando-dario"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "estructuras-discretas-1.1v-2026",
-    "subjectSlug": "estructuras-discretas",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "cherini-renato",
-      "acosta-araceli-natalia",
-      "raverta-fernando-dario"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      2,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "estructuras-discretas-2.1-2026",
-    "subjectSlug": "estructuras-discretas",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "acosta-araceli-natalia",
-      "cherini-renato"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "11:30",
-        "fin": "14:45"
-      }
-    ],
-    "days": [
-      2,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "estructuras-discretas-2.1v-2026",
-    "subjectSlug": "estructuras-discretas",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "cherini-renato",
-      "acosta-araceli-natalia"
-    ],
-    "horarios": [
-      {
-        "dia": 2,
-        "inicio": "11:30",
-        "fin": "14:45"
-      },
-      {
-        "dia": 5,
-        "inicio": "11:30",
-        "fin": "14:45"
-      }
-    ],
-    "days": [
-      2,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "fundamentos-de-programacion-1.1-2026",
-    "subjectSlug": "fundamentos-de-programacion",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "finochietto-jorge-manuel",
-      "jurczyszyn-santiago-jose"
+      "capdevila-lisandro-adriel"
     ],
     "horarios": [
       {
         "dia": 1,
         "inicio": "08:00",
         "fin": "11:15"
-      },
-      {
-        "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      1,
-      3
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "fundamentos-de-programacion-1.1v-2026",
-    "subjectSlug": "fundamentos-de-programacion",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "jurczyszyn-santiago-jose",
-      "finochietto-jorge-manuel"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 3,
-        "inicio": "18:30",
-        "fin": "21:45"
-      }
-    ],
-    "days": [
-      1,
-      3
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "taller-y-laboratorio-1.1-2026",
-    "subjectSlug": "taller-y-laboratorio",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 1,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "chesini-ezequiel",
-      "gallardo-gonzalo-miguel"
-    ],
-    "horarios": [
-      {
-        "dia": 1,
-        "inicio": "08:00",
-        "fin": "12:30"
       }
     ],
     "days": [
@@ -2832,24 +2873,23 @@
     "sede": "C univ"
   },
   {
-    "id": "taller-y-laboratorio-1.2-2026",
-    "subjectSlug": "taller-y-laboratorio",
+    "id": "introduccion-a-la-ingenieria-2-2026",
+    "subjectSlug": "introduccion-a-la-ingenieria",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "chesini-ezequiel",
-      "enrico-pablo-ernesto"
+      "capdevila-lisandro-adriel"
     ],
     "horarios": [
       {
         "dia": 2,
-        "inicio": "08:00",
-        "fin": "12:30"
+        "inicio": "15:00",
+        "fin": "18:15"
       }
     ],
     "days": [
@@ -2858,79 +2898,814 @@
     "sede": "C univ"
   },
   {
-    "id": "taller-y-laboratorio-1.3-2026",
-    "subjectSlug": "taller-y-laboratorio",
+    "id": "quimica-1.1-2026",
+    "subjectSlug": "quimica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "chesini-ezequiel",
-      "olivares-emiliano"
+      "della-mea-eliana-luciana",
+      "comin-romina",
+      "aimar-mario-leandro"
     ],
     "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:00"
+      },
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-1.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "martinez-maria-soledad",
+      "aimar-mario-leandro",
+      "comin-romina"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "10:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:00"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-1.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "turco-mauricio-daniel",
+      "aimar-mario-leandro",
+      "comin-romina"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "10:00"
+      },
       {
         "dia": 5,
         "inicio": "08:00",
-        "fin": "12:30"
+        "fin": "11:00"
       }
     ],
     "days": [
+      2,
       5
     ],
     "sede": "C univ"
   },
   {
-    "id": "taller-y-laboratorio-2.2-2026",
-    "subjectSlug": "taller-y-laboratorio",
+    "id": "quimica-2.1-2026",
+    "subjectSlug": "quimica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "chesini-ezequiel",
-      "bustos-guillermo-hernan"
+      "villagran-constanza",
+      "glatstein-daniel-alejandro",
+      "aimar-mario-leandro"
     ],
     "horarios": [
       {
-        "dia": 5,
-        "inicio": "13:00",
-        "fin": "17:30"
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:30"
+      },
+      {
+        "dia": 2,
+        "inicio": "10:00",
+        "fin": "12:00"
       }
     ],
     "days": [
-      5
+      1,
+      2
     ],
     "sede": "C univ"
   },
   {
-    "id": "taller-y-laboratorio-3.1-2026",
-    "subjectSlug": "taller-y-laboratorio",
+    "id": "quimica-2.2-2026",
+    "subjectSlug": "quimica",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "chesini-ezequiel"
+      "villagran-constanza",
+      "spahn-baltazar",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "10:00",
+        "fin": "12:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "11:30",
+        "fin": "14:30"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-2.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "erro-eustaquio-martin",
+      "villagran-constanza"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "10:00",
+        "fin": "12:00"
+      },
+      {
+        "dia": 5,
+        "inicio": "11:30",
+        "fin": "14:30"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-3.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "bordon-daniela-laura",
+      "gigena-enzo"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "08:00",
+        "fin": "11:00"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-3.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "erro-eustaquio-martin",
+      "aimar-mario-leandro",
+      "bordon-daniela-laura"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:30"
+      },
+      {
+        "dia": 3,
+        "inicio": "08:00",
+        "fin": "10:00"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-4.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "falletti-paulina",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "14:45",
+        "fin": "17:45"
+      },
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "13:30"
+      }
+    ],
+    "days": [
+      2,
+      3
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-4.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "fernandez-pablo-andres",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "11:30",
+        "fin": "13:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "14:45",
+        "fin": "17:45"
+      }
+    ],
+    "days": [
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "della-mea-eliana-luciana",
+      "borneo-benista-rafael",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "14:45",
+        "fin": "17:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "13:00",
+        "fin": "15:00"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "della-mea-eliana-luciana",
+      "borneo-benista-rafael"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "14:30",
+        "fin": "17:30"
+      },
+      {
+        "dia": 4,
+        "inicio": "13:00",
+        "fin": "15:00"
+      }
+    ],
+    "days": [
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-5.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "aimar-mario-leandro",
+      "borneo-benista-rafael"
     ],
     "horarios": [
       {
         "dia": 4,
+        "inicio": "13:00",
+        "fin": "15:00"
+      },
+      {
+        "dia": 5,
         "inicio": "14:45",
-        "fin": "19:15"
+        "fin": "17:45"
       }
     ],
     "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-6.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "falletti-paulina",
+      "villagran-constanza",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "17:00"
+      }
+    ],
+    "days": [
+      2,
       4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-6.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "villagran-constanza",
+      "martinez-guillermo-gabriel",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "17:00"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:15",
+        "fin": "21:15"
+      }
+    ],
+    "days": [
+      4,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-6.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "villagran-constanza",
+      "aimar-mario-leandro",
+      "racca-maria-agustina"
+    ],
+    "horarios": [
+      {
+        "dia": 3,
+        "inicio": "17:45",
+        "fin": "20:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "15:00",
+        "fin": "17:00"
+      }
+    ],
+    "days": [
+      3,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.1-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "turco-mauricio-daniel",
+      "aimar-mario-leandro",
+      "ferrayoli-carlos-guillermo"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.2-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "ferrayoli-carlos-guillermo",
+      "daniele-maria-laura",
+      "aimar-mario-leandro"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:15",
+        "fin": "21:15"
+      },
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      }
+    ],
+    "days": [
+      1,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "quimica-7.3-2026",
+    "subjectSlug": "quimica",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "martinez-guillermo-gabriel",
+      "aimar-mario-leandro",
+      "ferrayoli-carlos-guillermo"
+    ],
+    "horarios": [
+      {
+        "dia": 4,
+        "inicio": "18:30",
+        "fin": "20:30"
+      },
+      {
+        "dia": 5,
+        "inicio": "18:15",
+        "fin": "21:15"
+      }
+    ],
+    "days": [
+      4,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-1.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "arguello-luna-diego-ivan",
+      "cordova-alfredo-daniel",
+      "gauna-marco-antonio-amadeo",
+      "gomez-gustavo-cesar",
+      "maligno-emilio-pedro",
+      "campasso-diego-esteban",
+      "destefanis-eduardo",
+      "novillo-david"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 4,
+        "inicio": "08:00",
+        "fin": "11:15"
+      }
+    ],
+    "days": [
+      2,
+      4
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-1.2-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "gomez-gustavo-cesar",
+      "destefanis-eduardo",
+      "gauna-marco-antonio-amadeo",
+      "maligno-emilio-pedro",
+      "ruiz-paola-fabiana",
+      "sapuppo-daniel-salvador",
+      "cordova-alfredo-daniel"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "08:00",
+        "fin": "11:15"
+      },
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-2.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "parada-larrosa-francisco",
+      "cordova-alfredo-daniel",
+      "maligno-emilio-pedro",
+      "gauna-marco-antonio-amadeo",
+      "gomez-gustavo-cesar",
+      "destefanis-eduardo",
+      "reina-minnig-maria-georgina"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "11:30",
+        "fin": "14:45"
+      },
+      {
+        "dia": 2,
+        "inicio": "11:30",
+        "fin": "14:45"
+      }
+    ],
+    "days": [
+      1,
+      2
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-3.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "martinez-pablo-agustin",
+      "parada-larrosa-francisco",
+      "dotta-leones-matias-nicolas",
+      "gonzalez-gramaglia-hernan-ezequiel",
+      "cuestas-luis-miguel",
+      "maligno-emilio-pedro",
+      "bianchotti-paola-andrea",
+      "cordova-alfredo-daniel"
+    ],
+    "horarios": [
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 5,
+        "inicio": "15:00",
+        "fin": "18:15"
+      }
+    ],
+    "days": [
+      2,
+      5
+    ],
+    "sede": "C univ"
+  },
+  {
+    "id": "sistemas-de-representacion-4.1-2026",
+    "subjectSlug": "sistemas-de-representacion",
+    "careerSlugs": [
+      "industrial"
+    ],
+    "anio": 1,
+    "tipo": "regular",
+    "yearAcademic": 2026,
+    "semester": 2,
+    "professorIds": [
+      "gonzalez-gramaglia-hernan-ezequiel",
+      "martinez-pablo-agustin",
+      "cordova-alfredo-daniel",
+      "maligno-emilio-pedro",
+      "gauna-marco-antonio-amadeo",
+      "bianchotti-paola-andrea",
+      "dotta-leones-matias-nicolas",
+      "cuestas-luis-miguel"
+    ],
+    "horarios": [
+      {
+        "dia": 1,
+        "inicio": "18:30",
+        "fin": "21:45"
+      },
+      {
+        "dia": 2,
+        "inicio": "18:30",
+        "fin": "21:45"
+      }
+    ],
+    "days": [
+      1,
+      2
     ],
     "sede": "C univ"
   },
@@ -2938,7 +3713,7 @@
     "id": "analisis-matematico-ii-1-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -2970,7 +3745,7 @@
     "id": "analisis-matematico-ii-2-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -3002,7 +3777,7 @@
     "id": "analisis-matematico-ii-3-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -3034,7 +3809,7 @@
     "id": "analisis-matematico-ii-4-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -3066,7 +3841,7 @@
     "id": "analisis-matematico-ii-5-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -3098,7 +3873,7 @@
     "id": "analisis-matematico-ii-6-2026",
     "subjectSlug": "analisis-matematico-ii",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 1,
     "tipo": "regular",
@@ -3127,94 +3902,36 @@
     "sede": "virtual sincronica"
   },
   {
-    "id": "senales-y-sistemas-1-2026",
-    "subjectSlug": "senales-y-sistemas",
+    "id": "mecanismos-y-elementos-de-maquinas-2-2026",
+    "subjectSlug": "mecanismos-y-elementos-de-maquinas",
     "careerSlugs": [
-      "computacion"
+      "industrial"
     ],
     "anio": 3,
     "tipo": "regular",
     "yearAcademic": 2026,
     "semester": 2,
     "professorIds": [
-      "martinez-balsa-agustin",
-      "hueda-mario-rafael",
-      "borgnino-leandro-ezequiel",
-      "smrekar-marcelo-roberto"
-    ],
-    "horarios": [
-      {
-        "dia": 4,
-        "inicio": "08:00",
-        "fin": "11:15"
-      },
-      {
-        "dia": 5,
-        "inicio": "08:00",
-        "fin": "11:15"
-      }
-    ],
-    "days": [
-      4,
-      5
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "senales-y-sistemas-4-2026",
-    "subjectSlug": "senales-y-sistemas",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 3,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "hueda-mario-rafael",
-      "vazquez-maria-del-h",
-      "lazarte-gustavo"
+      "mestrallet-alejandro-gustavo",
+      "ladron-de-g-fernando-a",
+      "dutto-esteban-ariel",
+      "pilati-martin-lucas",
+      "herenu-pablo-ernesto"
     ],
     "horarios": [
       {
         "dia": 1,
-        "inicio": "18:30",
-        "fin": "21:45"
+        "inicio": "15:00",
+        "fin": "18:15"
       },
       {
-        "dia": 4,
+        "dia": 3,
         "inicio": "18:30",
         "fin": "21:45"
       }
     ],
     "days": [
       1,
-      4
-    ],
-    "sede": "C univ"
-  },
-  {
-    "id": "inteligencia-artificial-1-2026",
-    "subjectSlug": "inteligencia-artificial",
-    "careerSlugs": [
-      "computacion"
-    ],
-    "anio": 3,
-    "tipo": "regular",
-    "yearAcademic": 2026,
-    "semester": 2,
-    "professorIds": [
-      "diaz-davila-laura-cecilia",
-      "comerci-sandro-mauricio"
-    ],
-    "horarios": [
-      {
-        "dia": 3,
-        "inicio": "11:30",
-        "fin": "14:45"
-      }
-    ],
-    "days": [
       3
     ],
     "sede": "C univ"

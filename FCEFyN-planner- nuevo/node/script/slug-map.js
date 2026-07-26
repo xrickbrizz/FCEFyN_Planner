@@ -8,7 +8,9 @@ const SLUG_MAP = {
   "ingenieria-industrial": "industrial",
   "ingenieria-quimica": "quimica",
   "ingenieria-en-computacion": "computacion",
+  "ingenieria-computacion": "computacion",
   "ingenieria-en-agrimensura": "agrimensura",
+  "ingenieria-agrimensura": "agrimensura",
   "ingenieria-aeroespacial": "aeroespacial"
 };
 
